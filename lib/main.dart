@@ -482,19 +482,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         size: 140.0,
                         isDarkMode: Theme.of(context).brightness == Brightness.dark,
                       ),
-                      const SizedBox(height: 80),
-                      
-                      // "Let's Start with" text using special font
-                      Text(
-                        "Let's Start with",
-                        style: GoogleFonts.orbitron(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 60),
                       
                       // Center input area
                       WelcomeInputArea(
@@ -715,8 +703,10 @@ class _WelcomeInputAreaState extends State<WelcomeInputArea> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(28),
                   borderSide: BorderSide(
-                    color: Theme.of(context).primaryColor.withOpacity(0.5),
-                    width: 2,
+                    color: isLightTheme(context) 
+                        ? const Color(0xFFE8EAED) // Same as normal border (no active state)
+                        : const Color(0xFF333438),
+                    width: 1,
                   ),
                 ),
               ),

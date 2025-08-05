@@ -598,19 +598,32 @@ Based on the context above, answer the following prompt: $input""";
                           Positioned(
                             top: 8,
                             right: 8,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: (isDark ? Colors.black : Colors.white).withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.download_rounded,
-                                  size: 20,
-                                  color: isDark ? Colors.white : Colors.black87,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: (isDark ? Colors.black87 : Colors.white).withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () => _saveImage(message.imageBytes!),
-                                tooltip: 'Save Image',
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.download_rounded,
+                                    size: 22,
+                                    color: isDark ? Colors.white : Colors.black87,
+                                  ),
+                                  onPressed: () => _saveImage(message.imageBytes!),
+                                  tooltip: 'Save Image',
+                                  padding: EdgeInsets.zero,
+                                ),
                               ),
                             ),
                           ),
