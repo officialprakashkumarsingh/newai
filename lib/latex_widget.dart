@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'theme.dart';
 
 /// Widget for rendering LaTeX mathematical expressions
-class LaTeXWidget extends StatelessWidget {
+class LaTeXWidget extends StatefulWidget {
   final String latex;
   final bool isDisplayMode;
   final double? fontSize;
@@ -16,53 +18,136 @@ class LaTeXWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  State<LaTeXWidget> createState() => _LaTeXWidgetState();
+}
+
+class _LaTeXWidgetState extends State<LaTeXWidget> {
+  static const platform = MethodChannel('com.ahamai.latex');
+  
+  Future<Widget>? _latexFuture;
+  
+  @override
+  void initState() {
+    super.initState();
+    _latexFuture = _renderLatex();
+  }
+  
+  @override
+  void didUpdateWidget(LaTeXWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.latex != widget.latex || 
+        oldWidget.isDisplayMode != widget.isDisplayMode) {
+      _latexFuture = _renderLatex();
+    }
+  }
+
+  Future<Widget> _renderLatex() async {
     final isDark = !isLightTheme(context);
     
     try {
-      return Container(
-        margin: isDisplayMode 
-          ? const EdgeInsets.symmetric(vertical: 12, horizontal: 4)
-          : EdgeInsets.zero,
-        padding: isDisplayMode 
-          ? const EdgeInsets.all(16)
-          : const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        decoration: isDisplayMode ? BoxDecoration(
-          color: isDark ? const Color(0xFF2D3748) : const Color(0xFFF7FAFC),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isDark ? const Color(0xFF4A5568) : const Color(0xFFE2E8F0),
-            width: 1,
+      final result = await platform.invokeMethod('renderLatex', {
+        'latex': widget.latex,
+        'isDisplayMode': widget.isDisplayMode,
+        'isDarkTheme': isDark,
+      });
+      
+      if (result['success'] == true && result['image'] != null) {
+        final imageBytes = base64Decode(result['image']);
+        
+        return Container(
+          margin: widget.isDisplayMode 
+            ? const EdgeInsets.symmetric(vertical: 12, horizontal: 4)
+            : const EdgeInsets.symmetric(vertical: 4),
+          padding: widget.isDisplayMode 
+            ? const EdgeInsets.all(16)
+            : const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+          decoration: widget.isDisplayMode ? BoxDecoration(
+            color: isDark ? const Color(0xFF2D3748) : const Color(0xFFF7FAFC),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isDark ? const Color(0xFF4A5568) : const Color(0xFFE2E8F0),
+              width: 1,
+            ),
+          ) : null,
+          child: Image.memory(
+            imageBytes,
+            fit: BoxFit.contain,
           ),
-        ) : null,
-        child: Math.tex(
-          latex,
-          textStyle: TextStyle(
-            fontSize: fontSize ?? (isDisplayMode ? 18 : 16),
-            color: isDark ? Colors.white : Colors.black87,
-          ),
-          mathStyle: isDisplayMode ? MathStyle.display : MathStyle.text,
-        ),
-      );
+        );
+      } else {
+        throw Exception(result['error'] ?? 'Unknown rendering error');
+      }
     } catch (e) {
-      // Fallback for invalid LaTeX
+      // Fallback for invalid LaTeX or rendering errors
       return Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: Colors.red.withOpacity(0.1),
           borderRadius: BorderRadius.circular(4),
           border: Border.all(color: Colors.red.withOpacity(0.3)),
         ),
-        child: Text(
-          'LaTeX Error: $latex',
-          style: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 12,
-            color: Colors.red[700],
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline, size: 16, color: Colors.red[700]),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                'LaTeX Error: ${widget.latex}',
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                  color: Colors.red[700],
+                ),
+              ),
+            ),
+          ],
         ),
       );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Widget>(
+      future: _latexFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.all(8),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                SizedBox(width: 8),
+                Text('Rendering LaTeX...', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              'Failed to render: ${widget.latex}',
+              style: const TextStyle(fontSize: 12, color: Colors.red),
+            ),
+          );
+        } else {
+          return snapshot.data ?? const SizedBox.shrink();
+        }
+      },
+    );
   }
 }
 
@@ -231,9 +316,25 @@ class EnhancedTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (LaTeXProcessor.containsLaTeX(text)) {
+      final parts = LaTeXProcessor.parseContent(text);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: LaTeXProcessor.processText(text, context),
+        children: parts.map((part) {
+          if (part.isLatex) {
+            return LaTeXWidget(
+              latex: part.content,
+              isDisplayMode: part.isDisplayMode,
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                part.content,
+                style: style ?? Theme.of(context).textTheme.bodyLarge,
+              ),
+            );
+          }
+        }).toList(),
       );
     }
 

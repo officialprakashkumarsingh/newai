@@ -142,16 +142,7 @@ class CodeHighlightWidget extends StatelessWidget {
   }
 }
 
-/// Custom markdown code builder for syntax highlighting
-Widget codeHighlightBuilder(BuildContext context, dynamic node, dynamic style) {
-  final code = node.textContent;
-  final language = node.attributes?['class']?.replaceFirst('language-', '') ?? '';
-  
-  return CodeHighlightWidget(
-    code: code,
-    language: language.isNotEmpty ? language : null,
-  );
-}
+// Code highlighting temporarily removed for compatibility
 
 /// Enhanced MarkdownBody with code highlighting and LaTeX support
 class EnhancedMarkdownBody extends StatelessWidget {
@@ -177,9 +168,7 @@ class EnhancedMarkdownBody extends StatelessWidget {
       data: data,
       selectable: selectable,
       styleSheet: styleSheet,
-      builders: {
-        'code': codeHighlightBuilder,
-      },
+      // Code highlighting temporarily disabled for compatibility
       syntaxHighlighter: CustomSyntaxHighlighter(),
     );
   }
@@ -198,15 +187,13 @@ class EnhancedMarkdownBody extends StatelessWidget {
           );
         } else {
           // Regular markdown content
-          return MarkdownBody(
-            data: part.content,
-            selectable: selectable,
-            styleSheet: styleSheet,
-            builders: {
-              'code': codeHighlightBuilder,
-            },
-            syntaxHighlighter: CustomSyntaxHighlighter(),
-          );
+                     return MarkdownBody(
+             data: part.content,
+             selectable: selectable,
+             styleSheet: styleSheet,
+             // Code highlighting temporarily disabled for compatibility
+             syntaxHighlighter: CustomSyntaxHighlighter(),
+           );
         }
       }).toList(),
     );

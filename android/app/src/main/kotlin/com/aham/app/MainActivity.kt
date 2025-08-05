@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.content.Context
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.*
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ahamai.text_sharing"
     private val WIDGET_CHANNEL = "com.ahamai.widget"
     private val BACKGROUND_CHANNEL = "com.ahamai.background"
+    private val LATEX_CHANNEL = "com.ahamai.latex"
     private var sharedText: String? = null
     private var widgetAction: String? = null
+    private lateinit var latexRenderer: LatexRenderer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        latexRenderer = LatexRenderer(this)
         handleSharingIntent(intent)
         handleWidgetIntent(intent)
     }
@@ -92,6 +96,64 @@ class MainActivity : FlutterActivity() {
                 "getBackgroundResult" -> {
                     val backgroundResult = getStoredBackgroundResult()
                     result.success(backgroundResult)
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, LATEX_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "renderLatex" -> {
+                    val latex = call.argument<String>("latex") ?: ""
+                    val isDisplayMode = call.argument<Boolean>("isDisplayMode") ?: false
+                    val isDarkTheme = call.argument<Boolean>("isDarkTheme") ?: false
+                    
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val base64Image = latexRenderer.renderLatexToBase64(latex, isDisplayMode, isDarkTheme)
+                            withContext(Dispatchers.Main) {
+                                if (base64Image != null) {
+                                    result.success(mapOf(
+                                        "success" to true,
+                                        "image" to base64Image
+                                    ))
+                                } else {
+                                    result.success(mapOf(
+                                        "success" to false,
+                                        "error" to "Failed to render LaTeX"
+                                    ))
+                                }
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                result.success(mapOf(
+                                    "success" to false,
+                                    "error" to e.message
+                                ))
+                            }
+                        }
+                    }
+                }
+                "validateLatex" -> {
+                    val latex = call.argument<String>("latex") ?: ""
+                    val isValid = latexRenderer.isValidLatex(latex)
+                    result.success(isValid)
+                }
+                "extractLatex" -> {
+                    val text = call.argument<String>("text") ?: ""
+                    val expressions = latexRenderer.extractLatexExpressions(text)
+                    val serializedExpressions = expressions.map { expr ->
+                        mapOf(
+                            "original" to expr.original,
+                            "latex" to expr.latex,
+                            "isDisplay" to expr.isDisplay,
+                            "start" to expr.start,
+                            "end" to expr.end
+                        )
+                    }
+                    result.success(serializedExpressions)
                 }
                 else -> {
                     result.notImplemented()

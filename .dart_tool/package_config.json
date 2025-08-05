@@ -182,22 +182,10 @@
       "languageVersion": "3.3"
     },
     {
-      "name": "flutter_math_fork",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_math_fork-0.6.3+1",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
-    },
-    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.26",
       "packageUri": "lib/",
       "languageVersion": "3.5"
-    },
-    {
-      "name": "flutter_svg",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_svg-1.1.6",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
     },
     {
       "name": "flutter_test",
@@ -414,18 +402,6 @@
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path-1.9.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
-    },
-    {
-      "name": "path_drawing",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path_drawing-1.0.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "path_parsing",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path_parsing-1.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
     },
     {
       "name": "path_provider",
@@ -680,12 +656,6 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "tuple",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/tuple-2.0.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
-    },
-    {
       "name": "typed_data",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/typed_data-1.4.0",
       "packageUri": "lib/",
@@ -758,6 +728,30 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "webview_flutter",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter-4.10.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "webview_flutter_android",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter_android-4.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "webview_flutter_platform_interface",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter_platform_interface-2.13.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "webview_flutter_wkwebview",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.22.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "win32",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/win32-5.10.1",
       "packageUri": "lib/",
@@ -794,7 +788,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-05T23:14:09.079030Z",
+  "generated": "2025-08-05T23:19:12.431019Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///opt/flutter",
