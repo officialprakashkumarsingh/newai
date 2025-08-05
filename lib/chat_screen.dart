@@ -661,19 +661,27 @@ Based on the context above, answer the following prompt: $input""";
               ),
             ),
           Container(
-            padding: EdgeInsets.fromLTRB(8, 8, 8, 8 + MediaQuery.of(context).padding.bottom),
+            margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+            padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
             decoration: BoxDecoration(
               color: isLightTheme(context) 
-                  ? const Color(0xFFFFFFFF) // Light mode: pure white background
-                  : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
+                  ? const Color(0xFFFAFAFA) // Light mode: very subtle gray
+                  : const Color(0xFF2A2A2A), // Dark mode: cleaner dark background
+              borderRadius: BorderRadius.circular(28), // Fully rounded corners
+              border: Border.all(
+                color: isLightTheme(context) 
+                    ? const Color(0xFFE1E5E9) // Light border for light mode
+                    : const Color(0xFF404040), // Dark border for dark mode
+                width: 1,
               ),
-              border: isLightTheme(context) ? Border(
-                top: BorderSide(color: const Color(0xFFE5E7EB), width: 1),
-              ) : null,
-            ), // Clean rounded input area
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ), // Clean fully rounded input area
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -692,15 +700,15 @@ Based on the context above, answer the following prompt: $input""";
                     decoration: InputDecoration(
                       hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
                       hintStyle: TextStyle(
-                        color: isLightTheme(context) ? const Color(0xFF6B7280) : Colors.white.withOpacity(0.7),
+                        color: isLightTheme(context) ? const Color(0xFF9CA3AF) : Colors.white.withOpacity(0.6),
+                        fontSize: 16,
                       ),
                       filled: true, 
-                      fillColor: isLightTheme(context) ? const Color(0xFFF8F9FA) : const Color(0xFF31363F), // Very subtle gray
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), 
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24), 
-                        borderSide: BorderSide.none
-                      )
+                      fillColor: Colors.transparent, // Transparent to use container's background
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8), 
+                      border: InputBorder.none, // No border - container provides it
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
                     )
                   ),
                 ),

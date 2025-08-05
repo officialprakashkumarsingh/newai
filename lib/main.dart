@@ -14,12 +14,7 @@ import 'theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initial system UI setup - will be updated based on theme
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    systemNavigationBarColor: Colors.white, // Default to white, will be updated by theme
-    systemNavigationBarDividerColor: Colors.transparent,
-  ));
+  // Enable edge-to-edge mode (system UI will be configured per-theme)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   runApp(

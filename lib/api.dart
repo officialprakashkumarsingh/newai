@@ -136,25 +136,33 @@ class ImageApi {
         final contentType = response.headers['content-type'] ?? '';
         
         if (contentType.startsWith('image/')) {
-          // Response is direct image data, convert to base64 data URL
+          // Response is direct image data (flux/turbo models)
           try {
+            if (response.bodyBytes.isEmpty) {
+              throw Exception('Empty image response');
+            }
+            
             final base64Image = base64Encode(response.bodyBytes);
-            final mimeType = contentType.split(';')[0]; // Remove any additional parameters
-            print("Successfully generated image, size: ${response.bodyBytes.length} bytes");
+            final mimeType = contentType.split(';')[0].trim(); // Remove any additional parameters
+            print("Successfully generated image with $selectedModel, size: ${response.bodyBytes.length} bytes, type: $mimeType");
+            
+            // Return data URL for immediate display
             return 'data:$mimeType;base64,$base64Image';
           } catch (e) {
             print("Error encoding image to base64: $e");
             throw Exception('Failed to encode image data: $e');
           }
         } else {
-          // Try to parse as JSON (standard OpenAI format)
+          // Try to parse as JSON (img3/img4/uncen/gemini2.0 models)
           try {
             final Map<String, dynamic> responseJson = jsonDecode(response.body);
             final List<dynamic> data = responseJson['data'] ?? [];
-            if (data.isNotEmpty) {
-              return data[0]['url'] as String;
+            if (data.isNotEmpty && data[0]['url'] != null) {
+              final imageUrl = data[0]['url'] as String;
+              print("Successfully generated image with $selectedModel, URL: $imageUrl");
+              return imageUrl;
             } else {
-              throw Exception('No image data in JSON response');
+              throw Exception('No valid image URL in JSON response');
             }
           } catch (jsonError) {
             print("Failed to parse JSON response: $jsonError");
