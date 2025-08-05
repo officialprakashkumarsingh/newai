@@ -53,47 +53,111 @@ class PresentationViewScreen extends StatelessWidget {
     return FlutterDeckApp(
       configuration: FlutterDeckConfiguration(
         background: FlutterDeckBackgroundConfiguration(
-          light: FlutterDeckBackground.solid(Color(0xFFFAF7F3)),
-          dark: FlutterDeckBackground.solid(Color(0xFF222831)),
+          light: FlutterDeckBackground.gradient(
+            LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFFAF7F3), Color(0xFFF5F0EA)],
+            ),
+          ),
+          dark: FlutterDeckBackground.gradient(
+            LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1A1F26), Color(0xFF222831)],
+            ),
+          ),
         ),
         footer: const FlutterDeckFooterConfiguration(
           showSlideNumbers: true,
-          showSocialHandle: false,
+          showSocialHandle: true,
         ),
         header: const FlutterDeckHeaderConfiguration(
-          showHeader: false,
+          showHeader: true,
+          title: 'AhamAI Presentation',
         ),
         marker: const FlutterDeckMarkerConfiguration(
           color: Color(0xFFD9A299),
-          strokeWidth: 4.0,
+          strokeWidth: 6.0,
         ),
         progressIndicator: const FlutterDeckProgressIndicator.gradient(
           gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
             colors: [Color(0xFFD9A299), Color(0xFFF0E4D3)],
           ),
-          backgroundColor: Color(0xFF222831),
+          backgroundColor: Color(0x88000000),
         ),
         slideSize: FlutterDeckSlideSize.fromAspectRatio(
           aspectRatio: const FlutterDeckAspectRatio.ratio16x9(),
           resolution: const FlutterDeckResolution.fhd(),
         ),
-        transition: const FlutterDeckTransition.fade(),
+        transition: const FlutterDeckTransition.slide(),
       ),
-      lightTheme: FlutterDeckThemeData.fromTheme(
-        ThemeData.from(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD9A299)),
-          useMaterial3: true,
+      lightTheme: FlutterDeckThemeData.light().copyWith(
+        textTheme: FlutterDeckTextTheme(
+          display: const TextStyle(
+            color: Color(0xFF2C3539),
+            fontSize: 56,
+            fontWeight: FontWeight.w900,
+            height: 1.1,
+          ),
+          title: const TextStyle(
+            color: Color(0xFF2C3539),
+            fontSize: 48,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+          ),
+          subtitle: const TextStyle(
+            color: Color(0xFF5A6B73),
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
+            height: 1.4,
+          ),
+          header: const TextStyle(
+            color: Color(0xFFD9A299),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+          // body: const TextStyle(
+          //   color: Color(0xFF2C3539),
+          //   fontSize: 20,
+          //   fontWeight: FontWeight.w400,
+          //   height: 1.5,
+          // ),
         ),
       ),
-      darkTheme: FlutterDeckThemeData.fromTheme(
-        ThemeData.from(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF31363F),
-            brightness: Brightness.dark,
+      darkTheme: FlutterDeckThemeData.dark().copyWith(
+        textTheme: FlutterDeckTextTheme(
+          display: const TextStyle(
+            color: Color(0xFFFAF7F3),
+            fontSize: 56,
+            fontWeight: FontWeight.w900,
+            height: 1.1,
           ),
-          useMaterial3: true,
+          title: const TextStyle(
+            color: Color(0xFFFAF7F3),
+            fontSize: 48,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+          ),
+          subtitle: const TextStyle(
+            color: Color(0xFFB8C5CC),
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
+            height: 1.4,
+          ),
+          header: const TextStyle(
+            color: Color(0xFFD9A299),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+          // body: const TextStyle(
+          //   color: Color(0xFFFAF7F3),
+          //   fontSize: 20,
+          //   fontWeight: FontWeight.w400,
+          //   height: 1.5,
+          // ),
         ),
       ),
       slides: _generateFlutterDeckSlides(),

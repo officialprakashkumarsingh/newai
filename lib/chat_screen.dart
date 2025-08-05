@@ -280,7 +280,16 @@ Based on the context above, answer the following prompt: $input""";
       }
 
       final now = DateTime.now().toIso8601String();
-      String finalPrompt = "System Knowledge: The current date is $now.\n\nUser Prompt: $input";
+      String finalPrompt = """System Knowledge: 
+1. Current date: $now
+2. Screenshot Capability: You can generate website screenshots using the format: https://s0.wp.com/mshots/v1/https%3A%2F%2F[URL]?w=[WIDTH]&h=[HEIGHT]
+   - Replace [URL] with the URL-encoded website address
+   - Replace [WIDTH] and [HEIGHT] with desired dimensions (default: w=1280&h=720)
+   - Example: https://s0.wp.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1280&h=720
+   - The markdown renderer will automatically display these as images
+   - Use this when users ask for website previews, screenshots, or visual representations of websites
+
+User Prompt: $input""";
       if (webSearchResults != null && webSearchResults.isNotEmpty) {
         finalPrompt = """Use the following context to answer the user's prompt.\n---\nCONTEXT:\n1. Current Date: $now\n2. Web Search Results:\n$webSearchResults\n---\nUSER PROMPT:\n$input""";
       }
@@ -339,9 +348,18 @@ Based on the context above, answer the following prompt: $input""";
       String finalContent;
       final now = DateTime.now().toIso8601String();
       if (webSearchResults != null && webSearchResults.isNotEmpty) {
-        finalContent = """Use the following context to answer the user's prompt.\n---\nCONTEXT:\n1. Current Date: $now\n2. Web Search Results:\n$webSearchResults\n---\nUSER PROMPT:\n$input""";
+        finalContent = """Use the following context to answer the user's prompt.\n---\nCONTEXT:\n1. Current Date: $now\n2. Web Search Results:\n$webSearchResults\n3. Screenshot Capability: You can generate website screenshots using: https://s0.wp.com/mshots/v1/https%3A%2F%2F[URL]?w=[WIDTH]&h=[HEIGHT]\n---\nUSER PROMPT:\n$input""";
       } else {
-        finalContent = "System Knowledge: The current date is $now.\n\nUser Prompt: $input";
+        finalContent = """System Knowledge: 
+1. Current date: $now
+2. Screenshot Capability: You can generate website screenshots using the format: https://s0.wp.com/mshots/v1/https%3A%2F%2F[URL]?w=[WIDTH]&h=[HEIGHT]
+   - Replace [URL] with the URL-encoded website address
+   - Replace [WIDTH] and [HEIGHT] with desired dimensions (default: w=1280&h=720)
+   - Example: https://s0.wp.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1280&h=720
+   - The markdown renderer will automatically display these as images
+   - Use this when users ask for website previews, screenshots, or visual representations of websites
+
+User Prompt: $input""";
       }
 
       final responseStream = _geminiChat!.sendMessageStream(Content.text(finalContent));
