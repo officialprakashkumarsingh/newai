@@ -779,7 +779,7 @@ User Prompt: $input""";
             decoration: BoxDecoration(
               color: isLightTheme(context) 
                   ? Colors.white // Light mode: pure white
-                  : const Color(0xFF000000), // Dark mode: AMOLED black
+                  : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
             ), // Removed top border line
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -807,26 +807,8 @@ User Prompt: $input""";
                           : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), 
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32), 
+                        borderRadius: BorderRadius.circular(24), 
                         borderSide: BorderSide.none
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32), 
-                        borderSide: BorderSide(
-                          color: isLightTheme(context) 
-                              ? Colors.grey.shade300 
-                              : Colors.grey.shade700,
-                          width: 1
-                        )
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32), 
-                        borderSide: BorderSide(
-                          color: isLightTheme(context) 
-                              ? Colors.grey.shade400 
-                              : Colors.grey.shade600,
-                          width: 1.5
-                        )
                       )
                     )
                   ),

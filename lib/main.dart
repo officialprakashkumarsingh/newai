@@ -561,7 +561,9 @@ class ProfileSettingsSheet extends StatefulWidget {
 }
 
 class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
-  String _selectedChatModel = ChatModels.gemini;
+  String _selectedChatModel = '';
+  List<String> _availableModels = [];
+  bool _isLoadingModels = true;
 
   @override
   void initState() {
