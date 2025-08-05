@@ -828,37 +828,30 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Section
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                      child: Icon(
-                        Icons.account_circle,
-                        size: 60,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'AhamAI User',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Premium AI Assistant',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                         // Profile Section
+             Card(
+               child: Padding(
+                 padding: const EdgeInsets.all(16),
+                 child: Column(
+                   children: [
+                     CircleAvatar(
+                       radius: 40,
+                       backgroundColor: Theme.of(context).cardColor,
+                       child: Icon(
+                         Icons.account_circle,
+                         size: 60,
+                         color: Theme.of(context).iconTheme.color,
+                       ),
+                     ),
+                     const SizedBox(height: 16),
+                     Text(
+                       'User Profile',
+                       style: Theme.of(context).textTheme.titleLarge,
+                     ),
+                   ],
+                 ),
+               ),
+             ),
 
             const SizedBox(height: 24),
 
@@ -918,42 +911,42 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.delete_sweep_outlined, color: Colors.red.shade400),
-                title: Text('Clear All Chats', style: TextStyle(color: Colors.red.shade400)),
-                subtitle: const Text('Delete all chat history permanently'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  widget.onClearAllChats();
-                },
-              ),
-            ),
+                         Card(
+               child: ListTile(
+                 leading: Icon(Icons.delete_sweep_outlined, color: Theme.of(context).colorScheme.error),
+                 title: Text('Clear All Chats', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                 subtitle: const Text('Delete all chat history permanently'),
+                 onTap: () {
+                   Navigator.of(context).pop();
+                   widget.onClearAllChats();
+                 },
+               ),
+             ),
 
             const SizedBox(height: 24),
 
-            // App Info Section
-            Text(
-              'About',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            Card(
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text('Version'),
-                    subtitle: const Text('AhamAI v9.1'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.code),
-                    title: const Text('Built with Flutter'),
-                    subtitle: const Text('Advanced AI chat assistant'),
-                  ),
-                ],
-              ),
-            ),
+                         // App Info Section
+             Text(
+               'About',
+               style: Theme.of(context).textTheme.titleLarge,
+             ),
+             const SizedBox(height: 16),
+             Card(
+               child: Column(
+                 children: [
+                   ListTile(
+                     leading: Icon(Icons.info_outline, color: Theme.of(context).iconTheme.color),
+                     title: const Text('Version'),
+                     subtitle: const Text('Latest'),
+                   ),
+                   ListTile(
+                     leading: Icon(Icons.code, color: Theme.of(context).iconTheme.color),
+                     title: const Text('Built with Flutter'),
+                     subtitle: const Text('AI chat assistant'),
+                   ),
+                 ],
+               ),
+             ),
 
             SizedBox(height: MediaQuery.of(context).padding.bottom + 24),
           ],
