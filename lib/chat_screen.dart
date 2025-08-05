@@ -47,7 +47,6 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isStoppedByUser = false;
   
   GenerativeModel? _geminiModel;
-  GenerativeModel? _geminiVisionModel;
 
   String _selectedChatModel = ChatModels.gemini;
   bool _isModelSetupComplete = false;
@@ -102,8 +101,8 @@ class _ChatScreenState extends State<ChatScreen> {
     _selectedChatModel = prefs.getString('chat_model') ?? ChatModels.gemini;
     
     _geminiModel = GenerativeModel(model: ApiConfig.geminiChatModel, apiKey: ApiConfig.geminiApiKey);
-    _geminiVisionModel = GenerativeModel(model: ApiConfig.geminiVisionModel, apiKey: ApiConfig.geminiApiKey);
     // Note: Gemini direct chat removed - now using unified ApiService
+    // Note: Vision now uses ApiService with user's selected model
 
     if (mounted) setState(() {});
   }
@@ -142,27 +141,29 @@ class _ChatScreenState extends State<ChatScreen> {
       _messages.add(ChatMessage(role: 'model', text: ''));
       _isStreaming = true;
       _attachedImage = null;
+      _currentModelResponse = '';
     });
     _controller.clear();
     _scrollToBottom();
     _updateChatInfo(true, false);
 
     try {
-      final content = [Content.multi([TextPart(input), DataPart('image/jpeg', imageBytes)])];
-      final responseStream = _geminiVisionModel!.generateContentStream(content);
-      _streamSubscription = responseStream.listen(
-        (chunk) {
-          if (_isStoppedByUser) { _streamSubscription?.cancel(); return; }
-          _currentModelResponse += chunk.text ?? '';
-          setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: _currentModelResponse));
-          _scrollToBottom();
-        },
-        onDone: _onStreamingDone,
-        onError: _onStreamingError,
-        cancelOnError: true,
-      );
+      // Use ApiService with user's selected model for vision
+      await for (final chunk in ApiService.sendVisionMessage(
+        message: input,
+        imageBase64: base64Encode(imageBytes),
+        model: _selectedChatModel, // Use user's selected model from popup
+      )) {
+        if (_isStoppedByUser) break;
+        
+        _currentModelResponse += chunk;
+        setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: _currentModelResponse));
+        _scrollToBottom();
+      }
     } catch(e) {
       _onStreamingError(e);
+    } finally {
+      _onStreamingDone();
     }
   }
 
