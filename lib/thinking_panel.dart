@@ -76,17 +76,17 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
           if (_isExpanded)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? Colors.grey.shade50 
-                    : Colors.grey.shade900.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(8),
+                    ? const Color(0xFFFBFCFD)
+                    : const Color(0xFF0F1419),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: isLightTheme(context) 
-                      ? Colors.grey.shade200 
-                      : Colors.grey.shade700,
+                      ? const Color(0xFFE9ECEF) 
+                      : const Color(0xFF2D3748),
                   width: 1,
                 ),
               ),

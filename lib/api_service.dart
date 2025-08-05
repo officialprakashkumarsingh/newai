@@ -98,7 +98,6 @@ class ApiService {
         'messages': messages,
         'stream': true,
         'temperature': 0.7,
-        'max_tokens': 4000,
       };
       
       final request = http.Request('POST', Uri.parse('$_baseUrl/v1/chat/completions'))
@@ -208,7 +207,6 @@ class ApiService {
           }
         ],
         'stream': true,
-        'max_tokens': 4000,
       };
       
       final request = http.Request('POST', Uri.parse('$_baseUrl/v1/chat/completions'))

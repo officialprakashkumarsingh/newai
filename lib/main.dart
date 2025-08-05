@@ -8,7 +8,7 @@ import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'api.dart';
+
 import 'chat_screen.dart';
 import 'theme.dart';
 
@@ -672,6 +672,50 @@ class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
         ),
       ),
     );
+  }
+
+  String _getModelDisplayName(String model) {
+    // Clean up model names for better display
+    switch (model.toLowerCase()) {
+      case 'gpt-4o':
+        return 'GPT-4o';
+      case 'gpt-4o-mini':
+        return 'GPT-4o Mini';
+      case 'gpt-3.5-turbo':
+        return 'GPT-3.5 Turbo';
+      case 'deepseek-r1':
+        return 'DeepSeek R1';
+      case 'claude-3-5-sonnet-20241022':
+        return 'Claude 3.5 Sonnet';
+      case 'o1-preview':
+        return 'OpenAI o1 Preview';
+      case 'grok-beta':
+        return 'Grok Beta';
+      default:
+        return model;
+    }
+  }
+
+  String _getModelDescription(String model) {
+    // Provide descriptions for models
+    switch (model.toLowerCase()) {
+      case 'gpt-4o':
+        return 'Advanced multimodal model';
+      case 'gpt-4o-mini':
+        return 'Fast and efficient model';
+      case 'gpt-3.5-turbo':
+        return 'Balanced performance model';
+      case 'deepseek-r1':
+        return 'Advanced reasoning model';
+      case 'claude-3-5-sonnet-20241022':
+        return 'Best for coding tasks';
+      case 'o1-preview':
+        return 'Advanced reasoning model';
+      case 'grok-beta':
+        return 'Experimental model';
+      default:
+        return 'AI language model';
+    }
   }
 }
 

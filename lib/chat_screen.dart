@@ -791,7 +791,11 @@ User Prompt: $input""";
               color: isLightTheme(context) 
                   ? Colors.white // Light mode: pure white
                   : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
-            ), // Removed top border line
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+            ), // Clean rounded input area
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
