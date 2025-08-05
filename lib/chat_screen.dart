@@ -230,8 +230,8 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Start background processing for this chat
-    await BackgroundService.startBackgroundProcess(
+    // Start background processing for this chat (non-blocking)
+    BackgroundService.startBackgroundProcess(
       chatId: widget.chatInfoStream.hashCode.toString(),
       processType: 'chat',
       processData: {
@@ -239,7 +239,7 @@ Based on the context above, answer the following prompt: $input""";
         'model': _selectedChatModel,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       },
-    );
+    ).catchError((e) => print('Background service error: $e'));
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -496,11 +496,17 @@ Based on the context above, answer the following prompt: $input""";
     try {
       // Use the new OpenAI-compatible image generation API
       final imageUrl = await ImageApi.generateImage(prompt, model: model);
+      
+      // Download image bytes for save functionality
+      final response = await http.get(Uri.parse(imageUrl));
+      final imageBytes = response.statusCode == 200 ? response.bodyBytes : null;
+      
       final imageMessage = ChatMessage(
         role: 'model', 
         text: 'Image for: $prompt', 
         type: MessageType.image, 
-        imageUrl: imageUrl
+        imageUrl: imageUrl,
+        imageBytes: imageBytes
       );
       
       // Precache the image
