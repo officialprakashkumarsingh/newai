@@ -47,14 +47,14 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFFAF7F3),
+    scaffoldBackgroundColor: const Color(0xFFECFAE5),
     primaryColor: Colors.black,
-    cardColor: const Color(0xFFF0E4D3),
+    cardColor: const Color(0xFFDDF6D2),
     appBarTheme: AppBarTheme(
-      color: const Color(0xFFFAF7F3),
+      color: const Color(0xFFECFAE5),
       elevation: 0,
       foregroundColor: Colors.black,
-      surfaceTintColor: const Color(0xFFFAF7F3),
+      surfaceTintColor: const Color(0xFFECFAE5),
       iconTheme: const IconThemeData(color: Colors.black),
       titleTextStyle: GoogleFonts.inter(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
     ),
@@ -63,7 +63,7 @@ class ThemeNotifier extends ChangeNotifier {
     dividerColor: Colors.grey.shade200,
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFFF0E4D3),
+      backgroundColor: const Color(0xFFDDF6D2),
       foregroundColor: Colors.black,
     )),
     textButtonTheme: TextButtonThemeData(
