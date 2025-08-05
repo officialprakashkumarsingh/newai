@@ -2,21 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Color Palette - Dracula for Light, Slack for Dark
+// Color Palette
 const Color draculaBackground = Color(0xFF282A36);
 const Color draculaCurrentLine = Color(0xFF44475A);
 const Color draculaForeground = Color(0xFFF8F8F2);
 const Color draculaComment = Color(0xFF6272A4);
 const Color draculaPurple = Color(0xFFBD93F9);
 const Color draculaGreen = Color(0xFF50FA7B);
-
-// Slack Dark Theme Colors
-const Color slackDarkBackground = Color(0xFF1A1D21);
-const Color slackDarkElevated = Color(0xFF444A47);
-const Color slackDarkText = Color(0xFFFFFFFF);
-const Color slackCyan = Color(0xFF36C5F0);
-const Color slackGreen = Color(0xFF2BAC76);
-const Color slackDivider = Color(0xFF2C3E50);
 
 class ThemeNotifier extends ChangeNotifier {
   final String key = "theme";
@@ -55,24 +47,24 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFF8F8F2), // Dracula foreground as light bg
-    primaryColor: const Color(0xFF282A36), // Dracula background as primary
-    cardColor: const Color(0xFFBD93F9), // Dracula purple for cards
+    scaffoldBackgroundColor: Colors.white,
+    primaryColor: Colors.black,
+    cardColor: Colors.grey[50],
     appBarTheme: AppBarTheme(
-      color: const Color(0xFFF8F8F2),
+      color: Colors.white,
       elevation: 0,
-      foregroundColor: const Color(0xFF282A36),
-      surfaceTintColor: const Color(0xFFF8F8F2),
-      iconTheme: const IconThemeData(color: Color(0xFF282A36)),
-      titleTextStyle: GoogleFonts.inter(color: const Color(0xFF282A36), fontSize: 18, fontWeight: FontWeight.w600),
+      foregroundColor: Colors.black,
+      surfaceTintColor: Colors.white,
+      iconTheme: const IconThemeData(color: Colors.black),
+      titleTextStyle: GoogleFonts.inter(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
     ),
-    textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).apply(bodyColor: const Color(0xFF282A36), displayColor: const Color(0xFF282A36)),
-    iconTheme: const IconThemeData(color: Color(0xFF6272A4)), // Dracula comment color
-    dividerColor: const Color(0xFF44475A), // Dracula selection
+    textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
+    iconTheme: const IconThemeData(color: Colors.black54),
+    dividerColor: Colors.grey.shade200,
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFFBD93F9), // Dracula purple
-      foregroundColor: const Color(0xFF282A36),
+      backgroundColor: Colors.black,
+      foregroundColor: Colors.white,
     )),
     textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: Colors.black)),
@@ -94,45 +86,45 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: slackDarkBackground,
-    primaryColor: slackCyan,
-    cardColor: slackDarkElevated,
+    scaffoldBackgroundColor: draculaBackground,
+    primaryColor: draculaForeground,
+    cardColor: draculaCurrentLine,
     appBarTheme: AppBarTheme(
-      color: slackDarkBackground,
+      color: draculaBackground,
       elevation: 0,
-      foregroundColor: slackDarkText,
-      surfaceTintColor: slackDarkBackground,
-      iconTheme: const IconThemeData(color: slackDarkText),
-      titleTextStyle: GoogleFonts.inter(color: slackDarkText, fontSize: 18, fontWeight: FontWeight.w600),
+      foregroundColor: draculaForeground,
+      surfaceTintColor: draculaBackground,
+      iconTheme: const IconThemeData(color: draculaForeground),
+      titleTextStyle: GoogleFonts.inter(color: draculaForeground, fontSize: 18, fontWeight: FontWeight.w600),
     ),
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
-      bodyColor: slackDarkText,
-      displayColor: slackDarkText,
+      bodyColor: draculaForeground,
+      displayColor: draculaForeground,
     ),
-    iconTheme: const IconThemeData(color: slackCyan),
-    dividerColor: slackDivider,
+    iconTheme: const IconThemeData(color: draculaComment),
+    dividerColor: draculaCurrentLine,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: slackCyan,
-        foregroundColor: slackDarkBackground,
+        backgroundColor: draculaForeground,
+        foregroundColor: draculaBackground,
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: slackDarkText),
+      style: TextButton.styleFrom(foregroundColor: draculaForeground),
     ),
-    dialogBackgroundColor: slackDarkElevated,
+    dialogBackgroundColor: draculaCurrentLine,
     switchTheme: SwitchThemeData(
       thumbColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
-          return slackGreen;
+          return draculaGreen;
         }
-        return Colors.grey;
+        return draculaComment;
       }),
       trackColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
-          return slackGreen.withOpacity(0.5);
+          return draculaGreen.withOpacity(0.5);
         }
-        return slackDivider;
+        return draculaCurrentLine;
       }),
     ),
   );
