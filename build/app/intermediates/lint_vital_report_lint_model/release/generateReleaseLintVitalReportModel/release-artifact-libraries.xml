@@ -37,6 +37,9 @@
       name=":@@:url_launcher_android::release"
       project=":url_launcher_android"/>
   <library
+      name=":@@:webview_flutter_android::release"
+      project=":webview_flutter_android"/>
+  <library
       name=":@@:workmanager::release"
       project=":workmanager"/>
   <library
@@ -264,10 +267,10 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
-      name="androidx.annotation:annotation-experimental:1.4.0@aar"
-      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0/jars/classes.jar"
-      resolved="androidx.annotation:annotation-experimental:1.4.0"
-      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0"
+      name="androidx.annotation:annotation-experimental:1.4.1@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1/jars/classes.jar"
+      resolved="androidx.annotation:annotation-experimental:1.4.1"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -455,6 +458,19 @@
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0/jars/classes.jar"
       resolved="androidx.browser:browser:1.8.0"
       folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="androidx.webkit:webkit:1.12.1@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1/jars/classes.jar"
+      resolved="androidx.webkit:webkit:1.12.1"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

@@ -49,6 +49,7 @@ MERGED from [:permission_handler_android] /workspace/build/permission_handler_an
 MERGED from [:shared_preferences_android] /workspace/build/shared_preferences_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:speech_to_text] /workspace/build/speech_to_text/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-14:12
+MERGED from [:webview_flutter_android] /workspace/build/webview_flutter_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:workmanager] /workspace/build/workmanager/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.media:media:1.1.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/c63821fec9f2546e795bb80957bb7f34/transformed/media-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.preference:preference:1.2.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/baadfda3653433f7e2fac3a03af80773/transformed/preference-1.2.1/AndroidManifest.xml:17:1-24:12
@@ -58,6 +59,7 @@ MERGED from [androidx.fragment:fragment:1.7.1] /home/ubuntu/.gradle/caches/8.10.
 MERGED from [androidx.activity:activity-ktx:1.9.3] /home/ubuntu/.gradle/caches/8.10.2/transforms/7075f2b2231fd3f86c356f5d3da63847/transformed/jetified-activity-ktx-1.9.3/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.activity:activity:1.9.3] /home/ubuntu/.gradle/caches/8.10.2/transforms/3900be40cc48f7edf6c26a368a7a59ed/transformed/jetified-activity-1.9.3/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.browser:browser:1.8.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.webkit:webkit:1.12.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.work:work-runtime:2.8.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/565e106bd6489252e8b60eeebd78c555/transformed/work-runtime-2.8.1/AndroidManifest.xml:17:1-145:12
 MERGED from [androidx.recyclerview:recyclerview:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/629a6156c80828eec33822b6a0469fe8/transformed/recyclerview-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/1ae0d1f3b9192c2a8112cfe8816b1024/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -108,7 +110,7 @@ MERGED from [androidx.window.extensions.core:core:1.0.0] /home/ubuntu/.gradle/ca
 MERGED from [androidx.documentfile:documentfile:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/805744adb80125990558694e9e01a888/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/94eade198bc3545c6522416eff0a1b97/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/718d3ca14bb109547e0d5d598a34ae57/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
 	package
 		INJECTED from /workspace/android/app/src/main/AndroidManifest.xml
 	android:versionName
@@ -285,6 +287,8 @@ MERGED from [:speech_to_text] /workspace/build/speech_to_text/intermediates/merg
 MERGED from [:speech_to_text] /workspace/build/speech_to_text/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
+MERGED from [:webview_flutter_android] /workspace/build/webview_flutter_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
+MERGED from [:webview_flutter_android] /workspace/build/webview_flutter_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:workmanager] /workspace/build/workmanager/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:workmanager] /workspace/build/workmanager/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [androidx.media:media:1.1.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/c63821fec9f2546e795bb80957bb7f34/transformed/media-1.1.0/AndroidManifest.xml:20:5-22:41
@@ -303,6 +307,8 @@ MERGED from [androidx.activity:activity:1.9.3] /home/ubuntu/.gradle/caches/8.10.
 MERGED from [androidx.activity:activity:1.9.3] /home/ubuntu/.gradle/caches/8.10.2/transforms/3900be40cc48f7edf6c26a368a7a59ed/transformed/jetified-activity-1.9.3/AndroidManifest.xml:20:5-44
 MERGED from [androidx.browser:browser:1.8.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.browser:browser:1.8.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.webkit:webkit:1.12.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.webkit:webkit:1.12.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.work:work-runtime:2.8.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/565e106bd6489252e8b60eeebd78c555/transformed/work-runtime-2.8.1/AndroidManifest.xml:21:5-44
 MERGED from [androidx.work:work-runtime:2.8.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/565e106bd6489252e8b60eeebd78c555/transformed/work-runtime-2.8.1/AndroidManifest.xml:21:5-44
 MERGED from [androidx.recyclerview:recyclerview:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/629a6156c80828eec33822b6a0469fe8/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
@@ -403,8 +409,8 @@ MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/u
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/94eade198bc3545c6522416eff0a1b97/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.print:print:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/718d3ca14bb109547e0d5d598a34ae57/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.print:print:1.0.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/718d3ca14bb109547e0d5d598a34ae57/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
 	android:targetSdkVersion
 		INJECTED from /workspace/android/app/src/main/AndroidManifest.xml
 	android:minSdkVersion

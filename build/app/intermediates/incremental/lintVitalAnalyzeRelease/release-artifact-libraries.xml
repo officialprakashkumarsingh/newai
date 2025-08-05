@@ -158,6 +158,20 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name=":@@:webview_flutter_android::release"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/b155922f9ba459442ef2f5f37426d797/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/b155922f9ba459442ef2f5f37426d797/transformed/out/jars/libs/R.jar"
+      resolved="io.flutter.plugins.webviewflutter:webview_flutter_android:1.0-SNAPSHOT"
+      partialResultsDir="/workspace/build/webview_flutter_android/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/b155922f9ba459442ef2f5f37426d797/transformed/out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
       name=":@@:workmanager::release"
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/f8f9019b1e86412d1ff37b56d293a12e/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/f8f9019b1e86412d1ff37b56d293a12e/transformed/out/jars/libs/R.jar"
       resolved="dev.fluttercommunity.workmanager:workmanager:1.0-SNAPSHOT"
@@ -396,10 +410,10 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
-      name="androidx.annotation:annotation-experimental:1.4.0@aar"
-      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0/jars/classes.jar"
-      resolved="androidx.annotation:annotation-experimental:1.4.0"
-      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/4b33caac84888b4bbd7a7372c0e7a20e/transformed/jetified-annotation-experimental-1.4.0"
+      name="androidx.annotation:annotation-experimental:1.4.1@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1/jars/classes.jar"
+      resolved="androidx.annotation:annotation-experimental:1.4.1"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/0a9f82ee6dd7933cc1dacd726799b711/transformed/jetified-annotation-experimental-1.4.1"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -587,6 +601,19 @@
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0/jars/classes.jar"
       resolved="androidx.browser:browser:1.8.0"
       folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="androidx.webkit:webkit:1.12.1@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1/jars/classes.jar"
+      resolved="androidx.webkit:webkit:1.12.1"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/9230c78421413bbdc5433b1ee4db6e68/transformed/webkit-1.12.1"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

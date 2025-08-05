@@ -26,6 +26,7 @@ import 'presentation_generator.dart';
 import 'thinking_panel.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
+import 'agent/agent_controller.dart';
 // Removed duplicate imports - already exists above
 
 class ChatScreen extends StatefulWidget {
@@ -928,18 +929,126 @@ Based on the context above, answer the following prompt: $input""";
 
     // Categories removed - no longer needed
 
-  void _toggleAgentMode(bool enabled) {
+  void _toggleAgentMode(bool enabled) async {
     if (enabled) {
-      // Show agent mode activation message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('🤖 Agent Mode Activated! Browser automation and screen control enabled.'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      print('🤖 Agent Mode enabled - browser automation ready');
+      try {
+        // Initialize agent controller
+        final AgentController agentController = AgentController();
+        await agentController.initialize();
+        await agentController.activate();
+
+        // Show agent mode activation message with capabilities
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '🤖 Agent Mode Activated!',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Capabilities: ${agentController.status.capabilities.take(3).join(', ')}...',
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'View All',
+              onPressed: () => _showAgentCapabilities(agentController),
+            ),
+          ),
+        );
+        
+        print('🤖 Agent Mode enabled - ${agentController.status.capabilities.length} capabilities ready');
+      } catch (e) {
+        print('❌ Failed to activate agent mode: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Failed to activate Agent Mode: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() {
+          _isAgentModeEnabled = false;
+        });
+      }
     } else {
-      print('🤖 Agent Mode disabled');
+      try {
+        final AgentController agentController = AgentController();
+        agentController.deactivate();
+        print('🤖 Agent Mode disabled');
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('🤖 Agent Mode Deactivated'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } catch (e) {
+        print('⚠️ Error deactivating agent: $e');
+      }
     }
+  }
+
+  void _showAgentCapabilities(AgentController agentController) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.smart_toy, color: Colors.blue),
+            SizedBox(width: 8),
+            Text('Agent Capabilities'),
+          ],
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Your AI Agent can perform these automation tasks:',
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
+              ...agentController.status.capabilities.map((capability) => 
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.green, size: 16),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(capability)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  '💡 Try commands like:\n"Navigate to Google and search for Flutter"\n"Fill out this contact form"\n"Take a screenshot of this page"',
+                  style: TextStyle(fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it!'),
+          ),
+        ],
+      ),
+    );
   }
 }

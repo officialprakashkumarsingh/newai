@@ -18,8 +18,8 @@ com.tundralabs.fluttertts.flutter_tts-jetified-startup-runtime-1.1.1-16 /home/ub
 com.tundralabs.fluttertts.flutter_tts-jetified-window-java-1.2.0-17 /home/ubuntu/.gradle/caches/8.10.2/transforms/e8b6eb1dea1862c68e1bc27732ee38fc/transformed/jetified-window-java-1.2.0/res
 com.tundralabs.fluttertts.flutter_tts-jetified-core-1.0.0-18 /home/ubuntu/.gradle/caches/8.10.2/transforms/f627e37a3e6c3812660fe556738bf263/transformed/jetified-core-1.0.0/res
 com.tundralabs.fluttertts.flutter_tts-jetified-savedstate-1.2.1-19 /home/ubuntu/.gradle/caches/8.10.2/transforms/fa46c65d5d9f24120592de82e2c7e9f5/transformed/jetified-savedstate-1.2.1/res
-com.tundralabs.fluttertts.flutter_tts-main-20 /home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-3.8.5/android/src/main/res
-com.tundralabs.fluttertts.flutter_tts-release-21 /home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-3.8.5/android/src/release/res
+com.tundralabs.fluttertts.flutter_tts-main-20 /home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-4.2.3/android/src/main/res
+com.tundralabs.fluttertts.flutter_tts-release-21 /home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-4.2.3/android/src/release/res
 com.tundralabs.fluttertts.flutter_tts-pngs-22 /workspace/build/flutter_tts/generated/res/pngs/release
 com.tundralabs.fluttertts.flutter_tts-resValues-23 /workspace/build/flutter_tts/generated/res/resValues/release
 com.tundralabs.fluttertts.flutter_tts-mergeReleaseResources-24 /workspace/build/flutter_tts/intermediates/incremental/release/mergeReleaseResources/merged.dir
