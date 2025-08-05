@@ -313,7 +313,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final suggestions = ['Ask about the weather', 'Get help with coding', 'Explore fun facts', 'Plan a trip itinerary'];
+    final suggestions = [
+      {'text': 'Ask about the weather', 'icon': Icons.wb_sunny},
+      {'text': 'Get help with coding', 'icon': Icons.code},
+      {'text': 'Explore fun facts', 'icon': Icons.lightbulb_outline},
+      {'text': 'Plan a trip itinerary', 'icon': Icons.map},
+    ];
     final currentChatList = _isSearching ? _chats.where((chat) => chat.title.toLowerCase().contains(_searchController.text.toLowerCase()) || chat.messages.any((message) => message.text.toLowerCase().contains(_searchController.text.toLowerCase()))).toList() : _chats;
 
     return Scaffold(
@@ -505,9 +510,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildSuggestionCard(BuildContext context, String suggestion) {
+  Widget _buildSuggestionCard(BuildContext context, Map<String, dynamic> suggestion) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion, chatInfoStream: _chatInfoStream))),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion['text'], chatInfoStream: _chatInfoStream))),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -518,16 +523,27 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             width: 1.5,
           ),
         ),
-        child: Text(
-          suggestion,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-            color: Colors.white,
-          ),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              suggestion['icon'],
+              size: 20,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              suggestion['text'],
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );

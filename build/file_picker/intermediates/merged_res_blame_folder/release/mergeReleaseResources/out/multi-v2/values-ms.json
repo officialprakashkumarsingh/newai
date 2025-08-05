@@ -4,7 +4,7 @@
             "outputFile": "com.mr.flutter.plugin.filepicker.file_picker-release-25:/values-ms/values-ms.xml",
             "map": [
                 {
-                    "source": "/home/ubuntu/.gradle/caches/8.10.2/transforms/5fa25a051eb13a2e54c5956fbefc7817/transformed/core-1.15.0/res/values-ms/values-ms.xml",
+                    "source": "/home/ubuntu/.gradle/caches/8.10.2/transforms/b7afdc810aa3c152069d43f671a2cdfc/transformed/core-1.13.1/res/values-ms/values-ms.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -19,7 +19,7 @@
             "outputFile": "com.mr.flutter.plugin.filepicker.file_picker-mergeReleaseResources-23:/values-ms/values-ms.xml",
             "map": [
                 {
-                    "source": "/home/ubuntu/.gradle/caches/8.10.2/transforms/5fa25a051eb13a2e54c5956fbefc7817/transformed/core-1.15.0/res/values-ms/values-ms.xml",
+                    "source": "/home/ubuntu/.gradle/caches/8.10.2/transforms/b7afdc810aa3c152069d43f671a2cdfc/transformed/core-1.13.1/res/values-ms/values-ms.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",

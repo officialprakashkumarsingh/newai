@@ -52,40 +52,20 @@ class PresentationViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlutterDeckApp(
       configuration: FlutterDeckConfiguration(
-        background: FlutterDeckBackgroundConfiguration(
-          light: FlutterDeckBackground.gradient(
-            LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFFAF7F3), Color(0xFFF5F0EA)],
-            ),
-          ),
-          dark: FlutterDeckBackground.gradient(
-            LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF1A1F26), Color(0xFF222831)],
-            ),
-          ),
+        // Define a global background for the light and dark themes separately.
+        background: const FlutterDeckBackgroundConfiguration(
+          light: FlutterDeckBackground.solid(Color(0xFFF5F5DC)), // Cream color
+          dark: FlutterDeckBackground.solid(Color(0xFF000000)), // Black AMOLED
         ),
-        footer: const FlutterDeckFooterConfiguration(
-          showSlideNumbers: true,
-          showSocialHandle: true,
-        ),
-        header: const FlutterDeckHeaderConfiguration(
-          showHeader: true,
-          title: 'AhamAI Presentation',
-        ),
-        marker: const FlutterDeckMarkerConfiguration(
-          color: Color(0xFFD9A299),
-          strokeWidth: 6.0,
-        ),
-        progressIndicator: const FlutterDeckProgressIndicator.gradient(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [Color(0xFFD9A299), Color(0xFFF0E4D3)],
-          ),
+        // Set defaults for the footer.
+        footer: const FlutterDeckFooterConfiguration(showSlideNumbers: true, showSocialHandle: false),
+        // Set defaults for the header.
+        header: const FlutterDeckHeaderConfiguration(showHeader: false),
+        // Override the default marker configuration.
+        marker: const FlutterDeckMarkerConfiguration(color: Color(0xFFFF8C00), strokeWidth: 6.0), // Dim orange
+        // Show progress indicator with specifc gradient and background color.
+        progressIndicator: const FlutterDeckProgressIndicator.solid(
+          color: Color(0xFFFF8C00), // Dim orange
           backgroundColor: Color(0x88000000),
         ),
         slideSize: FlutterDeckSlideSize.fromAspectRatio(
@@ -95,76 +75,58 @@ class PresentationViewScreen extends StatelessWidget {
         transition: const FlutterDeckTransition.slide(),
       ),
       lightTheme: FlutterDeckThemeData.light().copyWith(
-        textTheme: FlutterDeckTextTheme(
-          display: const TextStyle(
-            color: Color(0xFF2C3539),
+        textTheme: const FlutterDeckTextTheme(
+          display: TextStyle(
+            color: Color(0xFF000000), // Black text on cream
             fontSize: 56,
             fontWeight: FontWeight.w900,
-            height: 1.1,
           ),
-          title: const TextStyle(
-            color: Color(0xFF2C3539),
+          title: TextStyle(
+            color: Color(0xFFFF8C00), // Dim orange for titles
             fontSize: 48,
-            fontWeight: FontWeight.w700,
-            height: 1.2,
+            fontWeight: FontWeight.bold,
           ),
-          subtitle: const TextStyle(
-            color: Color(0xFF5A6B73),
+          subtitle: TextStyle(
+            color: Color(0xFF333333), // Dark gray for subtitles
             fontSize: 24,
             fontWeight: FontWeight.w400,
-            height: 1.4,
           ),
-          header: const TextStyle(
-            color: Color(0xFFD9A299),
-            fontSize: 14,
+          header: TextStyle(
+            color: Color(0xFFFF8C00), // Dim orange for headers
+            fontSize: 32,
             fontWeight: FontWeight.w600,
           ),
-          // body: const TextStyle(
-          //   color: Color(0xFF2C3539),
-          //   fontSize: 20,
-          //   fontWeight: FontWeight.w400,
-          //   height: 1.5,
-          // ),
         ),
       ),
       darkTheme: FlutterDeckThemeData.dark().copyWith(
-        textTheme: FlutterDeckTextTheme(
-          display: const TextStyle(
-            color: Color(0xFFFAF7F3),
+        textTheme: const FlutterDeckTextTheme(
+          display: TextStyle(
+            color: Color(0xFFFFFFFF), // White text on black
             fontSize: 56,
             fontWeight: FontWeight.w900,
-            height: 1.1,
           ),
-          title: const TextStyle(
-            color: Color(0xFFFAF7F3),
+          title: TextStyle(
+            color: Color(0xFFFF8C00), // Dim orange for titles
             fontSize: 48,
-            fontWeight: FontWeight.w700,
-            height: 1.2,
+            fontWeight: FontWeight.bold,
           ),
-          subtitle: const TextStyle(
-            color: Color(0xFFB8C5CC),
+          subtitle: TextStyle(
+            color: Color(0xFFCCCCCC), // Light gray for subtitles
             fontSize: 24,
             fontWeight: FontWeight.w400,
-            height: 1.4,
           ),
-          header: const TextStyle(
-            color: Color(0xFFD9A299),
-            fontSize: 14,
+          header: TextStyle(
+            color: Color(0xFFFF8C00), // Dim orange for headers
+            fontSize: 32,
             fontWeight: FontWeight.w600,
           ),
-          // body: const TextStyle(
-          //   color: Color(0xFFFAF7F3),
-          //   fontSize: 20,
-          //   fontWeight: FontWeight.w400,
-          //   height: 1.5,
-          // ),
         ),
       ),
       slides: _generateFlutterDeckSlides(),
       speakerInfo: const FlutterDeckSpeakerInfo(
         name: 'AhamAI',
         description: 'AI-Generated Presentation',
-        socialHandle: '@ahamai',
+        socialHandle: '',
         imagePath: 'assets/images/avatar.png',
       ),
     );

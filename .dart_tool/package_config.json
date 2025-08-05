@@ -3,7 +3,7 @@
   "packages": [
     {
       "name": "archive",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/archive-4.0.7",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/archive-3.6.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -87,9 +87,9 @@
     },
     {
       "name": "file_picker",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/file_picker-10.2.1",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/file_picker-6.2.1",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.19"
     },
     {
       "name": "file_selector_linux",
@@ -165,9 +165,9 @@
     },
     {
       "name": "flutter_tts",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-4.2.3",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-3.8.5",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.12"
     },
     {
       "name": "flutter_web_plugins",
@@ -183,15 +183,15 @@
     },
     {
       "name": "google_fonts",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/google_fonts-4.0.5",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/google_fonts-6.3.0",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "google_generative_ai",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/google_generative_ai-0.4.7",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/google_generative_ai-0.2.3",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "3.0"
     },
     {
       "name": "highlight",
@@ -261,9 +261,9 @@
     },
     {
       "name": "intl",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/intl-0.20.2",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/intl-0.18.1",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "2.12"
     },
     {
       "name": "json_annotation",
@@ -398,12 +398,6 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "posix",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/posix-6.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
       "name": "provider",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/provider-6.1.5",
       "packageUri": "lib/",
@@ -513,15 +507,15 @@
     },
     {
       "name": "syncfusion_flutter_core",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/syncfusion_flutter_core-29.1.38",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/syncfusion_flutter_core-23.2.7",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.17"
     },
     {
       "name": "syncfusion_flutter_pdf",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/syncfusion_flutter_pdf-29.1.38",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/syncfusion_flutter_pdf-23.2.7",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.17"
     },
     {
       "name": "term_glyph",
@@ -638,7 +632,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-05T06:57:20.335262Z",
+  "generated": "2025-08-05T11:44:30.348164Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///opt/flutter",

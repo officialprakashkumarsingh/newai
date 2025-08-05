@@ -1567,7 +1567,6 @@ androidx.appcompat.R$styleable:
     public static int FontFamilyFont_ttcIndex
     public static int FontFamily_fontProviderAuthority
     public static int FontFamily_fontProviderCerts
-    public static int FontFamily_fontProviderFallbackQuery
     public static int FontFamily_fontProviderFetchStrategy
     public static int FontFamily_fontProviderFetchTimeout
     public static int FontFamily_fontProviderPackage
@@ -1804,7 +1803,6 @@ androidx.appcompat.resources.R$styleable:
     public static int FontFamilyFont_ttcIndex
     public static int FontFamily_fontProviderAuthority
     public static int FontFamily_fontProviderCerts
-    public static int FontFamily_fontProviderFallbackQuery
     public static int FontFamily_fontProviderFetchStrategy
     public static int FontFamily_fontProviderFetchTimeout
     public static int FontFamily_fontProviderPackage
@@ -2910,53 +2908,17 @@ androidx.browser.trusted.splashscreens.SplashScreenParamKey
 androidx.browser.trusted.splashscreens.SplashScreenVersion
 androidx.collection.ArrayMap:
     public void <init>(androidx.collection.SimpleArrayMap)
+    public boolean containsAll(java.util.Collection)
+    public boolean removeAll(java.util.Collection)
+    public boolean retainAll(java.util.Collection)
 androidx.collection.ArrayMapKt
-androidx.collection.ArraySet$ElementIterator
+androidx.collection.ArraySet$1
 androidx.collection.ArraySet
-androidx.collection.ArraySetJvmUtil
 androidx.collection.ArraySetKt
 androidx.collection.CircularArray
 androidx.collection.CircularIntArray
-androidx.collection.CollectionPlatformUtils
-androidx.collection.FloatFloatMap
-androidx.collection.FloatFloatMapKt
-androidx.collection.FloatFloatPair
-androidx.collection.FloatIntMap
-androidx.collection.FloatIntMapKt
-androidx.collection.FloatList
-androidx.collection.FloatListKt
-androidx.collection.FloatLongMap
-androidx.collection.FloatLongMapKt
-androidx.collection.FloatObjectMap
-androidx.collection.FloatObjectMapKt
-androidx.collection.FloatSet
-androidx.collection.FloatSetKt
-androidx.collection.IntFloatMap
-androidx.collection.IntFloatMapKt
-androidx.collection.IntIntMap
-androidx.collection.IntIntMapKt
-androidx.collection.IntIntPair
-androidx.collection.IntList
-androidx.collection.IntListKt
-androidx.collection.IntLongMap
-androidx.collection.IntLongMapKt
-androidx.collection.IntObjectMap
-androidx.collection.IntObjectMapKt
-androidx.collection.IntSet
-androidx.collection.IntSetKt
-androidx.collection.LongFloatMap
-androidx.collection.LongFloatMapKt
-androidx.collection.LongIntMap
-androidx.collection.LongIntMapKt
-androidx.collection.LongList
-androidx.collection.LongListKt
-androidx.collection.LongLongMap
-androidx.collection.LongLongMapKt
-androidx.collection.LongLongPair
-androidx.collection.LongObjectMap
-androidx.collection.LongObjectMapKt
-androidx.collection.LongSet
-androidx.collection.LongSetKt
+androidx.collection.ContainerHelpers:
+    private void <init>()
 androidx.collection.LongSparseArray:
     public boolean containsKey(long)
     public boolean containsValue(java.lang.Object)
@@ -2965,144 +2927,43 @@ androidx.collection.LongSparseArray:
     public boolean isEmpty()
     public void putAll(androidx.collection.LongSparseArray)
     public java.lang.Object putIfAbsent(long,java.lang.Object)
-    public void remove(long)
     public boolean remove(long,java.lang.Object)
     public java.lang.Object replace(long,java.lang.Object)
     public boolean replace(long,java.lang.Object,java.lang.Object)
     public void setValueAt(int,java.lang.Object)
 androidx.collection.LongSparseArrayKt$keyIterator$1
 androidx.collection.LongSparseArrayKt$valueIterator$1
-androidx.collection.LongSparseArrayKt:
-    public static final void commonAppend(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final void commonClear(androidx.collection.LongSparseArray)
-    public static final boolean commonContainsKey(androidx.collection.LongSparseArray,long)
-    public static final boolean commonContainsValue(androidx.collection.LongSparseArray,java.lang.Object)
-    public static final void commonGc(androidx.collection.LongSparseArray)
-    public static final java.lang.Object commonGet(androidx.collection.LongSparseArray,long)
-    public static final java.lang.Object commonGet(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final java.lang.Object commonGetInternal(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final int commonIndexOfKey(androidx.collection.LongSparseArray,long)
-    public static final int commonIndexOfValue(androidx.collection.LongSparseArray,java.lang.Object)
-    public static final boolean commonIsEmpty(androidx.collection.LongSparseArray)
-    public static final long commonKeyAt(androidx.collection.LongSparseArray,int)
-    public static final void commonPut(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final void commonPutAll(androidx.collection.LongSparseArray,androidx.collection.LongSparseArray)
-    public static final java.lang.Object commonPutIfAbsent(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final void commonRemove(androidx.collection.LongSparseArray,long)
-    public static final boolean commonRemove(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final void commonRemoveAt(androidx.collection.LongSparseArray,int)
-    public static final java.lang.Object commonReplace(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final boolean commonReplace(androidx.collection.LongSparseArray,long,java.lang.Object,java.lang.Object)
-    public static final void commonSetValueAt(androidx.collection.LongSparseArray,int,java.lang.Object)
-    public static final int commonSize(androidx.collection.LongSparseArray)
-    public static final java.lang.String commonToString(androidx.collection.LongSparseArray)
-    public static final java.lang.Object commonValueAt(androidx.collection.LongSparseArray,int)
-    public static final boolean contains(androidx.collection.LongSparseArray,long)
-    public static final void forEach(androidx.collection.LongSparseArray,kotlin.jvm.functions.Function2)
-    public static final java.lang.Object getOrDefault(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final java.lang.Object getOrElse(androidx.collection.LongSparseArray,long,kotlin.jvm.functions.Function0)
-    public static final int getSize(androidx.collection.LongSparseArray)
-    public static synthetic void getSize$annotations(androidx.collection.LongSparseArray)
-    public static final boolean isNotEmpty(androidx.collection.LongSparseArray)
-    public static final kotlin.collections.LongIterator keyIterator(androidx.collection.LongSparseArray)
-    public static final androidx.collection.LongSparseArray plus(androidx.collection.LongSparseArray,androidx.collection.LongSparseArray)
-    public static final synthetic boolean remove(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final void set(androidx.collection.LongSparseArray,long,java.lang.Object)
-    public static final java.util.Iterator valueIterator(androidx.collection.LongSparseArray)
+androidx.collection.LongSparseArrayKt
 androidx.collection.LruCache:
-    public final int createCount()
+    public final synchronized int createCount()
     public final void evictAll()
-    public final int evictionCount()
-    public final int hitCount()
-    public final int maxSize()
-    public final int missCount()
-    public final int putCount()
+    public final synchronized int evictionCount()
+    public final synchronized int hitCount()
+    public final synchronized int maxSize()
+    public final synchronized int missCount()
+    public final synchronized int putCount()
     public final java.lang.Object remove(java.lang.Object)
     public void resize(int)
-    public final int size()
-    public final java.util.Map snapshot()
+    public final synchronized int size()
+    public final synchronized java.util.Map snapshot()
 androidx.collection.LruCacheKt$lruCache$1
 androidx.collection.LruCacheKt$lruCache$2
 androidx.collection.LruCacheKt$lruCache$3
 androidx.collection.LruCacheKt$lruCache$4
 androidx.collection.LruCacheKt
-androidx.collection.MapEntry
-androidx.collection.MutableFloatFloatMap
-androidx.collection.MutableFloatIntMap
-androidx.collection.MutableFloatList
-androidx.collection.MutableFloatLongMap
-androidx.collection.MutableFloatObjectMap
-androidx.collection.MutableFloatSet
-androidx.collection.MutableIntFloatMap
-androidx.collection.MutableIntIntMap
-androidx.collection.MutableIntList
-androidx.collection.MutableIntLongMap
-androidx.collection.MutableIntObjectMap
-androidx.collection.MutableIntSet
-androidx.collection.MutableLongFloatMap
-androidx.collection.MutableLongIntMap
-androidx.collection.MutableLongList
-androidx.collection.MutableLongLongMap
-androidx.collection.MutableLongObjectMap
-androidx.collection.MutableLongSet
-androidx.collection.MutableMapEntry
-androidx.collection.MutableObjectFloatMap
-androidx.collection.MutableObjectIntMap
-androidx.collection.MutableObjectList$MutableObjectListIterator
-androidx.collection.MutableObjectList$ObjectListMutableList
-androidx.collection.MutableObjectList$SubList
-androidx.collection.MutableObjectList
-androidx.collection.MutableObjectLongMap
-androidx.collection.MutableScatterMap$MutableMapWrapper$entries$1$iterator$1$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$entries$1$iterator$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$entries$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$keys$1$iterator$1$iterator$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$keys$1$iterator$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$keys$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$values$1$iterator$1$iterator$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$values$1$iterator$1
-androidx.collection.MutableScatterMap$MutableMapWrapper$values$1
-androidx.collection.MutableScatterMap$MutableMapWrapper
-androidx.collection.MutableScatterMap
-androidx.collection.MutableScatterSet$MutableSetWrapper$iterator$1$iterator$1
-androidx.collection.MutableScatterSet$MutableSetWrapper$iterator$1
-androidx.collection.MutableScatterSet$MutableSetWrapper
-androidx.collection.MutableScatterSet
-androidx.collection.ObjectFloatMap
-androidx.collection.ObjectFloatMapKt
-androidx.collection.ObjectIntMap
-androidx.collection.ObjectIntMapKt
-androidx.collection.ObjectList$toString$1
-androidx.collection.ObjectList
-androidx.collection.ObjectListKt
-androidx.collection.ObjectLongMap
-androidx.collection.ObjectLongMapKt
-androidx.collection.PackingUtilsKt
-androidx.collection.ScatterMap$MapWrapper$entries$1$iterator$1
-androidx.collection.ScatterMap$MapWrapper$entries$1
-androidx.collection.ScatterMap$MapWrapper$keys$1$iterator$1
-androidx.collection.ScatterMap$MapWrapper$keys$1
-androidx.collection.ScatterMap$MapWrapper$values$1$iterator$1
-androidx.collection.ScatterMap$MapWrapper$values$1
-androidx.collection.ScatterMap$MapWrapper
-androidx.collection.ScatterMap
-androidx.collection.ScatterMapKt
-androidx.collection.ScatterSet$SetWrapper$iterator$1
-androidx.collection.ScatterSet$SetWrapper
-androidx.collection.ScatterSet$toString$1
-androidx.collection.ScatterSet
-androidx.collection.ScatterSetKt
 androidx.collection.SimpleArrayMap:
+    private static final int BASE_SIZE
+    private static final int CACHE_SIZE
+    private static final boolean CONCURRENT_MODIFICATION_EXCEPTIONS
+    private static final boolean DEBUG
+    private static final java.lang.String TAG
     public void <init>(androidx.collection.SimpleArrayMap)
-    private final java.lang.Object getOrDefaultInternal(java.lang.Object,java.lang.Object)
     public void putAll(androidx.collection.SimpleArrayMap)
-androidx.collection.SimpleArrayMapKt
 androidx.collection.SparseArrayCompat:
     public void clear()
     public boolean containsKey(int)
     public boolean containsValue(java.lang.Object)
     public void delete(int)
-    public final boolean getIsEmpty()
     public int indexOfKey(int)
     public int indexOfValue(java.lang.Object)
     public boolean isEmpty()
@@ -3115,40 +2976,9 @@ androidx.collection.SparseArrayCompat:
     public java.lang.Object replace(int,java.lang.Object)
     public boolean replace(int,java.lang.Object,java.lang.Object)
     public void setValueAt(int,java.lang.Object)
-androidx.collection.SparseArrayCompatKt:
-    public static final void commonAppend(androidx.collection.SparseArrayCompat,int,java.lang.Object)
-    public static final void commonClear(androidx.collection.SparseArrayCompat)
-    public static final boolean commonContainsKey(androidx.collection.SparseArrayCompat,int)
-    public static final boolean commonContainsValue(androidx.collection.SparseArrayCompat,java.lang.Object)
-    public static final int commonIndexOfKey(androidx.collection.SparseArrayCompat,int)
-    public static final int commonIndexOfValue(androidx.collection.SparseArrayCompat,java.lang.Object)
-    public static final boolean commonIsEmpty(androidx.collection.SparseArrayCompat)
-    public static final int commonKeyAt(androidx.collection.SparseArrayCompat,int)
-    public static final void commonPut(androidx.collection.SparseArrayCompat,int,java.lang.Object)
-    public static final void commonPutAll(androidx.collection.SparseArrayCompat,androidx.collection.SparseArrayCompat)
-    public static final java.lang.Object commonPutIfAbsent(androidx.collection.SparseArrayCompat,int,java.lang.Object)
-    public static final void commonRemove(androidx.collection.SparseArrayCompat,int)
-    public static final boolean commonRemove(androidx.collection.SparseArrayCompat,int,java.lang.Object)
-    public static final void commonRemoveAt(androidx.collection.SparseArrayCompat,int)
-    public static final void commonRemoveAtRange(androidx.collection.SparseArrayCompat,int,int)
-    public static final java.lang.Object commonReplace(androidx.collection.SparseArrayCompat,int,java.lang.Object)
-    public static final boolean commonReplace(androidx.collection.SparseArrayCompat,int,java.lang.Object,java.lang.Object)
-    public static final void commonSetValueAt(androidx.collection.SparseArrayCompat,int,java.lang.Object)
-    public static final int commonSize(androidx.collection.SparseArrayCompat)
-    public static final java.lang.String commonToString(androidx.collection.SparseArrayCompat)
-    public static final java.lang.Object commonValueAt(androidx.collection.SparseArrayCompat,int)
-    private static final java.lang.Object internalGet(androidx.collection.SparseArrayCompat,int,java.lang.Object)
 androidx.collection.SparseArrayKt$keyIterator$1
 androidx.collection.SparseArrayKt$valueIterator$1
 androidx.collection.SparseArrayKt
-androidx.collection.internal.Lock:
-    public final java.lang.Object synchronizedImpl(kotlin.jvm.functions.Function0)
-androidx.collection.internal.LockExtKt
-androidx.collection.internal.LruHashMap:
-    public void <init>()
-    public synthetic void <init>(int,float,int,kotlin.jvm.internal.DefaultConstructorMarker)
-    public void <init>(androidx.collection.internal.LruHashMap)
-androidx.collection.internal.PackingHelpers_jvmKt
 androidx.concurrent.futures.AbstractResolvableFuture$SetFuture:
     void <init>(androidx.concurrent.futures.AbstractResolvableFuture,com.google.common.util.concurrent.ListenableFuture)
     public void run()
@@ -3198,7 +3028,6 @@ androidx.core.R$attr:
     public static int font
     public static int fontProviderAuthority
     public static int fontProviderCerts
-    public static int fontProviderFallbackQuery
     public static int fontProviderFetchStrategy
     public static int fontProviderFetchTimeout
     public static int fontProviderPackage
@@ -3239,13 +3068,10 @@ androidx.core.R$id:
     public static int notification_main_column_container
     public static int right_icon
     public static int right_side
-    public static int tag_on_apply_window_listener
     public static int tag_on_receive_content_listener
     public static int tag_on_receive_content_mime_types
     public static int tag_transition_group
     public static int tag_unhandled_key_event_manager
-    public static int tag_unhandled_key_listeners
-    public static int tag_window_insets_animation_callback
     public static int text
     public static int text2
     public static int time
@@ -3278,8 +3104,6 @@ androidx.core.app.ActivityCompat$Api21Impl
 androidx.core.app.ActivityCompat$Api22Impl
 androidx.core.app.ActivityCompat$Api23Impl:
     private void <init>()
-    static void onSharedElementsReady(java.lang.Object)
-    static boolean shouldShowRequestPermissionRationale(android.app.Activity,java.lang.String)
 androidx.core.app.ActivityCompat$Api28Impl
 androidx.core.app.ActivityCompat$Api30Impl
 androidx.core.app.ActivityCompat$Api31Impl
@@ -3313,9 +3137,7 @@ androidx.core.app.ActivityOptionsCompat$ActivityOptionsCompatImpl
 androidx.core.app.ActivityOptionsCompat$Api21Impl
 androidx.core.app.ActivityOptionsCompat$Api23Impl
 androidx.core.app.ActivityOptionsCompat$Api24Impl
-androidx.core.app.ActivityOptionsCompat$Api33Impl
 androidx.core.app.ActivityOptionsCompat$Api34Impl
-androidx.core.app.ActivityOptionsCompat$BackgroundActivityStartMode
 androidx.core.app.ActivityOptionsCompat
 androidx.core.app.ActivityRecreator$1
 androidx.core.app.ActivityRecreator$2
@@ -3331,7 +3153,6 @@ androidx.core.app.AppLaunchChecker
 androidx.core.app.AppLocalesStorageHelper
 androidx.core.app.AppOpsManagerCompat$Api23Impl:
     private void <init>()
-    static int noteProxyOp(android.app.AppOpsManager,java.lang.String,java.lang.String)
 androidx.core.app.AppOpsManagerCompat$Api29Impl:
     private void <init>()
 androidx.core.app.AppOpsManagerCompat:
@@ -3467,7 +3288,6 @@ androidx.core.app.NotificationCompatSideChannelService
 androidx.core.app.NotificationManagerCompat$Api23Impl
 androidx.core.app.NotificationManagerCompat$Api24Impl:
     private void <init>()
-    static int getImportance(android.app.NotificationManager)
 androidx.core.app.NotificationManagerCompat$Api26Impl
 androidx.core.app.NotificationManagerCompat$Api28Impl
 androidx.core.app.NotificationManagerCompat$Api30Impl
@@ -3601,13 +3421,10 @@ androidx.core.content.ContentResolverCompat
 androidx.core.content.ContentValuesKt
 androidx.core.content.ContextCompat$Api21Impl:
     private void <init>()
-    static java.io.File getCodeCacheDir(android.content.Context)
-    static java.io.File getNoBackupFilesDir(android.content.Context)
 androidx.core.content.ContextCompat$Api23Impl
 androidx.core.content.ContextCompat$Api24Impl
 androidx.core.content.ContextCompat$Api26Impl:
     private void <init>()
-    static android.content.ComponentName startForegroundService(android.content.Context,android.content.Intent)
 androidx.core.content.ContextCompat$Api28Impl:
     private void <init>()
 androidx.core.content.ContextCompat$Api30Impl
@@ -3753,10 +3570,8 @@ androidx.core.content.res.GrowingArrayUtils:
     public static boolean[] insert(boolean[],int,int,boolean)
 androidx.core.content.res.ResourcesCompat$Api21Impl:
     private void <init>()
-    static android.graphics.drawable.Drawable getDrawableForDensity(android.content.res.Resources,int,int,android.content.res.Resources$Theme)
 androidx.core.content.res.ResourcesCompat$Api23Impl:
     private void <init>()
-    static int getColor(android.content.res.Resources,int,android.content.res.Resources$Theme)
 androidx.core.content.res.ResourcesCompat$Api29Impl
 androidx.core.content.res.ResourcesCompat$ThemeCompat$Api23Impl
 androidx.core.content.res.ResourcesCompat$ThemeCompat$Api29Impl
@@ -3866,8 +3681,6 @@ androidx.core.graphics.RegionKt$iterator$1
 androidx.core.graphics.RegionKt
 androidx.core.graphics.ShaderKt
 androidx.core.graphics.TypefaceCompat:
-    public static final boolean DOWNLOADABLE_FALLBACK_DEBUG
-    public static final boolean DOWNLOADABLE_FONT_TRACING
     private void <init>()
     public static void clearCache()
     public static android.graphics.Typeface create(android.content.Context,android.graphics.Typeface,int,boolean)
@@ -3902,7 +3715,6 @@ androidx.core.graphics.TypefaceCompatApi28Impl:
     private static final int RESOLVE_BY_FONT_TABLE
     android.graphics.Typeface createWeightStyle(android.content.Context,android.graphics.Typeface,int,boolean)
 androidx.core.graphics.TypefaceCompatApi29Impl:
-    private static final java.lang.String TAG
     android.graphics.Typeface createWeightStyle(android.content.Context,android.graphics.Typeface,int,boolean)
 androidx.core.graphics.TypefaceCompatBaseImpl$3
 androidx.core.graphics.TypefaceCompatBaseImpl:
@@ -3933,18 +3745,13 @@ androidx.core.graphics.drawable.IconCompat$Api23Impl:
     private void <init>()
     static androidx.core.graphics.drawable.IconCompat createFromIcon(android.content.Context,android.graphics.drawable.Icon)
     static androidx.core.graphics.drawable.IconCompat createFromIconInner(java.lang.Object)
-    static java.lang.String getResPackage(java.lang.Object)
     static int getType(java.lang.Object)
-    static android.net.Uri getUri(java.lang.Object)
-    static android.graphics.drawable.Drawable loadDrawable(android.graphics.drawable.Icon,android.content.Context)
-    static android.graphics.drawable.Icon toIcon(androidx.core.graphics.drawable.IconCompat,android.content.Context)
-androidx.core.graphics.drawable.IconCompat$Api26Impl
+androidx.core.graphics.drawable.IconCompat$Api26Impl:
+    private void <init>()
 androidx.core.graphics.drawable.IconCompat$Api28Impl:
     private void <init>()
-    static java.lang.String getResPackage(java.lang.Object)
-    static int getType(java.lang.Object)
-    static android.net.Uri getUri(java.lang.Object)
-androidx.core.graphics.drawable.IconCompat$Api30Impl
+androidx.core.graphics.drawable.IconCompat$Api30Impl:
+    private void <init>()
 androidx.core.graphics.drawable.IconCompat$IconType
 androidx.core.graphics.drawable.IconCompat:
     private static final float ADAPTIVE_ICON_INSET_FACTOR
@@ -3976,7 +3783,6 @@ androidx.core.graphics.drawable.IconCompat:
     public static androidx.core.graphics.drawable.IconCompat createFromIcon(android.content.Context,android.graphics.drawable.Icon)
     public static androidx.core.graphics.drawable.IconCompat createFromIcon(android.graphics.drawable.Icon)
     public static androidx.core.graphics.drawable.IconCompat createFromIconOrNullIfZeroResId(android.graphics.drawable.Icon)
-    static android.graphics.Bitmap createLegacyIconFromAdaptiveIcon(android.graphics.Bitmap,boolean)
     public static androidx.core.graphics.drawable.IconCompat createWithAdaptiveBitmap(android.graphics.Bitmap)
     public static androidx.core.graphics.drawable.IconCompat createWithAdaptiveBitmapContentUri(android.net.Uri)
     public static androidx.core.graphics.drawable.IconCompat createWithAdaptiveBitmapContentUri(java.lang.String)
@@ -3987,11 +3793,8 @@ androidx.core.graphics.drawable.IconCompat:
     public static androidx.core.graphics.drawable.IconCompat createWithResource(android.content.Context,int)
     public static androidx.core.graphics.drawable.IconCompat createWithResource(android.content.res.Resources,java.lang.String,int)
     public android.graphics.Bitmap getBitmap()
-    public java.lang.String getResPackage()
     static android.content.res.Resources getResources(android.content.Context,java.lang.String)
     public int getType()
-    public android.net.Uri getUri()
-    public java.io.InputStream getUriInputStream(android.content.Context)
     public android.graphics.drawable.Drawable loadDrawable(android.content.Context)
     private android.graphics.drawable.Drawable loadDrawableInner(android.content.Context)
     public androidx.core.graphics.drawable.IconCompat setTint(int)
@@ -4063,7 +3866,6 @@ androidx.core.location.GpsStatusWrapper
 androidx.core.location.LocationCompat$Api26Impl
 androidx.core.location.LocationCompat$Api28Impl
 androidx.core.location.LocationCompat$Api29Impl
-androidx.core.location.LocationCompat$Api31Impl
 androidx.core.location.LocationCompat$Api33Impl
 androidx.core.location.LocationCompat$Api34Impl
 androidx.core.location.LocationCompat
@@ -4118,23 +3920,9 @@ androidx.core.net.TrafficStatsCompat$Api24Impl
 androidx.core.net.TrafficStatsCompat
 androidx.core.net.UriCompat
 androidx.core.net.UriKt
-androidx.core.os.BufferFillPolicy$Companion
-androidx.core.os.BufferFillPolicy$Discard
-androidx.core.os.BufferFillPolicy$RingBuffer
-androidx.core.os.BufferFillPolicy
+androidx.core.os.BuildCompat$Api30Impl
 androidx.core.os.BuildCompat$PrereleaseSdkCheck
-androidx.core.os.BuildCompat:
-    public static final boolean isAtLeastN()
-    public static final boolean isAtLeastNMR1()
-    public static final boolean isAtLeastO()
-    public static final boolean isAtLeastOMR1()
-    public static final boolean isAtLeastP()
-    public static final boolean isAtLeastQ()
-    public static final boolean isAtLeastR()
-    public static final boolean isAtLeastS()
-    public static final boolean isAtLeastSv2()
-    public static final boolean isAtLeastT()
-    public static final boolean isAtLeastU()
+androidx.core.os.BuildCompat
 androidx.core.os.BundleApi21ImplKt
 androidx.core.os.BundleCompat$Api33Impl
 androidx.core.os.BundleCompat
@@ -4154,8 +3942,6 @@ androidx.core.os.HandlerCompat
 androidx.core.os.HandlerKt$postAtTime$runnable$1
 androidx.core.os.HandlerKt$postDelayed$runnable$1
 androidx.core.os.HandlerKt
-androidx.core.os.HeapProfileRequestBuilder
-androidx.core.os.JavaHeapDumpRequestBuilder
 androidx.core.os.LocaleListCompat$Api21Impl
 androidx.core.os.LocaleListCompat$Api24Impl
 androidx.core.os.LocaleListCompat
@@ -4180,13 +3966,6 @@ androidx.core.os.PersistableBundleKt
 androidx.core.os.ProcessCompat$Api19Impl
 androidx.core.os.ProcessCompat$Api24Impl
 androidx.core.os.ProcessCompat
-androidx.core.os.Profiling$registerForAllProfilingResults$1$2
-androidx.core.os.Profiling$registerForAllProfilingResults$1
-androidx.core.os.Profiling
-androidx.core.os.ProfilingRequest
-androidx.core.os.ProfilingRequestBuilder
-androidx.core.os.StackSamplingRequestBuilder
-androidx.core.os.SystemTraceRequestBuilder
 androidx.core.os.TraceCompat$Api29Impl
 androidx.core.os.TraceCompat:
     private static final java.lang.String TAG
@@ -4200,7 +3979,7 @@ androidx.core.os.UserHandleCompat$Api24Impl
 androidx.core.os.UserHandleCompat
 androidx.core.os.UserManagerCompat$Api24Impl
 androidx.core.os.UserManagerCompat
-androidx.core.provider.CallbackWrapper:
+androidx.core.provider.CallbackWithHandler:
     void <init>(androidx.core.provider.FontsContractCompat$FontRequestCallback)
 androidx.core.provider.CalleeHandler:
     private void <init>()
@@ -4210,7 +3989,6 @@ androidx.core.provider.DocumentsContractCompat$DocumentsContractApi24Impl
 androidx.core.provider.DocumentsContractCompat
 androidx.core.provider.FontProvider:
     private void <init>()
-    static void clearProviderCache()
 androidx.core.provider.FontRequest:
     public void <init>(java.lang.String,java.lang.String,java.lang.String,int)
     public java.lang.String getIdentifier()
@@ -4243,14 +4021,13 @@ androidx.core.provider.FontsContractCompat:
     public static android.graphics.Typeface getFontSync(android.content.Context,androidx.core.provider.FontRequest,androidx.core.content.res.ResourcesCompat$FontCallback,android.os.Handler,boolean,int,int)
     public static android.content.pm.ProviderInfo getProvider(android.content.pm.PackageManager,androidx.core.provider.FontRequest,android.content.res.Resources)
     public static java.util.Map prepareFontData(android.content.Context,androidx.core.provider.FontsContractCompat$FontInfo[],android.os.CancellationSignal)
-    public static android.graphics.Typeface requestFont(android.content.Context,androidx.core.provider.FontRequest,int,boolean,int,android.os.Handler,androidx.core.provider.FontsContractCompat$FontRequestCallback)
-    public static void requestFont(android.content.Context,androidx.core.provider.FontRequest,int,java.util.concurrent.Executor,java.util.concurrent.Executor,androidx.core.provider.FontsContractCompat$FontRequestCallback)
     public static void requestFont(android.content.Context,androidx.core.provider.FontRequest,androidx.core.provider.FontsContractCompat$FontRequestCallback,android.os.Handler)
-    public static void requestFontWithFallbackChain(android.content.Context,java.util.List,int,java.util.concurrent.Executor,java.util.concurrent.Executor,androidx.core.provider.FontsContractCompat$FontRequestCallback)
     public static void resetCache()
     public static void resetTypefaceCache()
+androidx.core.provider.RequestExecutor$HandlerExecutor
 androidx.core.provider.RequestExecutor:
     private void <init>()
+    static java.util.concurrent.Executor createHandlerExecutor(android.os.Handler)
 androidx.core.provider.SelfDestructiveThread$1
 androidx.core.provider.SelfDestructiveThread$2$1
 androidx.core.provider.SelfDestructiveThread$2
@@ -4457,19 +4234,13 @@ androidx.core.view.DisplayCompat$ModeCompat
 androidx.core.view.DisplayCompat
 androidx.core.view.DisplayCutoutCompat$Api28Impl:
     private void <init>()
-    static android.view.DisplayCutout createDisplayCutout(android.graphics.Rect,java.util.List)
-    static java.util.List getBoundingRects(android.view.DisplayCutout)
 androidx.core.view.DisplayCutoutCompat$Api29Impl
 androidx.core.view.DisplayCutoutCompat$Api30Impl
-androidx.core.view.DisplayCutoutCompat$Api31Impl
-androidx.core.view.DisplayCutoutCompat$Api33Impl
 androidx.core.view.DisplayCutoutCompat:
     public void <init>(android.graphics.Rect,java.util.List)
     public void <init>(androidx.core.graphics.Insets,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,androidx.core.graphics.Insets)
-    public void <init>(androidx.core.graphics.Insets,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,androidx.core.graphics.Insets,android.graphics.Path)
-    private static android.view.DisplayCutout constructDisplayCutout(androidx.core.graphics.Insets,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,androidx.core.graphics.Insets,android.graphics.Path)
+    private static android.view.DisplayCutout constructDisplayCutout(androidx.core.graphics.Insets,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,android.graphics.Rect,androidx.core.graphics.Insets)
     public java.util.List getBoundingRects()
-    public android.graphics.Path getCutoutPath()
     public androidx.core.graphics.Insets getWaterfallInsets()
     android.view.DisplayCutout unwrap()
 androidx.core.view.DragAndDropPermissionsCompat$Api24Impl
@@ -4511,13 +4282,6 @@ androidx.core.view.MenuHostHelper
 androidx.core.view.MenuItemCompat$1
 androidx.core.view.MenuItemCompat$Api26Impl:
     private void <init>()
-    static int getAlphabeticModifiers(android.view.MenuItem)
-    static java.lang.CharSequence getContentDescription(android.view.MenuItem)
-    static android.content.res.ColorStateList getIconTintList(android.view.MenuItem)
-    static android.graphics.PorterDuff$Mode getIconTintMode(android.view.MenuItem)
-    static int getNumericModifiers(android.view.MenuItem)
-    static java.lang.CharSequence getTooltipText(android.view.MenuItem)
-    static android.view.MenuItem setShortcut(android.view.MenuItem,char,char,int,int)
 androidx.core.view.MenuItemCompat$OnActionExpandListener
 androidx.core.view.MenuItemCompat:
     public static final int SHOW_AS_ACTION_ALWAYS
@@ -4633,7 +4397,6 @@ androidx.core.view.NestedScrollingParent:
     public abstract int getNestedScrollAxes()
 androidx.core.view.NestedScrollingParentHelper:
     public void onStopNestedScroll(android.view.View)
-androidx.core.view.OnApplyWindowInsetsListener
 androidx.core.view.OnReceiveContentListener
 androidx.core.view.OnReceiveContentViewBehavior:
     public abstract androidx.core.view.ContentInfoCompat onReceiveContent(androidx.core.view.ContentInfoCompat)
@@ -4662,8 +4425,6 @@ androidx.core.view.SoftwareKeyboardControllerCompat:
 androidx.core.view.TreeIterator
 androidx.core.view.VelocityTrackerCompat$Api34Impl:
     private void <init>()
-    static float getAxisVelocity(android.view.VelocityTracker,int,int)
-    static boolean isAxisSupported(android.view.VelocityTracker,int)
 androidx.core.view.VelocityTrackerCompat$VelocityTrackableMotionEventAxis
 androidx.core.view.VelocityTrackerCompat:
     private void <init>()
@@ -4712,83 +4473,26 @@ androidx.core.view.ViewCompat$AccessibilityViewProperty:
     boolean shouldUpdate(java.lang.Object,java.lang.Object)
 androidx.core.view.ViewCompat$Api20Impl:
     private void <init>()
-    static android.view.WindowInsets dispatchApplyWindowInsets(android.view.View,android.view.WindowInsets)
-    static android.view.WindowInsets onApplyWindowInsets(android.view.View,android.view.WindowInsets)
-androidx.core.view.ViewCompat$Api21Impl$1
 androidx.core.view.ViewCompat$Api21Impl:
     private void <init>()
-    static void callCompatInsetAnimationCallback(android.view.WindowInsets,android.view.View)
-    static androidx.core.view.WindowInsetsCompat computeSystemWindowInsets(android.view.View,androidx.core.view.WindowInsetsCompat,android.graphics.Rect)
-    static boolean dispatchNestedFling(android.view.View,float,float,boolean)
-    static boolean dispatchNestedPreFling(android.view.View,float,float)
-    static boolean dispatchNestedPreScroll(android.view.View,int,int,int[],int[])
-    static boolean dispatchNestedScroll(android.view.View,int,int,int,int,int[])
-    static float getElevation(android.view.View)
-    static java.lang.String getTransitionName(android.view.View)
-    static float getTranslationZ(android.view.View)
-    static float getZ(android.view.View)
-    static boolean hasNestedScrollingParent(android.view.View)
-    static boolean isImportantForAccessibility(android.view.View)
-    static boolean isNestedScrollingEnabled(android.view.View)
-    static void setElevation(android.view.View,float)
-    static void setNestedScrollingEnabled(android.view.View,boolean)
-    static void setOnApplyWindowInsetsListener(android.view.View,androidx.core.view.OnApplyWindowInsetsListener)
-    static void setTransitionName(android.view.View,java.lang.String)
-    static void setTranslationZ(android.view.View,float)
-    static void setZ(android.view.View,float)
-    static boolean startNestedScroll(android.view.View,int)
 androidx.core.view.ViewCompat$Api23Impl:
     private void <init>()
-    static int getScrollIndicators(android.view.View)
-    static void setScrollIndicators(android.view.View,int)
-    static void setScrollIndicators(android.view.View,int,int)
 androidx.core.view.ViewCompat$Api24Impl
 androidx.core.view.ViewCompat$Api26Impl:
     private void <init>()
-    static void addKeyboardNavigationClusters(android.view.View,java.util.Collection,int)
-    public static android.view.autofill.AutofillId getAutofillId(android.view.View)
-    static int getNextClusterForwardId(android.view.View)
-    static boolean hasExplicitFocusable(android.view.View)
-    static boolean isFocusedByDefault(android.view.View)
-    static boolean isImportantForAutofill(android.view.View)
-    static boolean isKeyboardNavigationCluster(android.view.View)
-    static android.view.View keyboardNavigationClusterSearch(android.view.View,android.view.View,int)
-    static boolean restoreDefaultFocus(android.view.View)
-    static varargs void setAutofillHints(android.view.View,java.lang.String[])
-    static void setFocusedByDefault(android.view.View,boolean)
-    static void setKeyboardNavigationCluster(android.view.View,boolean)
-    static void setNextClusterForwardId(android.view.View,int)
-    static void setTooltipText(android.view.View,java.lang.CharSequence)
 androidx.core.view.ViewCompat$Api28Impl:
     private void <init>()
-    static void addOnUnhandledKeyEventListener(android.view.View,androidx.core.view.ViewCompat$OnUnhandledKeyEventListenerCompat)
-    static void removeOnUnhandledKeyEventListener(android.view.View,androidx.core.view.ViewCompat$OnUnhandledKeyEventListenerCompat)
-    static java.lang.Object requireViewById(android.view.View,int)
-    static void setAccessibilityHeading(android.view.View,boolean)
-    static void setAccessibilityPaneTitle(android.view.View,java.lang.CharSequence)
-    public static void setAutofillId(android.view.View,androidx.core.view.autofill.AutofillIdCompat)
-    static void setScreenReaderFocusable(android.view.View,boolean)
 androidx.core.view.ViewCompat$Api29Impl:
     private void <init>()
-    static android.view.contentcapture.ContentCaptureSession getContentCaptureSession(android.view.View)
-    static java.util.List getSystemGestureExclusionRects(android.view.View)
-    static void saveAttributeDataForStyleable(android.view.View,android.content.Context,int[],android.util.AttributeSet,android.content.res.TypedArray,int,int)
-    static void setContentCaptureSession(android.view.View,androidx.core.view.contentcapture.ContentCaptureSessionCompat)
-    static void setSystemGestureExclusionRects(android.view.View,java.util.List)
 androidx.core.view.ViewCompat$Api30Impl:
     private void <init>()
-    static int getImportantForContentCapture(android.view.View)
     public static androidx.core.view.WindowInsetsControllerCompat getWindowInsetsController(android.view.View)
-    static boolean isImportantForContentCapture(android.view.View)
-    static void setImportantForContentCapture(android.view.View,int)
-    static void setStateDescription(android.view.View,java.lang.CharSequence)
 androidx.core.view.ViewCompat$Api31Impl
 androidx.core.view.ViewCompat$FocusDirection
 androidx.core.view.ViewCompat$FocusRealDirection
 androidx.core.view.ViewCompat$FocusRelativeDirection
 androidx.core.view.ViewCompat$NestedScrollType
 androidx.core.view.ViewCompat$OnReceiveContentListenerAdapter
-androidx.core.view.ViewCompat$OnUnhandledKeyEventListenerCompat
 androidx.core.view.ViewCompat$ScrollAxis
 androidx.core.view.ViewCompat$ScrollIndicators
 androidx.core.view.ViewCompat$UnhandledKeyEventManager
@@ -5100,7 +4804,6 @@ androidx.core.view.ViewStructureCompat
 androidx.core.view.WindowCompat$Api16Impl
 androidx.core.view.WindowCompat$Api28Impl
 androidx.core.view.WindowCompat$Api30Impl
-androidx.core.view.WindowCompat$Api35Impl
 androidx.core.view.WindowCompat
 androidx.core.view.WindowInsetsAnimationCompat$BoundsCompat
 androidx.core.view.WindowInsetsAnimationCompat$Callback$DispatchMode
@@ -5203,7 +4906,6 @@ androidx.core.view.WindowInsetsCompat:
     public boolean isVisible(int)
     public androidx.core.view.WindowInsetsCompat replaceSystemWindowInsets(int,int,int,int)
     public androidx.core.view.WindowInsetsCompat replaceSystemWindowInsets(android.graphics.Rect)
-    public android.view.WindowInsets toWindowInsets()
 androidx.core.view.WindowInsetsControllerCompat$Impl20:
     void addOnControllableInsetsChangedListener(androidx.core.view.WindowInsetsControllerCompat$OnControllableInsetsChangedListener)
     void controlWindowInsetsAnimation(int,long,android.view.animation.Interpolator,android.os.CancellationSignal,androidx.core.view.WindowInsetsAnimationControlListenerCompat)
@@ -5230,16 +4932,7 @@ androidx.core.view.WindowInsetsControllerCompat$Impl30:
     void removeOnControllableInsetsChangedListener(androidx.core.view.WindowInsetsControllerCompat$OnControllableInsetsChangedListener)
     void setSystemBarsBehavior(int)
     void show(int)
-androidx.core.view.WindowInsetsControllerCompat$Impl31:
-    void <init>(android.view.WindowInsetsController,androidx.core.view.WindowInsetsControllerCompat,androidx.core.view.SoftwareKeyboardControllerCompat)
-    int getSystemBarsBehavior()
-    void setSystemBarsBehavior(int)
-androidx.core.view.WindowInsetsControllerCompat$Impl35:
-    void <init>(android.view.WindowInsetsController,androidx.core.view.WindowInsetsControllerCompat,androidx.core.view.SoftwareKeyboardControllerCompat)
-    public boolean isAppearanceLightNavigationBars()
-    public boolean isAppearanceLightStatusBars()
 androidx.core.view.WindowInsetsControllerCompat$Impl:
-    static final int KEY_BEHAVIOR
     void addOnControllableInsetsChangedListener(androidx.core.view.WindowInsetsControllerCompat$OnControllableInsetsChangedListener)
     void controlWindowInsetsAnimation(int,long,android.view.animation.Interpolator,android.os.CancellationSignal,androidx.core.view.WindowInsetsAnimationControlListenerCompat)
     int getSystemBarsBehavior()
@@ -5327,39 +5020,18 @@ androidx.core.view.accessibility.AccessibilityNodeInfoCompat$AccessibilityAction
     private static final java.lang.String TAG
     public void <init>(int,java.lang.CharSequence,androidx.core.view.accessibility.AccessibilityViewCommand)
     public androidx.core.view.accessibility.AccessibilityNodeInfoCompat$AccessibilityActionCompat createReplacementAction(java.lang.CharSequence,androidx.core.view.accessibility.AccessibilityViewCommand)
+androidx.core.view.accessibility.AccessibilityNodeInfoCompat$Api21Impl
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat$Api30Impl:
     private void <init>()
-    public static java.lang.Object createRangeInfo(int,float,float,float)
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat$Api33Impl:
     private void <init>()
-    public static androidx.core.view.accessibility.AccessibilityNodeInfoCompat$CollectionItemInfoCompat buildCollectionItemInfoCompat(boolean,int,int,int,int,boolean,java.lang.String,java.lang.String)
-    public static androidx.core.view.accessibility.AccessibilityNodeInfoCompat getChild(android.view.accessibility.AccessibilityNodeInfo,int,int)
-    public static java.lang.String getCollectionItemColumnTitle(java.lang.Object)
-    public static java.lang.String getCollectionItemRowTitle(java.lang.Object)
-    public static android.view.accessibility.AccessibilityNodeInfo$ExtraRenderingInfo getExtraRenderingInfo(android.view.accessibility.AccessibilityNodeInfo)
-    public static androidx.core.view.accessibility.AccessibilityNodeInfoCompat getParent(android.view.accessibility.AccessibilityNodeInfo,int)
-    public static void setTextSelectable(android.view.accessibility.AccessibilityNodeInfo,boolean)
-    public static void setUniqueId(android.view.accessibility.AccessibilityNodeInfo,java.lang.String)
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat$Api34Impl:
     private void <init>()
-    public static long getMinDurationBetweenContentChangeMillis(android.view.accessibility.AccessibilityNodeInfo)
-    public static boolean hasRequestInitialAccessibilityFocus(android.view.accessibility.AccessibilityNodeInfo)
-    public static void setAccessibilityDataSensitive(android.view.accessibility.AccessibilityNodeInfo,boolean)
-    public static void setBoundsInWindow(android.view.accessibility.AccessibilityNodeInfo,android.graphics.Rect)
-    public static void setContainerTitle(android.view.accessibility.AccessibilityNodeInfo,java.lang.CharSequence)
-    public static void setMinDurationBetweenContentChangeMillis(android.view.accessibility.AccessibilityNodeInfo,long)
-    public static void setQueryFromAppProcessEnabled(android.view.accessibility.AccessibilityNodeInfo,android.view.View,boolean)
-    public static void setRequestInitialAccessibilityFocus(android.view.accessibility.AccessibilityNodeInfo,boolean)
-androidx.core.view.accessibility.AccessibilityNodeInfoCompat$Api35Impl
-androidx.core.view.accessibility.AccessibilityNodeInfoCompat$CollectionInfoCompat$Builder
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat$CollectionInfoCompat:
     public static final int SELECTION_MODE_MULTIPLE
     public static final int SELECTION_MODE_NONE
     public static final int SELECTION_MODE_SINGLE
-    public static final int UNDEFINED
     public int getColumnCount()
-    public int getImportantForAccessibilityItemCount()
-    public int getItemCount()
     public int getRowCount()
     public int getSelectionMode()
     public boolean isHierarchical()
@@ -5455,7 +5127,6 @@ androidx.core.view.accessibility.AccessibilityNodeInfoCompat:
     private static final java.lang.String STATE_DESCRIPTION_KEY
     private static final java.lang.String TOOLTIP_TEXT_KEY
     private static final java.lang.String UNIQUE_ID_KEY
-    public void <init>(java.lang.Object)
     public void addChild(android.view.View)
     public void addChild(android.view.View,int)
     public boolean canOpenPopup()
@@ -5463,7 +5134,6 @@ androidx.core.view.accessibility.AccessibilityNodeInfoCompat:
     public java.util.List findAccessibilityNodeInfosByViewId(java.lang.String)
     public androidx.core.view.accessibility.AccessibilityNodeInfoCompat findFocus(int)
     public androidx.core.view.accessibility.AccessibilityNodeInfoCompat focusSearch(int)
-    public int getActions()
     public java.util.List getAvailableExtraData()
     public androidx.core.view.accessibility.AccessibilityNodeInfoCompat getChild(int)
     public androidx.core.view.accessibility.AccessibilityNodeInfoCompat getChild(int,int)
@@ -5572,7 +5242,6 @@ androidx.core.view.accessibility.AccessibilityNodeInfoCompat:
     public void setUniqueId(java.lang.String)
     public void setViewIdResourceName(java.lang.String)
     public void setVisibleToUser(boolean)
-    static androidx.core.view.accessibility.AccessibilityNodeInfoCompat wrapNonNullInstance(java.lang.Object)
 androidx.core.view.accessibility.AccessibilityNodeProviderCompat$AccessibilityNodeProviderApi19
 androidx.core.view.accessibility.AccessibilityNodeProviderCompat$AccessibilityNodeProviderApi26
 androidx.core.view.accessibility.AccessibilityNodeProviderCompat:
@@ -5676,13 +5345,26 @@ androidx.core.view.accessibility.AccessibilityWindowInfoCompat
 androidx.core.view.animation.PathInterpolatorApi14
 androidx.core.view.animation.PathInterpolatorCompat$Api21Impl
 androidx.core.view.animation.PathInterpolatorCompat
-androidx.core.view.autofill.AutofillIdCompat
+androidx.core.view.autofill.AutofillIdCompat:
+    private final java.lang.Object mWrappedObj
+    private void <init>(android.view.autofill.AutofillId)
+    public static androidx.core.view.autofill.AutofillIdCompat toAutofillIdCompat(android.view.autofill.AutofillId)
 androidx.core.view.contentcapture.ContentCaptureSessionCompat$Api23Impl
 androidx.core.view.contentcapture.ContentCaptureSessionCompat$Api29Impl
 androidx.core.view.contentcapture.ContentCaptureSessionCompat$Api34Impl
-androidx.core.view.contentcapture.ContentCaptureSessionCompat
+androidx.core.view.contentcapture.ContentCaptureSessionCompat:
+    private static final java.lang.String KEY_VIEW_TREE_APPEARED
+    private static final java.lang.String KEY_VIEW_TREE_APPEARING
+    private final android.view.View mView
+    private final java.lang.Object mWrappedObj
+    private void <init>(android.view.contentcapture.ContentCaptureSession,android.view.View)
+    public android.view.autofill.AutofillId newAutofillId(long)
+    public androidx.core.view.ViewStructureCompat newVirtualViewStructure(android.view.autofill.AutofillId,long)
+    public void notifyViewTextChanged(android.view.autofill.AutofillId,java.lang.CharSequence)
+    public void notifyViewsAppeared(java.util.List)
+    public void notifyViewsDisappeared(long[])
+    public static androidx.core.view.contentcapture.ContentCaptureSessionCompat toContentCaptureSessionCompat(android.view.contentcapture.ContentCaptureSession,android.view.View)
 androidx.core.view.inputmethod.EditorInfoCompat$Api30Impl
-androidx.core.view.inputmethod.EditorInfoCompat$Api35Impl
 androidx.core.view.inputmethod.EditorInfoCompat:
     private static final java.lang.String CONTENT_MIME_TYPES_INTEROP_KEY
     private static final java.lang.String CONTENT_MIME_TYPES_KEY
@@ -5693,7 +5375,7 @@ androidx.core.view.inputmethod.EditorInfoCompat:
     public static final int IME_FLAG_NO_PERSONALIZED_LEARNING
     static final int MAX_INITIAL_SELECTION_LENGTH
     static final int MEMORY_EFFICIENT_TEXT_LENGTH
-    static final java.lang.String STYLUS_HANDWRITING_ENABLED_KEY
+    private static final java.lang.String STYLUS_HANDWRITING_ENABLED_KEY
     public void <init>()
     public static java.lang.String[] getContentMimeTypes(android.view.inputmethod.EditorInfo)
     public static java.lang.CharSequence getInitialSelectedText(android.view.inputmethod.EditorInfo,int)
@@ -5775,8 +5457,6 @@ androidx.core.widget.ListPopupWindowCompat
 androidx.core.widget.ListViewCompat
 androidx.core.widget.NestedScrollView$Api21Impl:
     private void <init>()
-androidx.core.widget.NestedScrollView$Api35Impl:
-    private void <init>()
 androidx.core.widget.NestedScrollView:
     static final int ANIMATED_SCROLL_GAP
     private static final int DEFAULT_SMOOTH_SCROLL_DURATION
@@ -5796,8 +5476,6 @@ androidx.core.widget.NestedScrollView:
 androidx.core.widget.PopupMenuCompat
 androidx.core.widget.PopupWindowCompat$Api23Impl:
     private void <init>()
-    static boolean getOverlapAnchor(android.widget.PopupWindow)
-    static int getWindowLayoutType(android.widget.PopupWindow)
 androidx.core.widget.PopupWindowCompat:
     private static final java.lang.String TAG
     private static java.lang.reflect.Method sGetWindowLayoutTypeMethod
@@ -5808,8 +5486,6 @@ androidx.core.widget.PopupWindowCompat:
 androidx.core.widget.ScrollerCompat
 androidx.core.widget.TextViewCompat$Api23Impl:
     private void <init>()
-    static android.content.res.ColorStateList getCompoundDrawableTintList(android.widget.TextView)
-    static android.graphics.PorterDuff$Mode getCompoundDrawableTintMode(android.widget.TextView)
 androidx.core.widget.TextViewCompat$Api24Impl:
     private void <init>()
 androidx.core.widget.TextViewCompat$Api26Impl
@@ -8371,6 +8047,7 @@ androidx.legacy.coreutils.R$style
 androidx.legacy.coreutils.R$styleable
 androidx.legacy.coreutils.R
 androidx.legacy.widget.Space
+androidx.lifecycle.AbstractSavedStateViewModelFactory$Companion
 androidx.lifecycle.AbstractSavedStateViewModelFactory
 androidx.lifecycle.AndroidViewModel
 androidx.lifecycle.Api26Impl
@@ -8381,6 +8058,7 @@ androidx.lifecycle.ClassesInfoCache:
     private static final int CALL_TYPE_NO_ARG
     private static final int CALL_TYPE_PROVIDER
     private static final int CALL_TYPE_PROVIDER_WITH_EVENT
+androidx.lifecycle.CloseableCoroutineScope
 androidx.lifecycle.ComputableLiveData$_liveData$1
 androidx.lifecycle.ComputableLiveData
 androidx.lifecycle.CoroutineLiveData$1
@@ -8400,8 +8078,8 @@ androidx.lifecycle.FlowExtKt$flowWithLifecycle$1$1
 androidx.lifecycle.FlowExtKt$flowWithLifecycle$1
 androidx.lifecycle.FlowExtKt
 androidx.lifecycle.FlowLiveDataConversions$asFlow$1$1
+androidx.lifecycle.FlowLiveDataConversions$asFlow$1$2$1
 androidx.lifecycle.FlowLiveDataConversions$asFlow$1$2
-androidx.lifecycle.FlowLiveDataConversions$asFlow$1$3
 androidx.lifecycle.FlowLiveDataConversions$asFlow$1
 androidx.lifecycle.FlowLiveDataConversions$asLiveData$1$1
 androidx.lifecycle.FlowLiveDataConversions$asLiveData$1
@@ -8455,7 +8133,6 @@ androidx.lifecycle.LifecycleRegistry:
     public void setCurrentState(androidx.lifecycle.Lifecycle$State)
 androidx.lifecycle.LifecycleRegistryOwner:
     public synthetic bridge androidx.lifecycle.Lifecycle getLifecycle()
-androidx.lifecycle.Lifecycle_jvmKt
 androidx.lifecycle.Lifecycling:
     private static final int GENERATED_CALLBACK
     private static final int REFLECTIVE_CALLBACK
@@ -8526,12 +8203,12 @@ androidx.lifecycle.ViewModel
 androidx.lifecycle.ViewModelKt
 androidx.lifecycle.ViewModelLazy$1
 androidx.lifecycle.ViewModelLazy
-androidx.lifecycle.ViewModelProvider$AndroidViewModelFactory$Companion$APPLICATION_KEY$1
+androidx.lifecycle.ViewModelProvider$AndroidViewModelFactory$Companion$ApplicationKeyImpl
 androidx.lifecycle.ViewModelProvider$AndroidViewModelFactory$Companion
 androidx.lifecycle.ViewModelProvider$AndroidViewModelFactory
-androidx.lifecycle.ViewModelProvider$Companion
 androidx.lifecycle.ViewModelProvider$Factory$Companion
 androidx.lifecycle.ViewModelProvider$Factory
+androidx.lifecycle.ViewModelProvider$NewInstanceFactory$Companion$ViewModelKeyImpl
 androidx.lifecycle.ViewModelProvider$NewInstanceFactory$Companion
 androidx.lifecycle.ViewModelProvider$NewInstanceFactory
 androidx.lifecycle.ViewModelProvider$OnRequeryFactory
@@ -8546,14 +8223,13 @@ androidx.lifecycle.ViewTreeViewModelKt
 androidx.lifecycle.ViewTreeViewModelStoreOwner$findViewTreeViewModelStoreOwner$1
 androidx.lifecycle.ViewTreeViewModelStoreOwner$findViewTreeViewModelStoreOwner$2
 androidx.lifecycle.ViewTreeViewModelStoreOwner
-androidx.lifecycle.WithLifecycleStateKt$suspendWithStateAtLeastUnchecked$2$2$invoke$$inlined$Runnable$1
+androidx.lifecycle.WithLifecycleStateKt$suspendWithStateAtLeastUnchecked$2$1
+androidx.lifecycle.WithLifecycleStateKt$suspendWithStateAtLeastUnchecked$2$2$1
 androidx.lifecycle.WithLifecycleStateKt$suspendWithStateAtLeastUnchecked$2$2
 androidx.lifecycle.WithLifecycleStateKt$suspendWithStateAtLeastUnchecked$2$observer$1
-androidx.lifecycle.WithLifecycleStateKt$suspendWithStateAtLeastUnchecked$lambda$2$$inlined$Runnable$1
 androidx.lifecycle.WithLifecycleStateKt$withStateAtLeastUnchecked$2
 androidx.lifecycle.WithLifecycleStateKt
 androidx.lifecycle.ktx.R
-androidx.lifecycle.lifecycle.viewmodel.anchor.R
 androidx.lifecycle.livedata.R
 androidx.lifecycle.livedata.core.R
 androidx.lifecycle.livedata.core.ktx.R
@@ -8571,19 +8247,6 @@ androidx.lifecycle.viewmodel.R$id
 androidx.lifecycle.viewmodel.R
 androidx.lifecycle.viewmodel.ViewModelFactoryDsl
 androidx.lifecycle.viewmodel.ViewModelInitializer
-androidx.lifecycle.viewmodel.ViewModelProviderImpl
-androidx.lifecycle.viewmodel.ViewModelProviderImpl_androidKt
-androidx.lifecycle.viewmodel.internal.CloseableCoroutineScope
-androidx.lifecycle.viewmodel.internal.CloseableCoroutineScopeKt
-androidx.lifecycle.viewmodel.internal.DefaultViewModelProviderFactory
-androidx.lifecycle.viewmodel.internal.JvmViewModelProviders
-androidx.lifecycle.viewmodel.internal.SynchronizedObject
-androidx.lifecycle.viewmodel.internal.SynchronizedObjectKt
-androidx.lifecycle.viewmodel.internal.SynchronizedObject_jvmKt
-androidx.lifecycle.viewmodel.internal.ViewModelImpl
-androidx.lifecycle.viewmodel.internal.ViewModelProviders$ViewModelKey
-androidx.lifecycle.viewmodel.internal.ViewModelProviders
-androidx.lifecycle.viewmodel.internal.ViewModelProviders_jvmKt
 androidx.lifecycle.viewmodel.ktx.R
 androidx.lifecycle.viewmodel.savedstate.R
 androidx.loader.R$attr
@@ -9291,7 +8954,6 @@ androidx.recyclerview.R$styleable:
     public static int FontFamilyFont_ttcIndex
     public static int FontFamily_fontProviderAuthority
     public static int FontFamily_fontProviderCerts
-    public static int FontFamily_fontProviderFallbackQuery
     public static int FontFamily_fontProviderFetchStrategy
     public static int FontFamily_fontProviderFetchTimeout
     public static int FontFamily_fontProviderPackage
@@ -10627,28 +10289,23 @@ com.aham.app.R$style
 com.aham.app.R
 com.google.common.util.concurrent.ListenableFuture:
     public abstract void addListener(java.lang.Runnable,java.util.concurrent.Executor)
-com.mr.flutter.plugin.filepicker.FileInfo:
-    public final byte[] getBytes()
-    public final java.lang.String getName()
-    public final java.lang.String getPath()
-    public final long getSize()
-    public final android.net.Uri getUri()
 com.mr.flutter.plugin.filepicker.FilePickerDelegate:
-    public static final java.lang.String TAG
-    public final byte[] getBytes()
-    public final int getCompressionQuality()
-    public final io.flutter.plugin.common.EventChannel$EventSink getEventSink()
-    public final boolean getLoadDataToMemory()
-    public final io.flutter.plugin.common.MethodChannel$Result getPendingResult()
-    public final void setEventSink(io.flutter.plugin.common.EventChannel$EventSink)
-    public final void setPendingResult(io.flutter.plugin.common.MethodChannel$Result)
+    private static final java.lang.String TAG
 com.mr.flutter.plugin.filepicker.FilePickerPlugin:
     private static final java.lang.String CHANNEL
     private static final java.lang.String EVENT_CHANNEL
     private static final java.lang.String TAG
+    public static void registerWith(io.flutter.plugin.common.PluginRegistry$Registrar)
 com.mr.flutter.plugin.filepicker.FileUtils:
+    private static final java.lang.String PRIMARY_VOLUME_NAME
     private static final java.lang.String TAG
-    public static synthetic void startFileExplorer$default(com.mr.flutter.plugin.filepicker.FileUtils,com.mr.flutter.plugin.filepicker.FilePickerDelegate,java.lang.String,java.lang.Boolean,java.lang.Boolean,java.util.ArrayList,java.lang.Integer,io.flutter.plugin.common.MethodChannel$Result,int,java.lang.Object)
+    public void <init>()
+    public static java.util.HashMap createFileInfoMap(java.io.File)
+    public static java.lang.String getDataColumn(android.content.Context,android.net.Uri,java.lang.String,java.lang.String[])
+    public static java.lang.String getRealPathFromURI(android.content.Context,android.net.Uri)
+    public static boolean isExternalStorageDocument(android.net.Uri)
+    public static boolean isGooglePhotosUri(android.net.Uri)
+    public static boolean isMediaDocument(android.net.Uri)
 com.mr.flutter.plugin.filepicker.R
 com.tundralabs.fluttertts.FlutterTtsPlugin:
     private static final java.lang.String SILENCE_PREFIX
@@ -11149,7 +10806,21 @@ io.flutter.plugin.common.MethodChannel:
     public void resizeChannelBuffer(int)
     public void setWarnsOnChannelOverflow(boolean)
 io.flutter.plugin.common.PluginRegistry$PluginRegistrantCallback
-io.flutter.plugin.common.PluginRegistry$Registrar
+io.flutter.plugin.common.PluginRegistry$Registrar:
+    public abstract android.content.Context activeContext()
+    public abstract android.app.Activity activity()
+    public abstract io.flutter.plugin.common.PluginRegistry$Registrar addNewIntentListener(io.flutter.plugin.common.PluginRegistry$NewIntentListener)
+    public abstract io.flutter.plugin.common.PluginRegistry$Registrar addUserLeaveHintListener(io.flutter.plugin.common.PluginRegistry$UserLeaveHintListener)
+    public abstract io.flutter.plugin.common.PluginRegistry$Registrar addViewDestroyListener(io.flutter.plugin.common.PluginRegistry$ViewDestroyListener)
+    public abstract io.flutter.plugin.common.PluginRegistry$Registrar addWindowFocusChangedListener(io.flutter.plugin.common.PluginRegistry$WindowFocusChangedListener)
+    public abstract android.content.Context context()
+    public abstract java.lang.String lookupKeyForAsset(java.lang.String)
+    public abstract java.lang.String lookupKeyForAsset(java.lang.String,java.lang.String)
+    public abstract io.flutter.plugin.common.BinaryMessenger messenger()
+    public abstract io.flutter.plugin.platform.PlatformViewRegistry platformViewRegistry()
+    public abstract io.flutter.plugin.common.PluginRegistry$Registrar publish(java.lang.Object)
+    public abstract io.flutter.view.TextureRegistry textures()
+    public abstract io.flutter.view.FlutterView view()
 io.flutter.plugin.common.PluginRegistry$ViewDestroyListener
 io.flutter.plugin.common.PluginRegistry$WindowFocusChangedListener
 io.flutter.plugin.common.PluginRegistry
@@ -11736,6 +11407,8 @@ kotlin.collections.ArraysKt___ArraysJvmKt:
     public static final char[] copyInto(char[],char[],int,int,int)
     public static final double[] copyInto(double[],double[],int,int,int)
     public static final float[] copyInto(float[],float[],int,int,int)
+    public static final int[] copyInto(int[],int[],int,int,int)
+    public static final long[] copyInto(long[],long[],int,int,int)
     public static final short[] copyInto(short[],short[],int,int,int)
     public static final boolean[] copyInto(boolean[],boolean[],int,int,int)
     public static synthetic char[] copyInto$default(char[],char[],int,int,int,int,java.lang.Object)
@@ -13821,9 +13494,12 @@ kotlin.collections.CollectionsKt___CollectionsKt:
     private static final java.lang.Object find(java.lang.Iterable,kotlin.jvm.functions.Function1)
     private static final java.lang.Object findLast(java.lang.Iterable,kotlin.jvm.functions.Function1)
     private static final java.lang.Object findLast(java.util.List,kotlin.jvm.functions.Function1)
+    public static final java.lang.Object first(java.lang.Iterable)
     public static final java.lang.Object first(java.lang.Iterable,kotlin.jvm.functions.Function1)
+    public static final java.lang.Object first(java.util.List)
     private static final java.lang.Object firstNotNullOf(java.lang.Iterable,kotlin.jvm.functions.Function1)
     private static final java.lang.Object firstNotNullOfOrNull(java.lang.Iterable,kotlin.jvm.functions.Function1)
+    public static final java.lang.Object firstOrNull(java.lang.Iterable)
     public static final java.lang.Object firstOrNull(java.lang.Iterable,kotlin.jvm.functions.Function1)
     public static final java.lang.Object firstOrNull(java.util.List)
     public static final java.util.List flatMap(java.lang.Iterable,kotlin.jvm.functions.Function1)
@@ -13974,6 +13650,7 @@ kotlin.collections.CollectionsKt___CollectionsKt:
     public static final int sumOfShort(java.lang.Iterable)
     private static final int sumOfUInt(java.lang.Iterable,kotlin.jvm.functions.Function1)
     private static final long sumOfULong(java.lang.Iterable,kotlin.jvm.functions.Function1)
+    public static final java.util.List take(java.lang.Iterable,int)
     public static final java.util.List takeLast(java.util.List,int)
     public static final java.util.List takeLastWhile(java.util.List,kotlin.jvm.functions.Function1)
     public static final java.util.List takeWhile(java.lang.Iterable,kotlin.jvm.functions.Function1)
@@ -14075,6 +13752,7 @@ kotlin.collections.MapsKt__MapsKt:
     public static final java.lang.Object getOrPut(java.util.Map,java.lang.Object,kotlin.jvm.functions.Function0)
     public static final java.lang.Object getValue(java.util.Map,java.lang.Object)
     private static final java.util.HashMap hashMapOf()
+    public static final varargs java.util.HashMap hashMapOf(kotlin.Pair[])
     private static final java.lang.Object ifEmpty(java.util.Map,kotlin.jvm.functions.Function0)
     private static final boolean isNotEmpty(java.util.Map)
     private static final boolean isNullOrEmpty(java.util.Map)
@@ -15468,6 +15146,7 @@ kotlin.sequences.SequencesKt___SequencesJvmKt:
     private static final java.math.BigInteger sumOfBigInteger(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
     public static final java.util.SortedSet toSortedSet(kotlin.sequences.Sequence)
     public static final java.util.SortedSet toSortedSet(kotlin.sequences.Sequence,java.util.Comparator)
+kotlin.sequences.SequencesKt___SequencesKt$asIterable$$inlined$Iterable$1
 kotlin.sequences.SequencesKt___SequencesKt$distinct$1
 kotlin.sequences.SequencesKt___SequencesKt$elementAt$1
 kotlin.sequences.SequencesKt___SequencesKt$filterIndexed$1
@@ -15504,6 +15183,7 @@ kotlin.sequences.SequencesKt___SequencesKt:
     public static final boolean all(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
     public static final boolean any(kotlin.sequences.Sequence)
     public static final boolean any(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
+    public static final java.lang.Iterable asIterable(kotlin.sequences.Sequence)
     private static final kotlin.sequences.Sequence asSequence(kotlin.sequences.Sequence)
     public static final java.util.Map associate(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
     public static final java.util.Map associateBy(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
@@ -15794,41 +15474,14 @@ kotlin.text.MatcherMatchResult$groupValues$1
 kotlin.text.MatcherMatchResult$groups$1$iterator$1
 kotlin.text.MatcherMatchResult$groups$1
 kotlin.text.MatcherMatchResult
-kotlin.text.Regex$Companion:
-    public static final synthetic int access$ensureUnicodeCase(kotlin.text.Regex$Companion,int)
-    private final int ensureUnicodeCase(int)
-    public final java.lang.String escape(java.lang.String)
-    public final java.lang.String escapeReplacement(java.lang.String)
-    public final kotlin.text.Regex fromLiteral(java.lang.String)
+kotlin.text.Regex$Companion
 kotlin.text.Regex$Serialized$Companion
 kotlin.text.Regex$Serialized
 kotlin.text.Regex$findAll$1
 kotlin.text.Regex$findAll$2
 kotlin.text.Regex$special$$inlined$fromInt$1
 kotlin.text.Regex$splitToSequence$1
-kotlin.text.Regex:
-    private java.util.Set _options
-    public void <init>(java.lang.String,java.util.Set)
-    public void <init>(java.lang.String,kotlin.text.RegexOption)
-    public static final synthetic java.util.regex.Pattern access$getNativePattern$p(kotlin.text.Regex)
-    public final boolean containsMatchIn(java.lang.CharSequence)
-    public final kotlin.text.MatchResult find(java.lang.CharSequence,int)
-    public static synthetic kotlin.text.MatchResult find$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final kotlin.sequences.Sequence findAll(java.lang.CharSequence,int)
-    public static synthetic kotlin.sequences.Sequence findAll$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final java.util.Set getOptions()
-    public final java.lang.String getPattern()
-    public final kotlin.text.MatchResult matchAt(java.lang.CharSequence,int)
-    public final kotlin.text.MatchResult matchEntire(java.lang.CharSequence)
-    public final boolean matchesAt(java.lang.CharSequence,int)
-    public final java.lang.String replace(java.lang.CharSequence,java.lang.String)
-    public final java.lang.String replace(java.lang.CharSequence,kotlin.jvm.functions.Function1)
-    public final java.lang.String replaceFirst(java.lang.CharSequence,java.lang.String)
-    public static synthetic java.util.List split$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final kotlin.sequences.Sequence splitToSequence(java.lang.CharSequence,int)
-    public static synthetic kotlin.sequences.Sequence splitToSequence$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final java.util.regex.Pattern toPattern()
-    private final java.lang.Object writeReplace()
+kotlin.text.Regex
 kotlin.text.RegexKt$fromInt$1$1
 kotlin.text.RegexKt
 kotlin.text.RegexOption
@@ -15984,6 +15637,7 @@ kotlin.text.StringsKt__StringsJVMKt:
     public static final byte[] encodeToByteArray(java.lang.String)
     public static final byte[] encodeToByteArray(java.lang.String,int,int,boolean)
     public static synthetic byte[] encodeToByteArray$default(java.lang.String,int,int,boolean,int,java.lang.Object)
+    public static final boolean equals(java.lang.String,java.lang.String,boolean)
     public static synthetic boolean equals$default(java.lang.String,java.lang.String,boolean,int,java.lang.Object)
     private static final varargs java.lang.String format(java.lang.String,java.util.Locale,java.lang.Object[])
     private static final varargs java.lang.String format(java.lang.String,java.lang.Object[])
@@ -16115,8 +15769,11 @@ kotlin.text.StringsKt__StringsKt:
     private static final java.lang.String replaceRange(java.lang.String,kotlin.ranges.IntRange,java.lang.CharSequence)
     private static final java.util.List split(java.lang.CharSequence,kotlin.text.Regex,int)
     public static final java.util.List split(java.lang.CharSequence,char[],boolean,int)
+    public static final java.util.List split(java.lang.CharSequence,java.lang.String[],boolean,int)
+    private static final java.util.List split$StringsKt__StringsKt(java.lang.CharSequence,java.lang.String,boolean,int)
     static synthetic java.util.List split$default(java.lang.CharSequence,kotlin.text.Regex,int,int,java.lang.Object)
     public static synthetic java.util.List split$default(java.lang.CharSequence,char[],boolean,int,int,java.lang.Object)
+    public static synthetic java.util.List split$default(java.lang.CharSequence,java.lang.String[],boolean,int,int,java.lang.Object)
     private static final kotlin.sequences.Sequence splitToSequence(java.lang.CharSequence,kotlin.text.Regex,int)
     public static final kotlin.sequences.Sequence splitToSequence(java.lang.CharSequence,char[],boolean,int)
     static synthetic kotlin.sequences.Sequence splitToSequence$default(java.lang.CharSequence,kotlin.text.Regex,int,int,java.lang.Object)
@@ -18888,805 +18545,6 @@ okio.internal.ZipFilesKt:
     private static final int ZIP64_LOCATOR_SIGNATURE
     public static synthetic okio.ZipFileSystem openZip$default(okio.Path,okio.FileSystem,kotlin.jvm.functions.Function1,int,java.lang.Object)
 okio.internal._Utf8Kt
-org.apache.commons.io.ByteBuffers
-org.apache.commons.io.ByteOrderMark
-org.apache.commons.io.ByteOrderParser
-org.apache.commons.io.Charsets
-org.apache.commons.io.CloseableURLConnection
-org.apache.commons.io.CopyUtils
-org.apache.commons.io.DirectoryWalker$CancelException
-org.apache.commons.io.DirectoryWalker
-org.apache.commons.io.EndianUtils
-org.apache.commons.io.FileCleaner
-org.apache.commons.io.FileCleaningTracker$Reaper
-org.apache.commons.io.FileCleaningTracker$Tracker
-org.apache.commons.io.FileCleaningTracker
-org.apache.commons.io.FileDeleteStrategy$ForceFileDeleteStrategy
-org.apache.commons.io.FileDeleteStrategy
-org.apache.commons.io.FileExistsException
-org.apache.commons.io.FileSystem
-org.apache.commons.io.FileSystemUtils
-org.apache.commons.io.FileUtils
-org.apache.commons.io.FilenameUtils
-org.apache.commons.io.HexDump
-org.apache.commons.io.IO
-org.apache.commons.io.IOCase
-org.apache.commons.io.IOExceptionList
-org.apache.commons.io.IOExceptionWithCause:
-    private static final long serialVersionUID
-    public void <init>(java.lang.Throwable)
-org.apache.commons.io.IOIndexedException
-org.apache.commons.io.IORandomAccessFile
-org.apache.commons.io.IOUtils:
-    public static final int CR
-    public static final int DEFAULT_BUFFER_SIZE
-    public static final char DIR_SEPARATOR_UNIX
-    public static final char DIR_SEPARATOR_WINDOWS
-    public static final int EOF
-    public static final int LF
-    public void <init>()
-    public static java.io.BufferedInputStream buffer(java.io.InputStream)
-    public static java.io.BufferedInputStream buffer(java.io.InputStream,int)
-    public static java.io.BufferedOutputStream buffer(java.io.OutputStream)
-    public static java.io.BufferedOutputStream buffer(java.io.OutputStream,int)
-    public static java.io.BufferedReader buffer(java.io.Reader)
-    public static java.io.BufferedReader buffer(java.io.Reader,int)
-    public static java.io.BufferedWriter buffer(java.io.Writer)
-    public static java.io.BufferedWriter buffer(java.io.Writer,int)
-    static void clear()
-    public static void close(java.io.Closeable)
-    public static void close(java.io.Closeable,org.apache.commons.io.function.IOConsumer)
-    public static void close(java.net.URLConnection)
-    public static varargs void close(java.io.Closeable[])
-    public static void closeQuietly(java.io.Writer)
-    public static void closeQuietly(java.lang.Iterable)
-    public static void closeQuietly(java.net.ServerSocket)
-    public static void closeQuietly(java.net.Socket)
-    public static void closeQuietly(java.nio.channels.Selector)
-    public static void closeQuietly(java.util.stream.Stream)
-    public static varargs void closeQuietly(java.io.Closeable[])
-    public static long consume(java.io.InputStream)
-    public static long consume(java.io.Reader)
-    public static boolean contentEquals(java.io.InputStream,java.io.InputStream)
-    public static boolean contentEquals(java.io.Reader,java.io.Reader)
-    private static boolean contentEquals(java.util.Iterator,java.util.Iterator)
-    private static boolean contentEquals(java.util.stream.Stream,java.util.stream.Stream)
-    private static boolean contentEqualsIgnoreEOL(java.io.BufferedReader,java.io.BufferedReader)
-    public static boolean contentEqualsIgnoreEOL(java.io.Reader,java.io.Reader)
-    public static int copy(java.io.Reader,java.io.Writer)
-    public static long copy(java.io.Reader,java.lang.Appendable)
-    public static long copy(java.io.Reader,java.lang.Appendable,java.nio.CharBuffer)
-    public static long copy(java.net.URL,java.io.File)
-    public static long copy(java.net.URL,java.io.OutputStream)
-    public static org.apache.commons.io.input.QueueInputStream copy(java.io.ByteArrayOutputStream)
-    public static void copy(java.io.InputStream,java.io.Writer)
-    public static void copy(java.io.InputStream,java.io.Writer,java.lang.String)
-    public static void copy(java.io.InputStream,java.io.Writer,java.nio.charset.Charset)
-    public static void copy(java.io.Reader,java.io.OutputStream)
-    public static void copy(java.io.Reader,java.io.OutputStream,java.lang.String)
-    public static void copy(java.io.Reader,java.io.OutputStream,java.nio.charset.Charset)
-    public static long copyLarge(java.io.InputStream,java.io.OutputStream,long,long)
-    public static long copyLarge(java.io.InputStream,java.io.OutputStream,long,long,byte[])
-    public static long copyLarge(java.io.Reader,java.io.Writer)
-    public static long copyLarge(java.io.Reader,java.io.Writer,long,long)
-    public static long copyLarge(java.io.Reader,java.io.Writer,long,long,char[])
-    public static long copyLarge(java.io.Reader,java.io.Writer,char[])
-    private static byte[] fill0(byte[])
-    private static char[] fill0(char[])
-    static byte[] getScratchByteArray()
-    static byte[] getScratchByteArrayWriteOnly()
-    static char[] getScratchCharArray()
-    static char[] getScratchCharArrayWriteOnly()
-    private static synthetic java.lang.String lambda$toString$2()
-    public static int length(java.lang.CharSequence)
-    public static int length(char[])
-    public static int length(java.lang.Object[])
-    public static org.apache.commons.io.LineIterator lineIterator(java.io.InputStream,java.lang.String)
-    public static org.apache.commons.io.LineIterator lineIterator(java.io.InputStream,java.nio.charset.Charset)
-    public static org.apache.commons.io.LineIterator lineIterator(java.io.Reader)
-    public static int read(java.io.InputStream,byte[])
-    public static int read(java.io.InputStream,byte[],int,int)
-    public static int read(java.io.Reader,char[])
-    public static int read(java.io.Reader,char[],int,int)
-    public static int read(java.nio.channels.ReadableByteChannel,java.nio.ByteBuffer)
-    static int read(org.apache.commons.io.function.IOTriFunction,byte[],int,int)
-    public static void readFully(java.io.InputStream,byte[])
-    public static void readFully(java.io.InputStream,byte[],int,int)
-    public static void readFully(java.io.Reader,char[])
-    public static void readFully(java.io.Reader,char[],int,int)
-    public static void readFully(java.nio.channels.ReadableByteChannel,java.nio.ByteBuffer)
-    public static byte[] readFully(java.io.InputStream,int)
-    public static java.util.List readLines(java.io.InputStream)
-    public static java.util.List readLines(java.io.InputStream,java.lang.String)
-    public static java.util.List readLines(java.io.InputStream,java.nio.charset.Charset)
-    public static java.util.List readLines(java.io.Reader)
-    public static java.util.List readLines(java.lang.CharSequence)
-    public static byte[] resourceToByteArray(java.lang.String)
-    public static byte[] resourceToByteArray(java.lang.String,java.lang.ClassLoader)
-    public static java.lang.String resourceToString(java.lang.String,java.nio.charset.Charset)
-    public static java.lang.String resourceToString(java.lang.String,java.nio.charset.Charset,java.lang.ClassLoader)
-    public static java.net.URL resourceToURL(java.lang.String)
-    public static java.net.URL resourceToURL(java.lang.String,java.lang.ClassLoader)
-    public static long skip(java.io.InputStream,long)
-    public static long skip(java.io.InputStream,long,java.util.function.Supplier)
-    public static long skip(java.io.Reader,long)
-    public static long skip(java.nio.channels.ReadableByteChannel,long)
-    public static void skipFully(java.io.InputStream,long)
-    public static void skipFully(java.io.InputStream,long,java.util.function.Supplier)
-    public static void skipFully(java.io.Reader,long)
-    public static void skipFully(java.nio.channels.ReadableByteChannel,long)
-    public static java.io.InputStream toBufferedInputStream(java.io.InputStream)
-    public static java.io.InputStream toBufferedInputStream(java.io.InputStream,int)
-    public static java.io.BufferedReader toBufferedReader(java.io.Reader)
-    public static java.io.BufferedReader toBufferedReader(java.io.Reader,int)
-    public static byte[] toByteArray(java.io.InputStream,int)
-    public static byte[] toByteArray(java.io.InputStream,long)
-    public static byte[] toByteArray(java.io.Reader)
-    public static byte[] toByteArray(java.io.Reader,java.lang.String)
-    public static byte[] toByteArray(java.io.Reader,java.nio.charset.Charset)
-    public static byte[] toByteArray(java.lang.String)
-    public static byte[] toByteArray(java.net.URI)
-    public static byte[] toByteArray(java.net.URL)
-    public static byte[] toByteArray(java.net.URLConnection)
-    static byte[] toByteArray(org.apache.commons.io.function.IOTriFunction,int)
-    public static char[] toCharArray(java.io.InputStream)
-    public static char[] toCharArray(java.io.InputStream,java.lang.String)
-    public static char[] toCharArray(java.io.InputStream,java.nio.charset.Charset)
-    public static char[] toCharArray(java.io.Reader)
-    public static java.io.InputStream toInputStream(java.lang.CharSequence)
-    public static java.io.InputStream toInputStream(java.lang.CharSequence,java.lang.String)
-    public static java.io.InputStream toInputStream(java.lang.CharSequence,java.nio.charset.Charset)
-    public static java.io.InputStream toInputStream(java.lang.String)
-    public static java.io.InputStream toInputStream(java.lang.String,java.lang.String)
-    public static java.io.InputStream toInputStream(java.lang.String,java.nio.charset.Charset)
-    public static java.lang.String toString(java.io.InputStream)
-    public static java.lang.String toString(java.io.InputStream,java.lang.String)
-    public static java.lang.String toString(java.io.InputStream,java.nio.charset.Charset)
-    public static java.lang.String toString(java.io.Reader)
-    public static java.lang.String toString(java.net.URI)
-    public static java.lang.String toString(java.net.URI,java.lang.String)
-    public static java.lang.String toString(java.net.URI,java.nio.charset.Charset)
-    public static java.lang.String toString(java.net.URL)
-    public static java.lang.String toString(java.net.URL,java.lang.String)
-    public static java.lang.String toString(java.net.URL,java.nio.charset.Charset)
-    public static java.lang.String toString(org.apache.commons.io.function.IOSupplier,java.nio.charset.Charset)
-    public static java.lang.String toString(org.apache.commons.io.function.IOSupplier,java.nio.charset.Charset,org.apache.commons.io.function.IOSupplier)
-    public static java.lang.String toString(byte[])
-    public static java.lang.String toString(byte[],java.lang.String)
-    public static void write(java.lang.CharSequence,java.io.OutputStream)
-    public static void write(java.lang.CharSequence,java.io.OutputStream,java.lang.String)
-    public static void write(java.lang.CharSequence,java.io.OutputStream,java.nio.charset.Charset)
-    public static void write(java.lang.CharSequence,java.io.Writer)
-    public static void write(java.lang.String,java.io.OutputStream)
-    public static void write(java.lang.String,java.io.OutputStream,java.lang.String)
-    public static void write(java.lang.String,java.io.OutputStream,java.nio.charset.Charset)
-    public static void write(java.lang.String,java.io.Writer)
-    public static void write(java.lang.StringBuffer,java.io.OutputStream)
-    public static void write(java.lang.StringBuffer,java.io.OutputStream,java.lang.String)
-    public static void write(java.lang.StringBuffer,java.io.Writer)
-    public static void write(byte[],java.io.OutputStream)
-    public static void write(byte[],java.io.Writer)
-    public static void write(byte[],java.io.Writer,java.lang.String)
-    public static void write(byte[],java.io.Writer,java.nio.charset.Charset)
-    public static void write(char[],java.io.OutputStream)
-    public static void write(char[],java.io.OutputStream,java.lang.String)
-    public static void write(char[],java.io.OutputStream,java.nio.charset.Charset)
-    public static void write(char[],java.io.Writer)
-    public static void writeChunked(byte[],java.io.OutputStream)
-    public static void writeChunked(char[],java.io.Writer)
-    public static void writeLines(java.util.Collection,java.lang.String,java.io.OutputStream)
-    public static void writeLines(java.util.Collection,java.lang.String,java.io.OutputStream,java.lang.String)
-    public static void writeLines(java.util.Collection,java.lang.String,java.io.OutputStream,java.nio.charset.Charset)
-    public static void writeLines(java.util.Collection,java.lang.String,java.io.Writer)
-    public static java.io.Writer writer(java.lang.Appendable)
-org.apache.commons.io.LineIterator
-org.apache.commons.io.RandomAccessFileMode$1
-org.apache.commons.io.RandomAccessFileMode
-org.apache.commons.io.RandomAccessFiles
-org.apache.commons.io.StandardLineSeparator:
-    public byte[] getBytes(java.nio.charset.Charset)
-org.apache.commons.io.StreamIterator
-org.apache.commons.io.TaggedIOException:
-    private static final long serialVersionUID
-    public java.io.Serializable getTag()
-org.apache.commons.io.ThreadMonitor
-org.apache.commons.io.ThreadUtils
-org.apache.commons.io.UncheckedIOExceptions
-org.apache.commons.io.build.AbstractOrigin$AbstractRandomAccessFileOrigin
-org.apache.commons.io.build.AbstractOrigin$ByteArrayOrigin:
-    public java.io.Reader getReader(java.nio.charset.Charset)
-    public long size()
-org.apache.commons.io.build.AbstractOrigin$CharSequenceOrigin
-org.apache.commons.io.build.AbstractOrigin$FileOrigin
-org.apache.commons.io.build.AbstractOrigin$IORandomAccessFileOrigin
-org.apache.commons.io.build.AbstractOrigin$InputStreamOrigin
-org.apache.commons.io.build.AbstractOrigin$OutputStreamOrigin
-org.apache.commons.io.build.AbstractOrigin$PathOrigin
-org.apache.commons.io.build.AbstractOrigin$RandomAccessFileOrigin
-org.apache.commons.io.build.AbstractOrigin$ReaderOrigin
-org.apache.commons.io.build.AbstractOrigin$URIOrigin
-org.apache.commons.io.build.AbstractOrigin$WriterOrigin
-org.apache.commons.io.build.AbstractOrigin:
-    public byte[] getByteArray(long,int)
-    public java.lang.CharSequence getCharSequence(java.nio.charset.Charset)
-    public java.io.File getFile()
-    public varargs java.io.OutputStream getOutputStream(java.nio.file.OpenOption[])
-    public java.nio.file.Path getPath()
-    public varargs java.io.RandomAccessFile getRandomAccessFile(java.nio.file.OpenOption[])
-    public java.io.Reader getReader(java.nio.charset.Charset)
-    public varargs java.io.Writer getWriter(java.nio.charset.Charset,java.nio.file.OpenOption[])
-    public long size()
-org.apache.commons.io.build.AbstractOriginSupplier:
-    protected org.apache.commons.io.build.AbstractOrigin getOrigin()
-    protected boolean hasOrigin()
-    protected static org.apache.commons.io.build.AbstractOrigin$CharSequenceOrigin newCharSequenceOrigin(java.lang.CharSequence)
-    protected static org.apache.commons.io.build.AbstractOrigin$FileOrigin newFileOrigin(java.io.File)
-    protected static org.apache.commons.io.build.AbstractOrigin$FileOrigin newFileOrigin(java.lang.String)
-    protected static org.apache.commons.io.build.AbstractOrigin$InputStreamOrigin newInputStreamOrigin(java.io.InputStream)
-    protected static org.apache.commons.io.build.AbstractOrigin$OutputStreamOrigin newOutputStreamOrigin(java.io.OutputStream)
-    protected static org.apache.commons.io.build.AbstractOrigin$PathOrigin newPathOrigin(java.lang.String)
-    protected static org.apache.commons.io.build.AbstractOrigin$PathOrigin newPathOrigin(java.nio.file.Path)
-    protected static org.apache.commons.io.build.AbstractOrigin$IORandomAccessFileOrigin newRandomAccessFileOrigin(org.apache.commons.io.IORandomAccessFile)
-    protected static org.apache.commons.io.build.AbstractOrigin$RandomAccessFileOrigin newRandomAccessFileOrigin(java.io.RandomAccessFile)
-    protected static org.apache.commons.io.build.AbstractOrigin$ReaderOrigin newReaderOrigin(java.io.Reader)
-    protected static org.apache.commons.io.build.AbstractOrigin$URIOrigin newURIOrigin(java.net.URI)
-    protected static org.apache.commons.io.build.AbstractOrigin$WriterOrigin newWriterOrigin(java.io.Writer)
-    public org.apache.commons.io.build.AbstractOriginSupplier setCharSequence(java.lang.CharSequence)
-    public org.apache.commons.io.build.AbstractOriginSupplier setFile(java.io.File)
-    public org.apache.commons.io.build.AbstractOriginSupplier setFile(java.lang.String)
-    public org.apache.commons.io.build.AbstractOriginSupplier setInputStream(java.io.InputStream)
-    public org.apache.commons.io.build.AbstractOriginSupplier setOutputStream(java.io.OutputStream)
-    public org.apache.commons.io.build.AbstractOriginSupplier setPath(java.lang.String)
-    public org.apache.commons.io.build.AbstractOriginSupplier setPath(java.nio.file.Path)
-    public org.apache.commons.io.build.AbstractOriginSupplier setRandomAccessFile(java.io.RandomAccessFile)
-    public org.apache.commons.io.build.AbstractOriginSupplier setRandomAccessFile(org.apache.commons.io.IORandomAccessFile)
-    public org.apache.commons.io.build.AbstractOriginSupplier setReader(java.io.Reader)
-    public org.apache.commons.io.build.AbstractOriginSupplier setURI(java.net.URI)
-    public org.apache.commons.io.build.AbstractOriginSupplier setWriter(java.io.Writer)
-org.apache.commons.io.build.AbstractStreamBuilder:
-    private static final int DEFAULT_MAX_VALUE
-    private int checkBufferSize(int)
-    public int getBufferSizeDefault()
-    public java.lang.CharSequence getCharSequence()
-    public java.nio.charset.Charset getCharset()
-    public java.nio.charset.Charset getCharsetDefault()
-    public java.io.File getFile()
-    public java.io.OutputStream getOutputStream()
-    public java.nio.file.Path getPath()
-    public java.io.RandomAccessFile getRandomAccessFile()
-    public java.io.Reader getReader()
-    public java.io.Writer getWriter()
-    public org.apache.commons.io.build.AbstractStreamBuilder setBufferSize(int)
-    public org.apache.commons.io.build.AbstractStreamBuilder setBufferSize(java.lang.Integer)
-    public org.apache.commons.io.build.AbstractStreamBuilder setBufferSizeChecker(java.util.function.IntUnaryOperator)
-    protected org.apache.commons.io.build.AbstractStreamBuilder setBufferSizeDefault(int)
-    public org.apache.commons.io.build.AbstractStreamBuilder setBufferSizeMax(int)
-    public org.apache.commons.io.build.AbstractStreamBuilder setCharset(java.lang.String)
-    public org.apache.commons.io.build.AbstractStreamBuilder setCharset(java.nio.charset.Charset)
-    protected org.apache.commons.io.build.AbstractStreamBuilder setCharsetDefault(java.nio.charset.Charset)
-    public varargs org.apache.commons.io.build.AbstractStreamBuilder setOpenOptions(java.nio.file.OpenOption[])
-org.apache.commons.io.build.package-info
-org.apache.commons.io.channels.FileChannels
-org.apache.commons.io.channels.package-info
-org.apache.commons.io.charset.CharsetDecoders
-org.apache.commons.io.charset.CharsetEncoders
-org.apache.commons.io.charset.package-info
-org.apache.commons.io.comparator.AbstractFileComparator
-org.apache.commons.io.comparator.CompositeFileComparator
-org.apache.commons.io.comparator.DefaultFileComparator
-org.apache.commons.io.comparator.DirectoryFileComparator
-org.apache.commons.io.comparator.ExtensionFileComparator
-org.apache.commons.io.comparator.LastModifiedFileComparator
-org.apache.commons.io.comparator.NameFileComparator
-org.apache.commons.io.comparator.PathFileComparator
-org.apache.commons.io.comparator.ReverseFileComparator
-org.apache.commons.io.comparator.SizeFileComparator
-org.apache.commons.io.comparator.package-info
-org.apache.commons.io.file.AccumulatorPathVisitor$1
-org.apache.commons.io.file.AccumulatorPathVisitor$Builder
-org.apache.commons.io.file.AccumulatorPathVisitor
-org.apache.commons.io.file.CleaningPathVisitor
-org.apache.commons.io.file.CopyDirectoryVisitor
-org.apache.commons.io.file.Counters$1
-org.apache.commons.io.file.Counters$AbstractPathCounters
-org.apache.commons.io.file.Counters$BigIntegerCounter
-org.apache.commons.io.file.Counters$BigIntegerPathCounters
-org.apache.commons.io.file.Counters$Counter
-org.apache.commons.io.file.Counters$LongCounter
-org.apache.commons.io.file.Counters$LongPathCounters
-org.apache.commons.io.file.Counters$NoopCounter
-org.apache.commons.io.file.Counters$NoopPathCounters
-org.apache.commons.io.file.Counters$PathCounters
-org.apache.commons.io.file.Counters
-org.apache.commons.io.file.CountingPathVisitor$AbstractBuilder
-org.apache.commons.io.file.CountingPathVisitor$Builder
-org.apache.commons.io.file.CountingPathVisitor
-org.apache.commons.io.file.DeletingPathVisitor
-org.apache.commons.io.file.DirectoryStreamFilter
-org.apache.commons.io.file.FilesUncheck
-org.apache.commons.io.file.NoopPathVisitor
-org.apache.commons.io.file.PathFilter
-org.apache.commons.io.file.PathUtils$1
-org.apache.commons.io.file.PathUtils$RelativeSortedPaths
-org.apache.commons.io.file.PathUtils:
-    private void <init>()
-    static synthetic org.apache.commons.io.file.AccumulatorPathVisitor access$000(java.nio.file.Path,int,java.nio.file.FileVisitOption[])
-    private static org.apache.commons.io.file.AccumulatorPathVisitor accumulate(java.nio.file.Path,int,java.nio.file.FileVisitOption[])
-    public static org.apache.commons.io.file.Counters$PathCounters cleanDirectory(java.nio.file.Path)
-    public static varargs org.apache.commons.io.file.Counters$PathCounters cleanDirectory(java.nio.file.Path,org.apache.commons.io.file.DeleteOption[])
-    private static varargs int compareLastModifiedTimeTo(java.nio.file.Path,java.nio.file.attribute.FileTime,java.nio.file.LinkOption[])
-    public static boolean contentEquals(java.nio.file.FileSystem,java.nio.file.FileSystem)
-    public static varargs long copy(org.apache.commons.io.function.IOSupplier,java.nio.file.Path,java.nio.file.CopyOption[])
-    public static varargs org.apache.commons.io.file.Counters$PathCounters copyDirectory(java.nio.file.Path,java.nio.file.Path,java.nio.file.CopyOption[])
-    public static varargs java.nio.file.Path copyFile(java.net.URL,java.nio.file.Path,java.nio.file.CopyOption[])
-    public static varargs java.nio.file.Path copyFileToDirectory(java.net.URL,java.nio.file.Path,java.nio.file.CopyOption[])
-    public static varargs java.nio.file.Path copyFileToDirectory(java.nio.file.Path,java.nio.file.Path,java.nio.file.CopyOption[])
-    public static org.apache.commons.io.file.Counters$PathCounters countDirectory(java.nio.file.Path)
-    public static org.apache.commons.io.file.Counters$PathCounters countDirectoryAsBigInteger(java.nio.file.Path)
-    public static varargs java.nio.file.Path createParentDirectories(java.nio.file.Path,java.nio.file.LinkOption,java.nio.file.attribute.FileAttribute[])
-    public static varargs java.nio.file.Path createParentDirectories(java.nio.file.Path,java.nio.file.attribute.FileAttribute[])
-    public static java.nio.file.Path current()
-    public static org.apache.commons.io.file.Counters$PathCounters delete(java.nio.file.Path)
-    public static varargs org.apache.commons.io.file.Counters$PathCounters delete(java.nio.file.Path,java.nio.file.LinkOption[],org.apache.commons.io.file.DeleteOption[])
-    public static varargs org.apache.commons.io.file.Counters$PathCounters delete(java.nio.file.Path,org.apache.commons.io.file.DeleteOption[])
-    public static org.apache.commons.io.file.Counters$PathCounters deleteDirectory(java.nio.file.Path)
-    public static varargs org.apache.commons.io.file.Counters$PathCounters deleteDirectory(java.nio.file.Path,java.nio.file.LinkOption[],org.apache.commons.io.file.DeleteOption[])
-    public static varargs org.apache.commons.io.file.Counters$PathCounters deleteDirectory(java.nio.file.Path,org.apache.commons.io.file.DeleteOption[])
-    public static org.apache.commons.io.file.Counters$PathCounters deleteFile(java.nio.file.Path)
-    public static varargs org.apache.commons.io.file.Counters$PathCounters deleteFile(java.nio.file.Path,java.nio.file.LinkOption[],org.apache.commons.io.file.DeleteOption[])
-    public static varargs org.apache.commons.io.file.Counters$PathCounters deleteFile(java.nio.file.Path,org.apache.commons.io.file.DeleteOption[])
-    public static void deleteOnExit(java.nio.file.Path)
-    public static boolean directoryAndFileContentEquals(java.nio.file.Path,java.nio.file.Path)
-    public static boolean directoryAndFileContentEquals(java.nio.file.Path,java.nio.file.Path,java.nio.file.LinkOption[],java.nio.file.OpenOption[],java.nio.file.FileVisitOption[])
-    public static boolean directoryContentEquals(java.nio.file.Path,java.nio.file.Path)
-    public static boolean directoryContentEquals(java.nio.file.Path,java.nio.file.Path,int,java.nio.file.LinkOption[],java.nio.file.FileVisitOption[])
-    private static varargs boolean exists(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static boolean fileContentEquals(java.nio.file.Path,java.nio.file.Path)
-    public static boolean fileContentEquals(java.nio.file.Path,java.nio.file.Path,java.nio.file.LinkOption[],java.nio.file.OpenOption[])
-    public static varargs java.nio.file.Path[] filter(org.apache.commons.io.file.PathFilter,java.nio.file.Path[])
-    private static java.lang.Object filterPaths(org.apache.commons.io.file.PathFilter,java.util.stream.Stream,java.util.stream.Collector)
-    public static java.util.List getAclEntryList(java.nio.file.Path)
-    public static varargs java.nio.file.attribute.AclFileAttributeView getAclFileAttributeView(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static java.lang.String getBaseName(java.nio.file.Path)
-    public static varargs java.nio.file.attribute.DosFileAttributeView getDosFileAttributeView(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static java.lang.String getExtension(java.nio.file.Path)
-    public static java.lang.Object getFileName(java.nio.file.Path,java.util.function.Function)
-    public static java.lang.String getFileNameString(java.nio.file.Path)
-    public static java.nio.file.attribute.FileTime getLastModifiedFileTime(java.io.File)
-    public static java.nio.file.attribute.FileTime getLastModifiedFileTime(java.net.URI)
-    public static java.nio.file.attribute.FileTime getLastModifiedFileTime(java.net.URL)
-    public static varargs java.nio.file.attribute.FileTime getLastModifiedFileTime(java.nio.file.Path,java.nio.file.attribute.FileTime,java.nio.file.LinkOption[])
-    public static varargs java.nio.file.attribute.FileTime getLastModifiedFileTime(java.nio.file.Path,java.nio.file.LinkOption[])
-    private static varargs java.nio.file.attribute.FileTime getLastModifiedTime(java.nio.file.Path,java.nio.file.LinkOption[])
-    private static java.nio.file.Path getParent(java.nio.file.Path)
-    public static varargs java.nio.file.attribute.PosixFileAttributeView getPosixFileAttributeView(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static java.nio.file.Path getTempDirectory()
-    public static varargs boolean isDirectory(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static boolean isEmpty(java.nio.file.Path)
-    public static boolean isEmptyDirectory(java.nio.file.Path)
-    public static boolean isEmptyFile(java.nio.file.Path)
-    public static varargs boolean isNewer(java.nio.file.Path,long,java.nio.file.LinkOption[])
-    public static boolean isNewer(java.nio.file.Path,java.nio.file.Path)
-    public static varargs boolean isNewer(java.nio.file.Path,java.nio.file.attribute.FileTime,java.nio.file.LinkOption[])
-    public static varargs boolean isNewer(java.nio.file.Path,java.time.Instant,java.nio.file.LinkOption[])
-    public static varargs boolean isNewer(java.nio.file.Path,java.time.chrono.ChronoZonedDateTime,java.nio.file.LinkOption[])
-    public static varargs boolean isOlder(java.nio.file.Path,long,java.nio.file.LinkOption[])
-    public static boolean isOlder(java.nio.file.Path,java.nio.file.Path)
-    public static varargs boolean isOlder(java.nio.file.Path,java.nio.file.attribute.FileTime,java.nio.file.LinkOption[])
-    public static varargs boolean isOlder(java.nio.file.Path,java.time.Instant,java.nio.file.LinkOption[])
-    public static varargs boolean isPosix(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static varargs boolean isRegularFile(java.nio.file.Path,java.nio.file.LinkOption[])
-    static boolean isSameFileSystem(java.nio.file.Path,java.nio.file.Path)
-    private static synthetic org.apache.commons.io.file.Counters$PathCounters lambda$deleteDirectory$0(java.nio.file.LinkOption[],org.apache.commons.io.file.DeleteOption[],java.nio.file.Path,java.nio.file.attribute.PosixFileAttributes)
-    private static synthetic java.lang.String lambda$directoryAndFileContentEquals$1(java.nio.file.Path)
-    private static synthetic boolean lambda$filterPaths$2(org.apache.commons.io.file.PathFilter,java.nio.file.Path)
-    private static synthetic boolean lambda$overrideReadOnly$3(org.apache.commons.io.file.DeleteOption)
-    private static synthetic boolean lambda$walk$4(org.apache.commons.io.file.PathFilter,boolean,java.nio.file.Path)
-    public static java.nio.file.DirectoryStream newDirectoryStream(java.nio.file.Path,org.apache.commons.io.file.PathFilter)
-    public static java.io.OutputStream newOutputStream(java.nio.file.Path,boolean)
-    static varargs java.io.OutputStream newOutputStream(java.nio.file.Path,java.nio.file.LinkOption[],java.nio.file.OpenOption[])
-    public static java.nio.file.LinkOption[] noFollowLinkOptionArray()
-    private static varargs boolean notExists(java.nio.file.Path,java.nio.file.LinkOption[])
-    private static varargs boolean overrideReadOnly(org.apache.commons.io.file.DeleteOption[])
-    public static varargs java.nio.file.attribute.BasicFileAttributes readAttributes(java.nio.file.Path,java.lang.Class,java.nio.file.LinkOption[])
-    public static java.nio.file.attribute.BasicFileAttributes readBasicFileAttributes(java.nio.file.Path)
-    public static varargs java.nio.file.attribute.BasicFileAttributes readBasicFileAttributes(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static java.nio.file.attribute.BasicFileAttributes readBasicFileAttributesUnchecked(java.nio.file.Path)
-    public static varargs java.nio.file.attribute.DosFileAttributes readDosFileAttributes(java.nio.file.Path,java.nio.file.LinkOption[])
-    private static java.nio.file.Path readIfSymbolicLink(java.nio.file.Path)
-    public static varargs java.nio.file.attribute.BasicFileAttributes readOsFileAttributes(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static varargs java.nio.file.attribute.PosixFileAttributes readPosixFileAttributes(java.nio.file.Path,java.nio.file.LinkOption[])
-    public static java.lang.String readString(java.nio.file.Path,java.nio.charset.Charset)
-    static java.util.List relativize(java.util.Collection,java.nio.file.Path,boolean,java.util.Comparator)
-    private static varargs java.nio.file.Path requireExists(java.nio.file.Path,java.lang.String,java.nio.file.LinkOption[])
-    static java.nio.file.Path resolve(java.nio.file.Path,java.nio.file.Path)
-    private static varargs boolean setDosReadOnly(java.nio.file.Path,boolean,java.nio.file.LinkOption[])
-    public static void setLastModifiedTime(java.nio.file.Path,java.nio.file.Path)
-    private static varargs boolean setPosixDeletePermissions(java.nio.file.Path,boolean,java.nio.file.LinkOption[])
-    private static varargs boolean setPosixPermissions(java.nio.file.Path,boolean,java.util.List,java.nio.file.LinkOption[])
-    private static varargs void setPosixReadOnlyFile(java.nio.file.Path,boolean,java.nio.file.LinkOption[])
-    public static varargs java.nio.file.Path setReadOnly(java.nio.file.Path,boolean,java.nio.file.LinkOption[])
-    public static long sizeOf(java.nio.file.Path)
-    public static java.math.BigInteger sizeOfAsBigInteger(java.nio.file.Path)
-    public static long sizeOfDirectory(java.nio.file.Path)
-    public static java.math.BigInteger sizeOfDirectoryAsBigInteger(java.nio.file.Path)
-    private static java.nio.file.Path stripTrailingSeparator(java.nio.file.Path)
-    static varargs java.util.Set toFileVisitOptionSet(java.nio.file.FileVisitOption[])
-    private static java.util.List toList(java.lang.Iterable)
-    private static java.util.List toSortedList(java.lang.Iterable)
-    public static java.nio.file.Path touch(java.nio.file.Path)
-    public static varargs java.nio.file.FileVisitor visitFileTree(java.nio.file.FileVisitor,java.lang.String,java.lang.String[])
-    public static java.nio.file.FileVisitor visitFileTree(java.nio.file.FileVisitor,java.net.URI)
-    public static java.nio.file.FileVisitor visitFileTree(java.nio.file.FileVisitor,java.nio.file.Path)
-    public static java.nio.file.FileVisitor visitFileTree(java.nio.file.FileVisitor,java.nio.file.Path,java.util.Set,int)
-    public static varargs boolean waitFor(java.nio.file.Path,java.time.Duration,java.nio.file.LinkOption[])
-    public static varargs java.util.stream.Stream walk(java.nio.file.Path,org.apache.commons.io.file.PathFilter,int,boolean,java.nio.file.FileVisitOption[])
-    private static java.lang.Object withPosixFileAttributes(java.nio.file.Path,java.nio.file.LinkOption[],boolean,org.apache.commons.io.function.IOFunction)
-    public static varargs java.nio.file.Path writeString(java.nio.file.Path,java.lang.CharSequence,java.nio.charset.Charset,java.nio.file.OpenOption[])
-org.apache.commons.io.file.PathVisitor
-org.apache.commons.io.file.SimplePathVisitor$AbstractBuilder
-org.apache.commons.io.file.SimplePathVisitor
-org.apache.commons.io.file.StandardDeleteOption
-org.apache.commons.io.file.attribute.FileTimes
-org.apache.commons.io.file.attribute.package-info
-org.apache.commons.io.file.package-info
-org.apache.commons.io.file.spi.FileSystemProviders
-org.apache.commons.io.file.spi.package-info
-org.apache.commons.io.filefilter.AbstractFileFilter
-org.apache.commons.io.filefilter.AgeFileFilter
-org.apache.commons.io.filefilter.AndFileFilter
-org.apache.commons.io.filefilter.CanExecuteFileFilter
-org.apache.commons.io.filefilter.CanReadFileFilter
-org.apache.commons.io.filefilter.CanWriteFileFilter
-org.apache.commons.io.filefilter.ConditionalFileFilter
-org.apache.commons.io.filefilter.DelegateFileFilter
-org.apache.commons.io.filefilter.DirectoryFileFilter
-org.apache.commons.io.filefilter.EmptyFileFilter
-org.apache.commons.io.filefilter.FalseFileFilter
-org.apache.commons.io.filefilter.FileEqualsFileFilter
-org.apache.commons.io.filefilter.FileFileFilter
-org.apache.commons.io.filefilter.FileFilterUtils
-org.apache.commons.io.filefilter.HiddenFileFilter
-org.apache.commons.io.filefilter.IOFileFilter
-org.apache.commons.io.filefilter.MagicNumberFileFilter
-org.apache.commons.io.filefilter.NameFileFilter
-org.apache.commons.io.filefilter.NotFileFilter
-org.apache.commons.io.filefilter.OrFileFilter
-org.apache.commons.io.filefilter.PathEqualsFileFilter
-org.apache.commons.io.filefilter.PathMatcherFileFilter
-org.apache.commons.io.filefilter.PathVisitorFileFilter
-org.apache.commons.io.filefilter.PrefixFileFilter
-org.apache.commons.io.filefilter.RegexFileFilter
-org.apache.commons.io.filefilter.SizeFileFilter
-org.apache.commons.io.filefilter.SuffixFileFilter
-org.apache.commons.io.filefilter.SymbolicLinkFileFilter
-org.apache.commons.io.filefilter.TrueFileFilter
-org.apache.commons.io.filefilter.WildcardFileFilter$1
-org.apache.commons.io.filefilter.WildcardFileFilter$Builder
-org.apache.commons.io.filefilter.WildcardFileFilter
-org.apache.commons.io.filefilter.WildcardFilter
-org.apache.commons.io.filefilter.package-info
-org.apache.commons.io.function.Constants
-org.apache.commons.io.function.Erase:
-    private void <init>()
-    static void accept(org.apache.commons.io.function.IOBiConsumer,java.lang.Object,java.lang.Object)
-    static void accept(org.apache.commons.io.function.IOConsumer,java.lang.Object)
-    static java.lang.Object apply(org.apache.commons.io.function.IOBiFunction,java.lang.Object,java.lang.Object)
-    static java.lang.Object apply(org.apache.commons.io.function.IOFunction,java.lang.Object)
-    static int compare(org.apache.commons.io.function.IOComparator,java.lang.Object,java.lang.Object)
-    static java.lang.Object get(org.apache.commons.io.function.IOSupplier)
-    static void run(org.apache.commons.io.function.IORunnable)
-    static boolean test(org.apache.commons.io.function.IOPredicate,java.lang.Object)
-org.apache.commons.io.function.IOBaseStream
-org.apache.commons.io.function.IOBaseStreamAdapter
-org.apache.commons.io.function.IOBiConsumer
-org.apache.commons.io.function.IOBiFunction
-org.apache.commons.io.function.IOBinaryOperator
-org.apache.commons.io.function.IOBooleanSupplier
-org.apache.commons.io.function.IOComparator
-org.apache.commons.io.function.IOConsumer:
-    public org.apache.commons.io.function.IOConsumer andThen(org.apache.commons.io.function.IOConsumer)
-    public java.util.function.Consumer asConsumer()
-org.apache.commons.io.function.IOFunction:
-    public org.apache.commons.io.function.IOConsumer andThen(java.util.function.Consumer)
-    public org.apache.commons.io.function.IOConsumer andThen(org.apache.commons.io.function.IOConsumer)
-    public org.apache.commons.io.function.IOFunction andThen(java.util.function.Function)
-    public org.apache.commons.io.function.IOFunction andThen(org.apache.commons.io.function.IOFunction)
-    public java.util.function.Function asFunction()
-    public org.apache.commons.io.function.IOFunction compose(java.util.function.Function)
-    public org.apache.commons.io.function.IOFunction compose(org.apache.commons.io.function.IOFunction)
-    public org.apache.commons.io.function.IOSupplier compose(java.util.function.Supplier)
-    public org.apache.commons.io.function.IOSupplier compose(org.apache.commons.io.function.IOSupplier)
-    public static org.apache.commons.io.function.IOFunction identity()
-    private synthetic void lambda$andThen$0(java.util.function.Consumer,java.lang.Object)
-    private synthetic java.lang.Object lambda$andThen$1(java.util.function.Function,java.lang.Object)
-    private synthetic void lambda$andThen$2(org.apache.commons.io.function.IOConsumer,java.lang.Object)
-    private synthetic java.lang.Object lambda$andThen$3(org.apache.commons.io.function.IOFunction,java.lang.Object)
-    private synthetic java.lang.Object lambda$asFunction$4(java.lang.Object)
-    private synthetic java.lang.Object lambda$compose$5(java.util.function.Function,java.lang.Object)
-    private synthetic java.lang.Object lambda$compose$6(org.apache.commons.io.function.IOFunction,java.lang.Object)
-    private synthetic java.lang.Object lambda$compose$7(org.apache.commons.io.function.IOSupplier)
-    private synthetic java.lang.Object lambda$compose$8(java.util.function.Supplier)
-org.apache.commons.io.function.IOIntConsumer:
-    public org.apache.commons.io.function.IOIntConsumer andThen(org.apache.commons.io.function.IOIntConsumer)
-    public java.util.function.Consumer asConsumer()
-    public java.util.function.IntConsumer asIntConsumer()
-org.apache.commons.io.function.IOIntSupplier
-org.apache.commons.io.function.IOIterable
-org.apache.commons.io.function.IOIterator
-org.apache.commons.io.function.IOIteratorAdapter
-org.apache.commons.io.function.IOLongSupplier
-org.apache.commons.io.function.IOPredicate
-org.apache.commons.io.function.IOQuadFunction
-org.apache.commons.io.function.IORunnable
-org.apache.commons.io.function.IOSpliterator
-org.apache.commons.io.function.IOSpliteratorAdapter
-org.apache.commons.io.function.IOStream$1
-org.apache.commons.io.function.IOStream
-org.apache.commons.io.function.IOStreamAdapter
-org.apache.commons.io.function.IOStreams
-org.apache.commons.io.function.IOSupplier
-org.apache.commons.io.function.IOTriConsumer
-org.apache.commons.io.function.IOTriFunction
-org.apache.commons.io.function.IOUnaryOperator
-org.apache.commons.io.function.Uncheck
-org.apache.commons.io.function.UncheckedIOBaseStream
-org.apache.commons.io.function.UncheckedIOIterable
-org.apache.commons.io.function.UncheckedIOIterator
-org.apache.commons.io.function.UncheckedIOSpliterator
-org.apache.commons.io.function.package-info
-org.apache.commons.io.input.AbstractCharacterFilterReader
-org.apache.commons.io.input.AbstractInputStream
-org.apache.commons.io.input.AutoCloseInputStream$1
-org.apache.commons.io.input.AutoCloseInputStream$Builder
-org.apache.commons.io.input.AutoCloseInputStream
-org.apache.commons.io.input.BOMInputStream$1
-org.apache.commons.io.input.BOMInputStream$Builder
-org.apache.commons.io.input.BOMInputStream
-org.apache.commons.io.input.BoundedInputStream$AbstractBuilder
-org.apache.commons.io.input.BoundedInputStream$Builder
-org.apache.commons.io.input.BoundedInputStream
-org.apache.commons.io.input.BoundedReader
-org.apache.commons.io.input.BrokenInputStream
-org.apache.commons.io.input.BrokenReader
-org.apache.commons.io.input.BufferedFileChannelInputStream$1
-org.apache.commons.io.input.BufferedFileChannelInputStream$Builder
-org.apache.commons.io.input.BufferedFileChannelInputStream
-org.apache.commons.io.input.ByteBufferCleaner$1
-org.apache.commons.io.input.ByteBufferCleaner$Cleaner
-org.apache.commons.io.input.ByteBufferCleaner$Java8Cleaner
-org.apache.commons.io.input.ByteBufferCleaner$Java9Cleaner
-org.apache.commons.io.input.ByteBufferCleaner
-org.apache.commons.io.input.CharSequenceInputStream$1
-org.apache.commons.io.input.CharSequenceInputStream$Builder
-org.apache.commons.io.input.CharSequenceInputStream
-org.apache.commons.io.input.CharSequenceReader
-org.apache.commons.io.input.CharacterFilterReader
-org.apache.commons.io.input.CharacterSetFilterReader
-org.apache.commons.io.input.ChecksumInputStream$1
-org.apache.commons.io.input.ChecksumInputStream$Builder
-org.apache.commons.io.input.ChecksumInputStream
-org.apache.commons.io.input.CircularInputStream
-org.apache.commons.io.input.ClassLoaderObjectInputStream
-org.apache.commons.io.input.CloseShieldInputStream:
-    public static java.io.InputStream systemIn(java.io.InputStream)
-org.apache.commons.io.input.CloseShieldReader
-org.apache.commons.io.input.ClosedInputStream:
-    static java.io.InputStream ifNull(java.io.InputStream)
-org.apache.commons.io.input.ClosedReader
-org.apache.commons.io.input.CountingInputStream
-org.apache.commons.io.input.DemuxInputStream
-org.apache.commons.io.input.InfiniteCircularInputStream
-org.apache.commons.io.input.Input:
-    void <init>()
-org.apache.commons.io.input.MarkShieldInputStream
-org.apache.commons.io.input.MemoryMappedFileInputStream$1
-org.apache.commons.io.input.MemoryMappedFileInputStream$Builder
-org.apache.commons.io.input.MemoryMappedFileInputStream
-org.apache.commons.io.input.MessageDigestCalculatingInputStream$1
-org.apache.commons.io.input.MessageDigestCalculatingInputStream$Builder
-org.apache.commons.io.input.MessageDigestCalculatingInputStream$MessageDigestMaintainingObserver
-org.apache.commons.io.input.MessageDigestCalculatingInputStream
-org.apache.commons.io.input.MessageDigestInputStream$1
-org.apache.commons.io.input.MessageDigestInputStream$Builder
-org.apache.commons.io.input.MessageDigestInputStream$MessageDigestMaintainingObserver
-org.apache.commons.io.input.MessageDigestInputStream
-org.apache.commons.io.input.NullInputStream
-org.apache.commons.io.input.NullReader
-org.apache.commons.io.input.ObservableInputStream$AbstractBuilder
-org.apache.commons.io.input.ObservableInputStream$Builder
-org.apache.commons.io.input.ObservableInputStream$Observer
-org.apache.commons.io.input.ObservableInputStream
-org.apache.commons.io.input.ProxyInputStream$AbstractBuilder
-org.apache.commons.io.input.ProxyInputStream:
-    protected void <init>(java.io.InputStream,org.apache.commons.io.input.ProxyInputStream$AbstractBuilder)
-    protected void <init>(org.apache.commons.io.input.ProxyInputStream$AbstractBuilder)
-    public void close()
-org.apache.commons.io.input.ProxyReader
-org.apache.commons.io.input.QueueInputStream$1
-org.apache.commons.io.input.QueueInputStream$Builder
-org.apache.commons.io.input.QueueInputStream
-org.apache.commons.io.input.RandomAccessFileInputStream$Builder
-org.apache.commons.io.input.RandomAccessFileInputStream
-org.apache.commons.io.input.ReadAheadInputStream$1
-org.apache.commons.io.input.ReadAheadInputStream$Builder
-org.apache.commons.io.input.ReadAheadInputStream
-org.apache.commons.io.input.ReaderInputStream$Builder
-org.apache.commons.io.input.ReaderInputStream
-org.apache.commons.io.input.ReversedLinesFileReader$1
-org.apache.commons.io.input.ReversedLinesFileReader$Builder
-org.apache.commons.io.input.ReversedLinesFileReader$FilePart
-org.apache.commons.io.input.ReversedLinesFileReader
-org.apache.commons.io.input.SequenceReader
-org.apache.commons.io.input.SwappedDataInputStream
-org.apache.commons.io.input.TaggedReader
-org.apache.commons.io.input.Tailer$1
-org.apache.commons.io.input.Tailer$Builder
-org.apache.commons.io.input.Tailer$RandomAccessFileBridge
-org.apache.commons.io.input.Tailer$RandomAccessResourceBridge
-org.apache.commons.io.input.Tailer$Tailable
-org.apache.commons.io.input.Tailer$TailablePath
-org.apache.commons.io.input.Tailer
-org.apache.commons.io.input.TailerListener
-org.apache.commons.io.input.TailerListenerAdapter
-org.apache.commons.io.input.TeeInputStream
-org.apache.commons.io.input.TeeReader
-org.apache.commons.io.input.ThrottledInputStream$1
-org.apache.commons.io.input.ThrottledInputStream$Builder
-org.apache.commons.io.input.ThrottledInputStream
-org.apache.commons.io.input.TimestampedObserver
-org.apache.commons.io.input.UncheckedBufferedReader$1
-org.apache.commons.io.input.UncheckedBufferedReader$Builder
-org.apache.commons.io.input.UncheckedBufferedReader
-org.apache.commons.io.input.UncheckedFilterInputStream$1
-org.apache.commons.io.input.UncheckedFilterInputStream$Builder
-org.apache.commons.io.input.UncheckedFilterInputStream
-org.apache.commons.io.input.UncheckedFilterReader$1
-org.apache.commons.io.input.UncheckedFilterReader$Builder
-org.apache.commons.io.input.UncheckedFilterReader
-org.apache.commons.io.input.UnixLineEndingInputStream
-org.apache.commons.io.input.UnsupportedOperationExceptions
-org.apache.commons.io.input.UnsynchronizedBufferedInputStream$Builder:
-    public synthetic bridge java.lang.Object get()
-org.apache.commons.io.input.UnsynchronizedBufferedInputStream:
-    byte[] getBuffer()
-org.apache.commons.io.input.UnsynchronizedBufferedReader
-org.apache.commons.io.input.UnsynchronizedByteArrayInputStream$Builder:
-    public synthetic bridge java.lang.Object get()
-    public synthetic bridge org.apache.commons.io.build.AbstractOriginSupplier setByteArray(byte[])
-org.apache.commons.io.input.UnsynchronizedByteArrayInputStream:
-    public static final int END_OF_STREAM
-    public void <init>(byte[],int)
-org.apache.commons.io.input.UnsynchronizedFilterInputStream$Builder
-org.apache.commons.io.input.UnsynchronizedFilterInputStream:
-    public int available()
-    public static org.apache.commons.io.input.UnsynchronizedFilterInputStream$Builder builder()
-    public void close()
-    public void mark(int)
-    public boolean markSupported()
-    public int read()
-    public void reset()
-    public long skip(long)
-org.apache.commons.io.input.UnsynchronizedReader
-org.apache.commons.io.input.WindowsLineEndingInputStream
-org.apache.commons.io.input.XmlStreamReader$Builder
-org.apache.commons.io.input.XmlStreamReader
-org.apache.commons.io.input.XmlStreamReaderException
-org.apache.commons.io.input.buffer.CircularBufferInputStream
-org.apache.commons.io.input.buffer.CircularByteBuffer
-org.apache.commons.io.input.buffer.PeekableInputStream
-org.apache.commons.io.input.buffer.package-info
-org.apache.commons.io.input.package-info
-org.apache.commons.io.monitor.FileAlterationListener
-org.apache.commons.io.monitor.FileAlterationListenerAdaptor
-org.apache.commons.io.monitor.FileAlterationMonitor
-org.apache.commons.io.monitor.FileAlterationObserver$1
-org.apache.commons.io.monitor.FileAlterationObserver$Builder
-org.apache.commons.io.monitor.FileAlterationObserver
-org.apache.commons.io.monitor.FileEntry
-org.apache.commons.io.monitor.SerializableFileTime
-org.apache.commons.io.monitor.package-info
-org.apache.commons.io.output.AbstractByteArrayOutputStream$InputStreamConstructor
-org.apache.commons.io.output.AbstractByteArrayOutputStream:
-    static final int DEFAULT_SIZE
-    protected org.apache.commons.io.output.AbstractByteArrayOutputStream asThis()
-    public abstract void reset()
-    protected void resetImpl()
-    public abstract int size()
-    public abstract java.io.InputStream toInputStream()
-    protected java.io.InputStream toInputStream(org.apache.commons.io.output.AbstractByteArrayOutputStream$InputStreamConstructor)
-    public abstract int write(java.io.InputStream)
-    public org.apache.commons.io.output.AbstractByteArrayOutputStream write(java.lang.CharSequence,java.nio.charset.Charset)
-    public abstract void write(int)
-    protected int writeImpl(java.io.InputStream)
-    public abstract void writeTo(java.io.OutputStream)
-    protected void writeToImpl(java.io.OutputStream)
-org.apache.commons.io.output.AppendableOutputStream
-org.apache.commons.io.output.AppendableWriter
-org.apache.commons.io.output.BrokenOutputStream
-org.apache.commons.io.output.BrokenWriter
-org.apache.commons.io.output.ByteArrayOutputStream
-org.apache.commons.io.output.ChunkedOutputStream$Builder
-org.apache.commons.io.output.ChunkedOutputStream
-org.apache.commons.io.output.ChunkedWriter
-org.apache.commons.io.output.CloseShieldOutputStream
-org.apache.commons.io.output.CloseShieldWriter
-org.apache.commons.io.output.ClosedOutputStream
-org.apache.commons.io.output.ClosedWriter
-org.apache.commons.io.output.CountingOutputStream
-org.apache.commons.io.output.DeferredFileOutputStream$1
-org.apache.commons.io.output.DeferredFileOutputStream$Builder
-org.apache.commons.io.output.DeferredFileOutputStream
-org.apache.commons.io.output.DemuxOutputStream
-org.apache.commons.io.output.FileWriterWithEncoding$1
-org.apache.commons.io.output.FileWriterWithEncoding$Builder
-org.apache.commons.io.output.FileWriterWithEncoding
-org.apache.commons.io.output.FilterCollectionWriter
-org.apache.commons.io.output.LockableFileWriter$Builder
-org.apache.commons.io.output.LockableFileWriter
-org.apache.commons.io.output.NullAppendable
-org.apache.commons.io.output.NullPrintStream
-org.apache.commons.io.output.NullWriter
-org.apache.commons.io.output.ProxyCollectionWriter
-org.apache.commons.io.output.ProxyOutputStream$Builder
-org.apache.commons.io.output.ProxyOutputStream
-org.apache.commons.io.output.ProxyWriter
-org.apache.commons.io.output.QueueOutputStream
-org.apache.commons.io.output.RandomAccessFileOutputStream$1
-org.apache.commons.io.output.RandomAccessFileOutputStream$Builder
-org.apache.commons.io.output.RandomAccessFileOutputStream
-org.apache.commons.io.output.StringBuilderWriter
-org.apache.commons.io.output.TaggedOutputStream
-org.apache.commons.io.output.TaggedWriter
-org.apache.commons.io.output.TeeOutputStream
-org.apache.commons.io.output.TeeWriter
-org.apache.commons.io.output.ThresholdingOutputStream:
-    public void <init>(int)
-    public long getByteCount()
-    public int getThreshold()
-    public boolean isThresholdExceeded()
-    protected void resetByteCount()
-    protected void setByteCount(long)
-org.apache.commons.io.output.UncheckedAppendable
-org.apache.commons.io.output.UncheckedAppendableImpl
-org.apache.commons.io.output.UncheckedFilterOutputStream$1
-org.apache.commons.io.output.UncheckedFilterOutputStream$Builder
-org.apache.commons.io.output.UncheckedFilterOutputStream
-org.apache.commons.io.output.UncheckedFilterWriter$1
-org.apache.commons.io.output.UncheckedFilterWriter$Builder
-org.apache.commons.io.output.UncheckedFilterWriter
-org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream$Builder:
-    public synthetic bridge java.lang.Object get()
-org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream:
-    public void <init>()
-    private static synthetic org.apache.commons.io.input.UnsynchronizedByteArrayInputStream lambda$toInputStream$0(byte[],int,int)
-    private static synthetic org.apache.commons.io.input.UnsynchronizedByteArrayInputStream lambda$toInputStream$1(byte[],int,int)
-    public void reset()
-    public static java.io.InputStream toBufferedInputStream(java.io.InputStream)
-    public static java.io.InputStream toBufferedInputStream(java.io.InputStream,int)
-    public java.io.InputStream toInputStream()
-    public int write(java.io.InputStream)
-    public void writeTo(java.io.OutputStream)
-org.apache.commons.io.output.WriterOutputStream$Builder
-org.apache.commons.io.output.WriterOutputStream
-org.apache.commons.io.output.XmlStreamWriter$1
-org.apache.commons.io.output.XmlStreamWriter$Builder
-org.apache.commons.io.output.XmlStreamWriter
-org.apache.commons.io.output.package-info
-org.apache.commons.io.package-info
-org.apache.commons.io.serialization.ClassNameMatcher
-org.apache.commons.io.serialization.FullClassNameMatcher
-org.apache.commons.io.serialization.ObjectStreamClassPredicate
-org.apache.commons.io.serialization.RegexpClassNameMatcher
-org.apache.commons.io.serialization.ValidatingObjectInputStream$1
-org.apache.commons.io.serialization.ValidatingObjectInputStream$Builder
-org.apache.commons.io.serialization.ValidatingObjectInputStream
-org.apache.commons.io.serialization.WildcardClassNameMatcher
-org.apache.commons.io.serialization.package-info
-org.apache.tika.utils.XMLReaderUtils$$InternalSyntheticLambda$1$19018a2f54daedece3e967eb7fef71facf0770aa01d4c41a13fee36aeaf57c24$1:
-    public final java.lang.Object resolveEntity(java.lang.String,java.lang.String,java.lang.String,java.lang.String)
-org.apache.tika.utils.XMLReaderUtils:
-    public static synthetic java.lang.Object $r8$lambda$rQBpNljlTCIXL_F-6NVvwj-NP-0(java.lang.String,java.lang.String,java.lang.String,java.lang.String)
 org.intellij.lang.annotations.Flow
 org.intellij.lang.annotations.Identifier
 org.intellij.lang.annotations.JdkConstants$AdjustableOrientation
@@ -19744,389 +18602,6 @@ org.jetbrains.annotations.UnknownNullability
 org.jetbrains.annotations.Unmodifiable
 org.jetbrains.annotations.UnmodifiableView
 org.jetbrains.annotations.VisibleForTesting
-org.slf4j.IMarkerFactory:
-    public abstract boolean detachMarker(java.lang.String)
-    public abstract boolean exists(java.lang.String)
-    public abstract org.slf4j.Marker getDetachedMarker(java.lang.String)
-    public abstract org.slf4j.Marker getMarker(java.lang.String)
-org.slf4j.Logger:
-    public static final java.lang.String ROOT_LOGGER_NAME
-    public org.slf4j.spi.LoggingEventBuilder atDebug()
-    public org.slf4j.spi.LoggingEventBuilder atError()
-    public org.slf4j.spi.LoggingEventBuilder atInfo()
-    public org.slf4j.spi.LoggingEventBuilder atLevel(org.slf4j.event.Level)
-    public org.slf4j.spi.LoggingEventBuilder atTrace()
-    public org.slf4j.spi.LoggingEventBuilder atWarn()
-    public abstract void debug(org.slf4j.Marker,java.lang.String)
-    public abstract void debug(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public abstract void debug(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public abstract void debug(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs abstract void debug(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public abstract void error(java.lang.String)
-    public abstract void error(org.slf4j.Marker,java.lang.String)
-    public abstract void error(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public abstract void error(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public abstract void error(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs abstract void error(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public abstract void info(java.lang.String,java.lang.Throwable)
-    public varargs abstract void info(java.lang.String,java.lang.Object[])
-    public abstract void info(org.slf4j.Marker,java.lang.String)
-    public abstract void info(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public abstract void info(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public abstract void info(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs abstract void info(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public abstract boolean isDebugEnabled(org.slf4j.Marker)
-    public abstract boolean isErrorEnabled(org.slf4j.Marker)
-    public abstract boolean isInfoEnabled(org.slf4j.Marker)
-    public abstract boolean isTraceEnabled(org.slf4j.Marker)
-    public abstract boolean isWarnEnabled(org.slf4j.Marker)
-    public org.slf4j.spi.LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level)
-    public abstract void trace(java.lang.String,java.lang.Throwable)
-    public varargs abstract void trace(java.lang.String,java.lang.Object[])
-    public abstract void trace(org.slf4j.Marker,java.lang.String)
-    public abstract void trace(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public abstract void trace(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public abstract void trace(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs abstract void trace(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public abstract void warn(org.slf4j.Marker,java.lang.String)
-    public abstract void warn(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public abstract void warn(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public abstract void warn(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs abstract void warn(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-org.slf4j.LoggerFactory:
-    static final java.lang.String CODES_PREFIX
-    static final java.lang.String CONNECTED_WITH_MSG
-    static final java.lang.String DETECT_LOGGER_NAME_MISMATCH_PROPERTY
-    static final int FAILED_INITIALIZATION
-    static final java.lang.String IGNORED_BINDINGS_URL
-    static final java.lang.String JAVA_VENDOR_PROPERTY
-    static final java.lang.String LOGGER_NAME_MISMATCH_URL
-    static final java.lang.String MULTIPLE_BINDINGS_URL
-    static final int NOP_FALLBACK_INITIALIZATION
-    static final java.lang.String NO_PROVIDERS_URL
-    static final int ONGOING_INITIALIZATION
-    public static final java.lang.String PROVIDER_PROPERTY_KEY
-    static final java.lang.String REPLAY_URL
-    private static final java.lang.String STATIC_LOGGER_BINDER_PATH
-    static final java.lang.String SUBSTITUTE_LOGGER_URL
-    static final int SUCCESSFUL_INITIALIZATION
-    static final int UNINITIALIZED
-    static final java.lang.String UNSUCCESSFUL_INIT_MSG
-    static final java.lang.String UNSUCCESSFUL_INIT_URL
-    static final java.lang.String VERSION_MISMATCH
-    private void <init>()
-    static void reset()
-org.slf4j.LoggerFactoryFriend
-org.slf4j.MDC$1
-org.slf4j.MDC$MDCCloseable
-org.slf4j.MDC:
-    private static final java.lang.String MDC_APAPTER_CANNOT_BE_NULL_MESSAGE
-    static final java.lang.String NO_STATIC_MDC_BINDER_URL
-    static final java.lang.String NULL_MDCA_URL
-    private void <init>()
-    public static void clear()
-    private static void emitTemporaryMDCAdapterWarningIfNeeded(org.slf4j.spi.SLF4JServiceProvider)
-    public static java.lang.String get(java.lang.String)
-    public static java.util.Map getCopyOfContextMap()
-    public java.util.Deque getCopyOfDequeByKey(java.lang.String)
-    public static org.slf4j.spi.MDCAdapter getMDCAdapter()
-    private static org.slf4j.spi.MDCAdapter getMDCAdapterGivenByProvider()
-    public static java.lang.String popByKey(java.lang.String)
-    public static void pushByKey(java.lang.String,java.lang.String)
-    public static void put(java.lang.String,java.lang.String)
-    public static org.slf4j.MDC$MDCCloseable putCloseable(java.lang.String,java.lang.String)
-    public static void remove(java.lang.String)
-    public static void setContextMap(java.util.Map)
-org.slf4j.Marker:
-    public static final java.lang.String ANY_MARKER
-    public static final java.lang.String ANY_NON_NULL_MARKER
-    public abstract void add(org.slf4j.Marker)
-    public abstract boolean contains(java.lang.String)
-    public abstract boolean contains(org.slf4j.Marker)
-    public abstract boolean equals(java.lang.Object)
-    public abstract java.lang.String getName()
-    public abstract boolean hasChildren()
-    public abstract boolean hasReferences()
-    public abstract int hashCode()
-    public abstract java.util.Iterator iterator()
-    public abstract boolean remove(org.slf4j.Marker)
-org.slf4j.MarkerFactory
-org.slf4j.event.DefaultLoggingEvent
-org.slf4j.event.EventConstants
-org.slf4j.event.EventRecordingLogger:
-    static final boolean RECORD_ALL_EVENTS
-    private static final long serialVersionUID
-    protected java.lang.String getFullyQualifiedCallerName()
-org.slf4j.event.KeyValuePair
-org.slf4j.event.Level:
-    public static org.slf4j.event.Level intToLevel(int)
-org.slf4j.event.LoggingEvent:
-    public abstract java.lang.Object[] getArgumentArray()
-    public abstract java.util.List getArguments()
-    public java.lang.String getCallerBoundary()
-    public abstract java.util.List getKeyValuePairs()
-    public abstract org.slf4j.event.Level getLevel()
-    public abstract java.lang.String getLoggerName()
-    public abstract java.util.List getMarkers()
-    public abstract java.lang.String getMessage()
-    public abstract java.lang.String getThreadName()
-    public abstract java.lang.Throwable getThrowable()
-    public abstract long getTimeStamp()
-org.slf4j.event.SubstituteLoggingEvent:
-    java.util.List keyValuePairList
-    public java.lang.Object[] getArgumentArray()
-    public java.util.List getArguments()
-    public java.util.List getKeyValuePairs()
-    public java.lang.String getLoggerName()
-    public java.util.List getMarkers()
-    public java.lang.String getMessage()
-    public java.lang.String getThreadName()
-    public java.lang.Throwable getThrowable()
-    public long getTimeStamp()
-org.slf4j.helpers.AbstractLogger:
-    protected java.lang.String name
-    private static final long serialVersionUID
-    public void debug(org.slf4j.Marker,java.lang.String)
-    public void debug(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void debug(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void debug(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void debug(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public void error(java.lang.String)
-    public void error(org.slf4j.Marker,java.lang.String)
-    public void error(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void error(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void error(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void error(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    protected abstract java.lang.String getFullyQualifiedCallerName()
-    public java.lang.String getName()
-    public void info(java.lang.String,java.lang.Throwable)
-    public varargs void info(java.lang.String,java.lang.Object[])
-    public void info(org.slf4j.Marker,java.lang.String)
-    public void info(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void info(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void info(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void info(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    protected java.lang.Object readResolve()
-    public void trace(java.lang.String,java.lang.Throwable)
-    public varargs void trace(java.lang.String,java.lang.Object[])
-    public void trace(org.slf4j.Marker,java.lang.String)
-    public void trace(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void trace(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void trace(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void trace(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public void warn(org.slf4j.Marker,java.lang.String)
-    public void warn(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void warn(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void warn(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void warn(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-org.slf4j.helpers.BasicMDCAdapter:
-    public void clear()
-    public void clearDequeByKey(java.lang.String)
-    public java.lang.String get(java.lang.String)
-    public java.util.Map getCopyOfContextMap()
-    public java.util.Deque getCopyOfDequeByKey(java.lang.String)
-    public java.util.Set getKeys()
-    public java.lang.String popByKey(java.lang.String)
-    public void pushByKey(java.lang.String,java.lang.String)
-    public void put(java.lang.String,java.lang.String)
-    public void remove(java.lang.String)
-    public void setContextMap(java.util.Map)
-org.slf4j.helpers.BasicMarker
-org.slf4j.helpers.BasicMarkerFactory:
-    public boolean detachMarker(java.lang.String)
-    public boolean exists(java.lang.String)
-    public org.slf4j.Marker getDetachedMarker(java.lang.String)
-    public org.slf4j.Marker getMarker(java.lang.String)
-org.slf4j.helpers.CheckReturnValue
-org.slf4j.helpers.FormattingTuple
-org.slf4j.helpers.LegacyAbstractLogger:
-    private static final long serialVersionUID
-    public boolean isDebugEnabled(org.slf4j.Marker)
-    public boolean isErrorEnabled(org.slf4j.Marker)
-    public boolean isInfoEnabled(org.slf4j.Marker)
-    public boolean isTraceEnabled(org.slf4j.Marker)
-    public boolean isWarnEnabled(org.slf4j.Marker)
-org.slf4j.helpers.MarkerIgnoringBase
-org.slf4j.helpers.MessageFormatter:
-    static final char DELIM_START
-    static final char DELIM_STOP
-    static final java.lang.String DELIM_STR
-    private static final char ESCAPE_CHAR
-    public void <init>()
-    public static final org.slf4j.helpers.FormattingTuple arrayFormat(java.lang.String,java.lang.Object[])
-    public static final org.slf4j.helpers.FormattingTuple arrayFormat(java.lang.String,java.lang.Object[],java.lang.Throwable)
-    public static final java.lang.String basicArrayFormat(java.lang.String,java.lang.Object[])
-    public static java.lang.String basicArrayFormat(org.slf4j.helpers.NormalizedParameters)
-    private static void booleanArrayAppend(java.lang.StringBuilder,boolean[])
-    private static void byteArrayAppend(java.lang.StringBuilder,byte[])
-    private static void charArrayAppend(java.lang.StringBuilder,char[])
-    private static void deeplyAppendParameter(java.lang.StringBuilder,java.lang.Object,java.util.Map)
-    private static void doubleArrayAppend(java.lang.StringBuilder,double[])
-    private static void floatArrayAppend(java.lang.StringBuilder,float[])
-    public static final org.slf4j.helpers.FormattingTuple format(java.lang.String,java.lang.Object)
-    public static final org.slf4j.helpers.FormattingTuple format(java.lang.String,java.lang.Object,java.lang.Object)
-    private static void intArrayAppend(java.lang.StringBuilder,int[])
-    static final boolean isDoubleEscaped(java.lang.String,int)
-    static final boolean isEscapedDelimeter(java.lang.String,int)
-    private static void longArrayAppend(java.lang.StringBuilder,long[])
-    private static void objectArrayAppend(java.lang.StringBuilder,java.lang.Object[],java.util.Map)
-    private static void safeObjectAppend(java.lang.StringBuilder,java.lang.Object)
-    private static void shortArrayAppend(java.lang.StringBuilder,short[])
-org.slf4j.helpers.NOPLogger:
-    private static final long serialVersionUID
-    public final void debug(org.slf4j.Marker,java.lang.String)
-    public final void debug(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public final void debug(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public final void debug(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public final varargs void debug(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public final void error(java.lang.String)
-    public final void error(org.slf4j.Marker,java.lang.String)
-    public final void error(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public final void error(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public final void error(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public final varargs void error(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public final void info(java.lang.String,java.lang.Throwable)
-    public final varargs void info(java.lang.String,java.lang.Object[])
-    public final void info(org.slf4j.Marker,java.lang.String)
-    public final void info(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public final void info(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public final void info(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public final varargs void info(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public final boolean isDebugEnabled(org.slf4j.Marker)
-    public final boolean isErrorEnabled(org.slf4j.Marker)
-    public boolean isInfoEnabled(org.slf4j.Marker)
-    public final boolean isTraceEnabled(org.slf4j.Marker)
-    public final boolean isWarnEnabled(org.slf4j.Marker)
-    public final void trace(java.lang.String,java.lang.Throwable)
-    public final varargs void trace(java.lang.String,java.lang.Object[])
-    public final void trace(org.slf4j.Marker,java.lang.String)
-    public final void trace(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public final void trace(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public final void trace(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public final varargs void trace(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public final void warn(org.slf4j.Marker,java.lang.String)
-    public final void warn(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public final void warn(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public final void warn(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public final varargs void warn(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-org.slf4j.helpers.NOPMDCAdapter:
-    public void clear()
-    public void clearDequeByKey(java.lang.String)
-    public java.lang.String get(java.lang.String)
-    public java.util.Map getCopyOfContextMap()
-    public java.util.Deque getCopyOfDequeByKey(java.lang.String)
-    public java.lang.String popByKey(java.lang.String)
-    public void pushByKey(java.lang.String,java.lang.String)
-    public void put(java.lang.String,java.lang.String)
-    public void remove(java.lang.String)
-    public void setContextMap(java.util.Map)
-org.slf4j.helpers.NOP_FallbackServiceProvider:
-    public org.slf4j.IMarkerFactory getMarkerFactory()
-org.slf4j.helpers.NamedLoggerBase:
-    protected java.lang.String name
-    private static final long serialVersionUID
-    public java.lang.String getName()
-    protected java.lang.Object readResolve()
-org.slf4j.helpers.NormalizedParameters:
-    final java.lang.Object[] arguments
-    final java.lang.String message
-    final java.lang.Throwable throwable
-    public void <init>(java.lang.String,java.lang.Object[])
-    public void <init>(java.lang.String,java.lang.Object[],java.lang.Throwable)
-    public java.lang.Object[] getArguments()
-    public java.lang.String getMessage()
-    public java.lang.Throwable getThrowable()
-    public static org.slf4j.helpers.NormalizedParameters normalize(java.lang.String,java.lang.Object[],java.lang.Throwable)
-    public static org.slf4j.helpers.NormalizedParameters normalize(org.slf4j.event.LoggingEvent)
-org.slf4j.helpers.Reporter$Level:
-    private int getLevelInt()
-org.slf4j.helpers.Reporter:
-    static final java.lang.String SLF4J_DEBUG_PREFIX
-    static final java.lang.String SLF4J_ERROR_PREFIX
-    static final java.lang.String SLF4J_INFO_PREFIX
-    public static final java.lang.String SLF4J_INTERNAL_REPORT_STREAM_KEY
-    public static final java.lang.String SLF4J_INTERNAL_VERBOSITY_KEY
-    static final java.lang.String SLF4J_WARN_PREFIX
-    public void <init>()
-org.slf4j.helpers.Slf4jEnvUtil
-org.slf4j.helpers.SubstituteLogger:
-    public org.slf4j.spi.LoggingEventBuilder atDebug()
-    public org.slf4j.spi.LoggingEventBuilder atError()
-    public org.slf4j.spi.LoggingEventBuilder atInfo()
-    public org.slf4j.spi.LoggingEventBuilder atLevel(org.slf4j.event.Level)
-    public org.slf4j.spi.LoggingEventBuilder atTrace()
-    public org.slf4j.spi.LoggingEventBuilder atWarn()
-    public void debug(org.slf4j.Marker,java.lang.String)
-    public void debug(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void debug(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void debug(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void debug(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public void error(java.lang.String)
-    public void error(org.slf4j.Marker,java.lang.String)
-    public void error(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void error(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void error(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void error(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public void info(java.lang.String,java.lang.Throwable)
-    public varargs void info(java.lang.String,java.lang.Object[])
-    public void info(org.slf4j.Marker,java.lang.String)
-    public void info(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void info(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void info(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void info(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public boolean isDebugEnabled(org.slf4j.Marker)
-    public boolean isErrorEnabled(org.slf4j.Marker)
-    public boolean isInfoEnabled(org.slf4j.Marker)
-    public boolean isTraceEnabled(org.slf4j.Marker)
-    public boolean isWarnEnabled(org.slf4j.Marker)
-    public org.slf4j.spi.LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level)
-    public void trace(java.lang.String,java.lang.Throwable)
-    public varargs void trace(java.lang.String,java.lang.Object[])
-    public void trace(org.slf4j.Marker,java.lang.String)
-    public void trace(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void trace(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void trace(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void trace(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-    public void warn(org.slf4j.Marker,java.lang.String)
-    public void warn(org.slf4j.Marker,java.lang.String,java.lang.Object)
-    public void warn(org.slf4j.Marker,java.lang.String,java.lang.Object,java.lang.Object)
-    public void warn(org.slf4j.Marker,java.lang.String,java.lang.Throwable)
-    public varargs void warn(org.slf4j.Marker,java.lang.String,java.lang.Object[])
-org.slf4j.helpers.SubstituteLoggerFactory:
-    public java.util.List getLoggerNames()
-org.slf4j.helpers.SubstituteServiceProvider:
-    public org.slf4j.IMarkerFactory getMarkerFactory()
-org.slf4j.helpers.ThreadLocalMapOfStacks:
-    public void clearDequeByKey(java.lang.String)
-    public java.util.Deque getCopyOfDequeByKey(java.lang.String)
-    public java.lang.String popByKey(java.lang.String)
-    public void pushByKey(java.lang.String,java.lang.String)
-org.slf4j.helpers.Util:
-    private void <init>()
-    public static final void report(java.lang.String)
-    public static final void report(java.lang.String,java.lang.Throwable)
-org.slf4j.spi.CallerBoundaryAware
-org.slf4j.spi.DefaultLoggingEventBuilder$1
-org.slf4j.spi.DefaultLoggingEventBuilder
-org.slf4j.spi.LocationAwareLogger
-org.slf4j.spi.LoggerFactoryBinder
-org.slf4j.spi.LoggingEventAware
-org.slf4j.spi.LoggingEventBuilder
-org.slf4j.spi.MDCAdapter:
-    public abstract void clear()
-    public abstract void clearDequeByKey(java.lang.String)
-    public abstract java.lang.String get(java.lang.String)
-    public abstract java.util.Map getCopyOfContextMap()
-    public abstract java.util.Deque getCopyOfDequeByKey(java.lang.String)
-    public abstract java.lang.String popByKey(java.lang.String)
-    public abstract void pushByKey(java.lang.String,java.lang.String)
-    public abstract void put(java.lang.String,java.lang.String)
-    public abstract void remove(java.lang.String)
-    public abstract void setContextMap(java.util.Map)
-org.slf4j.spi.MarkerFactoryBinder
-org.slf4j.spi.NOPLoggingEventBuilder
-org.slf4j.spi.SLF4JServiceProvider:
-    public abstract org.slf4j.IMarkerFactory getMarkerFactory()
 _COROUTINE.CoroutineDebuggingKt:
     public static final java.lang.String getARTIFICIAL_FRAME_PACKAGE_NAME()
 androidx.activity.OnBackPressedDispatcher
@@ -20262,7 +18737,15 @@ androidx.core.view.MenuItemCompat:
     public static android.view.MenuItem setActionProvider(android.view.MenuItem,androidx.core.view.ActionProvider)
 androidx.core.view.NestedScrollingChild
 androidx.core.view.NestedScrollingParent
+androidx.core.view.OnApplyWindowInsetsListener:
+    public abstract androidx.core.view.WindowInsetsCompat onApplyWindowInsets(android.view.View,androidx.core.view.WindowInsetsCompat)
 androidx.core.view.TintableBackgroundView
+androidx.core.view.ViewCompat$Api21Impl$1:
+    final synthetic androidx.core.view.OnApplyWindowInsetsListener val$listener
+androidx.core.view.ViewCompat$Api28Impl$$InternalSyntheticLambda$1$cf2e526d9bc7fa04879b38f4727ab0499e9876ab42c0943335485b5322ba2fbb$0:
+    public final synthetic androidx.core.view.ViewCompat$OnUnhandledKeyEventListenerCompat f$0
+androidx.core.view.ViewCompat$OnUnhandledKeyEventListenerCompat:
+    public abstract boolean onUnhandledKeyEvent(android.view.View,android.view.KeyEvent)
 androidx.core.view.ViewCompat:
     private static java.util.WeakHashMap sViewPropertyAnimatorMap
     public static boolean hasAccessibilityDelegate(android.view.View)
@@ -20270,19 +18753,23 @@ androidx.core.view.ViewPropertyAnimatorCompat
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat$AccessibilityActionCompat$$InternalSyntheticThrowCCEIfNotNull$9$51a518e2562bdd83f1a37db6273eca8c40d29d82445ffc5c9314f2450daba410$0
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat$AccessibilityActionCompat:
     protected final androidx.core.view.accessibility.AccessibilityViewCommand mCommand
-androidx.core.view.accessibility.AccessibilityNodeInfoCompat$CollectionItemInfoCompat
+androidx.core.view.accessibility.AccessibilityNodeInfoCompat$CollectionItemInfoCompat:
+    public static androidx.core.view.accessibility.AccessibilityNodeInfoCompat$CollectionItemInfoCompat obtain(int,int,int,int,boolean,boolean)
 androidx.core.view.accessibility.AccessibilityNodeInfoCompat:
+    public int getActions()
     public void setCollectionItemInfo(java.lang.Object)
 androidx.core.view.accessibility.AccessibilityViewCommand$CommandArguments:
     public abstract void setBundle(android.os.Bundle)
 androidx.core.view.accessibility.AccessibilityViewCommand:
     public abstract boolean perform(android.view.View,androidx.core.view.accessibility.AccessibilityViewCommand$CommandArguments)
+androidx.core.view.autofill.AutofillIdCompat:
+    public abstract android.view.autofill.AutofillId toAutofillId()
+androidx.core.view.contentcapture.ContentCaptureSessionCompat:
+    public abstract android.view.contentcapture.ContentCaptureSession toContentCaptureSession()
 androidx.core.widget.NestedScrollView$OnScrollChangeListener:
     public abstract void onScrollChange(androidx.core.widget.NestedScrollView,int,int,int,int)
 androidx.core.widget.NestedScrollView:
     private androidx.core.widget.NestedScrollView$OnScrollChangeListener mOnScrollChangeListener
-androidx.core.widget.TextViewCompat$Api28Impl:
-    static java.lang.CharSequence castToCharSequence(android.text.PrecomputedText)
 androidx.core.widget.TintableImageSourceView
 androidx.datastore.core.DataMigration:
     public abstract java.lang.Object cleanUp(kotlin.coroutines.Continuation)

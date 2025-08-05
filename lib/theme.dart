@@ -45,42 +45,46 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  static final ThemeData lightTheme = ThemeData(
+  // Light theme
+  static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFFAF7F3),
+    scaffoldBackgroundColor: const Color(0xFFEEEEEE), // Updated primary color
     primaryColor: Colors.black,
-    cardColor: const Color(0xFFD9A299),
-          appBarTheme: AppBarTheme(
-        color: const Color(0xFFFAF7F3),
-        elevation: 0,
-        foregroundColor: Colors.black,
-        surfaceTintColor: const Color(0xFFFAF7F3),
-      iconTheme: const IconThemeData(color: Colors.black),
-      titleTextStyle: GoogleFonts.inter(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+    cardColor: const Color(0xFFDCCFC0), // Updated button/card color
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFFEEEEEE), // Updated to match scaffold
+      foregroundColor: Colors.black,
+      surfaceTintColor: Color(0xFFEEEEEE), // Updated to match scaffold
+      elevation: 0,
+      titleTextStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+      ),
     ),
-    textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
-    iconTheme: const IconThemeData(color: Colors.black54),
-          dividerColor: const Color(0xFFD9A299),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFD9A299),
+    iconTheme: const IconThemeData(color: Colors.black),
+    textTheme: GoogleFonts.interTextTheme().apply(
+      bodyColor: Colors.black,
+      displayColor: Colors.black,
+    ),
+    dividerColor: const Color(0xFFDCCFC0), // Updated divider color
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFFDCCFC0), // Updated button color
         foregroundColor: Colors.black,
-      )),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
     textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: Colors.black)),
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.black,
+      ),
+    ),
     switchTheme: SwitchThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
-          return Colors.green;
-        }
-        return null; // Uses default color
-      }),
-      trackColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
-          return Colors.green.withOpacity(0.5);
-        }
-        return null; // Uses default color
-      }),
+      thumbColor: WidgetStateProperty.all(Colors.black),
+      trackColor: WidgetStateProperty.all(Colors.grey.shade300),
     ),
   );
 

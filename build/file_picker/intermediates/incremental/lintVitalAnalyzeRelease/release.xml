@@ -1,13 +1,12 @@
 <variant
     name="release"
     package="com.mr.flutter.plugin.filepicker"
-    minSdkVersion="21"
-    targetSdkVersion="21"
+    minSdkVersion="16"
+    targetSdkVersion="16"
     mergedManifest="/workspace/build/file_picker/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml"
     proguardFiles="/workspace/build/file_picker/intermediates/default_proguard_files/global/proguard-android.txt-8.7.0"
-    consumerProguardFiles="proguard-rules.pro"
     partialResultsDir="/workspace/build/file_picker/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
-    desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/3adbb3bb01723295743cb1b8c19b7701/transformed/D8BackportedDesugaredMethods.txt">
+    desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/7cc16f9cc54fd759dec367185e654e2a/transformed/D8BackportedDesugaredMethods.txt">
   <buildFeatures
       namespacing="REQUIRED"/>
   <sourceProviders>
@@ -22,11 +21,11 @@
   <testFixturesSourceProviders>
   </testFixturesSourceProviders>
   <artifact
-      classOutputs="/workspace/build/file_picker/intermediates/javac/release/compileReleaseJavaWithJavac/classes:/workspace/build/file_picker/tmp/kotlin-classes/release:/workspace/build/file_picker/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar"
+      classOutputs="/workspace/build/file_picker/intermediates/javac/release/compileReleaseJavaWithJavac/classes:/workspace/build/file_picker/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar"
       type="MAIN"
       applicationId="com.mr.flutter.plugin.filepicker"
       generatedSourceFolders="/workspace/build/file_picker/generated/ap_generated_sources/release/out"
       generatedResourceFolders="/workspace/build/file_picker/generated/res/resValues/release"
-      desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/3adbb3bb01723295743cb1b8c19b7701/transformed/D8BackportedDesugaredMethods.txt">
+      desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/7cc16f9cc54fd759dec367185e654e2a/transformed/D8BackportedDesugaredMethods.txt">
   </artifact>
 </variant>

@@ -1,14 +1,14 @@
 <lint-module
     format="1"
-    dir="/home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-4.2.3/android"
+    dir="/home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-3.8.5/android"
     name=":flutter_tts"
     type="LIBRARY"
     maven="com.tundralabs.fluttertts:flutter_tts:1.0-SNAPSHOT"
     agpVersion="8.7.0"
     buildFolder="/workspace/build/flutter_tts"
-    bootClassPath="/opt/android-sdk/platforms/android-34/android.jar:/opt/android-sdk/build-tools/34.0.0/core-lambda-stubs.jar"
+    bootClassPath="/opt/android-sdk/platforms/android-31/android.jar:/opt/android-sdk/build-tools/34.0.0/core-lambda-stubs.jar"
     javaSourceLevel="1.8"
-    compileTarget="android-34"
+    compileTarget="android-31"
     neverShrinking="true">
   <lintOptions
       disable="InvalidPackage,GradleDependency"
