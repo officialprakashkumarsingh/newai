@@ -445,19 +445,36 @@ Based on the context above, answer the following prompt: $input""";
 
   Future<void> _generateImage(String prompt, String? model) async {
     final userMessage = ChatMessage(role: 'user', text: prompt);
-    final imageUrl = ImageApi.getImageUrl(prompt, model: model);
-    final imageMessage = ChatMessage(role: 'model', text: 'Image for: $prompt', type: MessageType.image, imageUrl: imageUrl);
     final placeholderMessage = ChatMessage(role: 'model', text: 'Generating image...', type: MessageType.image, imageUrl: null);
     
-    setState(() { _messages.add(userMessage); _messages.add(placeholderMessage); });
+    setState(() { 
+      _messages.add(userMessage); 
+      _messages.add(placeholderMessage); 
+    });
     _scrollToBottom();
     final int placeholderIndex = _messages.length - 1;
 
     try {
+      // Use the new OpenAI-compatible image generation API
+      final imageUrl = await ImageApi.generateImage(prompt, model: model);
+      final imageMessage = ChatMessage(
+        role: 'model', 
+        text: 'Image for: $prompt', 
+        type: MessageType.image, 
+        imageUrl: imageUrl
+      );
+      
+      // Precache the image
       await precacheImage(NetworkImage(imageUrl), context);
       if (mounted) setState(() => _messages[placeholderIndex] = imageMessage);
     } catch(e) {
-      if (mounted) setState(() => _messages[placeholderIndex] = ChatMessage(role: 'model', text: '❌ Failed to load image.', type: MessageType.text));
+      if (mounted) {
+        setState(() => _messages[placeholderIndex] = ChatMessage(
+          role: 'model', 
+          text: '❌ Failed to generate image: ${e.toString()}', 
+          type: MessageType.text
+        ));
+      }
     } finally {
       _updateChatInfo(false, false);
     }

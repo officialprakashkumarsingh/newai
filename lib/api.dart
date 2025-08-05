@@ -50,7 +50,7 @@ class ApiConfig {
   static const String braveSearchUrl = 'https://api.search.brave.com/res/v1/web/search';
 
   // Note: Pollinations text API removed - now using unified ApiService
-  // Image generation still uses Pollinations in the ImageGenerationService class
+  // Image generation now uses OpenAI-compatible endpoint with dynamic models
 }
 
 // --- DYNAMIC MODEL FETCHING ---
@@ -109,34 +109,64 @@ class ModelService {
 
 // --- IMAGE API ---
 class ImageApi {
-  static const String _baseUrl = 'https://image.pollinations.ai';
+  static const String _baseUrl = 'https://ahamai-api.officialprakashkrsingh.workers.dev';
+  static const String _apiKey = 'ahamaibyprakash25';
 
   static Future<List<String>> fetchModels() async {
     try {
-      final response = await http.get(Uri.parse('$_baseUrl/models'));
+      final response = await http.get(
+        Uri.parse('$_baseUrl/v1/images/models'),
+        headers: {'Authorization': 'Bearer $_apiKey'},
+      );
       if (response.statusCode == 200) {
-        final List<dynamic> modelsJson = jsonDecode(response.body);
-        final models = modelsJson.cast<String>();
-        if (models.contains('flux')) {
-          models.remove('flux');
-          models.insert(0, 'flux');
-        }
-        return models;
+        final Map<String, dynamic> responseJson = jsonDecode(response.body);
+        final List<dynamic> modelsData = responseJson['data'] ?? [];
+        final models = modelsData.map((model) => model['id'] as String).toList();
+        return models.isNotEmpty ? models : ['dall-e-3']; // Default fallback
       } else {
-        return ['flux', 'sdxl', 'dall-e-3']; // Fallback
+        return ['dall-e-3']; // Fallback
       }
     } catch (e) {
       print("Error fetching image models: $e");
-      return ['flux', 'sdxl', 'dall-e-3']; // Fallback
+      return ['dall-e-3']; // Fallback
     }
   }
 
-  static String getImageUrl(String prompt, {String? model}) {
-    final encodedPrompt = Uri.encodeComponent(prompt);
-    var url = '$_baseUrl/prompt/$encodedPrompt?nologo=true&width=512&height=512';
-    if (model != null && model.isNotEmpty && model != 'flux') {
-      url += '&model=${Uri.encodeComponent(model)}';
+  static Future<String> generateImage(String prompt, {String? model}) async {
+    try {
+      final selectedModel = model ?? 'dall-e-3';
+      final response = await http.post(
+        Uri.parse('$_baseUrl/v1/images/generations'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_apiKey',
+        },
+        body: jsonEncode({
+          'model': selectedModel,
+          'prompt': prompt,
+          'n': 1,
+          'size': '512x512',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseJson = jsonDecode(response.body);
+        final List<dynamic> data = responseJson['data'] ?? [];
+        if (data.isNotEmpty) {
+          return data[0]['url'] as String;
+        }
+      }
+      throw Exception('Failed to generate image: ${response.statusCode}');
+    } catch (e) {
+      print("Error generating image: $e");
+      throw Exception('Image generation failed: $e');
     }
-    return url;
+  }
+
+  // Deprecated: Use generateImage() instead
+  static String getImageUrl(String prompt, {String? model}) {
+    // This method is kept for backward compatibility but should be replaced
+    // with async generateImage() method
+    return 'placeholder_url_will_be_replaced_async';
   }
 }
