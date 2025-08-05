@@ -47,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
   
   GenerativeModel? _geminiModel;
   GenerativeModel? _geminiVisionModel;
-  ChatSession? _geminiChat;
+
   String _selectedChatModel = ChatModels.gemini;
   bool _isModelSetupComplete = false;
 
@@ -219,28 +219,11 @@ Based on the context above, answer the following prompt: $input""";
       }
     }
 
-    final isNewStreamingModel = [
-      ChatModels.grok_3,
-      ChatModels.grok_3_mini,
-      ChatModels.grok_3_fast,
-      ChatModels.grok_3_mini_fast,
-      ChatModels.claude_4_sonnet,
-    ].contains(_selectedChatModel);
-
-    if (_isThinkingModeEnabled || isNewStreamingModel) {
-      _sendOpenAICompatibleStream(finalInputForAI, webSearchResults: webContext);
-    } else if (_selectedChatModel == ChatModels.gemini) {
-      _sendMessageGemini(finalInputForAI, webSearchResults: webContext);
-    } else {
-      _sendMessagePollinations(finalInputForAI, webSearchResults: webContext);
-    }
+    // Use the new ApiService for all models
+    _sendOpenAICompatibleStream(finalInputForAI, webSearchResults: webContext);
   }
   
-  String _buildHistoryContext() {
-    if (_messages.length <= 1) return "";
-    final history = _messages.sublist(0, _messages.length - 1);
-    return history.map((m) => "${m.role == 'user' ? 'User' : 'AI'}: ${m.text}").join('\n');
-  }
+
 
   Future<void> _sendOpenAICompatibleStream(String input, {String? webSearchResults}) async {
     setState(() {
@@ -350,87 +333,9 @@ User Prompt: $input""";
     }
   }
 
-  void _sendMessageGemini(String input, {String? webSearchResults}) {
-    try {
-      setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: ''));
-      _currentModelResponse = '';
-      _scrollToBottom();
 
-      String finalContent;
-      final now = DateTime.now().toIso8601String();
-      if (webSearchResults != null && webSearchResults.isNotEmpty) {
-        finalContent = """Use the following context to answer the user's prompt.\n---\nCONTEXT:\n1. Current Date: $now\n2. Web Search Results:\n$webSearchResults\n3. Screenshot Capability: You can generate website screenshots using: https://s0.wp.com/mshots/v1/https%3A%2F%2F[URL]?w=[WIDTH]&h=[HEIGHT]\n---\nUSER PROMPT:\n$input""";
-      } else {
-        finalContent = """System Knowledge: 
-1. Current date: $now
-2. Screenshot Capability: You can generate website screenshots using the format: https://s0.wp.com/mshots/v1/https%3A%2F%2F[URL]?w=[WIDTH]&h=[HEIGHT]
-   - Replace [URL] with the URL-encoded website address
-   - Replace [WIDTH] and [HEIGHT] with desired dimensions (default: w=1280&h=720)
-   - Example: https://s0.wp.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1280&h=720
-   - The markdown renderer will automatically display these as images
-   - Use this when users ask for website previews, screenshots, or visual representations of websites
 
-User Prompt: $input""";
-      }
 
-      final responseStream = _geminiChat!.sendMessageStream(Content.text(finalContent));
-      bool isCodeSheetShown = false;
-      _streamSubscription = responseStream.listen(
-        (chunk) {
-          if (_isStoppedByUser) { _streamSubscription?.cancel(); return; }
-          _currentModelResponse += chunk.text ?? '';
-          setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: _currentModelResponse));
-          if (_currentModelResponse.contains('```') && !isCodeSheetShown) {
-            isCodeSheetShown = true;
-            _codeStreamNotifier.value = '';
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) showModalBottomSheet(context: context, isScrollControlled: true, backgroundColor: Theme.of(context).scaffoldBackgroundColor, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))), builder: (_) => CodeStreamingSheet(notifier: _codeStreamNotifier));
-            });
-          }
-          if (isCodeSheetShown) {
-            final codeMatch = RegExp(r'```(?:\w+)?\n([\s\S]*?)(?:```|$)').firstMatch(_currentModelResponse);
-            _codeStreamNotifier.value = codeMatch?.group(1) ?? '';
-          }
-          _scrollToBottom();
-        },
-        onDone: _onStreamingDone,
-        onError: _onStreamingError,
-        cancelOnError: true,
-      );
-    } catch (e) {
-      _onStreamingError(e);
-    }
-  }
-
-  Future<void> _sendMessagePollinations(String input, {String? webSearchResults}) async {
-    try {
-      setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: ''));
-      _scrollToBottom();
-      
-      final historyContext = _buildHistoryContext();
-      final now = DateTime.now().toIso8601String();
-      String finalPrompt;
-      if (webSearchResults != null && webSearchResults.isNotEmpty) {
-        finalPrompt = """Conversation History:\n$historyContext\n---\nBased on this context:\nDate: $now\nWeb Results: $webSearchResults\n---\nAnswer this prompt: $input""";
-      } else {
-        finalPrompt = """Conversation History:\n$historyContext\n---\nCurrent date is $now. Answer: $input""";
-      }
-
-      final url = ApiConfig.getPollinationsChatUrl(finalPrompt, _selectedChatModel);
-      final response = await http.get(Uri.parse(url));
-      if (_isStoppedByUser) { _onStreamingDone(); return; }
-      if (response.statusCode == 200) {
-        final output = utf8.decode(response.bodyBytes);
-        setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: output.trim()));
-      } else {
-        _onStreamingError('Pollinations API Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      _onStreamingError(e);
-    } finally {
-      _onStreamingDone();
-    }
-  }
   
   void _onStreamingDone() {
     if (_lastSearchResults != null && _messages.isNotEmpty) {

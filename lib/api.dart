@@ -49,17 +49,8 @@ class ApiConfig {
   static const String braveSearchApiKey = 'BSAGvn27KGywhzSPWjem5a_r41ZYaB2';
   static const String braveSearchUrl = 'https://api.search.brave.com/res/v1/web/search';
 
-  // Pollinations (keeping for image generation)
-  static String getPollinationsChatUrl(String prompt, String modelName) {
-    final encodedPrompt = Uri.encodeComponent(prompt);
-    var url = 'https://text.pollinations.ai/$encodedPrompt';
-
-    // Append the model parameter if it's not the default Pollinations model.
-    if (modelName != ChatModels.gpt4_1_mini) {
-      url += '?model=$modelName';
-    }
-    return url;
-  }
+  // Note: Pollinations text API removed - now using unified ApiService
+  // Image generation still uses Pollinations in the ImageGenerationService class
 }
 
 // --- DYNAMIC MODEL FETCHING ---
