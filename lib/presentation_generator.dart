@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deck/flutter_deck.dart';
-// import 'package:flutter_deck_web_client/flutter_deck_web_client.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
-import 'api.dart';
-import 'theme.dart';
+import 'api_service.dart';
 
 class PresentationGenerator {
-  static Future<List<String>> generateSlides(String topic, String apiKey) async {
-    final model = GenerativeModel(model: ApiConfig.presentationModelName, apiKey: apiKey);
+  static Future<List<String>> generateSlides(String topic) async {
     final prompt = """
-    You are an expert presentation creator. Your task is to generate content for a slide deck on the topic: "$topic".
-
-    Follow these rules STRICTLY:
-    1.  **Slide Separation:** Separate each slide's content with '---' on a new line. This is the slide delimiter.
-    2.  **Content Formatting:** Use simple text formatting (no markdown).
-        *   The first slide MUST be a title slide with just the main title and subtitle.
-        *   For subsequent slides, provide a clear title and bullet points.
-        *   Keep bullet points concise and impactful.
+    Create a professional presentation about "$topic" with the following requirements:
+    1.  **Structure:** Create slides in this exact order:
+        *   Title slide with the topic name
+        *   Overview/Introduction slide
+        *   Multiple content slides covering key aspects
+        *   Conclusion or summary slide  
         *   The final slide MUST be a 'Thank You' or 'Q&A' slide.
     3.  **Content Quantity:** Generate between 8 and 12 slides in total.
     4.  **Output Format:** Provide ONLY the content with '---' as separator. Format each slide as:
@@ -27,9 +21,19 @@ class PresentationGenerator {
     """;
 
     try {
-      final response = await model.generateContent([Content.text(prompt)]);
-      final rawText = response.text ?? "";
+      final slides = <String>[];
+      
+      await for (final chunk in ApiService.sendChatMessage(
+        message: prompt,
+        model: 'gpt-4o', // Use a good model for presentations
+        systemPrompt: 'You are a professional presentation creator. Create clear, concise, and engaging slide content.',
+      )) {
+        slides.add(chunk);
+      }
+      
+      final rawText = slides.join('');
       if (rawText.isEmpty) return [];
+      
       return rawText.split(RegExp(r'\n---\n*'));
     } catch (e) {
       print("Error generating presentation slides: $e");

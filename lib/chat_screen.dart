@@ -614,7 +614,7 @@ User Prompt: $input""";
     setState(() {});
     _scrollToBottom();
 
-    final slides = await PresentationGenerator.generateSlides(topic, ApiConfig.geminiApiKey);
+          final slides = await PresentationGenerator.generateSlides(topic);
     if (!mounted) return;
     if (slides.isNotEmpty) {
       setState(() => _messages[placeholderIndex] = ChatMessage(role: 'model', text: 'Presentation ready: $topic', type: MessageType.presentation, slides: slides));
