@@ -32,8 +32,12 @@ class AhamApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
       builder: (context, theme, child) {
-        final systemIconBrightness = theme.themeMode == ThemeMode.light ? Brightness.dark : Brightness.light;
-        final navBarColor = theme.themeMode == ThemeMode.light
+        // Get actual brightness from system theme
+        final platformBrightness = MediaQuery.of(context).platformBrightness;
+        final isLightMode = platformBrightness == Brightness.light;
+        
+        final systemIconBrightness = isLightMode ? Brightness.dark : Brightness.light;
+        final navBarColor = isLightMode
             ? const Color(0xFFFFFFFF) // Pure white for light mode
             : const Color(0xFF000000); // AMOLED black for dark mode
 
