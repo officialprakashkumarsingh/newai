@@ -234,6 +234,7 @@ Based on the context above, answer the following prompt: $input""";
 
     // Store message for potential background processing
     _currentStreamingMessage = input;
+    print('💾 Stored streaming message: $input');
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -337,6 +338,7 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
 
     // Clear streaming message when done
+    print('✅ Clearing streaming message');
     _currentStreamingMessage = null;
   }
 
@@ -556,7 +558,52 @@ Based on the context above, answer the following prompt: $input""";
         if (message.imageUrl == null) {
           return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: Row(mainAxisSize: MainAxisSize.min, children: [const Text('Generating image...'), const SizedBox(width: 12), GeneratingIndicator(size: 16)])));
         } else {
-          return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250), child: ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.network(message.imageUrl!, fit: BoxFit.cover, loadingBuilder: (context, child, progress) => progress == null ? child : const Center(child: CircularProgressIndicator()), errorBuilder: (context, error, stack) => const Icon(Icons.error)))));
+          return Align(
+            alignment: Alignment.centerLeft, 
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), 
+              constraints: const BoxConstraints(maxWidth: 250, maxHeight: 250), 
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12), 
+                    child: Image.network(
+                      message.imageUrl!, 
+                      fit: BoxFit.cover, 
+                      loadingBuilder: (context, child, progress) => progress == null ? child : const Center(child: CircularProgressIndicator()), 
+                      errorBuilder: (context, error, stack) => const Icon(Icons.error)
+                    )
+                  ),
+                  // Add save button for generated images
+                  if (message.role == 'model' && message.imageBytes != null)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.black87,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () => _saveImage(message.imageBytes!),
+                            child: Icon(
+                              Icons.download,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
         }
       case MessageType.presentation:
         return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: message.slides == null ? Row(mainAxisSize: MainAxisSize.min, children: [const Text('Generating presentation...'), const SizedBox(width: 12), GeneratingIndicator(size: 16)]) : InkWell(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PresentationViewScreen(slides: message.slides!, topic: message.text.replaceFirst('Presentation ready: ', '')))), child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.slideshow, size: 20), const SizedBox(width: 12), Flexible(child: Text(message.text, style: const TextStyle(fontWeight: FontWeight.bold)))]))));
@@ -822,14 +869,20 @@ Based on the context above, answer the following prompt: $input""";
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     
+    print('🔄 App lifecycle changed: $state, isStreaming: $_isStreaming, currentMessage: $_currentStreamingMessage');
+    
     switch (state) {
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
         print('🔄 App went to background while streaming: $_isStreaming');
         _isAppInBackground = true;
         if (_isStreaming && _currentStreamingMessage != null) {
           // Transfer processing to native background service
+          print('🚀 Triggering background transfer...');
           _transferToBackgroundProcessing();
+        } else {
+          print('⚠️ Not transferring: streaming=$_isStreaming, message=$_currentStreamingMessage');
         }
         break;
       case AppLifecycleState.resumed:
@@ -837,10 +890,12 @@ Based on the context above, answer the following prompt: $input""";
         _isAppInBackground = false;
         if (_currentStreamingMessage != null) {
           // Check if background processing completed
+          print('🔍 Checking background result...');
           _checkBackgroundResult();
         }
         break;
       default:
+        print('🔄 Other lifecycle state: $state');
         break;
     }
   }
