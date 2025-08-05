@@ -646,21 +646,19 @@ User Prompt: $input""";
         }
         
         final isDark = !isLightTheme(context);
-        final userMessageStyle = MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-          p: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: isLightTheme(context) 
-                ? Colors.white  // Light mode: black text on light bubble
-                : const Color(0xFF222831) // Dark mode: dark text on light bubble
-          ),
-          code: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontFamily: 'monospace',
-            backgroundColor: isLightTheme(context) 
-                ? Colors.white.withOpacity(0.2)
-                : Colors.white.withOpacity(0.2),
-            color: isLightTheme(context)
-                ? Colors.white
-                : const Color(0xFF222831)
-          ),
+                  final userMessageStyle = MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+            p: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: isLightTheme(context) 
+                  ? Colors.white  // Light mode: white text on dark bubble
+                  : Colors.white // Dark mode: white text on dark bubble
+            ),
+                      code: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontFamily: 'monospace',
+              backgroundColor: isLightTheme(context) 
+                  ? Colors.white.withOpacity(0.2)
+                  : Colors.white.withOpacity(0.2),
+              color: Colors.white // White text for code in both modes
+            ),
         );
 
         return GestureDetector(
@@ -671,12 +669,12 @@ User Prompt: $input""";
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: isLightTheme(context)
-                    ? const Color(0xFF333446) // New bubble color for light mode
-                    : const Color(0xFF333446), // Same bubble color for dark mode
-                borderRadius: BorderRadius.circular(16)
-              ),
+                              decoration: BoxDecoration(
+                  color: isLightTheme(context)
+                      ? const Color(0xFF333446) // New bubble color for light mode
+                      : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
+                  borderRadius: BorderRadius.circular(16)
+                ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -778,13 +776,42 @@ User Prompt: $input""";
             ),
           Container(
             padding: EdgeInsets.fromLTRB(8, 8, 8, 8 + MediaQuery.of(context).padding.bottom),
-            decoration: const BoxDecoration(color: Colors.white), // Pure white background, removed top border line
+            decoration: BoxDecoration(
+              color: isLightTheme(context) 
+                  ? Colors.white // Light mode: pure white
+                  : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
+            ), // Removed top border line
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 IconButton(icon: const Icon(Icons.apps_outlined), onPressed: _isStreaming ? null : _showToolsBottomSheet, tooltip: 'Tools', color: _isStreaming ? Theme.of(context).disabledColor : Theme.of(context).iconTheme.color),
                 Expanded(
-                  child: TextField(controller: _controller, enabled: !_isStreaming, onSubmitted: _isStreaming ? null : (val) => _sendMessage(val), textInputAction: TextInputAction.send, maxLines: 5, minLines: 1, decoration: InputDecoration(hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', filled: true, fillColor: Colors.white, contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none))),
+                  child: TextField(
+                    controller: _controller, 
+                    enabled: !_isStreaming, 
+                    onSubmitted: _isStreaming ? null : (val) => _sendMessage(val), 
+                    textInputAction: TextInputAction.send, 
+                    maxLines: 5, 
+                    minLines: 1, 
+                    style: TextStyle(
+                      color: isLightTheme(context) ? Colors.black : Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
+                      hintStyle: TextStyle(
+                        color: isLightTheme(context) ? Colors.grey.shade600 : Colors.white.withOpacity(0.7),
+                      ),
+                      filled: true, 
+                      fillColor: isLightTheme(context) 
+                          ? Colors.white 
+                          : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), 
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24), 
+                        borderSide: BorderSide.none
+                      )
+                    )
+                  ),
                 ),
                 const SizedBox(width: 8),
                 CircleAvatar(backgroundColor: _isStreaming ? Colors.red : Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}), radius: 24, child: IconButton(icon: Icon(_isStreaming ? Icons.stop : Icons.arrow_upward, color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})), onPressed: _isStreaming ? _stopStreaming : () => _sendMessage(_controller.text))),

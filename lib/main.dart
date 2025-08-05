@@ -399,8 +399,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: _getCategoryColor(chat.category, context), borderRadius: BorderRadius.circular(10)), child: Text(chat.category, style: TextStyle(fontSize: 12, color: _getCategoryTextColor(chat.category, context), fontWeight: FontWeight.w500))),
                     ],
                   ),
-                  subtitle: Text(
-                    chat.messages.isEmpty ? 'No messages yet' : (chat.messages.last.role == 'user' ? 'You: ' : 'AhamAI: ') + chat.messages.last.text,
+                                      subtitle: Text(
+                      chat.messages.isEmpty ? 'No messages yet' : chat.messages.last.text,
                     style: Theme.of(context).textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
