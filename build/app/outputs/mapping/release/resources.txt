@@ -34,11 +34,13 @@ produceFile
 removeItemAt
 WorkForegroundRunnable
 android.intent.extra.durationLimit
+role
 S_RESUMING_BY_RCV
 EXTRA_DESCRIPTORS
 currentLocale
 BEGIN_OBJECT
 result
+last_result_timestamp
 P
 registerPeriodicTask
 SystemUiMode.immersiveSticky
@@ -78,6 +80,7 @@ USAGE_NOTIFICATION
 contentUriTriggers
 startIndex
 emailAddress
+ahamai_background_processing_completion
 KEY_FOREGROUND_SERVICE_TYPE
 QuarterOfYear
 STRICT
@@ -179,6 +182,7 @@ areLanguagesInstalled
 SFIXED64_LIST_PACKED
 MinuteOfHour
 REFERENCE
+process_type
 trigger_max_content_delay
 direction
 dev.flutter.pigeon.shared_preferences...
@@ -245,6 +249,7 @@ Aug
 isFullPath
 androidx.view.accessibility.Accessibi...
 SCALAR
+connection.inputStream
 addressCity
 be.tramckrijte.workmanager.IS_IN_DEBU...
 search_suggest_query
@@ -825,6 +830,7 @@ android.support.useSideChannel
 TextInputClient.updateEditingStateWit...
 BB
 BE
+chatId
 DECREASE
 DAYS
 android.intent.extra.PROCESS_TEXT_REA...
@@ -968,6 +974,7 @@ MICROS
 newInstance
 SEPTEMBER
 sqliteOpenHelperFactory
+com.ahamai.background
 onResume
 basicMetadata
 android.permission.MANAGE_EXTERNAL_ST...
@@ -1185,6 +1192,7 @@ INSENSITIVE
 deltaEnd
 DayOfMonth
 flutter_image_picker_type
+last_result_success
 android.permission.REQUEST_INSTALL_PA...
 _consensus
 locale.variant
@@ -1213,6 +1221,7 @@ android.intent.action.PROCESS_TEXT
 America/Argentina/Buenos_Aires
 TEXTURE_WITH_VIRTUAL_FALLBACK
 flutter_image_picker_error_code
+user
 android.permission.READ_PHONE_STATE
 DeviceSettingDescription
 getModule
@@ -1291,6 +1300,7 @@ actionId
 ACTION_ACCESSIBILITY_FOCUS
 countryName
 inputAction
+STOP_PROCESSING
 _preferences
 isDirectory
 frame
@@ -1345,6 +1355,7 @@ Uri
 BatteryNotLowTracker
 java.util.ArrayList
 delegate
+Authorization
 androidx.core.app.NotificationCompat$...
 RIGHT
 corruptionHandler
@@ -1451,6 +1462,7 @@ getObject
 drawable
 identityHash
 BodySerialNumber
+last_result_content
 setSpeechRate
 kotlin.Array
 android.media.action.IMAGE_CAPTURE
@@ -1473,6 +1485,7 @@ SystemUiMode.immersive
 DELETE
 HALF_OPENED
 maxHeight
+last_result_chat_id
 EXTRA_IS_PERIODIC
 pendingNotificationRequests
 ACTION_SCROLL_TO_POSITION
@@ -1517,9 +1530,11 @@ abortCreation
 ViewParentCompat
 RESULT_ALREADY_INSTALLED
 FontsProvider
+AhamAI_Background
 timeoutAfter
 cancelNotification
 SELECT_FOREGROUND_NOTIFICATION
+stopBackgroundProcessing
 android$support$v4$os$IResultReceiver
 EMPTY
 wt
@@ -1708,6 +1723,7 @@ component
 SUSPEND
 setPitch
 $newWorkSpec
+POST
 alwaysUseStop
 ColorSpace
 getLanguages
@@ -1727,6 +1743,7 @@ java.util.stream.DoubleStream
 DateTimeDigitized
 timeZoneName
 flutter/keyevent
+success
 AppLifecycleState.
 child
 SystemChrome.setSystemUIOverlayStyle
@@ -2022,15 +2039,18 @@ android.callType
 CFAPattern
 Feb
 ACTION_DRAG_START
+last_result_type
 END_DOCUMENT
 dataUri
 producePath
 SBYTE
 DeviceOrientation.landscapeLeft
 callbackInterface
+chat_id
 errorMsg
 targetBytes
 FIXED32_LIST
+chat
 permanent
 char
 IMMERSIVE
@@ -2155,6 +2175,7 @@ OECF
 SORTED
 cancelAll
 coordinator
+max_tokens
 kHdmi
 android.permission.RECORD_AUDIO
 Minguo
@@ -2234,10 +2255,13 @@ fileHandle
 YCbCrSubSampling
 createNotificationChannelGroup
 typeConverters
+ahamai_background_results
 CONCURRENT
+ahamai_background_processing
 ACTION_PAGE_RIGHT
 java.nio.file.Files
 FlashEnergy
+flutter.openai_api_key
 onComplete
 dev.flutter.pigeon.path_provider_andr...
 menu
@@ -2319,6 +2343,7 @@ kotlin.Function
 kJoystick
 SIL_
 ACTION_PAGE_DOWN
+temperature
 error_server
 Inbox
 FIXED64_LIST
@@ -2342,6 +2367,7 @@ ON_CONFIGURE
 generationalId
 postalCode
 DESC
+presentation
 android.media.metadata.COMPOSER
 android.intent.action.BATTERY_OKAY
 PRT
@@ -2389,6 +2415,7 @@ getPath
 SATURDAY
 tel:123123
 getActiveNotificationMessagingStyle
+application/json
 LocalTime
 hints
 java.util.Set
@@ -2543,6 +2570,7 @@ HST
 WEEK_BASED_YEARS
 TypefaceCompatUtil
 telephoneNumberCountryCode
+startBackgroundProcessing
 deviceState
 strokeWidth
 SystemFgDispatcher
@@ -3004,6 +3032,7 @@ androidx.work.impl.background.gcm.Gcm...
 $oldWorkSpec
 SRATIONAL
 android.speech.extra.LANGUAGE
+https://api.openai.com/v1/chat/comple...
 getFloat
 putLong
 DOCUMENTS
@@ -3036,6 +3065,7 @@ output
 HINGE
 java.lang.Character
 android.intent.extra.USE_FRONT_CAMERA
+model
 transferIndex
 birthdayYear
 kDirectionalPad
@@ -3053,6 +3083,7 @@ dev.flutter.pigeon.image_picker_andro...
 telephoneNumber
 extras
 cancelBackGesture
+getBackgroundResult
 suggest_intent_action
 IS_EXPANDED
 androidx.room.IMultiInstanceInvalidat...
@@ -3131,6 +3162,7 @@ MenuItemImpl
 DefaultCropSize
 _LifecycleAdapter
 backgroundChannel
+START_PROCESSING
 Artist
 suggest_icon_1
 suggest_icon_2
@@ -3160,6 +3192,7 @@ mContext
 ASC
 current
 ImageResizer
+processType
 audio
 ImageTextureRegistryEntry
 key

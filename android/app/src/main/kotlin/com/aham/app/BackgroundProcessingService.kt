@@ -201,17 +201,37 @@ class BackgroundProcessingService : Service() {
     
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            
+            // Create ongoing processing channel
+            val ongoingChannel = NotificationChannel(
                 CHANNEL_ID,
                 "AhamAI Background Processing",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "Shows when AhamAI is processing in the background"
                 setShowBadge(false)
+                enableVibration(false)
+                setSound(null, null)
             }
             
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+            // Create completion channel with HIGH importance for visibility
+            val completionChannel = NotificationChannel(
+                "${CHANNEL_ID}_completion",
+                "AhamAI Task Completion",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Shows when AhamAI tasks are completed"
+                setShowBadge(true)
+                enableVibration(true)
+                enableLights(true)
+                lightColor = android.graphics.Color.BLUE
+            }
+            
+            notificationManager.createNotificationChannel(ongoingChannel)
+            notificationManager.createNotificationChannel(completionChannel)
+            
+            Log.d(TAG, "Notification channels created successfully")
         }
     }
     
@@ -232,7 +252,7 @@ class BackgroundProcessingService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("AhamAI Processing")
             .setContentText(contentText)
-            .setSmallIcon(android.R.drawable.ic_sync)
+            .setSmallIcon(android.R.drawable.ic_popup_sync)
             .setOngoing(true)
             .setContentIntent(pendingIntent)
             .build()
@@ -246,35 +266,56 @@ class BackgroundProcessingService : Service() {
             else -> "Task completed - tap to view"
         }
         
-        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        val intent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("AhamAI Complete!")
+        val notification = NotificationCompat.Builder(this, "${CHANNEL_ID}_completion")
+            .setContentTitle("🎉 AhamAI Complete!")
             .setContentText(contentText)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setLargeIcon(android.graphics.BitmapFactory.decodeResource(resources, android.R.drawable.ic_dialog_info))
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .build()
         
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(COMPLETION_NOTIFICATION_ID, notification)
+        
+        Log.d(TAG, "Completion notification shown for $processType")
     }
     
     private fun showErrorNotification(error: String) {
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("AhamAI Error")
+        val intent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        val notification = NotificationCompat.Builder(this, "${CHANNEL_ID}_completion")
+            .setContentTitle("❌ AhamAI Error")
             .setContentText("Processing failed: $error")
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .build()
         
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(COMPLETION_NOTIFICATION_ID, notification)
+        
+        Log.d(TAG, "Error notification shown: $error")
     }
     
     override fun onBind(intent: Intent?): IBinder? = null

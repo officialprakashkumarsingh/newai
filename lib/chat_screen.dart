@@ -230,7 +230,8 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Note: Background processing temporarily disabled for stability
+    // Start native background processing
+    _startNativeBackgroundProcessing(input);
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -333,7 +334,8 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
     _scrollToBottom();
 
-    // Background processing temporarily disabled
+    // Stop native background processing when done
+    _stopNativeBackgroundProcessing();
   }
 
   void _onStreamingError(dynamic error) {
@@ -810,6 +812,31 @@ Based on the context above, answer the following prompt: $input""";
         ],
       ),
     );
+  }
+
+  static const _backgroundChannel = MethodChannel('com.ahamai.background');
+
+  Future<void> _startNativeBackgroundProcessing(String message) async {
+    try {
+      await _backgroundChannel.invokeMethod('startBackgroundProcessing', {
+        'chatId': widget.chatInfoStream.hashCode.toString(),
+        'message': message,
+        'model': _selectedChatModel,
+        'processType': 'chat',
+      });
+      print('🔄 Native background processing started');
+    } catch (e) {
+      print('❌ Failed to start background processing: $e');
+    }
+  }
+
+  Future<void> _stopNativeBackgroundProcessing() async {
+    try {
+      await _backgroundChannel.invokeMethod('stopBackgroundProcessing');
+      print('⏹️ Native background processing stopped');
+    } catch (e) {
+      print('❌ Failed to stop background processing: $e');
+    }
   }
 
   Future<void> _saveImage(Uint8List imageBytes) async {

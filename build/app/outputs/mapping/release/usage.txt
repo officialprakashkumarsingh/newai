@@ -3949,7 +3949,6 @@ androidx.core.app.NotificationCompat$Builder:
     public androidx.core.app.NotificationCompat$Builder setCustomBigContentView(android.widget.RemoteViews)
     public androidx.core.app.NotificationCompat$Builder setCustomContentView(android.widget.RemoteViews)
     public androidx.core.app.NotificationCompat$Builder setCustomHeadsUpContentView(android.widget.RemoteViews)
-    public androidx.core.app.NotificationCompat$Builder setDefaults(int)
     public androidx.core.app.NotificationCompat$Builder setDeleteIntent(android.app.PendingIntent)
     public androidx.core.app.NotificationCompat$Builder setExtras(android.os.Bundle)
     public androidx.core.app.NotificationCompat$Builder setForegroundServiceBehavior(int)
@@ -12580,6 +12579,17 @@ com.aham.app.AhamAIWidget:
     public static final java.lang.String ACTION_START_ANIMATION
     public static final java.lang.String ACTION_VOICE
     public static final java.lang.String EXTRA_INPUT_TEXT
+com.aham.app.BackgroundProcessingService:
+    public static final java.lang.String ACTION_START_PROCESSING
+    public static final java.lang.String ACTION_STOP_PROCESSING
+    public static final java.lang.String CHANNEL_ID
+    public static final int COMPLETION_NOTIFICATION_ID
+    public static final java.lang.String EXTRA_CHAT_ID
+    public static final java.lang.String EXTRA_MESSAGE
+    public static final java.lang.String EXTRA_MODEL
+    public static final java.lang.String EXTRA_PROCESS_TYPE
+    public static final int NOTIFICATION_ID
+    public static final java.lang.String TAG
 com.aham.app.R$color
 com.aham.app.R$drawable
 com.aham.app.R$id:
@@ -17034,7 +17044,19 @@ kotlin.io.ReadAfterEOFException
 kotlin.io.SerializableKt
 kotlin.io.TerminateException
 kotlin.io.TextStreamsKt$readLines$1
-kotlin.io.TextStreamsKt
+kotlin.io.TextStreamsKt:
+    private static final java.io.BufferedReader buffered(java.io.Reader,int)
+    private static final java.io.BufferedWriter buffered(java.io.Writer,int)
+    static synthetic java.io.BufferedReader buffered$default(java.io.Reader,int,int,java.lang.Object)
+    static synthetic java.io.BufferedWriter buffered$default(java.io.Writer,int,int,java.lang.Object)
+    public static final void forEachLine(java.io.Reader,kotlin.jvm.functions.Function1)
+    public static final kotlin.sequences.Sequence lineSequence(java.io.BufferedReader)
+    public static final byte[] readBytes(java.net.URL)
+    public static final java.util.List readLines(java.io.Reader)
+    private static final java.lang.String readText(java.net.URL,java.nio.charset.Charset)
+    static synthetic java.lang.String readText$default(java.net.URL,java.nio.charset.Charset,int,java.lang.Object)
+    private static final java.io.StringReader reader(java.lang.String)
+    public static final java.lang.Object useLines(java.io.Reader,kotlin.jvm.functions.Function1)
 kotlin.io.encoding.Base64$Default
 kotlin.io.encoding.Base64
 kotlin.io.encoding.Base64JVMKt
@@ -18925,9 +18947,7 @@ kotlinx.coroutines.CoroutineName:
 kotlinx.coroutines.CoroutineScopeKt:
     public static final kotlinx.coroutines.CoroutineScope MainScope()
     public static final void cancel(kotlinx.coroutines.CoroutineScope,java.lang.String,java.lang.Throwable)
-    public static final void cancel(kotlinx.coroutines.CoroutineScope,java.util.concurrent.CancellationException)
     public static synthetic void cancel$default(kotlinx.coroutines.CoroutineScope,java.lang.String,java.lang.Throwable,int,java.lang.Object)
-    public static synthetic void cancel$default(kotlinx.coroutines.CoroutineScope,java.util.concurrent.CancellationException,int,java.lang.Object)
     public static final java.lang.Object currentCoroutineContext(kotlin.coroutines.Continuation)
     private static final java.lang.Object currentCoroutineContext$$forInline(kotlin.coroutines.Continuation)
     public static final boolean isActive(kotlinx.coroutines.CoroutineScope)
