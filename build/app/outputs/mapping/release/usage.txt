@@ -10291,7 +10291,7 @@ com.aham.app.AhamAIWidget:
     public static final java.lang.String EXTRA_INPUT_TEXT
 com.aham.app.R$drawable
 com.aham.app.R$id:
-    public static int widget_input
+    public static int widget_search_text
     private void <init>()
 com.aham.app.R$layout:
     private void <init>()

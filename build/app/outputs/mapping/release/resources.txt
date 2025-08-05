@@ -3691,7 +3691,8 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @id/view_tree_view_model_store_owner : reachable=true
 @id/visible_removing_fragment_view_tag : reachable=false
 @id/widget_attachment : reachable=true
-@id/widget_input : reachable=false
+@id/widget_search_bar : reachable=true
+@id/widget_search_text : reachable=false
 @id/widget_send : reachable=true
 @id/widget_voice : reachable=true
 @id/widget_web_search : reachable=true
@@ -6009,9 +6010,10 @@ The root reachable resources are:
  id:view_tree_saved_state_registry_owner:2131230940
  id:view_tree_view_model_store_owner:2131230941
  id:widget_attachment:2131230943
- id:widget_send:2131230945
- id:widget_voice:2131230946
- id:widget_web_search:2131230947
+ id:widget_search_bar:2131230944
+ id:widget_send:2131230946
+ id:widget_voice:2131230947
+ id:widget_web_search:2131230948
  integer:cancel_button_image_alpha:2131296258
  integer:preferences_detail_pane_weight:2131296260
  integer:preferences_header_pane_weight:2131296261
@@ -6335,9 +6337,9 @@ Unused resources are:
  id:uniform:2131230935
  id:useLogo:2131230937
  id:visible_removing_fragment_view_tag:2131230942
- id:widget_input:2131230944
- id:withText:2131230948
- id:wrap_content:2131230949
+ id:widget_search_text:2131230945
+ id:withText:2131230949
+ id:wrap_content:2131230950
  integer:abc_config_activityDefaultDur:2131296256
  integer:abc_config_activityShortDur:2131296257
  integer:status_bar_notification_info_maxnum:2131296262

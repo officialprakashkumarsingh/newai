@@ -12,7 +12,8 @@ drawable widget_button_background
 drawable widget_icon_background
 drawable widget_send_background
 id widget_attachment
-id widget_input
+id widget_search_bar
+id widget_search_text
 id widget_send
 id widget_voice
 id widget_web_search

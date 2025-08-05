@@ -28,6 +28,7 @@ class AhamAIWidget : AppWidgetProvider() {
         val views = RemoteViews(context.packageName, R.layout.ahamai_widget)
         
         // Set up click listeners for action buttons
+        views.setOnClickPendingIntent(R.id.widget_search_bar, createSendPendingIntent(context))
         views.setOnClickPendingIntent(R.id.widget_send, createSendPendingIntent(context))
         views.setOnClickPendingIntent(R.id.widget_web_search, createActionPendingIntent(context, ACTION_WEB_SEARCH))
         views.setOnClickPendingIntent(R.id.widget_attachment, createActionPendingIntent(context, ACTION_ATTACHMENT))

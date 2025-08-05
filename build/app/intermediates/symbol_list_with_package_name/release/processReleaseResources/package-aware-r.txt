@@ -991,7 +991,8 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible_removing_fragment_view_tag
 id widget_attachment
-id widget_input
+id widget_search_bar
+id widget_search_text
 id widget_send
 id widget_voice
 id widget_web_search
