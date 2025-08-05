@@ -22,7 +22,7 @@ dependencies:
   image_picker: ^1.0.4
   archive: ^3.4.9
   flutter_deck: ^0.19.0
-  receive_sharing_intent: ^1.8.0
+
   
 
 dev_dependencies:

@@ -17,7 +17,6 @@ path_provider_android=/home/ubuntu/.pub-cache/hosted/pub.dev/path_provider_andro
 path_provider_foundation=/home/ubuntu/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.1/
 path_provider_linux=/home/ubuntu/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
 path_provider_windows=/home/ubuntu/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
-receive_sharing_intent=/home/ubuntu/.pub-cache/hosted/pub.dev/receive_sharing_intent-1.8.1/
 screen_retriever=/home/ubuntu/.pub-cache/hosted/pub.dev/screen_retriever-0.2.0/
 screen_retriever_linux=/home/ubuntu/.pub-cache/hosted/pub.dev/screen_retriever_linux-0.2.0/
 screen_retriever_macos=/home/ubuntu/.pub-cache/hosted/pub.dev/screen_retriever_macos-0.2.0/

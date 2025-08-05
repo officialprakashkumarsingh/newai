@@ -10571,7 +10571,6 @@ io.flutter.embedding.engine.dart.DartExecutor:
     public void enableBufferingIncomingMessages()
     public void executeDartCallback(io.flutter.embedding.engine.dart.DartExecutor$DartCallback)
     public void executeDartEntrypoint(io.flutter.embedding.engine.dart.DartExecutor$DartEntrypoint)
-    public io.flutter.plugin.common.BinaryMessenger getBinaryMessenger()
     public java.lang.String getIsolateServiceId()
     public int getPendingChannelResponseCount()
     public void setIsolateServiceIdListener(io.flutter.embedding.engine.dart.DartExecutor$IsolateServiceIdListener)

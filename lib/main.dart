@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:receive_sharing_intent/receive_sharing_intent.dart'; // TODO: Fix API and re-enable
+
 
 
 import 'chat_screen.dart';
@@ -34,7 +34,7 @@ class AhamApp extends StatefulWidget {
 }
 
 class _AhamAppState extends State<AhamApp> {
-  // late StreamSubscription _intentDataStreamSubscription; // TODO: Uncomment when sharing is implemented
+  static const platform = MethodChannel('com.ahamai.text_sharing');
   String? _sharedText;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,15 +45,36 @@ class _AhamAppState extends State<AhamApp> {
   }
 
   void _initializeSharing() {
-    // TODO: Implement text sharing once we fix the API issue
-    // For now, let's get the basic functionality working
-    print("Text sharing will be implemented in future update");
+    // Set up method channel to receive shared text from Android
+    platform.setMethodCallHandler((call) async {
+      if (call.method == 'sharedText') {
+        final String sharedText = call.arguments;
+        print("Received shared text: $sharedText");
+        setState(() => _sharedText = sharedText);
+        _handleSharedText(sharedText);
+      }
+    });
+
+    // Check for initial shared text when app starts
+    _getInitialSharedText();
+  }
+
+  Future<void> _getInitialSharedText() async {
+    try {
+      final String? sharedText = await platform.invokeMethod('getInitialSharedText');
+      if (sharedText != null && sharedText.isNotEmpty) {
+        print("Received initial shared text: $sharedText");
+        setState(() => _sharedText = sharedText);
+        _handleSharedText(sharedText);
+      }
+    } catch (e) {
+      print("Error getting initial shared text: $e");
+    }
   }
 
   void _handleSharedText(String text) {
     // Store the shared text to pass to HomeScreen
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // The shared text will be handled by the home screen
       setState(() {
         _sharedText = text;
       });
@@ -62,7 +83,6 @@ class _AhamAppState extends State<AhamApp> {
 
   @override
   void dispose() {
-    // _intentDataStreamSubscription.cancel(); // TODO: Uncomment when sharing is implemented
     super.dispose();
   }
 
