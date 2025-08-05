@@ -105,8 +105,8 @@ class UniverseLogoPainter extends CustomPainter {
     // Draw outer universe ring with stars
     _drawUniverseRing(canvas, center, radius, accentColor);
 
-    // Draw the letter 'A' in the center
-    _drawLetterA(canvas, center, radius * 0.4, primaryColor);
+    // Draw central energy core
+    _drawEnergyCore(canvas, center, radius * 0.3, primaryColor);
 
     // Draw orbiting particles
     _drawOrbitingParticles(canvas, center, radius, universeColor);
@@ -135,44 +135,32 @@ class UniverseLogoPainter extends CustomPainter {
     }
   }
 
-  void _drawLetterA(Canvas canvas, Offset center, double radius, Color color) {
-    final paint = Paint()
-      ..color = color
+  void _drawEnergyCore(Canvas canvas, Offset center, double radius, Color color) {
+    // Central pulsing energy sphere
+    final corePaint = Paint()
+      ..color = color.withOpacity(0.8)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(center, radius * 0.3, corePaint);
+
+    // Energy rings
+    final ringPaint = Paint()
+      ..color = color.withOpacity(0.4)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 6.0
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+      ..strokeWidth = 2.0;
 
-    final path = Path();
+    for (int i = 0; i < 3; i++) {
+      final ringRadius = radius * (0.5 + i * 0.2);
+      canvas.drawCircle(center, ringRadius, ringPaint);
+    }
 
-    // Letter 'A' coordinates
-    final topPoint = Offset(center.dx, center.dy - radius);
-    final bottomLeft = Offset(center.dx - radius * 0.7, center.dy + radius * 0.8);
-    final bottomRight = Offset(center.dx + radius * 0.7, center.dy + radius * 0.8);
-    final crossLeft = Offset(center.dx - radius * 0.35, center.dy + radius * 0.2);
-    final crossRight = Offset(center.dx + radius * 0.35, center.dy + radius * 0.2);
-
-    // Draw the 'A'
-    path.moveTo(bottomLeft.dx, bottomLeft.dy);
-    path.lineTo(topPoint.dx, topPoint.dy);
-    path.lineTo(bottomRight.dx, bottomRight.dy);
-    
-    canvas.drawPath(path, paint);
-
-    // Draw the crossbar
-    canvas.drawLine(crossLeft, crossRight, paint);
-
-    // Add a subtle glow effect
+    // Central glow
     final glowPaint = Paint()
-      ..color = color.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 12.0
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8.0);
+      ..color = color.withOpacity(0.6)
+      ..style = PaintingStyle.fill
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12.0);
 
-    canvas.drawPath(path, glowPaint);
-    canvas.drawLine(crossLeft, crossRight, glowPaint);
+    canvas.drawCircle(center, radius * 0.4, glowPaint);
   }
 
   void _drawOrbitingParticles(Canvas canvas, Offset center, double radius, Color color) {

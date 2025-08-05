@@ -40,12 +40,7 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
                     ? const Color(0xFFFBFBFC) // Very subtle blue-gray
                     : const Color(0xFF1A1D21),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isLightTheme(context) 
-                      ? const Color(0xFFE1E5E9) // Subtle border
-                      : const Color(0xFF2D3748),
-                  width: 1,
-                ),
+                // Removed border for cleaner look
                 boxShadow: isLightTheme(context) ? [
                   BoxShadow(
                     color: const Color(0xFF000000).withOpacity(0.02),
@@ -90,12 +85,7 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
                     ? const Color(0xFFF9FAFB) // Very subtle background
                     : const Color(0xFF0F1419),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isLightTheme(context) 
-                      ? const Color(0xFFE1E5E9) 
-                      : const Color(0xFF2D3748),
-                  width: 1,
-                ),
+                // Removed border for cleaner look
                 boxShadow: isLightTheme(context) ? [
                   BoxShadow(
                     color: const Color(0xFF000000).withOpacity(0.02),

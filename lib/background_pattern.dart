@@ -25,18 +25,20 @@ class BackgroundPattern extends StatelessWidget {
         // Pattern overlay (only in dark mode)
         if (isDarkMode) ...[
           // Subtle dot pattern
-          CustomPaint(
-            size: Size.infinite,
-            painter: DotPatternPainter(
-              isDarkMode: isDarkMode,
+          Positioned.fill(
+            child: CustomPaint(
+              painter: DotPatternPainter(
+                isDarkMode: isDarkMode,
+              ),
             ),
           ),
           
           // Subtle grid lines
-          CustomPaint(
-            size: Size.infinite,
-            painter: GridPatternPainter(
-              isDarkMode: isDarkMode,
+          Positioned.fill(
+            child: CustomPaint(
+              painter: GridPatternPainter(
+                isDarkMode: isDarkMode,
+              ),
             ),
           ),
         ],

@@ -482,19 +482,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         size: 140.0,
                         isDarkMode: Theme.of(context).brightness == Brightness.dark,
                       ),
-                      const SizedBox(height: 40),
-                      
-                      // AhamAI title with Source Code Pro
-                      Text(
-                        "AhamAI",
-                        style: GoogleFonts.sourceCodePro(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).primaryColor,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 80),
                       
                       // "Let's Start with" text using special font
                       Text(
