@@ -12,8 +12,9 @@
 ## 📥 Installation Instructions
 
 ### APK File Details
-- **Main File**: `aham-app-release.apk` *(latest with updated design)*
-- **Alternative**: `aham-app-release-v2.apk` *(same as above)*
+- **Main File**: `aham-app-release.apk` *(latest with green theme & modern button)*
+- **Version 3**: `aham-app-release-v3.apk` *(same as above)*
+- **Previous**: `aham-app-release-v2.apk` *(warm cream theme)*
 - **Size**: ~25.7 MB
 - **Version**: 1.0.0+1
 - **Target SDK**: Android API 35 (Android 15)
@@ -22,7 +23,7 @@
 ### Installation Steps
 
 1. **Download the APK**
-   - Download `aham-app-release.apk` from this repository (latest with updated design)
+   - Download `aham-app-release.apk` from this repository (latest with green theme & modern button)
 
 2. **Enable Unknown Sources** (if not already enabled)
    - Go to Settings → Security → Unknown Sources
@@ -70,8 +71,9 @@ The app requires the following permissions:
 - **AI Models**: Gemini 2.5 Flash, GPT 4.1 Mini/Large, OpenAI O3, DeepSeek R1, SearchGPT, Grok variants, Claude 4 Sonnet
 - **Theme**: Automatic system-based theme switching (removed manual toggle)
 - **UI**: Grey user message bubbles (updated from black)
-- **Design**: Custom light theme with warm colors (#FAF7F3 background, #F0E4D3 buttons)
-- **New Chat Button**: Smaller, rounded button with "New Chat" label
+- **Design**: Fresh green theme (#ECFAE5 background, #DDF6D2 buttons)
+- **User Messages**: Dark grey bubbles (#222831) for better contrast
+- **New Chat Button**: Modern design with gradient, shadow, and icon container
 - **File Support**: Document attachments, image uploads, archive processing
 - **Additional**: PDF generation, TTS, web search integration
 
@@ -83,6 +85,13 @@ The app requires the following permissions:
 5. Add proper error handling and logging
 
 ## 📝 Changelog
+
+### Version 3 (aham-app-release-v3.apk) - **LATEST**
+- ✅ **Fresh Green Theme**: Changed to light green background (#ECFAE5)
+- ✅ **Green Buttons**: Updated to light green (#DDF6D2) for consistency
+- ✅ **Dark User Messages**: Changed user bubbles to dark grey (#222831) for better contrast
+- ✅ **Modern New Chat Button**: Redesigned with gradient, shadow, elevated icon container
+- ✅ **Enhanced Visual Appeal**: Subtle borders, improved spacing, and modern aesthetics
 
 ### Version 2 (aham-app-release-v2.apk)
 - ✅ **Light Theme Update**: Changed background from white to warm cream (#FAF7F3)

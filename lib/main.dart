@@ -428,22 +428,61 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               },
             ),
       floatingActionButton: _chats.isEmpty ? null : Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        child: FloatingActionButton.extended(
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream))),
-          backgroundColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
-          foregroundColor: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({}),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          label: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.add_rounded, size: 18),
-              SizedBox(width: 6),
-              Text('New Chat', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-            ],
+        margin: const EdgeInsets.only(bottom: 20, right: 4),
+        child: Material(
+          elevation: 8,
+          shadowColor: const Color(0xFFDDF6D2).withOpacity(0.4),
+          borderRadius: BorderRadius.circular(28),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFFDDF6D2),
+                  const Color(0xFFDDF6D2).withOpacity(0.9),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: const Color(0xFFECFAE5),
+                width: 1,
+              ),
+            ),
+            child: InkWell(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream))),
+              borderRadius: BorderRadius.circular(28),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.add_rounded, 
+                        size: 16, 
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      'New Chat', 
+                      style: TextStyle(
+                        fontSize: 14, 
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
