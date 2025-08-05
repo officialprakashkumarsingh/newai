@@ -23,9 +23,17 @@ class PresentationGenerator {
     try {
       final slides = <String>[];
       
+      // Get user's selected model dynamically
+      final availableModels = await ApiService.getAvailableModels();
+      final selectedModel = availableModels.isNotEmpty ? availableModels.first : '';
+      
+      if (selectedModel.isEmpty) {
+        throw Exception('No models available for presentation generation');
+      }
+      
       await for (final chunk in ApiService.sendChatMessage(
         message: prompt,
-        model: 'gpt-4o', // Use a good model for presentations
+        model: selectedModel, // Use dynamically selected model
         systemPrompt: 'You are a professional presentation creator. Create clear, concise, and engaging slide content.',
       )) {
         slides.add(chunk);

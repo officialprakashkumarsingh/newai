@@ -46,9 +46,9 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isStreaming = false;
   bool _isStoppedByUser = false;
   
-  GenerativeModel? _geminiModel;
+  // GenerativeModel removed - now using ApiService
 
-  String _selectedChatModel = ChatModels.gemini;
+  String _selectedChatModel = ''; // Will be set from API
   bool _isModelSetupComplete = false;
 
   StreamSubscription? _streamSubscription;
@@ -98,10 +98,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _setupChatModel() async {
     final prefs = await SharedPreferences.getInstance();
-    _selectedChatModel = prefs.getString('chat_model') ?? ChatModels.gemini;
+    _selectedChatModel = prefs.getString('chat_model') ?? '';
     
-    _geminiModel = GenerativeModel(model: ApiConfig.geminiChatModel, apiKey: ApiConfig.geminiApiKey);
-    // Note: Gemini direct chat removed - now using unified ApiService
+    // Note: All model setup now handled by ApiService - no more direct Gemini setup
     // Note: Vision now uses ApiService with user's selected model
 
     if (mounted) setState(() {});

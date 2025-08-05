@@ -2,19 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 // --- CHAT MODELS ---
-// Keeping the same structure for compatibility
+// Only keep thinking mode model hardcoded
 class ChatModels {
-  static const String gemini = 'gpt-4o'; // Default model from new API
-  static const String gpt4_1_mini = 'gpt-4o-mini';
-  static const String gpt4_1 = 'gpt-4o';
-  static const String openai_o3 = 'o1-preview';
   static const String deepseek_r1 = 'deepseek-r1';
-  static const String searchGpt = 'gpt-4o';
-  static const String grok_3 = 'grok-beta';
-  static const String grok_3_mini = 'grok-beta';
-  static const String grok_3_fast = 'grok-beta';
-  static const String grok_3_mini_fast = 'grok-beta';
-  static const String claude_4_sonnet = 'claude-3-5-sonnet-20241022';
 }
 
 // --- API CONFIGURATION ---
@@ -23,26 +13,7 @@ class ApiConfig {
   static const String apiBaseUrl = 'https://ahamai-api.officialprakashkrsingh.workers.dev';
   static const String apiKey = 'ahamaibyprakash25';
   
-  // Chat configuration (replacing all old endpoints)
-  static const String geminiApiKey = apiKey;
-  static const String geminiChatModel = ChatModels.gemini;
-  static const String geminiVisionModel = 'gpt-4o'; // Vision model
-  static const String presentationModelName = 'gpt-4o';
-  
-  // OpenRouter replacement (now points to our API)
-  static const String openRouterApiKey = apiKey;
-  static const String openRouterChatUrl = '$apiBaseUrl/v1/chat/completions';
-  static const String openRouterModel = ChatModels.deepseek_r1; // For thinking mode
-  
-  // Grok replacement
-  static const String grokApiKey = apiKey;
-  static const String grokApiBaseUrl = apiBaseUrl;
-  
-  // Claude replacement
-  static const String claudeApiBaseUrl = apiBaseUrl;
-  static const String claudeApiKey = apiKey;
-  
-  // Thinking mode model
+  // Thinking mode model (only hardcoded model allowed)
   static const String thinkingModeModel = ChatModels.deepseek_r1;
   
   // Brave Search (keeping for web search functionality)
@@ -122,19 +93,27 @@ class ImageApi {
         final Map<String, dynamic> responseJson = jsonDecode(response.body);
         final List<dynamic> modelsData = responseJson['data'] ?? [];
         final models = modelsData.map((model) => model['id'] as String).toList();
-        return models.isNotEmpty ? models : ['flux']; // Default fallback
+        return models;
       } else {
-        return ['flux']; // Fallback
+        return [];
       }
     } catch (e) {
       print("Error fetching image models: $e");
-      return ['flux']; // Fallback
+      return [];
     }
   }
 
   static Future<String> generateImage(String prompt, {String? model}) async {
     try {
-      final selectedModel = model ?? 'flux';
+      // Use first available model from dynamic list, no fallback
+      final availableModels = await fetchModels();
+      if (availableModels.isEmpty) {
+        throw Exception('No image models available');
+      }
+      
+      final selectedModel = model ?? availableModels.first;
+      print("Generating image with model: $selectedModel, prompt: $prompt");
+      
       final response = await http.post(
         Uri.parse('$_baseUrl/v1/images/generations'),
         headers: {
@@ -148,6 +127,9 @@ class ImageApi {
           'size': '512x512',
         }),
       );
+
+      print("Image generation response status: ${response.statusCode}");
+      print("Image generation response headers: ${response.headers}");
 
       if (response.statusCode == 200) {
         // Check if response is image data (binary) or JSON
@@ -171,7 +153,10 @@ class ImageApi {
           }
         }
       }
-      throw Exception('Failed to generate image: ${response.statusCode}');
+      
+      // Log error response body for debugging
+      print("Image generation error response body: ${response.body}");
+      throw Exception('Failed to generate image: ${response.statusCode} - ${response.body}');
     } catch (e) {
       print("Error generating image: $e");
       throw Exception('Image generation failed: $e');

@@ -185,7 +185,10 @@ class ApiService {
     String? model,
   }) async* {
     try {
-      final selectedModel = model ?? 'gpt-4o';
+      if (model == null || model.isEmpty) {
+      throw Exception('No model specified for vision generation');
+    }
+    final selectedModel = model;
       
       final requestBody = {
         'model': selectedModel,
