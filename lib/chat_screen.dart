@@ -76,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _messages = widget.initialMessages != null ? List.from(widget.initialMessages!) : [];
     _isPinned = widget.isPinned;
     _chatId = widget.chatId ?? DateTime.now().millisecondsSinceEpoch.toString();
@@ -129,6 +130,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
@@ -230,7 +232,8 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Background processing temporarily disabled for stability
+    // Store message for potential background processing
+    _currentStreamingMessage = input;
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -333,7 +336,8 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
     _scrollToBottom();
 
-    // Background processing disabled
+    // Clear streaming message when done
+    _currentStreamingMessage = null;
   }
 
   void _onStreamingError(dynamic error) {
@@ -811,6 +815,35 @@ Based on the context above, answer the following prompt: $input""";
   }
 
   static const _backgroundChannel = MethodChannel('com.ahamai.background');
+  String? _currentStreamingMessage;
+  bool _isAppInBackground = false;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        print('🔄 App went to background while streaming: $_isStreaming');
+        _isAppInBackground = true;
+        if (_isStreaming && _currentStreamingMessage != null) {
+          // Transfer processing to native background service
+          _transferToBackgroundProcessing();
+        }
+        break;
+      case AppLifecycleState.resumed:
+        print('🔄 App returned to foreground');
+        _isAppInBackground = false;
+        if (_currentStreamingMessage != null) {
+          // Check if background processing completed
+          _checkBackgroundResult();
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   Future<void> _startNativeBackgroundProcessing(String message) async {
     try {
@@ -832,6 +865,68 @@ Based on the context above, answer the following prompt: $input""";
       print('⏹️ Native background processing stopped');
     } catch (e) {
       print('❌ Failed to stop background processing: $e');
+    }
+  }
+
+  Future<void> _transferToBackgroundProcessing() async {
+    if (_currentStreamingMessage == null) return;
+    
+    try {
+      print('🔄 Transferring to background processing: $_currentStreamingMessage');
+      
+      // Start native background service
+      await _backgroundChannel.invokeMethod('startBackgroundProcessing', {
+        'chatId': widget.chatInfoStream.hashCode.toString(),
+        'message': _currentStreamingMessage!,
+        'model': _selectedChatModel,
+        'processType': 'chat',
+      });
+      
+      // Update UI to show background processing
+      if (mounted && _messages.isNotEmpty) {
+        setState(() {
+          _messages[_messages.length - 1] = ChatMessage(
+            role: 'model', 
+            text: '🔄 Processing in background...\nYou can switch to other apps. We\'ll notify you when ready!'
+          );
+        });
+      }
+      
+      print('✅ Successfully transferred to background processing');
+    } catch (e) {
+      print('❌ Failed to transfer to background processing: $e');
+    }
+  }
+
+  Future<void> _checkBackgroundResult() async {
+    try {
+      final result = await _backgroundChannel.invokeMethod('getBackgroundResult');
+      
+      if (result != null && result is Map) {
+        final content = result['content'] as String?;
+        final success = result['success'] as bool? ?? false;
+        
+        if (content != null && content.isNotEmpty) {
+          print('✅ Background processing completed: $content');
+          
+          // Update the UI with the result
+          if (mounted && _messages.isNotEmpty) {
+            setState(() {
+              _messages[_messages.length - 1] = ChatMessage(
+                role: 'model', 
+                text: success ? content : '❌ Error: $content'
+              );
+              _isStreaming = false;
+            });
+            _scrollToBottom();
+          }
+          
+          // Clear the streaming message
+          _currentStreamingMessage = null;
+        }
+      }
+    } catch (e) {
+      print('❌ Failed to check background result: $e');
     }
   }
 

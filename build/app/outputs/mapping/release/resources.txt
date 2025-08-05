@@ -125,6 +125,7 @@ CAMERA
 XResolution
 resizeUp
 creditCardNumber
+ahamaibyprakash25
 Europe/Paris
 orders
 doAfterTextChanged
@@ -2261,7 +2262,6 @@ ahamai_background_processing
 ACTION_PAGE_RIGHT
 java.nio.file.Files
 FlashEnergy
-flutter.openai_api_key
 onComplete
 dev.flutter.pigeon.path_provider_andr...
 menu
@@ -3032,7 +3032,6 @@ androidx.work.impl.background.gcm.Gcm...
 $oldWorkSpec
 SRATIONAL
 android.speech.extra.LANGUAGE
-https://api.openai.com/v1/chat/comple...
 getFloat
 putLong
 DOCUMENTS
