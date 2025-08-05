@@ -1,6 +1,16 @@
 R_DEF: Internal format may change without notice
 local
 drawable launch_background
+drawable widget_background
+drawable widget_button_background
+id widget_chat
+id widget_image
+id widget_presentation
+id widget_thinking
+layout ahamai_widget
 mipmap ic_launcher
+string app_name
+string widget_description
 style LaunchTheme
 style NormalTheme
+xml ahamai_widget_info

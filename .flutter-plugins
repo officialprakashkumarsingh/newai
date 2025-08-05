@@ -5,6 +5,7 @@ file_selector_macos=/home/ubuntu/.pub-cache/hosted/pub.dev/file_selector_macos-0
 file_selector_windows=/home/ubuntu/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+4/
 flutter_plugin_android_lifecycle=/home/ubuntu/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.26/
 flutter_tts=/home/ubuntu/.pub-cache/hosted/pub.dev/flutter_tts-3.8.5/
+home_widget=/home/ubuntu/.pub-cache/hosted/pub.dev/home_widget-0.4.1/
 image_picker=/home/ubuntu/.pub-cache/hosted/pub.dev/image_picker-1.1.2/
 image_picker_android=/home/ubuntu/.pub-cache/hosted/pub.dev/image_picker_android-0.8.12+21/
 image_picker_for_web=/home/ubuntu/.pub-cache/hosted/pub.dev/image_picker_for_web-3.0.6/

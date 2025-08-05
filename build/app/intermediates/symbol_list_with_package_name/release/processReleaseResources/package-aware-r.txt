@@ -757,6 +757,8 @@ drawable notify_panel_notification_icon_bg
 drawable preference_list_divider_material
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
+drawable widget_background
+drawable widget_button_background
 id ALT
 id CTRL
 id FUNCTION
@@ -980,6 +982,10 @@ id view_tree_on_back_pressed_dispatcher_owner
 id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible_removing_fragment_view_tag
+id widget_chat
+id widget_image
+id widget_presentation
+id widget_thinking
 id withText
 id wrap_content
 integer abc_config_activityDefaultDur
@@ -1024,6 +1030,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout ahamai_widget
 layout browser_actions_context_menu_page
 layout browser_actions_context_menu_row
 layout custom_dialog
@@ -1086,6 +1093,7 @@ string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string androidx_startup
+string app_name
 string call_notification_answer_action
 string call_notification_answer_video_action
 string call_notification_decline_action
@@ -1106,6 +1114,7 @@ string status_bar_notification_info_overflow
 string summary_collapsed_preference_list
 string v7_preference_off
 string v7_preference_on
+string widget_description
 style AlertDialog_AppCompat
 style AlertDialog_AppCompat_Light
 style Animation_AppCompat_Dialog
@@ -1558,5 +1567,6 @@ styleable Toolbar android_gravity android_minHeight buttonGravity collapseConten
 styleable View android_theme android_focusable paddingEnd paddingStart theme
 styleable ViewBackgroundHelper android_background backgroundTint backgroundTintMode
 styleable ViewStubCompat android_id android_layout android_inflatedId
+xml ahamai_widget_info
 xml flutter_image_picker_file_paths
 xml image_share_filepaths

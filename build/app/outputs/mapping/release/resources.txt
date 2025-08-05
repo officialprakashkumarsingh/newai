@@ -4,8 +4,8 @@ Referenced Strings:
 cancel
 http://
 callerContext
-FileUtils
 DISMISS
+FileUtils
 app_flutter
 valueCase_
 kRepeat
@@ -31,10 +31,10 @@ keyframe
 size
 AspectFrame
 ACTION_PRESS_AND_HOLD
-left
 kotlinx.coroutines.DefaultExecutor
-JvmSystemFileSystem
+left
 registerWith
+JvmSystemFileSystem
 object
 SystemSoundType.alert
 produceFile
@@ -48,6 +48,7 @@ ImageLength
 sidecarAdapter
 result
 SystemUiMode.immersiveSticky
+callbackHandle
 flutter/platform_views
 addFontWeightStyle
 TextCapitalization.words
@@ -62,11 +63,11 @@ ACTION_CLEAR_ACCESSIBILITY_FOCUS
 destroy_engine_with_activity
 truncated
 effectiveDirectAddress
-kotlin.String
 RESUMING_BY_EB
+kotlin.String
 sidecarDeviceState
-r
 component
+r
 SUSPEND
 java.lang.Module
 TypefaceCompatApi26Impl
@@ -95,16 +96,16 @@ LONG_PRESS
 HAS_CHECKED_STATE
 FlutterEngine
 $arguments
-flutter/keyevent
 DateTimeDigitized
+flutter/keyevent
 AppLifecycleState.
 child
 SystemChrome.setSystemUIOverlayStyle
 androidx.view.accessibility.Accessibi...
 addWindowLayoutInfoListener
 repeatMode
-enable_state_restoration
 COMPLETING_WAITING_CHILDREN
+enable_state_restoration
 RESULT_BASELINE_PROFILE_NOT_FOUND
 _invoked
 locale
@@ -122,6 +123,7 @@ MOVE_CURSOR_BACKWARD_BY_CHARACTER
 synth.onStart
 deqIdx
 kotlin.collections.List
+flutterPluginBinding
 MOVE_CURSOR_FORWARD_BY_CHARACTER
 GPSImgDirection
 args
@@ -134,6 +136,7 @@ FlutterActivity
 GPSDifferential
 java.lang.Float
 Dispatchers.IO
+channel
 focus
 PAUSED
 SCOPES_ROUTE
@@ -151,21 +154,21 @@ write
 flow
 onStop
 maxWidth
-GPSDestLatitudeRef
 SensorLeftBorder
+GPSDestLatitudeRef
 dev.flutter.pigeon.shared_preferences...
 byte
 CAMERA
 GPSStatus
 XResolution
 YCbCrCoefficients
-creditCardNumber
 resizeUp
+creditCardNumber
 onPostResume
 doAfterTextChanged
 wait
-birthDateYear
 FlutterActivityAndFragmentDelegate
+birthDateYear
 initialState
 ACTION_SCROLL_IN_DIRECTION
 MaxApertureValue
@@ -178,10 +181,10 @@ top
 io.flutter.embedding.android.EnableVu...
 ACTION_PAGE_UP
 com.google.android.gms.provider.actio...
-ExifIFDPointer
 java.lang.String
-TextInput.setClient
+ExifIFDPointer
 resizeDown
+TextInput.setClient
 mServiceConnection
 comparator
 framework
@@ -192,6 +195,7 @@ REAR
 ReflectionGuard
 Copyright
 android.widget.CheckBox
+home_widget
 translateY
 translateX
 android.intent.extras.CAMERA_FACING
@@ -231,11 +235,11 @@ dev.flutter.pigeon.shared_preferences...
 SubjectLocation
 android.intent.action.SEARCH
 BITMAP
-Array
 DigitalZoomRatio
+Array
 intrface
-UNKNOWN
 android.permission.CAMERA
+UNKNOWN
 /proc/self/fd/
 fileName
 getByte
@@ -246,8 +250,8 @@ FRONT
 UINT32
 AppCompatCustomView
 android.provider.action.PICK_IMAGES
-password
 centerColor
+password
 kotlinx.coroutines.scheduler.keep.ali...
 CONTENT_TYPE
 VGhpcyBpcyB0aGUgcHJlZml4IGZvciBEb3VibGUu
@@ -277,23 +281,23 @@ CUSTOM_ACTION
 STANDARD
 cached_engine_id
 setRemoveOnCancelPolicy
-receive
 MUSIC
+receive
 WhitePoint
 NO_ACTIVITY
 NEW_BUILDER
 gradient
 checkOpNoThrow
-IS_LIVE_REGION
 forbidden
+IS_LIVE_REGION
 windowToken
 onTrimMemory
 getSourceNodeId
 chars
 arrayIndexScale
 klass.interfaces
-dev.flutter.pigeon.path_provider_andr...
 flutter/backgesture
+dev.flutter.pigeon.path_provider_andr...
 source
 ALERT
 LocalizationChannel
@@ -305,8 +309,8 @@ has
 androidx.view.accessibility.Accessibi...
 SCALAR
 INTEGER
-addressCity
 AvdcInflateDelegate
+addressCity
 UINT32_LIST_PACKED
 search_suggest_query
 androidx.datastore.preferences.protob...
@@ -349,21 +353,22 @@ BOOL_LIST
 getLayoutDirection
 endY
 endX
-getWindowExtensions
 DATETIME
+getWindowExtensions
 BOOL
 PASTE
 short
 startY
 startX
 IS_HEADER
-ApertureValue
 COMPLETING_RETRY
+ApertureValue
 VISIBLE_PASSWORD
 IS_FOCUSABLE
 OrBuilderList
 TextInput.clearClient
 SCROLL_RIGHT
+defaultValue
 android.widget.ImageView
 android.widget.RadioButton
 moduleName
@@ -372,8 +377,8 @@ ACCESSIBILITY_CLICKABLE_SPAN_ID
 dev.flutter.pigeon.url_launcher_andro...
 put
 ACTION_PAGE_LEFT
-YResolution
 TextInputType.text
+YResolution
 in_progress
 pokeLong
 FAILED
@@ -393,10 +398,10 @@ POSTAL_ADDRESS
 closeHandler
 removeWindowLayoutInfoListener
 flutterEngine
-dev.flutter.pigeon.shared_preferences...
 strokeLineJoin
-$callback
+dev.flutter.pigeon.shared_preferences...
 BUFFERED
+$callback
 light
 .apk
 voice.name
@@ -426,11 +431,12 @@ SBYTE
 DeviceOrientation.landscapeLeft
 callbackInterface
 targetBytes
-FIXED32_LIST
 flutter_image_picker_max_height
+FIXED32_LIST
 DIAGNOSTIC_CURRENT_PROFILE_EXISTS
 .immediate
 TextInputAction.unspecified
+chat
 char
 TAG
 IMMERSIVE
@@ -446,8 +452,8 @@ android.intent.action.GET_CONTENT
 TextInputAction.commitContent
 inputType
 SubSecTime
-BOTH
 CLOSE_HANDLER_INVOKED
+BOTH
 group
 java.lang.Cloneable
 speak.onStart
@@ -459,11 +465,11 @@ io.flutter.embedding.android.EnableIm...
 WrongConstant
 setWindowLayoutType
 PreferenceGroup
-setLocale
 getUri
+setLocale
 Clipboard.setData
-TextInput.sendAppPrivateCommand
 TextInputType.phone
+TextInput.sendAppPrivateCommand
 CLOSED
 values
 speak.onCancel
@@ -472,16 +478,16 @@ consumerIndex
 point
 _removedRef
 androidx.activity.result.contract.ext...
-dev.flutter.pigeon.shared_preferences...
 alias
+dev.flutter.pigeon.shared_preferences...
 SINT64_LIST_PACKED
 kotlin.String.Companion
 temp
 ISOSpeedLatitudezzz
 ACTION_SHOW_TOOLTIP
 clear
-TextInput.show
 jClass
+TextInput.show
 value_
 doBeforeTextChanged
 addFontFromAssetManager
@@ -493,6 +499,7 @@ CLIP_PATH
 value.string
 suggestions
 classes.dex
+home_widget/updates
 sidecarCompat
 resizeColumn
 plugins
@@ -507,12 +514,14 @@ propertyValuesHolder
 kotlin.reflect.jvm.internal.Reflectio...
 PARKING
 FOLD
+appWidgetIds
 cleanedAndPointers
 addObserver
 generatedAdapter
 PixelXDimension
 removeMethodName
 SFIXED32_LIST
+initiallyLaunchedFromHomeWidget
 android.intent.extra.ALLOW_MULTIPLE
 ON_ANY
 METHODS
@@ -523,8 +532,8 @@ ON_PAUSE
 route
 MeteringMode
 interpolator
-StripByteCounts
 domain
+StripByteCounts
 viewType
 editingValue
 TraceCompat
@@ -549,8 +558,8 @@ right
 PERMIT
 transition
 android.provider.extra.PICK_IMAGES_MAX
-hintText
 LOCALE
+hintText
 personNamePrefix
 toString
 feature.rect
@@ -575,15 +584,17 @@ DORMANT
 HYBRID_ONLY
 coordinator
 kHdmi
+com.aham.app.ACTION_CHAT
 TextInputType.name
+appWidgetManager
 navigation_bar_height
 java.lang.annotation.Annotation
 FlutterImageView
 font_weight
 TERMINATED
 ACTION_SET_SELECTION
-Localization.getStringResource
 flutter/navigation
+Localization.getStringResource
 androidx.view.accessibility.Accessibi...
 kotlin.collections.Map
 duration
@@ -600,8 +611,8 @@ selector
 FocalPlaneXResolution
 continuation
 owner
-classSimpleName
 strings_
+classSimpleName
 pathData
 DeviceOrientation.landscapeRight
 .jpg
@@ -616,14 +627,14 @@ activateSystemCursor
 flutter/accessibility
 resize
 TextEditingDelta
-strokeMiterLimit
 DEFAULT
+strokeMiterLimit
 SensingMethod
 DROP_OLDEST
 lastScheduledTask
 viewportHeight
-birthdayMonth
 android.support.FILE_PROVIDER_PATHS
+birthdayMonth
 SFIXED64_LIST
 autocorrect
 IMAGE
@@ -658,8 +669,8 @@ flutter_image_picker_error_message
 ACTION_CLEAR_SELECTION
 file
 BYTE_STRING
-YCbCrSubSampling
 fileHandle
+YCbCrSubSampling
 stream
 CancellableContinuation
 map
@@ -679,8 +690,8 @@ ACTION_HIDE_TOOLTIP
 onSaveInstanceState
 io.flutter.EntrypointUri
 VIRTUAL_DISPLAY_PLATFORM_VIEW
-IS_SLIDER
 newIndent
+IS_SLIDER
 resizeUpLeftDownRight
 KeyboardManager
 AsldcInflateDelegate
@@ -690,14 +701,16 @@ SpellCheckChannel
 main
 commitBackGesture
 mVisibleInsets
+registerBackgroundCallback
 birthDateMonth
 interrupted
 ListenableEditingState
 separator
 personMiddleName
 entries
-font_italic
 null
+font_italic
+saveWidgetData
 background
 true
 androidx.datastore.preferences.protob...
@@ -711,13 +724,13 @@ SubjectDistance
 transformer
 ACTION_SCROLL_RIGHT
 statusBarIconBrightness
-dcim
 peekLong
+dcim
 sendersAndCloseStatus
 UINT32_LIST
 asyncTraceEnd
-transform
 getWindowLayoutComponentMethod
+transform
 TTS
 CustomRendered
 STARTED
@@ -771,6 +784,7 @@ androidx.datastore.preferences.protob...
 SubjectDistanceRange
 kotlin.Function
 0x
+com.ahamai.widget
 URATIONAL
 kJoystick
 long
@@ -802,6 +816,7 @@ android.widget.EditText
 NO_DECISION
 JPEGInterchangeFormat
 postalCode
+presentation
 TextInput.setEditingState
 enableDomStorage
 androidx.profileinstaller.action.INST...
@@ -826,30 +841,30 @@ setClipToScreenEnabled
 pokeByte
 getMaxAvailableHeight
 WrappedDrawableApi21
-creditCardExpirationYear
 CUTOUT
+creditCardExpirationYear
 OffsetTimeDigitized
 SystemUiMode.leanBack
 binaryMessenger
-dev.flutter.pigeon.shared_preferences...
 dev.flutter.pigeon.url_launcher_andro...
-java.lang.Object
+dev.flutter.pigeon.shared_preferences...
 comment
+java.lang.Object
 SystemChrome.setSystemUIChangeListener
 base
 dexopt/baseline.profm
 no_activity
-TextInput.setPlatformViewClient
-extendedPostalCode
 kotlinx.coroutines.bufferedChannel.se...
+extendedPostalCode
+TextInput.setPlatformViewClient
 state:
 prefix
 binding
 kKeyboard
 zoomOut
 state1
-movies
 camera_access_denied
+movies
 getViewRootImpl
 delimiter
 superclass
@@ -858,9 +873,9 @@ NONE
 kotlinx.coroutines.semaphore.maxSpinC...
 LOG
 hints
-keyup
 onWindowLayoutChangeListenerAdded
 java.util.Set
+keyup
 SensorRightBorder
 result_code
 word
@@ -877,6 +892,7 @@ NO_THREAD_ELEMENTS
 INTERRUPTED_SEND
 tracker
 FLAT
+getWidgetAction
 getDisplayInfo
 DOUBLE
 event
@@ -894,8 +910,8 @@ TransferFunction
 outState
 compressionQuality
 SensorTopBorder
-ALARMS
 java.lang.Comparable
+ALARMS
 ACTION_SET_TEXT
 getVolumeList
 msg
@@ -911,8 +927,8 @@ Gamma
 SINT64
 java.lang.Enum
 GPSVersionID
-familyName
 enableIMEPersonalizedLearning
+familyName
 DETACHED
 android.permission.POST_NOTIFICATIONS
 TextInputType.datetime
@@ -927,8 +943,8 @@ IS_HIDDEN
 keyCode
 sequence
 DATA
-ThumbnailImage
 UTF8
+ThumbnailImage
 file_id
 getUuid
 didGainFocus
@@ -956,8 +972,8 @@ opaque
 0x%08x
 dart_entrypoint_args
 pathList
-GPSDestLongitudeRef
 int
+GPSDestLongitudeRef
 LensMake
 Xmp
 com.google.android.inputmethod.latin
@@ -980,10 +996,10 @@ androidx.view.accessibility.Accessibi...
 getUncaughtExceptionPreHandler
 onBackPressed
 adapter
-LEFT
 LANDSCAPE_RIGHT
-givenName
+LEFT
 _handled
+givenName
 stop
 kotlin.jvm.functions.
 kotlinx.coroutines.scheduler.default....
@@ -1032,8 +1048,8 @@ addSuppressed
 CSLCompat
 ACTION_SET_PROGRESS
 ThumbnailImageWidth
-addressCountry
 add
+addressCountry
 trimPathEnd
 flutter_image_picker_image_path
 LIGHT
@@ -1041,19 +1057,20 @@ DID_LOSE_ACCESSIBILITY_FOCUS
 TypefaceCompatUtil
 volume
 NEW_MUTABLE_INSTANCE
+es.antonborri.home_widget.action.LAUNCH
 phoneCountryCode
 telephoneNumberCountryCode
 deviceState
 decimal
 strokeWidth
-TextInput.setEditableSizeAndTransform
 ROOT
+TextInput.setEditableSizeAndTransform
 ACTION_CLEAR_FOCUS
 PixelYDimension
 getDouble
 ACTION_SCROLL_BACKWARD
-directory
 FIXED32
+directory
 FlashpixVersion
 TooltipPopup
 WhiteBalance
@@ -1078,12 +1095,13 @@ java.util.function.Consumer
 ACTION_DRAG_DROP
 setDisplayFeatures
 HapticFeedbackType.lightImpact
+android.appwidget.action.APPWIDGET_UP...
 creditCardExpirationDay
 username
 centerY
 centerX
-image_picker
 UNDEFINED
+image_picker
 GPSTimeStamp
 ACTION_CONTEXT_CLICK
 android.support.customtabs.extra.MENU...
@@ -1091,9 +1109,9 @@ dexopt/baseline.prof
 messageInfoFactory
 BYTE
 IS_TEXT_FIELD
+kotlinx.coroutines.internal.StackTrac...
 com.google.android.gms.provider.extra...
 property
-kotlinx.coroutines.internal.StackTrac...
 androidx.view.accessibility.Accessibi...
 createSegment
 TextInputType.none
@@ -1122,8 +1140,8 @@ putDouble
 cell
 safeCast
 URI
-FlutterTextureView
 URL
+FlutterTextureView
 segments
 suggest_text_1
 suggest_text_2
@@ -1154,8 +1172,8 @@ ExposureProgram
 UTC
 kotlin.collections.Collection
 invalid_format_type
-scaleX
 TextInputAction.send
+scaleX
 scaleY
 onStart
 _isCompleting
@@ -1212,6 +1230,7 @@ flutter/lifecycle
 TextInputType.number
 0.5
 layout_inflater
+setAppGroupId
 SLONG
 android.media.action.VIDEO_CAPTURE
 getParentNodeId
@@ -1222,15 +1241,15 @@ SystemChrome.setEnabledSystemUIMode
 ringtones
 ANIM
 suggest_flags
-receiveSegment
 android.widget.HorizontalScrollView
+receiveSegment
 preferences.all
 NO_CLOSE_CAUSE
 INCREASE
 androidx.datastore.preferences.protob...
 newValue
-creditCardExpirationMonth
 cache
+creditCardExpirationMonth
 deltaText
 Make
 BUILD_MESSAGE_INFO
@@ -1246,22 +1265,24 @@ FilePickerUtils
 PROTO2
 POSTURE_FLAT
 PROTO3
+updateWidget
 kotlinx.coroutines.semaphore.segmentSize
 DROP_SHADER_CACHE
 oemFeature.bounds
 kotlin.collections.ListIterator
 GROUP
 GPSLatitudeRef
-getKeyboardState
 putByte
-delimiters
+getKeyboardState
 TextInputClient.updateEditingStateWit...
+delimiters
 objectFieldOffset
 ACTION_SELECT
 newLayoutInfo
 viewportWidth
 ComponentsConfiguration
 blockingTasksInBuffer
+InternalHomeWidgetPreferences
 call
 streetAddress
 kotlin.Char
@@ -1273,8 +1294,8 @@ animator
 _decisionAndIndex
 dimen
 GPSAltitudeRef
-documents
 java.util.ListIterator
+documents
 DefaultDispatcher
 QUIET
 kotlin.Double
@@ -1283,8 +1304,8 @@ GPSMapDatum
 view
 allScroll
 segment
-ANMF
 SystemChrome.systemUIChange
+ANMF
 NewApi
 ViewCompat
 CustomTabsClient
@@ -1301,27 +1322,27 @@ FULL
 finalException
 flutter
 startOffset
-GPSDestLongitude
 byteString
+GPSDestLongitude
 dev.flutter.pigeon.image_picker_andro...
 name
 DIAGNOSTIC_REF_PROFILE_DOES_NOT_EXIST
 NestedScrollView
-SceneCaptureType
 DartExecutor
+SceneCaptureType
 fields
 getDescriptor
 keymap
 string
-FlutterLoader
 bool
+FlutterLoader
 deltaStart
-IFD
 kotlin.coroutines.jvm.internal.BaseCo...
+IFD
 android
-nameSuffix
-java.lang.module.ModuleDescriptor
 description
+java.lang.module.ModuleDescriptor
+nameSuffix
 rwt
 status_bar_height
 textScaleFactor
@@ -1372,20 +1393,20 @@ dart_entrypoint
 kotlinx.coroutines.scheduler.core.poo...
 kotlinx.coroutines.scheduler.max.pool...
 double
-newPassword
 GET_PARSER
+newPassword
 smsOTPCode
-SystemChannel
 RelatedSoundFile
 com.android.browser.headers
 flutter_deeplinking_enabled
+SystemChannel
 HEAVY_IMPACT
 kotlin.Short
 SeekBarPreference
 bounds
 getDisplayFeatures
-GPSTrack
 BLOCKING
+GPSTrack
 UrlLauncherPlugin
 consumeMessage
 SceneType
@@ -1396,11 +1417,11 @@ flags
 SystemUiOverlay.bottom
 onPause
 ViewConfigCompat
-androidx.browser.customtabs.extra.SHA...
-kotlinx.coroutines.bufferedChannel.ex...
 enabled
-mContentInsets
+kotlinx.coroutines.bufferedChannel.ex...
+androidx.browser.customtabs.extra.SHA...
 LAZY
+mContentInsets
 resuming_sender
 stackTrace
 setDirection
@@ -1429,8 +1450,8 @@ Brightness.dark
 ISOSpeed
 listString
 2
-selectionBase
 SettingsChannel
+selectionBase
 notification
 plainCodePoint
 getWindowLayoutComponent
@@ -1446,8 +1467,8 @@ flutter_image_picker_type
 _consensus
 CANCELLED
 SCROLL_UP
-CLOSED_EMPTY
 kotlin.collections.Iterator
+CLOSED_EMPTY
 res/
 locale.variant
 job
@@ -1458,21 +1479,22 @@ SystemChrome.restoreSystemUIOverlays
 unexpected
 preferencesMap
 NO_RECEIVE_RESULT
+callbackDispatcherHandle
 INT
 candidate
 kotlin.Enum
 fillType
 PlatformViewsChannel
-Flash
 SensorBottomBorder
+Flash
 deltas
 uniqueIdentifier
 ACTION_PREVIOUS_HTML_ELEMENT
 move
 http://schemas.android.com/apk/res/an...
 suggest_text_2_url
-alarms
 filePath
+alarms
 .flutter.image_provider
 setPosture
 ensureImeVisible
@@ -1513,12 +1535,12 @@ STRING_SET
 MOVE_CURSOR_BACKWARD_BY_WORD
 traceCounter
 _COROUTINE
-onClose
-kotlinx.coroutines.scheduler.resoluti...
 kotlin.Unit
+kotlinx.coroutines.scheduler.resoluti...
+onClose
 web_search
-FocalLength
 getType
+FocalLength
 birthdayDay
 kotlin.jvm.internal.StringCompanionOb...
 c:
@@ -1530,8 +1552,9 @@ java.
 SystemSoundType.click
 resizeUpDown
 search
-listEncoder
 popRoute
+listEncoder
+com.aham.app.ACTION_PRESENTATION
 EDITIONS
 androidx.window.extensions.WindowExte...
 completion
@@ -1566,9 +1589,10 @@ DOWNLOADS
 image
 android.speech.extra.MAX_RESULTS
 TextInputChannel
+com.aham.app.ACTION_THINKING
 MOVIES
-Failed
 preferences_
+Failed
 OPACITY
 NonDisposableHandle
 androidx.activity.result.contract.act...
@@ -1586,12 +1610,12 @@ ACTION_LONG_CLICK
 SRATIONAL
 android.speech.extra.LANGUAGE
 getFloat
-extendedAddress
 putLong
+extendedAddress
 DOCUMENTS
 content
-wm.currentWindowMetrics.bounds
 timeout
+wm.currentWindowMetrics.bounds
 statusBarColor
 VGhpcyBpcyB0aGUgcHJlZml4IGZvciBCaWdJb...
 contentCommitMimeTypes
@@ -1622,8 +1646,8 @@ android.intent.extra.USE_FRONT_CAMERA
 context
 $newLayoutInfo
 id
-birthdayYear
 kDirectionalPad
+birthdayYear
 isolate_snapshot_data
 ENUM
 SPELLOUT
@@ -1632,8 +1656,8 @@ raw:
 _bounds
 it
 params
-announce
 UNDECIDED
+announce
 TextInputType.address
 getInt
 dev.flutter.pigeon.image_picker_andro...
@@ -1642,10 +1666,11 @@ NioSystemFileSystem
 kotlin.jvm.internal.
 Map
 charset
-telephoneNumber
 classLoader
+telephoneNumber
 extras
 cancelBackGesture
+thinking
 java.util.ArrayList
 delegate
 suggest_intent_action
@@ -1673,8 +1698,8 @@ tts.init
 ResolutionUnit
 /data/misc/profiles/ref/
 flutter/processtext
-newUsername
 android.speech.action.RECOGNIZE_SPEECH
+newUsername
 suffix
 tintMode
 _size
@@ -1683,15 +1708,16 @@ cleartextTrafficPermitted
 limit
 android.resource://
 strokeColor
+flutterPluginBinding.applicationContext
 DID_GAIN_ACCESSIBILITY_FOCUS
 pokeInt
-android.support.customtabs.extra.SESSION
 kotlin.Number
-ThumbnailOrientation
+android.support.customtabs.extra.SESSION
 DeviceOrientation.portraitDown
+ThumbnailOrientation
+TOO_LATE_TO_CANCEL
 NULL
 dev.flutter.pigeon.image_picker_andro...
-TOO_LATE_TO_CANCEL
 shared_preferences
 PhotographicSensitivity
 .preferences_pb
@@ -1699,8 +1725,8 @@ kDown
 mv
 CompressedBitsPerPixel
 dev.flutter.pigeon.shared_preferences...
-io.flutter.embedding.android.Impeller...
 entry
+io.flutter.embedding.android.Impeller...
 grabbing
 NavigationChannel
 alwaysUse24HourFormat
@@ -1711,8 +1737,8 @@ SET_MEMOIZED_IS_INITIALIZED
 androidx.datastore.preferences.protob...
 TextInputType.visiblePassword
 nm
-birthday
 p0
+birthday
 ComplexColorCompat
 peekByteArray
 addFontFromBuffer
@@ -1737,8 +1763,8 @@ currentDisplay
 longPress
 pokeByteArray
 DOUBLE_LIST
-GPSDOP
 COROUTINE_SUSPENDED
+GPSDOP
 config_viewMinRotaryEncoderFlingVelocity
 GPSInfoIFDPointer
 MenuItemImpl
@@ -1770,8 +1796,8 @@ getObject
 ACTION_NEXT_HTML_ELEMENT
 BOTTOM_OVERLAYS
 BodySerialNumber
-SpectralSensitivity
 enqIdx
+SpectralSensitivity
 setSpeechRate
 setSharedInstance
 kotlin.Array
@@ -1780,8 +1806,8 @@ ACTION_COLLAPSE
 android.media.action.IMAGE_CAPTURE
 CONDITION_FALSE
 read_external_storage_denied
-rm
 flutter_image_picker_max_width
+rm
 ExposureBiasValue
 IS_IN_MUTUALLY_EXCLUSIVE_GROUP
 activity
@@ -1793,6 +1819,7 @@ RTL
 ENUM_LIST_PACKED
 SystemUiMode.immersive
 HALF_OPENED
+com.aham.app.ACTION_IMAGE
 maxHeight
 ImageResizer
 vector
@@ -1820,8 +1847,8 @@ initTasksList
 android.speech.action.WEB_SEARCH
 handled
 closed
-SystemNavigator.pop
 resizeRight
+SystemNavigator.pop
 compressed
 TextInputAction.newline
 io.flutter.embedding.android.EnableVu...
@@ -1847,15 +1874,15 @@ action_key
 postalAddressExtendedPostalCode
 NOT_IN_STACK
 TextInputAction.previous
-it.key
 OffsetTimeOriginal
+it.key
 speak.onProgress
 CLICK
 MULTILINE
 removeObserver
 android.graphics.Insets
-ON_DESTROY
 destination
+ON_DESTROY
 enableDeltaModel
 wa
 FLOAT_LIST
@@ -1863,8 +1890,8 @@ abortCreation
 ViewParentCompat
 ImageProcessingIFDPointer
 RESULT_ALREADY_INSTALLED
-flutter/mousecursor
 getTypeMethod
+flutter/mousecursor
 FontsProvider
 STF_
 wt
@@ -1881,13 +1908,13 @@ onWindowLayoutChangeListenerRemoved
 Dispatchers.Main.immediate
 valueFrom
 PLATFORM_ENCODED
-REMOVED_TASK
 location
+REMOVED_TASK
 getInstance
 ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY
 xx
-INT64_LIST_PACKED
 android.intent.extra.PROCESS_TEXT
+INT64_LIST_PACKED
 GPSProcessingMethod
 isLanguageInstalled
 Index:
@@ -1895,8 +1922,8 @@ none
 type
 actionLabel
 TextCapitalization.sentences
-DEX_FILES
 IMMERSIVE_STICKY
+DEX_FILES
 FocalPlaneResolutionUnit
 appops
 HapticFeedbackType.mediumImpact
@@ -1906,12 +1933,13 @@ com.android.providers.downloads.docum...
 dev.flutter.pigeon.shared_preferences...
 ACTION_ARGUMENT_MOVEMENT_GRANULARITY_INT
 DeviceOrientation.portraitUp
-_display_name
 method
+_display_name
 config_showMenuShortcutsWhenKeyboardP...
 CONSUMED
 systemNavigationBarContrastEnforced
 PreviewImageLength
+HomeWidgetPreferences
 ACTION_ARGUMENT_SELECTION_START_INT
 push
 SpatialFrequencyResponse
@@ -1934,9 +1962,9 @@ out
 feature
 getMaxSpeechInputLength
 get
+produceMigrations
 oneTimeCode
 dark
-produceMigrations
 copy
 precise
 java.lang.Number
@@ -1960,6 +1988,7 @@ HAS_ENABLED_STATE
 data
 ON_RESUME
 IS_ENABLED
+qualifiedAndroidName
 getWindowExtensionsMethod
 TextCapitalization.characters
 asyncTraceBegin
@@ -1982,8 +2011,8 @@ transition_animation_scale
 swipeEdge
 Active
 postalAddress
-telephoneNumberDevice
 kotlin.collections.Iterable
+telephoneNumberDevice
 files
 send
 calling_package
@@ -2008,21 +2037,22 @@ android.intent.action.SEND
 getWindowLayoutInfo
 JPEGInterchangeFormatLength
 java.util.Iterator
+TextInputClient.performAction
 onWindowFocusChanged
 org.robolectric.Robolectric
-TextInputClient.performAction
 appcompat_skip_skip
 jar:file:
-addressState
 ON_STOP
+addressState
 kotlin.CharSequence
 RESULT_IO_EXCEPTION
 intent
-personName
+getWidgetData
 file:
+personName
 AppCompatResources
-getState
 boolean
+getState
 migrations
 /file_picker/
 FLOAT_LIST_PACKED
@@ -2100,6 +2130,8 @@ Marking id:start:2131230900 used because it matches string pool constant start
 Marking id:start:2131230900 used because it matches string pool constant start
 Marking attr:shortcutMatchRequired:2130903319 used because it matches string pool constant short
 Marking id:shortcut:2131230889 used because it matches string pool constant short
+Marking attr:defaultValue:2130903148 used because it matches string pool constant defaultValue
+Marking attr:defaultValue:2130903148 used because it matches string pool constant defaultValue
 Marking attr:primaryActivityName:2130903297 used because it matches string pool constant primary
 Marking color:primary_dark_material_dark:2131034183 used because it matches string pool constant primary
 Marking color:primary_dark_material_light:2131034184 used because it matches string pool constant primary
@@ -2130,7 +2162,7 @@ Marking id:custom:2131230808 used because it matches string pool constant custom
 Marking attr:customNavigationLayout:2130903146 used because it matches string pool constant custom
 Marking id:custom:2131230808 used because it matches string pool constant custom
 Marking id:customPanel:2131230809 used because it matches string pool constant custom
-Marking layout:custom_dialog:2131427358 used because it matches string pool constant custom
+Marking layout:custom_dialog:2131427359 used because it matches string pool constant custom
 Marking attr:actionBarDivider:2130903040 used because it matches string pool constant action
 Marking attr:actionBarItemBackground:2130903041 used because it matches string pool constant action
 Marking attr:actionBarPopupTheme:2130903042 used because it matches string pool constant action
@@ -2273,19 +2305,19 @@ Marking id:message:2131230845 used because it matches string pool constant messa
 Marking id:info:2131230835 used because it matches string pool constant info.displayFeatures
 Marking color:call_notification_answer_color:2131034156 used because it matches string pool constant call
 Marking color:call_notification_decline_color:2131034157 used because it matches string pool constant call
-Marking string:call_notification_answer_action:2131558428 used because it matches string pool constant call
-Marking string:call_notification_answer_video_action:2131558429 used because it matches string pool constant call
-Marking string:call_notification_decline_action:2131558430 used because it matches string pool constant call
-Marking string:call_notification_hang_up_action:2131558431 used because it matches string pool constant call
-Marking string:call_notification_incoming_text:2131558432 used because it matches string pool constant call
-Marking string:call_notification_ongoing_text:2131558433 used because it matches string pool constant call
-Marking string:call_notification_screening_text:2131558434 used because it matches string pool constant call
+Marking string:call_notification_answer_action:2131558429 used because it matches string pool constant call
+Marking string:call_notification_answer_video_action:2131558430 used because it matches string pool constant call
+Marking string:call_notification_decline_action:2131558431 used because it matches string pool constant call
+Marking string:call_notification_hang_up_action:2131558432 used because it matches string pool constant call
+Marking string:call_notification_incoming_text:2131558433 used because it matches string pool constant call
+Marking string:call_notification_ongoing_text:2131558434 used because it matches string pool constant call
+Marking string:call_notification_screening_text:2131558435 used because it matches string pool constant call
 Marking attr:viewInflaterClass:2130903407 used because it matches string pool constant view
 Marking id:view_tree_lifecycle_owner:2131230938 used because it matches string pool constant view
 Marking id:view_tree_on_back_pressed_dispatcher_owner:2131230939 used because it matches string pool constant view
 Marking id:view_tree_saved_state_registry_owner:2131230940 used because it matches string pool constant view
 Marking id:view_tree_view_model_store_owner:2131230941 used because it matches string pool constant view
-Marking xml:flutter_image_picker_file_paths:2131755008 used because it matches string pool constant flutter
+Marking xml:flutter_image_picker_file_paths:2131755009 used because it matches string pool constant flutter
 Marking color:androidx_core_ripple_material_light:2131034138 used because it matches string pool constant android
 Marking color:androidx_core_secondary_text_default_material_light:2131034139 used because it matches string pool constant android
 Marking id:androidx_window_activity_scope:2131230785 used because it matches string pool constant android
@@ -2340,12 +2372,12 @@ Marking drawable:notification_tile_bg:2131165297 used because it matches string 
 Marking id:notification_background:2131230851 used because it matches string pool constant notification
 Marking id:notification_main_column:2131230852 used because it matches string pool constant notification
 Marking id:notification_main_column_container:2131230853 used because it matches string pool constant notification
-Marking layout:notification_action:2131427363 used because it matches string pool constant notification
-Marking layout:notification_action_tombstone:2131427364 used because it matches string pool constant notification
-Marking layout:notification_template_custom_big:2131427365 used because it matches string pool constant notification
-Marking layout:notification_template_icon_group:2131427366 used because it matches string pool constant notification
-Marking layout:notification_template_part_chronometer:2131427367 used because it matches string pool constant notification
-Marking layout:notification_template_part_time:2131427368 used because it matches string pool constant notification
+Marking layout:notification_action:2131427364 used because it matches string pool constant notification
+Marking layout:notification_action_tombstone:2131427365 used because it matches string pool constant notification
+Marking layout:notification_template_custom_big:2131427366 used because it matches string pool constant notification
+Marking layout:notification_template_icon_group:2131427367 used because it matches string pool constant notification
+Marking layout:notification_template_part_chronometer:2131427368 used because it matches string pool constant notification
+Marking layout:notification_template_part_time:2131427369 used because it matches string pool constant notification
 Marking id:locale:2131230843 used because it matches string pool constant locale.variant
 Marking attr:tooltipForegroundColor:2130903398 used because it matches string pool constant tooltip
 Marking attr:tooltipFrameBackground:2130903399 used because it matches string pool constant tooltip
@@ -2376,7 +2408,7 @@ Marking id:search_mag_icon:2131230882 used because it matches string pool consta
 Marking id:search_plate:2131230883 used because it matches string pool constant search
 Marking id:search_src_text:2131230884 used because it matches string pool constant search
 Marking id:search_voice_btn:2131230885 used because it matches string pool constant search
-Marking string:search_menu_title:2131558443 used because it matches string pool constant search
+Marking string:search_menu_title:2131558444 used because it matches string pool constant search
 Marking attr:font:2130903196 used because it matches string pool constant font
 Marking attr:font:2130903196 used because it matches string pool constant font
 Marking attr:fontFamily:2130903197 used because it matches string pool constant font
@@ -2393,8 +2425,8 @@ Marking attr:fontWeight:2130903207 used because it matches string pool constant 
 Marking id:image:2131230834 used because it matches string pool constant image
 Marking attr:imageButtonStyle:2130903220 used because it matches string pool constant image
 Marking id:image:2131230834 used because it matches string pool constant image
-Marking layout:image_frame:2131427360 used because it matches string pool constant image
-Marking xml:image_share_filepaths:2131755009 used because it matches string pool constant image
+Marking layout:image_frame:2131427361 used because it matches string pool constant image
+Marking xml:image_share_filepaths:2131755010 used because it matches string pool constant image
 Marking dimen:preferences_detail_width:2131099770 used because it matches string pool constant preferences_
 Marking dimen:preferences_header_width:2131099771 used because it matches string pool constant preferences_
 Marking id:preferences_detail:2131230858 used because it matches string pool constant preferences_
@@ -2454,9 +2486,9 @@ Marking attr:contentInsetStartWithNavigation:2130903143 used because it matches 
 Marking attr:controlBackground:2130903144 used because it matches string pool constant cont
 Marking id:content:2131230806 used because it matches string pool constant cont
 Marking id:contentPanel:2131230807 used because it matches string pool constant cont
-Marking string:copy:2131558435 used because it matches string pool constant copy
-Marking string:copy:2131558435 used because it matches string pool constant copy
-Marking string:copy_toast_msg:2131558436 used because it matches string pool constant copy
+Marking string:copy:2131558436 used because it matches string pool constant copy
+Marking string:copy:2131558436 used because it matches string pool constant copy
+Marking string:copy_toast_msg:2131558437 used because it matches string pool constant copy
 Marking attr:tag:2130903363 used because it matches string pool constant tag
 Marking attr:tag:2130903363 used because it matches string pool constant tag
 Marking id:tag_accessibility_actions:2131230905 used because it matches string pool constant tag
@@ -2644,7 +2676,7 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @attr/coordinatorLayoutStyle : reachable=true
 @attr/customNavigationLayout : reachable=true
 @attr/defaultQueryHint : reachable=false
-@attr/defaultValue : reachable=false
+@attr/defaultValue : reachable=true
 @attr/dependency : reachable=false
 @attr/dialogCornerRadius : reachable=false
 @attr/dialogIcon : reachable=false
@@ -3424,6 +3456,8 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @drawable/tooltip_frame_light : reachable=true
     @color/tooltip_background_light
     @dimen/tooltip_corner_radius
+@drawable/widget_background : reachable=false
+@drawable/widget_button_background : reachable=false
 @id/ALT : reachable=false
 @id/CTRL : reachable=false
 @id/FUNCTION : reachable=false
@@ -3647,6 +3681,10 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @id/view_tree_saved_state_registry_owner : reachable=true
 @id/view_tree_view_model_store_owner : reachable=true
 @id/visible_removing_fragment_view_tag : reachable=false
+@id/widget_chat : reachable=true
+@id/widget_image : reachable=true
+@id/widget_presentation : reachable=true
+@id/widget_thinking : reachable=true
 @id/withText : reachable=false
 @id/wrap_content : reachable=false
 @integer/abc_config_activityDefaultDur : reachable=false
@@ -3785,6 +3823,9 @@ Marking id:line3:2131230840 used because it matches string pool constant line
     @dimen/tooltip_horizontal_padding
     @dimen/tooltip_vertical_padding
     @dimen/tooltip_margin
+@layout/ahamai_widget : reachable=true
+    @drawable/widget_background
+    @drawable/widget_button_background
 @layout/browser_actions_context_menu_page : reachable=false
     @color/browser_actions_bg_grey
     @color/browser_actions_title_color
@@ -3904,6 +3945,7 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @string/abc_shareactionprovider_share_with_application : reachable=false
 @string/abc_toolbar_collapse_description : reachable=false
 @string/androidx_startup : reachable=true
+@string/app_name : reachable=false
 @string/call_notification_answer_action : reachable=true
 @string/call_notification_answer_video_action : reachable=true
 @string/call_notification_decline_action : reachable=true
@@ -3924,6 +3966,7 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @string/summary_collapsed_preference_list : reachable=false
 @string/v7_preference_off : reachable=false
 @string/v7_preference_on : reachable=false
+@string/widget_description : reachable=false
 @style/AlertDialog_AppCompat : reachable=false
     @style/Base_AlertDialog_AppCompat
 @style/AlertDialog_AppCompat_Light : reachable=false
@@ -5509,6 +5552,9 @@ Marking id:line3:2131230840 used because it matches string pool constant line
     @color/androidx_core_secondary_text_default_material_light
 @style/Widget_Support_CoordinatorLayout : reachable=false
     @attr/statusBarBackground
+@xml/ahamai_widget_info : reachable=true
+    @string/widget_description
+    @layout/ahamai_widget
 @xml/flutter_image_picker_file_paths : reachable=true
 @xml/image_share_filepaths : reachable=true
 
@@ -5575,6 +5621,7 @@ The root reachable resources are:
  attr:controlBackground:2130903144
  attr:coordinatorLayoutStyle:2130903145
  attr:customNavigationLayout:2130903146
+ attr:defaultValue:2130903148
  attr:dialogPreferenceStyle:2130903154
  attr:displayOptions:2130903159
  attr:dropDownListViewStyle:2130903174
@@ -5943,6 +5990,10 @@ The root reachable resources are:
  id:view_tree_on_back_pressed_dispatcher_owner:2131230939
  id:view_tree_saved_state_registry_owner:2131230940
  id:view_tree_view_model_store_owner:2131230941
+ id:widget_chat:2131230943
+ id:widget_image:2131230944
+ id:widget_presentation:2131230945
+ id:widget_thinking:2131230946
  integer:cancel_button_image_alpha:2131296258
  integer:preferences_detail_pane_weight:2131296260
  integer:preferences_header_pane_weight:2131296261
@@ -5959,15 +6010,16 @@ The root reachable resources are:
  layout:abc_search_dropdown_item_icons_2line:2131427352
  layout:abc_search_view:2131427353
  layout:abc_tooltip:2131427355
- layout:custom_dialog:2131427358
- layout:image_frame:2131427360
- layout:notification_action:2131427363
- layout:notification_action_tombstone:2131427364
- layout:notification_template_custom_big:2131427365
- layout:notification_template_icon_group:2131427366
- layout:notification_template_part_chronometer:2131427367
- layout:notification_template_part_time:2131427368
- layout:preference:2131427369
+ layout:ahamai_widget:2131427356
+ layout:custom_dialog:2131427359
+ layout:image_frame:2131427361
+ layout:notification_action:2131427364
+ layout:notification_action_tombstone:2131427365
+ layout:notification_template_custom_big:2131427366
+ layout:notification_template_icon_group:2131427367
+ layout:notification_template_part_chronometer:2131427368
+ layout:notification_template_part_time:2131427369
+ layout:preference:2131427370
  mipmap:ic_launcher:2131492864
  string:abc_action_bar_up_description:2131558401
  string:abc_menu_alt_shortcut_label:2131558408
@@ -5982,22 +6034,23 @@ The root reachable resources are:
  string:abc_prepend_shortcut_label:2131558417
  string:abc_searchview_description_search:2131558421
  string:androidx_startup:2131558427
- string:call_notification_answer_action:2131558428
- string:call_notification_answer_video_action:2131558429
- string:call_notification_decline_action:2131558430
- string:call_notification_hang_up_action:2131558431
- string:call_notification_incoming_text:2131558432
- string:call_notification_ongoing_text:2131558433
- string:call_notification_screening_text:2131558434
- string:copy:2131558435
- string:copy_toast_msg:2131558436
- string:not_set:2131558441
- string:search_menu_title:2131558443
+ string:call_notification_answer_action:2131558429
+ string:call_notification_answer_video_action:2131558430
+ string:call_notification_decline_action:2131558431
+ string:call_notification_hang_up_action:2131558432
+ string:call_notification_incoming_text:2131558433
+ string:call_notification_ongoing_text:2131558434
+ string:call_notification_screening_text:2131558435
+ string:copy:2131558436
+ string:copy_toast_msg:2131558437
+ string:not_set:2131558442
+ string:search_menu_title:2131558444
  style:Animation_AppCompat_Tooltip:2131623940
  style:LaunchTheme:2131624098
  style:NormalTheme:2131624099
- xml:flutter_image_picker_file_paths:2131755008
- xml:image_share_filepaths:2131755009
+ xml:ahamai_widget_info:2131755008
+ xml:flutter_image_picker_file_paths:2131755009
+ xml:image_share_filepaths:2131755010
 Unused resources are: 
  anim:abc_fade_in:2130771968
  anim:abc_fade_out:2130771969
@@ -6262,8 +6315,8 @@ Unused resources are:
  id:uniform:2131230935
  id:useLogo:2131230937
  id:visible_removing_fragment_view_tag:2131230942
- id:withText:2131230943
- id:wrap_content:2131230944
+ id:withText:2131230947
+ id:wrap_content:2131230948
  integer:abc_config_activityDefaultDur:2131296256
  integer:abc_config_activityShortDur:2131296257
  integer:status_bar_notification_info_maxnum:2131296262
@@ -6282,30 +6335,30 @@ Unused resources are:
  layout:abc_screen_simple_overlay_action_mode:2131427350
  layout:abc_screen_toolbar:2131427351
  layout:abc_select_dialog_material:2131427354
- layout:browser_actions_context_menu_page:2131427356
- layout:browser_actions_context_menu_row:2131427357
- layout:expand_button:2131427359
- layout:ime_base_split_test_activity:2131427361
- layout:ime_secondary_split_test_activity:2131427362
- layout:preference_category:2131427370
- layout:preference_category_material:2131427371
- layout:preference_dialog_edittext:2131427372
- layout:preference_dropdown:2131427373
- layout:preference_dropdown_material:2131427374
- layout:preference_information:2131427375
- layout:preference_information_material:2131427376
- layout:preference_list_fragment:2131427377
- layout:preference_material:2131427378
- layout:preference_recyclerview:2131427379
- layout:preference_widget_checkbox:2131427380
- layout:preference_widget_seekbar:2131427381
- layout:preference_widget_seekbar_material:2131427382
- layout:preference_widget_switch:2131427383
- layout:preference_widget_switch_compat:2131427384
- layout:select_dialog_item_material:2131427385
- layout:select_dialog_multichoice_material:2131427386
- layout:select_dialog_singlechoice_material:2131427387
- layout:support_simple_spinner_dropdown_item:2131427388
+ layout:browser_actions_context_menu_page:2131427357
+ layout:browser_actions_context_menu_row:2131427358
+ layout:expand_button:2131427360
+ layout:ime_base_split_test_activity:2131427362
+ layout:ime_secondary_split_test_activity:2131427363
+ layout:preference_category:2131427371
+ layout:preference_category_material:2131427372
+ layout:preference_dialog_edittext:2131427373
+ layout:preference_dropdown:2131427374
+ layout:preference_dropdown_material:2131427375
+ layout:preference_information:2131427376
+ layout:preference_information_material:2131427377
+ layout:preference_list_fragment:2131427378
+ layout:preference_material:2131427379
+ layout:preference_recyclerview:2131427380
+ layout:preference_widget_checkbox:2131427381
+ layout:preference_widget_seekbar:2131427382
+ layout:preference_widget_seekbar_material:2131427383
+ layout:preference_widget_switch:2131427384
+ layout:preference_widget_switch_compat:2131427385
+ layout:select_dialog_item_material:2131427386
+ layout:select_dialog_multichoice_material:2131427387
+ layout:select_dialog_singlechoice_material:2131427388
+ layout:support_simple_spinner_dropdown_item:2131427389
  string:abc_action_bar_home_description:2131558400
  string:abc_action_menu_overflow_description:2131558402
  string:abc_activity_chooser_view_see_all:2131558404
@@ -6317,15 +6370,16 @@ Unused resources are:
  string:abc_shareactionprovider_share_with:2131558424
  string:abc_shareactionprovider_share_with_application:2131558425
  string:abc_toolbar_collapse_description:2131558426
- string:expand_button_title:2131558437
- string:fallback_menu_item_copy_link:2131558438
- string:fallback_menu_item_open_in_browser:2131558439
- string:fallback_menu_item_share_link:2131558440
- string:preference_copied:2131558442
- string:status_bar_notification_info_overflow:2131558444
- string:summary_collapsed_preference_list:2131558445
- string:v7_preference_off:2131558446
- string:v7_preference_on:2131558447
+ string:app_name:2131558428
+ string:expand_button_title:2131558438
+ string:fallback_menu_item_copy_link:2131558439
+ string:fallback_menu_item_open_in_browser:2131558440
+ string:fallback_menu_item_share_link:2131558441
+ string:preference_copied:2131558443
+ string:status_bar_notification_info_overflow:2131558445
+ string:summary_collapsed_preference_list:2131558446
+ string:v7_preference_off:2131558447
+ string:v7_preference_on:2131558448
  style:AlertDialog_AppCompat:2131623936
  style:AlertDialog_AppCompat_Light:2131623937
  style:Animation_AppCompat_Dialog:2131623938

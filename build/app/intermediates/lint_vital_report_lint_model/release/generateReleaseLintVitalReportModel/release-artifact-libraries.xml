@@ -13,6 +13,9 @@
       name=":@@:flutter_tts::release"
       project=":flutter_tts"/>
   <library
+      name=":@@:home_widget::release"
+      project=":home_widget"/>
+  <library
       name=":@@:image_picker_android::release"
       project=":image_picker_android"/>
   <library
@@ -25,9 +28,9 @@
       name=":@@:url_launcher_android::release"
       project=":url_launcher_android"/>
   <library
-      name="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22@jar"
-      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.8.22/4dabb8248310d833bb6a8b516024a91fd3d275c/kotlin-stdlib-jdk7-1.8.22.jar"
-      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"/>
+      name="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.9.0/f320478990d05e0cfaadd74f9619fd6027adbf37/kotlin-stdlib-jdk7-1.9.0.jar"
+      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0"/>
   <library
       name="io.flutter:flutter_embedding_release:1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/io.flutter/flutter_embedding_release/1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262/73e796dcc72053d1d78a3515b9474d76b17795c/flutter_embedding_release-1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262.jar"
@@ -325,9 +328,9 @@
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.9.24/9928532f12c66ad816a625b3f9984f8368ca6d2b/kotlin-stdlib-1.9.24.jar"
       resolved="org.jetbrains.kotlin:kotlin-stdlib:1.9.24"/>
   <library
-      name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22@jar"
-      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.8.22/b25c86d47d6b962b9cf0f8c3f320c8a10eea3dd1/kotlin-stdlib-jdk8-1.8.22.jar"
-      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22"/>
+      name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.9.0/e000bd084353d84c9e888f6fb341dc1f5b79d948/kotlin-stdlib-jdk8-1.9.0.jar"
+      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"/>
   <library
       name="io.flutter:armeabi_v7a_release:1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/io.flutter/armeabi_v7a_release/1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262/bbd9a7ebd348cb2894ee724b000124de1081b410/armeabi_v7a_release-1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262.jar"

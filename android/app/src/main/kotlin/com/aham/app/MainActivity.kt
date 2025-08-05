@@ -7,16 +7,21 @@ import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ahamai.text_sharing"
+    private val WIDGET_CHANNEL = "com.ahamai.widget"
     private var sharedText: String? = null
+    private var widgetAction: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handleSharingIntent(intent)
+        handleWidgetIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        setIntent(intent)
         handleSharingIntent(intent)
+        handleWidgetIntent(intent)
     }
 
     private fun handleSharingIntent(intent: Intent) {
@@ -29,6 +34,23 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    private fun handleWidgetIntent(intent: Intent) {
+        when (intent.action) {
+            "com.aham.app.ACTION_CHAT" -> {
+                widgetAction = "chat"
+            }
+            "com.aham.app.ACTION_IMAGE" -> {
+                widgetAction = "image"
+            }
+            "com.aham.app.ACTION_PRESENTATION" -> {
+                widgetAction = "presentation"
+            }
+            "com.aham.app.ACTION_THINKING" -> {
+                widgetAction = "thinking"
+            }
+        }
+    }
+
     override fun configureFlutterEngine(flutterEngine: io.flutter.embedding.engine.FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         
@@ -37,6 +59,18 @@ class MainActivity : FlutterActivity() {
                 "getInitialSharedText" -> {
                     result.success(sharedText)
                     sharedText = null // Clear after sending
+                }
+                else -> {
+                    result.notImplemented()
+                }
+            }
+        }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WIDGET_CHANNEL).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "getWidgetAction" -> {
+                    result.success(widgetAction)
+                    widgetAction = null // Clear after sending
                 }
                 else -> {
                     result.notImplemented()

@@ -35,13 +35,16 @@ class AhamApp extends StatefulWidget {
 
 class _AhamAppState extends State<AhamApp> {
   static const platform = MethodChannel('com.ahamai.text_sharing');
+  static const widgetPlatform = MethodChannel('com.ahamai.widget');
   String? _sharedText;
+  String? _widgetAction;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
     _initializeSharing();
+    _initializeWidget();
   }
 
   void _initializeSharing() {
@@ -70,6 +73,87 @@ class _AhamAppState extends State<AhamApp> {
     } catch (e) {
       print("Error getting initial shared text: $e");
     }
+  }
+
+  void _initializeWidget() {
+    // Check for widget action when app starts
+    _getInitialWidgetAction();
+  }
+
+  Future<void> _getInitialWidgetAction() async {
+    try {
+      final String? action = await widgetPlatform.invokeMethod('getWidgetAction');
+      if (action != null && action.isNotEmpty) {
+        print("Received widget action: $action");
+        setState(() => _widgetAction = action);
+        _handleWidgetAction(action);
+      }
+    } catch (e) {
+      print("Error getting widget action: $e");
+    }
+  }
+
+  void _handleWidgetAction(String action) {
+    // Handle widget action after build completes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      switch (action) {
+        case 'chat':
+          _navigateToChat();
+          break;
+        case 'image':
+          _navigateToImageGeneration();
+          break;
+        case 'presentation':
+          _navigateToPresentation();
+          break;
+        case 'thinking':
+          _navigateToThinkingMode();
+          break;
+      }
+    });
+  }
+
+  void _navigateToChat() {
+    _navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          chatInfoStream: StreamController<ChatInfo>.broadcast(),
+        ),
+      ),
+    );
+  }
+
+  void _navigateToImageGeneration() {
+    _navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          chatInfoStream: StreamController<ChatInfo>.broadcast(),
+          initialMessage: "Generate an image of ",
+        ),
+      ),
+    );
+  }
+
+  void _navigateToPresentation() {
+    _navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          chatInfoStream: StreamController<ChatInfo>.broadcast(),
+          initialMessage: "Create a presentation about ",
+        ),
+      ),
+    );
+  }
+
+  void _navigateToThinkingMode() {
+    _navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ChatScreen(
+          chatInfoStream: StreamController<ChatInfo>.broadcast(),
+          initialMessage: "Think deeply about ",
+        ),
+      ),
+    );
   }
 
   void _handleSharedText(String text) {

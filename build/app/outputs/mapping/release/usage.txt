@@ -10283,9 +10283,20 @@ androidx.window.reflection.ReflectionUtils:
     public final boolean validateImplementation$window_release(java.lang.Class,java.lang.Class)
     public static synthetic boolean validateReflection$window_release$default(java.lang.String,kotlin.jvm.functions.Function0,int,java.lang.Object)
 androidx.window.reflection.WindowExtensionsConstants
+com.aham.app.AhamAIWidget:
+    public static final java.lang.String ACTION_CHAT
+    public static final java.lang.String ACTION_IMAGE
+    public static final java.lang.String ACTION_PRESENTATION
+    public static final java.lang.String ACTION_THINKING
 com.aham.app.R$drawable
+com.aham.app.R$id:
+    private void <init>()
+com.aham.app.R$layout:
+    private void <init>()
 com.aham.app.R$mipmap
+com.aham.app.R$string
 com.aham.app.R$style
+com.aham.app.R$xml
 com.aham.app.R
 com.google.common.util.concurrent.ListenableFuture:
     public abstract void addListener(java.lang.Runnable,java.util.concurrent.Executor)
@@ -10311,6 +10322,22 @@ com.tundralabs.fluttertts.FlutterTtsPlugin:
     private static final java.lang.String SILENCE_PREFIX
     private static final java.lang.String SYNTHESIZE_TO_FILE_PREFIX
 com.tundralabs.fluttertts.R
+es.antonborri.home_widget.HomeWidgetBackgroundIntent
+es.antonborri.home_widget.HomeWidgetBackgroundReceiver
+es.antonborri.home_widget.HomeWidgetBackgroundService$Companion
+es.antonborri.home_widget.HomeWidgetBackgroundService
+es.antonborri.home_widget.HomeWidgetLaunchIntent
+es.antonborri.home_widget.HomeWidgetPlugin$Companion:
+    public final android.content.SharedPreferences getData(android.content.Context)
+    public final long getDispatcherHandle(android.content.Context)
+    public final long getHandle(android.content.Context)
+es.antonborri.home_widget.HomeWidgetPlugin:
+    private static final java.lang.String CALLBACK_DISPATCHER_HANDLE
+    private static final java.lang.String CALLBACK_HANDLE
+    private static final java.lang.String INTERNAL_PREFERENCES
+    private static final java.lang.String PREFERENCES
+es.antonborri.home_widget.HomeWidgetProvider
+es.antonborri.home_widget.R
 io.flutter.Build$API_LEVELS
 io.flutter.Build
 io.flutter.BuildConfig
@@ -10465,7 +10492,6 @@ io.flutter.embedding.engine.FlutterEngineConnectionRegistry$DefaultFlutterAssets
     public java.lang.String getAssetFilePathBySubpath(java.lang.String)
     public java.lang.String getAssetFilePathBySubpath(java.lang.String,java.lang.String)
 io.flutter.embedding.engine.FlutterEngineConnectionRegistry$FlutterEngineActivityPluginBinding:
-    public void addOnNewIntentListener(io.flutter.plugin.common.PluginRegistry$NewIntentListener)
     public void addOnSaveStateListener(io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding$OnSaveInstanceStateListener)
     public void addOnUserLeaveHintListener(io.flutter.plugin.common.PluginRegistry$UserLeaveHintListener)
     public void addOnWindowFocusChangedListener(io.flutter.plugin.common.PluginRegistry$WindowFocusChangedListener)
@@ -10676,7 +10702,6 @@ io.flutter.embedding.engine.plugins.PluginRegistry:
     public abstract void remove(java.util.Set)
     public abstract void removeAll()
 io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding:
-    public abstract void addOnNewIntentListener(io.flutter.plugin.common.PluginRegistry$NewIntentListener)
     public abstract void addOnSaveStateListener(io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding$OnSaveInstanceStateListener)
     public abstract void addOnUserLeaveHintListener(io.flutter.plugin.common.PluginRegistry$UserLeaveHintListener)
     public abstract void addOnWindowFocusChangedListener(io.flutter.plugin.common.PluginRegistry$WindowFocusChangedListener)
@@ -10798,8 +10823,6 @@ io.flutter.plugin.common.FlutterException:
 io.flutter.plugin.common.JSONUtil:
     private void <init>()
     public static java.lang.Object unwrap(java.lang.Object)
-io.flutter.plugin.common.MethodCall:
-    public boolean hasArgument(java.lang.String)
 io.flutter.plugin.common.MethodChannel:
     private static final java.lang.String TAG
     public void resizeChannelBuffer(int)
@@ -15636,8 +15659,6 @@ kotlin.text.StringsKt__StringsJVMKt:
     public static final byte[] encodeToByteArray(java.lang.String)
     public static final byte[] encodeToByteArray(java.lang.String,int,int,boolean)
     public static synthetic byte[] encodeToByteArray$default(java.lang.String,int,int,boolean,int,java.lang.Object)
-    public static final boolean equals(java.lang.String,java.lang.String,boolean)
-    public static synthetic boolean equals$default(java.lang.String,java.lang.String,boolean,int,java.lang.Object)
     private static final varargs java.lang.String format(java.lang.String,java.util.Locale,java.lang.Object[])
     private static final varargs java.lang.String format(java.lang.String,java.lang.Object[])
     private static final varargs java.lang.String format(kotlin.jvm.internal.StringCompanionObject,java.lang.String,java.lang.Object[])
@@ -19716,7 +19737,6 @@ io.flutter.embedding.engine.systemchannels.PlatformViewsChannel:
     public void invokeViewFocused(int)
 io.flutter.embedding.engine.systemchannels.SettingsChannel:
     static final synthetic boolean $assertionsDisabled
-io.flutter.plugin.common.PluginRegistry$NewIntentListener
 io.flutter.plugin.common.PluginRegistry$UserLeaveHintListener
 io.flutter.plugin.editing.TextInputPlugin:
     public void clearPlatformViewClient(int)

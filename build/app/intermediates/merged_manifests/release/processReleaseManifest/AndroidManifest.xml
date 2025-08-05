@@ -88,6 +88,19 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+        <!-- AhamAI Widget -->
+        <receiver
+            android:name="com.aham.app.AhamAIWidget"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ahamai_widget_info" />
+        </receiver>
+
         <provider
             android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
             android:authorities="com.aham.app.flutter.image_provider"
