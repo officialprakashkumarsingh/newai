@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_deck/flutter_deck.dart';
+// import 'package:flutter_deck_web_client/flutter_deck_web_client.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'api.dart';
 import 'theme.dart';
@@ -12,13 +13,17 @@ class PresentationGenerator {
 
     Follow these rules STRICTLY:
     1.  **Slide Separation:** Separate each slide's content with '---' on a new line. This is the slide delimiter.
-    2.  **Content Formatting:** Use Markdown for all content.
-        *   The first slide MUST be a title slide. Use a level 1 heading (#) for the main title and a level 3 heading (###) for a subtitle or author.
-        *   For subsequent slides, use level 2 headings (##) for slide titles.
-        *   Use bullet points (`* `) for lists. Keep points concise.
+    2.  **Content Formatting:** Use simple text formatting (no markdown).
+        *   The first slide MUST be a title slide with just the main title and subtitle.
+        *   For subsequent slides, provide a clear title and bullet points.
+        *   Keep bullet points concise and impactful.
         *   The final slide MUST be a 'Thank You' or 'Q&A' slide.
-    3.  **Content Quantity:** Generate between 20 and 30 slides in total.
-    4.  **Output Format:** Provide ONLY the raw markdown content with '---' as a separator. Do NOT include any other text, explanations, or code fences like ```markdown.
+    3.  **Content Quantity:** Generate between 8 and 12 slides in total.
+    4.  **Output Format:** Provide ONLY the content with '---' as separator. Format each slide as:
+       TITLE
+       • Point 1
+       • Point 2
+       • Point 3
     """;
 
     try {
@@ -33,7 +38,7 @@ class PresentationGenerator {
   }
 }
 
-class PresentationViewScreen extends StatefulWidget {
+class PresentationViewScreen extends StatelessWidget {
   final List<String> slides;
   final String topic;
 
@@ -44,71 +49,106 @@ class PresentationViewScreen extends StatefulWidget {
   });
 
   @override
-  State<PresentationViewScreen> createState() => _PresentationViewScreenState();
-}
-
-class _PresentationViewScreenState extends State<PresentationViewScreen> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage = _pageController.page?.round() ?? 0;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.topic),
-        elevation: 1,
-      ),
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: widget.slides.length,
-        itemBuilder: (context, index) {
-          final slideContent = widget.slides[index];
-          return Container(
-            padding: const EdgeInsets.all(24.0),
-            color: Theme.of(context).cardColor,
-            child: Center(
-              child: Markdown(
-                data: slideContent,
-                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                  h1: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
-                  h2: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: draculaPurple),
-                  p: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
-                  listBullet: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        elevation: 0,
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('${_currentPage + 1} / ${widget.slides.length}'),
-            ],
+    return FlutterDeckApp(
+      configuration: FlutterDeckConfiguration(
+        background: FlutterDeckBackgroundConfiguration(
+          light: FlutterDeckBackground.solid(Color(0xFFFAF7F3)),
+          dark: FlutterDeckBackground.solid(Color(0xFF222831)),
+        ),
+        footer: const FlutterDeckFooterConfiguration(
+          showSlideNumbers: true,
+          showSocialHandle: false,
+        ),
+        header: const FlutterDeckHeaderConfiguration(
+          showHeader: false,
+        ),
+        marker: const FlutterDeckMarkerConfiguration(
+          color: Color(0xFFD9A299),
+          strokeWidth: 4.0,
+        ),
+        progressIndicator: const FlutterDeckProgressIndicator.gradient(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFD9A299), Color(0xFFF0E4D3)],
           ),
+          backgroundColor: Color(0xFF222831),
+        ),
+        slideSize: FlutterDeckSlideSize.fromAspectRatio(
+          aspectRatio: const FlutterDeckAspectRatio.ratio16x9(),
+          resolution: const FlutterDeckResolution.fhd(),
+        ),
+        transition: const FlutterDeckTransition.fade(),
+      ),
+      lightTheme: FlutterDeckThemeData.fromTheme(
+        ThemeData.from(
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD9A299)),
+          useMaterial3: true,
         ),
       ),
+      darkTheme: FlutterDeckThemeData.fromTheme(
+        ThemeData.from(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF31363F),
+            brightness: Brightness.dark,
+          ),
+          useMaterial3: true,
+        ),
+      ),
+      slides: _generateFlutterDeckSlides(),
+      speakerInfo: const FlutterDeckSpeakerInfo(
+        name: 'AhamAI',
+        description: 'AI-Generated Presentation',
+        socialHandle: '@ahamai',
+        imagePath: 'assets/images/avatar.png',
+      ),
     );
+  }
+
+  List<FlutterDeckSlideWidget> _generateFlutterDeckSlides() {
+    final List<FlutterDeckSlideWidget> deckSlides = [];
+
+    for (int i = 0; i < slides.length; i++) {
+      final slideContent = slides[i].trim();
+      final lines = slideContent.split('\n').where((line) => line.trim().isNotEmpty).toList();
+      
+      if (lines.isEmpty) continue;
+
+      final title = lines.first;
+      final content = lines.skip(1).toList();
+
+      if (i == 0) {
+        // Title slide
+        deckSlides.add(
+          FlutterDeckSlide.title(
+            title: title,
+            subtitle: content.isNotEmpty ? content.join(' ') : '',
+          ),
+        );
+      } else if (i == slides.length - 1) {
+        // Last slide - Thank you
+        deckSlides.add(
+          FlutterDeckSlide.title(
+            title: title,
+            subtitle: content.isNotEmpty ? content.join(' ') : 'Generated by AhamAI',
+          ),
+        );
+      } else {
+        // Content slide
+        deckSlides.add(
+          FlutterDeckSlide.split(
+            leftBuilder: (context) => FlutterDeckBulletList(
+              items: [title],
+            ),
+            rightBuilder: (context) => FlutterDeckBulletList(
+              items: content.map((line) => line.replaceFirst('•', '').trim()).toList(),
+            ),
+          ),
+        );
+      }
+    }
+
+    return deckSlides;
   }
 }

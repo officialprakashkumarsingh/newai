@@ -1,4 +1,4 @@
-#Tue Aug 05 06:34:14 UTC 2025
+#Tue Aug 05 07:00:22 UTC 2025
 base.0=/workspace/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
