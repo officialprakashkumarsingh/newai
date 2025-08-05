@@ -326,21 +326,74 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const HighlightedWelcomeText(),
-                    const SizedBox(height: 12),
-                    Text('Your AI companion for all questions.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic)),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        'Your intelligent AI companion ready to assist with any question, task, or conversation.',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
                     ...suggestions.map((suggestion) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                           child: GestureDetector(
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion, chatInfoStream: _chatInfoStream))),
                             child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(12), border: Border.all(color: Theme.of(context).dividerColor)),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: (Theme.of(context).brightness == Brightness.dark ? slackCyan : draculaPurple).withOpacity(0.2),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Theme.of(context).shadowColor.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
                               child: Row(
                                 children: [
-                                  AnimatedBuilder(animation: _arrowAnimation, builder: (context, child) => Transform.translate(offset: Offset(_arrowAnimation.value, 0), child: Icon(Icons.arrow_forward_ios, size: 16, color: Theme.of(context).iconTheme.color))),
-                                  const SizedBox(width: 8),
-                                  Expanded(child: Text(suggestion)),
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: (Theme.of(context).brightness == Brightness.dark ? slackCyan : draculaPurple).withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      Icons.lightbulb_outline,
+                                      size: 18,
+                                      color: Theme.of(context).brightness == Brightness.dark ? slackCyan : draculaPurple,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      suggestion,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  AnimatedBuilder(
+                                    animation: _arrowAnimation,
+                                    builder: (context, child) => Transform.translate(
+                                      offset: Offset(_arrowAnimation.value, 0),
+                                      child: Icon(
+                                        Icons.arrow_forward_rounded,
+                                        size: 18,
+                                        color: (Theme.of(context).brightness == Brightness.dark ? slackCyan : draculaPurple).withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -701,14 +754,76 @@ class HighlightedWelcomeText extends StatelessWidget {
   const HighlightedWelcomeText({super.key});
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accentColor = isDark ? slackCyan : draculaPurple;
+    
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Stack(
-        alignment: Alignment.center,
+      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark ? [
+            slackDarkElevated.withOpacity(0.8),
+            slackDarkElevated.withOpacity(0.4),
+          ] : [
+            draculaPurple.withOpacity(0.1),
+            draculaPurple.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: accentColor.withOpacity(0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
         children: [
-          Text('Welcome to Aham!', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-          Positioned(bottom: 4, child: Container(width: 120, height: 2, color: draculaGreen)),
-          Positioned(bottom: 8, child: Container(width: 140, height: 2, color: draculaGreen)),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: accentColor.withOpacity(0.2),
+              border: Border.all(color: accentColor, width: 2),
+            ),
+            child: Icon(
+              Icons.psychology_rounded,
+              size: 40,
+              color: accentColor,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [accentColor, accentColor.withOpacity(0.8)],
+            ).createShader(bounds),
+            child: Text(
+              'Welcome to Aham',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            height: 4,
+            width: 60,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              gradient: LinearGradient(
+                colors: [accentColor, accentColor.withOpacity(0.5)],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -720,10 +835,61 @@ class ModernStartButton extends StatelessWidget {
   const ModernStartButton({required this.onPressed, super.key});
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18), elevation: 5, shadowColor: Colors.green.withOpacity(0.3)),
-      child: const Row(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.add, size: 20), SizedBox(width: 8), Text('Start New Chat', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)), SizedBox(width: 8), Icon(Icons.arrow_forward, size: 20)]),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final accentColor = isDark ? slackCyan : draculaPurple;
+    
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            accentColor,
+            accentColor.withOpacity(0.8),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withOpacity(0.4),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.chat_bubble_outline, size: 18, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Start New Chat',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.arrow_forward_rounded, size: 18, color: Colors.white),
+          ],
+        ),
+      ),
     );
   }
 }
