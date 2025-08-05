@@ -3,7 +3,7 @@ import 'package:flutter_deck/flutter_deck.dart';
 import 'api_service.dart';
 
 class PresentationGenerator {
-  static Future<List<String>> generateSlides(String topic) async {
+  static Future<List<String>> generateSlides(String topic, {String? selectedModel}) async {
     final prompt = """
     Create a professional presentation about "$topic" with the following requirements:
     1.  **Structure:** Create slides in this exact order:
@@ -23,17 +23,22 @@ class PresentationGenerator {
     try {
       final slides = <String>[];
       
-      // Get user's selected model dynamically
-      final availableModels = await ApiService.getAvailableModels();
-      final selectedModel = availableModels.isNotEmpty ? availableModels.first : '';
+      // Use user's selected model or get default
+      String modelToUse;
+      if (selectedModel != null && selectedModel.isNotEmpty) {
+        modelToUse = selectedModel;
+      } else {
+        final availableModels = await ApiService.getAvailableModels();
+        modelToUse = availableModels.isNotEmpty ? availableModels.first : '';
+      }
       
-      if (selectedModel.isEmpty) {
+      if (modelToUse.isEmpty) {
         throw Exception('No models available for presentation generation');
       }
       
       await for (final chunk in ApiService.sendChatMessage(
         message: prompt,
-        model: selectedModel, // Use dynamically selected model
+        model: modelToUse, // Use user's selected model
         systemPrompt: 'You are a professional presentation creator. Create clear, concise, and engaging slide content.',
       )) {
         slides.add(chunk);

@@ -500,7 +500,7 @@ Based on the context above, answer the following prompt: $input""";
     setState(() {});
     _scrollToBottom();
 
-          final slides = await PresentationGenerator.generateSlides(topic);
+          final slides = await PresentationGenerator.generateSlides(topic, selectedModel: _selectedChatModel);
     if (!mounted) return;
     if (slides.isNotEmpty) {
       setState(() => _messages[placeholderIndex] = ChatMessage(role: 'model', text: 'Presentation ready: $topic', type: MessageType.presentation, slides: slides));
@@ -666,12 +666,12 @@ Based on the context above, answer the following prompt: $input""";
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             decoration: BoxDecoration(
               color: isLightTheme(context) 
-                  ? const Color(0xFFFAFAFA) // Light mode: very subtle gray
+                  ? const Color(0xFFE8EAED) // Light mode: Google search bar background
                   : const Color(0xFF2C2C2E), // Dark mode: Card Background
               borderRadius: BorderRadius.circular(28), // Fully rounded corners
               border: Border.all(
                                   color: isLightTheme(context) 
-                      ? const Color(0xFFE1E5E9) // Light border for light mode
+                      ? const Color(0xFFE8EAED) // Google search bar background for light mode
                       : const Color(0xFF333438), // Secondary Background for dark mode
                 width: 1,
               ),
@@ -701,7 +701,7 @@ Based on the context above, answer the following prompt: $input""";
                     decoration: InputDecoration(
                       hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
                       hintStyle: TextStyle(
-                        color: isLightTheme(context) ? const Color(0xFF9CA3AF) : const Color(0xFFB0B0B0), // Secondary Text - Light gray
+                        color: isLightTheme(context) ? const Color(0xFF5F6368) : const Color(0xFFB0B0B0), // Google secondary text
                         fontSize: 16,
                       ),
                       filled: true, 

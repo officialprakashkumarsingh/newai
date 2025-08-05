@@ -46,34 +46,34 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Light theme - Latest Perplexity-inspired clean design
+  // Light theme - Google-inspired clean design
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFFFFFFF), // Pure white like latest Perplexity
-    primaryColor: const Color(0xFF0F0F10), // Almost black text 
-    cardColor: const Color(0xFFF8F9FA), // Very subtle gray for cards/buttons
+    scaffoldBackgroundColor: const Color(0xFFF1F3F4), // Very light gray with a hint of blue
+    primaryColor: const Color(0xFF202124), // Almost black text (Primary Headline Text)
+    cardColor: const Color(0xFFFFFFFF), // Pure white for cards and tiles
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFFFFFFF), // Pure white background
-      foregroundColor: Color(0xFF0F0F10), // Almost black text
-      surfaceTintColor: Color(0xFFFFFFFF), // Pure white
+      backgroundColor: Color(0xFFF1F3F4), // Matches the background (Top Bar)
+      foregroundColor: Color(0xFF202124), // Primary headline text
+      surfaceTintColor: Color(0xFFF1F3F4), // Matches the background
       elevation: 0,
       titleTextStyle: TextStyle(
-        color: Color(0xFF0F0F10),
+        color: Color(0xFF202124), // Primary headline text
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
       // systemOverlayStyle managed dynamically in main.dart based on theme
     ),
-    iconTheme: const IconThemeData(color: Color(0xFF0F0F10)),
+    iconTheme: const IconThemeData(color: Color(0xFF202124)), // Primary text color for icons
     textTheme: GoogleFonts.interTextTheme().apply(
-      bodyColor: const Color(0xFF0F0F10),
-      displayColor: const Color(0xFF0F0F10),
+      bodyColor: const Color(0xFF202124), // Primary headline text
+      displayColor: const Color(0xFF202124), // Primary headline text
     ),
-    dividerColor: const Color(0xFFE5E7EB), // Very subtle divider
+    dividerColor: const Color(0xFFE8EAED), // Subtle gray-blue shade (Search Bar Background)
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFF5F5F5), // Clean light gray buttons
-        foregroundColor: const Color(0xFF1A1A1A), // Dark text on buttons
+        backgroundColor: const Color(0xFFE8EAED), // Subtle gray-blue shade
+        foregroundColor: const Color(0xFF202124), // Primary text on buttons
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -81,7 +81,7 @@ class ThemeNotifier extends ChangeNotifier {
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: Colors.black,
+        foregroundColor: const Color(0xFF202124), // Primary text color
       ),
     ),
     switchTheme: SwitchThemeData(
@@ -139,4 +139,11 @@ class ThemeNotifier extends ChangeNotifier {
 // <-- ADDED: Moved function here for global access
 bool isLightTheme(BuildContext context) {
   return Theme.of(context).brightness == Brightness.light;
+}
+
+// Google-inspired color scheme helper functions
+Color getSecondaryTextColor(BuildContext context) {
+  return isLightTheme(context) 
+      ? const Color(0xFF5F6368) // Medium gray for secondary text in light mode
+      : const Color(0xFFB0B0B0); // Secondary Text - Light gray for dark mode
 }

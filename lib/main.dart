@@ -37,9 +37,9 @@ class AhamApp extends StatelessWidget {
         final isLightMode = platformBrightness == Brightness.light;
         
         final systemIconBrightness = isLightMode ? Brightness.dark : Brightness.light;
-        final navBarColor = isLightMode
-            ? const Color(0xFFFFFFFF) // Pure white for light mode
-            : const Color(0xFF202124); // Main Background - Very dark gray for dark mode
+            final navBarColor = isLightMode
+        ? const Color(0xFFF1F3F4) // Google light theme background for light mode
+        : const Color(0xFF202124); // Main Background - Very dark gray for dark mode
 
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -332,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const HighlightedWelcomeText(),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 80), // More space above for better centering
                     // "Let's Start with" text
                     Text(
                       "Let's Start with",
@@ -343,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24), // Reduced gap between text and input
                     // Center input area
                     WelcomeInputArea(
                       onSubmitted: (text) {
@@ -539,20 +539,20 @@ class _WelcomeInputAreaState extends State<WelcomeInputArea> {
                 hintText: 'Ask AhamAI anything...',
                 hintStyle: TextStyle(
                   color: isLightTheme(context) 
-                      ? const Color(0xFF9CA3AF) 
+                      ? const Color(0xFF5F6368) // Google secondary text
                       : const Color(0xFFB0B0B0),
                   fontSize: 16,
                 ),
                 filled: true,
                 fillColor: isLightTheme(context) 
-                    ? const Color(0xFFFAFAFA) 
+                    ? const Color(0xFFE8EAED) // Google search bar background
                     : const Color(0xFF2C2C2E),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(28),
                   borderSide: BorderSide(
                     color: isLightTheme(context) 
-                        ? const Color(0xFFE1E5E9) 
+                        ? const Color(0xFFE8EAED) // Google search bar background (subtle border)
                         : const Color(0xFF333438),
                     width: 1,
                   ),
@@ -561,7 +561,7 @@ class _WelcomeInputAreaState extends State<WelcomeInputArea> {
                   borderRadius: BorderRadius.circular(28),
                   borderSide: BorderSide(
                     color: isLightTheme(context) 
-                        ? const Color(0xFFE1E5E9) 
+                        ? const Color(0xFFE8EAED) // Google search bar background (subtle border)
                         : const Color(0xFF333438),
                     width: 1,
                   ),
@@ -780,7 +780,7 @@ Color _getCategoryColor(String category, BuildContext context) {
     case 'Health': return isDark ? draculaRed.withOpacity(0.3) : Colors.red.shade100;
     case 'History': return isDark ? draculaOrange.withOpacity(0.3) : Colors.orange.shade100;
     case 'Technology': return isDark ? draculaPink.withOpacity(0.3) : Colors.pink.shade100;
-    case 'Travel & Plans': return isDark ? draculaPurple.withOpacity(0.3) : Colors.purple.shade100;
+          case 'Travel & Plans': return isDark ? const Color(0xFF2C2C2E) : const Color(0xFFF8F9FA);
     case 'Weather': return isDark ? const Color(0xFF3C5E7A) : Colors.blue.shade100;
     case 'Facts': return isDark ? draculaComment.withOpacity(0.5) : Colors.blueGrey.shade100;
     default: return isDark ? draculaCurrentLine : Colors.grey.shade200;
@@ -802,7 +802,7 @@ Color _getCategoryTextColor(String category, BuildContext context) {
     case 'Health': return isDark ? draculaRed : Colors.red.shade800;
     case 'History': return isDark ? draculaOrange : Colors.orange.shade800;
     case 'Technology': return isDark ? draculaPink : Colors.pink.shade800;
-    case 'Travel & Plans': return isDark ? draculaPurple : Colors.purple.shade800;
+          case 'Travel & Plans': return isDark ? const Color(0xFFFFFFFF) : const Color(0xFF202124);
     case 'Weather': return isDark ? Colors.lightBlue.shade100 : Colors.blue.shade800;
     case 'Facts': return isDark ? draculaForeground : Colors.blueGrey.shade800;
     default: return isDark ? draculaComment : Colors.grey.shade800;
