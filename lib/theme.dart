@@ -62,7 +62,7 @@ class ThemeNotifier extends ChangeNotifier {
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
-      systemOverlayStyle: SystemUiOverlayStyle.dark, // Fix system navigation bar
+      // systemOverlayStyle managed dynamically in main.dart based on theme
     ),
     iconTheme: const IconThemeData(color: Color(0xFF0F0F10)),
     textTheme: GoogleFonts.interTextTheme().apply(
