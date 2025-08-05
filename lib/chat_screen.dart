@@ -946,16 +946,16 @@ String _determineCategory(List<ChatMessage> messages) {
     return 'General';
   }
   
-  // For chats with 5+ messages, use AI-based categorization
+  // For chats with 5+ messages, trigger AI-based categorization in background
   _generateAICategory(messages);
   return 'General'; // Fallback while AI categorization is processing
 }
 
-/// Generate AI-based category for chats with sufficient conversation history
-void _generateAICategory(List<ChatMessage> messages) async {
+/// Generate AI-based category for chats with sufficient conversation history  
+void _generateAICategory(List<ChatMessage> chatMessages) async {
   try {
     // Take first 5 messages for context
-    final contextMessages = messages.take(5).map((m) => '${m.role}: ${m.text}').join('\n');
+    final contextMessages = chatMessages.take(5).map((m) => '${m.role}: ${m.text}').join('\n');
     
     final categorizationPrompt = '''
 Based on this conversation, categorize it into ONE of these categories:
@@ -975,33 +975,38 @@ $contextMessages
 
 Respond with only the category name, nothing else.''';
 
-    final response = await ApiService.sendMessage(categorizationPrompt, model: 'gpt-3.5-turbo');
+    // Use a simple API call for categorization
+    final requestMessages = [ChatMessage(role: 'user', text: categorizationPrompt)];
+    final responseStream = ApiService.sendChatMessage(
+      messages: requestMessages,
+      model: 'gpt-3.5-turbo',
+      chatId: 'categorization-${DateTime.now().millisecondsSinceEpoch}',
+    );
     
-    if (response.isNotEmpty && mounted) {
-      final aiCategory = response.trim();
+    String fullResponse = '';
+    await for (final chunk in responseStream) {
+      fullResponse += chunk;
+    }
+    
+    if (fullResponse.isNotEmpty) {
+      final aiCategory = fullResponse.trim();
       
       // Validate the category is one of our predefined ones
       final validCategories = ['Coding', 'Creative', 'Science', 'Health', 'History', 'Technology', 'Travel & Plans', 'Weather', 'Facts', 'General'];
       
       if (validCategories.contains(aiCategory)) {
-        setState(() {
-          _category = aiCategory;
-        });
-        
-        // Update the chat info with new category
-        final chatInfo = ChatInfo(
-          title: widget.chatTitle ?? 'New Chat', 
-          id: _chatId, 
-          lastMessage: _messages.isNotEmpty ? _messages.last.text : '', 
-          timestamp: DateTime.now(), 
-          isPinned: _isPinned, 
-          isGenerating: _isStreaming, 
-          isStopped: _isStoppedByUser, 
-          category: aiCategory
-        );
-        widget.chatInfoStream.add(chatInfo);
-        
-        print('🧠 AI categorized chat as: $aiCategory');
+        if (mounted) {
+          setState(() {
+            _category = aiCategory;
+          });
+          
+          // Update the chat info with new category
+          _updateChatInfo(false, false);
+          
+          print('🧠 AI categorized chat as: $aiCategory');
+        }
+      } else {
+        print('⚠️ Invalid AI category: $aiCategory');
       }
     }
   } catch (e) {
