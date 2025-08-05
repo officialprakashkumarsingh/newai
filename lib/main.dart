@@ -319,12 +319,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final suggestions = [
-      {'text': 'Ask about the weather', 'icon': Icons.wb_sunny},
-      {'text': 'Get help with coding', 'icon': Icons.code},
-      {'text': 'Explore fun facts', 'icon': Icons.lightbulb_outline},
-      {'text': 'Plan a trip itinerary', 'icon': Icons.map},
-    ];
     final currentChatList = _isSearching ? _chats.where((chat) => chat.title.toLowerCase().contains(_searchController.text.toLowerCase()) || chat.messages.any((message) => message.text.toLowerCase().contains(_searchController.text.toLowerCase()))).toList() : _chats;
 
     return Scaffold(
@@ -333,61 +327,39 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: _chats.isEmpty
           ? Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const HighlightedWelcomeText(),
+                    const SizedBox(height: 48),
+                    // "Let's Start with" text
+                    Text(
+                      "Let's Start with",
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
                     const SizedBox(height: 32),
-                    // "Start with?" text
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Text(
-                        'Start with?',
-                        style: TextStyle(
-                          fontFamily: 'monospace',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
+                    // Center input area
+                    WelcomeInputArea(
+                      onSubmitted: (text) {
+                        if (text.trim().isNotEmpty) {
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(
+                                chatInfoStream: _chatInfoStream,
+                                initialMessage: text.trim(),
+                              )
+                            )
+                          );
+                        }
+                      },
                     ),
-                    const SizedBox(height: 16),
-                    // Suggestions in 2x2 grid
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        children: [
-                          // First row
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildSuggestionCard(context, suggestions[0]),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: _buildSuggestionCard(context, suggestions[1]),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          // Second row
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildSuggestionCard(context, suggestions[2]),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: _buildSuggestionCard(context, suggestions[3]),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ModernStartButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream)))),
                   ],
                 ),
               ),
@@ -521,51 +493,111 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildSuggestionCard(BuildContext context, Map<String, dynamic> suggestion) {
-    return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion['text'], chatInfoStream: _chatInfoStream))),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 1.5,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              suggestion['icon'],
-              size: 22,
-              color: isLightTheme(context) 
-                  ? const Color(0xFF374151) // Dark gray for light mode
-                  : Colors.white,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              suggestion['text'],
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                color: isLightTheme(context) 
-                    ? const Color(0xFF374151) // Dark gray for light mode  
-                    : Colors.white,
+
+}
+
+// --- HELPER WIDGETS AND FUNCTIONS ---
+
+class WelcomeInputArea extends StatefulWidget {
+  final Function(String) onSubmitted;
+  const WelcomeInputArea({super.key, required this.onSubmitted});
+
+  @override
+  State<WelcomeInputArea> createState() => _WelcomeInputAreaState();
+}
+
+class _WelcomeInputAreaState extends State<WelcomeInputArea> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 600), // Limit width on larger screens
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              onSubmitted: (text) {
+                widget.onSubmitted(text);
+                _controller.clear();
+              },
+              textInputAction: TextInputAction.send,
+              maxLines: 3,
+              minLines: 1,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 16,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              decoration: InputDecoration(
+                hintText: 'Ask AhamAI anything...',
+                hintStyle: TextStyle(
+                  color: isLightTheme(context) 
+                      ? const Color(0xFF9CA3AF) 
+                      : const Color(0xFFB0B0B0),
+                  fontSize: 16,
+                ),
+                filled: true,
+                fillColor: isLightTheme(context) 
+                    ? const Color(0xFFFAFAFA) 
+                    : const Color(0xFF2C2C2E),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(28),
+                  borderSide: BorderSide(
+                    color: isLightTheme(context) 
+                        ? const Color(0xFFE1E5E9) 
+                        : const Color(0xFF333438),
+                    width: 1,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(28),
+                  borderSide: BorderSide(
+                    color: isLightTheme(context) 
+                        ? const Color(0xFFE1E5E9) 
+                        : const Color(0xFF333438),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(28),
+                  borderSide: BorderSide(
+                    color: Theme.of(context).primaryColor.withOpacity(0.5),
+                    width: 2,
+                  ),
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+          CircleAvatar(
+            backgroundColor: Theme.of(context).cardColor,
+            radius: 24,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_upward,
+                color: Theme.of(context).primaryColor,
+              ),
+              onPressed: () {
+                if (_controller.text.trim().isNotEmpty) {
+                  widget.onSubmitted(_controller.text.trim());
+                  _controller.clear();
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-// --- HELPER WIDGETS AND FUNCTIONS ---
 
 class ProfileSettingsSheet extends StatefulWidget {
   final VoidCallback onClearAllChats;
