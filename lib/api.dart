@@ -124,7 +124,7 @@ class ImageApi {
           'model': selectedModel,
           'prompt': prompt,
           'n': 1,
-          'size': '512x512',
+          // Removed 'size' parameter - API uses default size
         }),
       );
 
@@ -137,9 +137,15 @@ class ImageApi {
         
         if (contentType.startsWith('image/')) {
           // Response is direct image data, convert to base64 data URL
-          final base64Image = base64Encode(response.bodyBytes);
-          final mimeType = contentType.split(';')[0]; // Remove any additional parameters
-          return 'data:$mimeType;base64,$base64Image';
+          try {
+            final base64Image = base64Encode(response.bodyBytes);
+            final mimeType = contentType.split(';')[0]; // Remove any additional parameters
+            print("Successfully generated image, size: ${response.bodyBytes.length} bytes");
+            return 'data:$mimeType;base64,$base64Image';
+          } catch (e) {
+            print("Error encoding image to base64: $e");
+            throw Exception('Failed to encode image data: $e');
+          }
         } else {
           // Try to parse as JSON (standard OpenAI format)
           try {
@@ -147,16 +153,28 @@ class ImageApi {
             final List<dynamic> data = responseJson['data'] ?? [];
             if (data.isNotEmpty) {
               return data[0]['url'] as String;
+            } else {
+              throw Exception('No image data in JSON response');
             }
           } catch (jsonError) {
             print("Failed to parse JSON response: $jsonError");
+            print("Response body: ${response.body}");
+            throw Exception('Invalid JSON response: $jsonError');
           }
         }
       }
       
-      // Log error response body for debugging
+      // Handle error responses
+      String errorMessage;
+      try {
+        final errorJson = jsonDecode(response.body);
+        errorMessage = errorJson['error'] ?? 'Unknown error';
+      } catch (e) {
+        errorMessage = response.body.isEmpty ? 'Empty response' : response.body;
+      }
+      
       print("Image generation error response body: ${response.body}");
-      throw Exception('Failed to generate image: ${response.statusCode} - ${response.body}');
+      throw Exception('API returned ${response.statusCode}: $errorMessage');
     } catch (e) {
       print("Error generating image: $e");
       throw Exception('Image generation failed: $e');

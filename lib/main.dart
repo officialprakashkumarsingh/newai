@@ -14,9 +14,10 @@ import 'theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initial system UI setup - will be updated based on theme
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.white, // Default to white, will be updated by theme
     systemNavigationBarDividerColor: Colors.transparent,
   ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -38,13 +39,15 @@ class AhamApp extends StatelessWidget {
       builder: (context, theme, child) {
         final systemIconBrightness = theme.themeMode == ThemeMode.light ? Brightness.dark : Brightness.light;
         final navBarColor = theme.themeMode == ThemeMode.light
-            ? ThemeNotifier.lightTheme.scaffoldBackgroundColor
-            : ThemeNotifier.darkTheme.scaffoldBackgroundColor;
+            ? const Color(0xFFFFFFFF) // Pure white for light mode
+            : const Color(0xFF000000); // AMOLED black for dark mode
 
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
           statusBarIconBrightness: systemIconBrightness,
           systemNavigationBarIconBrightness: systemIconBrightness,
           systemNavigationBarColor: navBarColor,
+          systemNavigationBarDividerColor: Colors.transparent,
         ));
 
         return MaterialApp(
