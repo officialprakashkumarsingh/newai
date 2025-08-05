@@ -40,6 +40,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _controller = TextEditingController();
+  final _focusNode = FocusNode();
   final _scrollController = ScrollController();
   late List<ChatMessage> _messages;
   String _currentModelResponse = '';
@@ -92,7 +93,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (widget.initialMessage != null && mounted) {
       _controller.text = widget.initialMessage!;
-      _sendMessage(widget.initialMessage!);
+      // Auto-focus keyboard for immediate typing from widget
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _focusNode.requestFocus();
+      });
     }
   }
 
@@ -109,6 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     _scrollController.dispose();
     _streamSubscription?.cancel();
     _httpClient?.close();

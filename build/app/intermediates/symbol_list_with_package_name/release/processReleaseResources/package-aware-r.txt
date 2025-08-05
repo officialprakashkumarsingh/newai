@@ -507,6 +507,13 @@ color switch_thumb_normal_material_dark
 color switch_thumb_normal_material_light
 color tooltip_background_dark
 color tooltip_background_light
+color widget_background
+color widget_border
+color widget_search_background
+color widget_text_color
+color widget_voice_icon
+color widget_voice_normal
+color widget_voice_pressed
 dimen abc_action_bar_content_inset_material
 dimen abc_action_bar_content_inset_with_nav
 dimen abc_action_bar_default_height_material
@@ -745,8 +752,11 @@ drawable ic_call_decline
 drawable ic_call_decline_low
 drawable ic_mic
 drawable ic_send
+drawable ic_voice_minimal
 drawable ic_web_search
 drawable launch_background
+drawable minimal_search_background
+drawable minimal_widget_background
 drawable notification_action_background
 drawable notification_bg
 drawable notification_bg_low
@@ -763,6 +773,7 @@ drawable notify_panel_notification_icon_bg
 drawable preference_list_divider_material
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
+drawable voice_button_background
 drawable widget_background
 drawable widget_button_background
 drawable widget_icon_background
@@ -990,12 +1001,9 @@ id view_tree_on_back_pressed_dispatcher_owner
 id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible_removing_fragment_view_tag
-id widget_attachment
 id widget_search_bar
 id widget_search_text
-id widget_send
 id widget_voice
-id widget_web_search
 id withText
 id wrap_content
 integer abc_config_activityDefaultDur

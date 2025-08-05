@@ -36,14 +36,8 @@ class MainActivity : FlutterActivity() {
 
     private fun handleWidgetIntent(intent: Intent) {
         when (intent.action) {
-            "com.aham.app.ACTION_SEND" -> {
-                widgetAction = "send"
-            }
-            "com.aham.app.ACTION_WEB_SEARCH" -> {
-                widgetAction = "web_search"
-            }
-            "com.aham.app.ACTION_ATTACHMENT" -> {
-                widgetAction = "attachment"
+            "com.aham.app.ACTION_SEARCH_TAP" -> {
+                widgetAction = "search_tap"
             }
             "com.aham.app.ACTION_VOICE" -> {
                 widgetAction = "voice"

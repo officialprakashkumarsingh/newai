@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'voice_controller.dart';
+import 'voice_animation_widget.dart';
 
 
 
@@ -97,20 +99,27 @@ class _AhamAppState extends State<AhamApp> {
     // Handle widget action after build completes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       switch (action) {
-        case 'send':
+        case 'search_tap':
           _navigateToChat();
           break;
-        case 'web_search':
-          _navigateToChat(initialMessage: "Search the web for ");
-          break;
-        case 'attachment':
-          _navigateToChat(initialMessage: "Help me with this file: ");
-          break;
         case 'voice':
-          _navigateToChat(initialMessage: "Voice input: ");
+          _startVoiceMode();
           break;
       }
     });
+  }
+
+  Future<void> _startVoiceMode() async {
+    final voiceController = VoiceController();
+    
+    // Set up voice result callback
+    voiceController.onSpeechResult = (text) {
+      // Navigate to chat with voice input
+      _navigateToChat(initialMessage: text);
+    };
+    
+    // Start listening
+    await voiceController.startListening();
   }
 
   void _navigateToChat({String? initialMessage}) {

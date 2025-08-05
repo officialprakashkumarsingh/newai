@@ -3106,8 +3106,10 @@ androidx.core.app.ActivityCompat$Api23Impl:
     private void <init>()
 androidx.core.app.ActivityCompat$Api28Impl
 androidx.core.app.ActivityCompat$Api30Impl
-androidx.core.app.ActivityCompat$Api31Impl
-androidx.core.app.ActivityCompat$Api32Impl
+androidx.core.app.ActivityCompat$Api31Impl:
+    private void <init>()
+androidx.core.app.ActivityCompat$Api32Impl:
+    private void <init>()
 androidx.core.app.ActivityCompat$PermissionCompatDelegate:
     public abstract boolean onActivityResult(android.app.Activity,int,int,android.content.Intent)
 androidx.core.app.ActivityCompat$SharedElementCallback21Impl
@@ -3128,7 +3130,6 @@ androidx.core.app.ActivityCompat:
     public static void setExitSharedElementCallback(android.app.Activity,androidx.core.app.SharedElementCallback)
     public static void setLocusContext(android.app.Activity,androidx.core.content.LocusIdCompat,android.os.Bundle)
     public static void setPermissionCompatDelegate(androidx.core.app.ActivityCompat$PermissionCompatDelegate)
-    public static boolean shouldShowRequestPermissionRationale(android.app.Activity,java.lang.String)
     public static void startActivityForResult(android.app.Activity,android.content.Intent,int,android.os.Bundle)
     public static void startIntentSenderForResult(android.app.Activity,android.content.IntentSender,int,android.content.Intent,int,int,int,android.os.Bundle)
     public static void startPostponedEnterTransition(android.app.Activity)
@@ -10284,11 +10285,10 @@ androidx.window.reflection.ReflectionUtils:
     public static synthetic boolean validateReflection$window_release$default(java.lang.String,kotlin.jvm.functions.Function0,int,java.lang.Object)
 androidx.window.reflection.WindowExtensionsConstants
 com.aham.app.AhamAIWidget:
-    public static final java.lang.String ACTION_ATTACHMENT
-    public static final java.lang.String ACTION_SEND
+    public static final java.lang.String ACTION_SEARCH_TAP
     public static final java.lang.String ACTION_VOICE
-    public static final java.lang.String ACTION_WEB_SEARCH
     public static final java.lang.String EXTRA_INPUT_TEXT
+com.aham.app.R$color
 com.aham.app.R$drawable
 com.aham.app.R$id:
     public static int widget_search_text
@@ -10300,6 +10300,28 @@ com.aham.app.R$string
 com.aham.app.R$style
 com.aham.app.R$xml
 com.aham.app.R
+com.baseflow.permissionhandler.PermissionConstants$PermissionGroup
+com.baseflow.permissionhandler.PermissionConstants$PermissionStatus
+com.baseflow.permissionhandler.PermissionConstants$ServiceStatus
+com.baseflow.permissionhandler.PermissionConstants
+com.baseflow.permissionhandler.PermissionUtils:
+    static final java.lang.String SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY
+    public void <init>()
+com.baseflow.permissionhandler.R
+com.csdcorp.speech_to_text.ChannelResultWrapper:
+    public final android.os.Handler getHandler()
+    public final io.flutter.plugin.common.MethodChannel$Result getResult()
+com.csdcorp.speech_to_text.R
+com.csdcorp.speech_to_text.SpeechToTextCallbackMethods
+com.csdcorp.speech_to_text.SpeechToTextErrors
+com.csdcorp.speech_to_text.SpeechToTextPlugin$Companion:
+    public final void registerWith(io.flutter.plugin.common.PluginRegistry$Registrar)
+com.csdcorp.speech_to_text.SpeechToTextPlugin:
+    public static final synthetic void access$onAttachedToEngine(com.csdcorp.speech_to_text.SpeechToTextPlugin,android.content.Context,io.flutter.plugin.common.BinaryMessenger)
+    public static final synthetic void access$setCurrentActivity$p(com.csdcorp.speech_to_text.SpeechToTextPlugin,android.app.Activity)
+    public static final void registerWith(io.flutter.plugin.common.PluginRegistry$Registrar)
+com.csdcorp.speech_to_text.SpeechToTextPluginKt
+com.csdcorp.speech_to_text.SpeechToTextStatus
 com.google.common.util.concurrent.ListenableFuture:
     public abstract void addListener(java.lang.Runnable,java.util.concurrent.Executor)
 com.mr.flutter.plugin.filepicker.FilePickerDelegate:
@@ -11578,7 +11600,6 @@ kotlin.collections.ArraysKt___ArraysJvmKt:
     public static final long[] plus(long[],long)
     public static final long[] plus(long[],java.util.Collection)
     public static final long[] plus(long[],long[])
-    public static final java.lang.Object[] plus(java.lang.Object[],java.lang.Object)
     public static final java.lang.Object[] plus(java.lang.Object[],java.util.Collection)
     public static final java.lang.Object[] plus(java.lang.Object[],java.lang.Object[])
     public static final short[] plus(short[],java.util.Collection)
@@ -13525,7 +13546,6 @@ kotlin.collections.CollectionsKt___CollectionsKt:
     private static final java.lang.Object firstNotNullOfOrNull(java.lang.Iterable,kotlin.jvm.functions.Function1)
     public static final java.lang.Object firstOrNull(java.lang.Iterable)
     public static final java.lang.Object firstOrNull(java.lang.Iterable,kotlin.jvm.functions.Function1)
-    public static final java.lang.Object firstOrNull(java.util.List)
     public static final java.util.List flatMap(java.lang.Iterable,kotlin.jvm.functions.Function1)
     private static final java.util.List flatMapIndexedIterable(java.lang.Iterable,kotlin.jvm.functions.Function2)
     private static final java.util.Collection flatMapIndexedIterableTo(java.lang.Iterable,java.util.Collection,kotlin.jvm.functions.Function2)
@@ -15678,8 +15698,6 @@ kotlin.text.StringsKt__StringsJVMKt:
     public static synthetic boolean regionMatches$default(java.lang.CharSequence,int,java.lang.CharSequence,int,int,boolean,int,java.lang.Object)
     public static synthetic boolean regionMatches$default(java.lang.String,int,java.lang.String,int,int,boolean,int,java.lang.Object)
     public static final java.lang.String repeat(java.lang.CharSequence,int)
-    public static final java.lang.String replace(java.lang.String,char,char,boolean)
-    public static synthetic java.lang.String replace$default(java.lang.String,char,char,boolean,int,java.lang.Object)
     public static final java.lang.String replaceFirst(java.lang.String,char,char,boolean)
     public static final java.lang.String replaceFirst(java.lang.String,java.lang.String,java.lang.String,boolean)
     public static synthetic java.lang.String replaceFirst$default(java.lang.String,char,char,boolean,int,java.lang.Object)
@@ -19648,6 +19666,8 @@ androidx.window.layout.adapter.sidecar.SidecarCompat$$InternalSyntheticThrowCCEI
 androidx.window.layout.adapter.sidecar.SidecarCompat:
     public static synthetic void $r8$lambda$G1s5FU0FrG9IHsyC5kQFGVG14YY(androidx.window.layout.adapter.sidecar.SidecarCompat,android.app.Activity,android.content.res.Configuration)
     private static final void registerConfigurationChangeListener$lambda$0(androidx.window.layout.adapter.sidecar.SidecarCompat,android.app.Activity,android.content.res.Configuration)
+com.baseflow.permissionhandler.ServiceManager:
+    private static boolean isLocationServiceEnablePreKitKat(android.content.Context)
 com.google.common.util.concurrent.ListenableFuture
 io.flutter.FlutterInjector$Builder:
     private io.flutter.embedding.engine.deferredcomponents.DeferredComponentManager deferredComponentManager

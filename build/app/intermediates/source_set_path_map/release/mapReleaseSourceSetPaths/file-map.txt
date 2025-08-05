@@ -48,5 +48,7 @@ com.aham.app-release-46 /workspace/build/flutter_tts/intermediates/packaged_res/
 com.aham.app-release-47 /workspace/build/home_widget/intermediates/packaged_res/release/packageReleaseResources
 com.aham.app-release-48 /workspace/build/image_picker_android/intermediates/packaged_res/release/packageReleaseResources
 com.aham.app-release-49 /workspace/build/path_provider_android/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-50 /workspace/build/shared_preferences_android/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-51 /workspace/build/url_launcher_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-50 /workspace/build/permission_handler_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-51 /workspace/build/shared_preferences_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-52 /workspace/build/speech_to_text/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-53 /workspace/build/url_launcher_android/intermediates/packaged_res/release/packageReleaseResources

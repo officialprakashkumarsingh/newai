@@ -64,10 +64,10 @@ library {
   maven_library {
     groupId: "org.jetbrains.kotlin"
     artifactId: "kotlin-stdlib-jdk7"
-    version: "1.9.0"
+    version: "1.9.10"
   }
   digests {
-    sha256: "\267\227\232z\254\224\005_\r\237\037\323\264|\345\377\341\313`2\250B\272\237\276q\206\360\205(\221x"
+    sha256: "\254ca\277\232\321\3558,!\003\331q,G\315\354\026b2\264\220>\325\226\350\207k\006\201\311\267"
   }
   repo_index {
     value: 1
@@ -77,10 +77,10 @@ library {
   maven_library {
     groupId: "org.jetbrains.kotlin"
     artifactId: "kotlin-stdlib-jdk8"
-    version: "1.9.0"
+    version: "1.9.10"
   }
   digests {
-    sha256: "\245\237\242O\337\037\373YK\256\315\277\017\321\000\020\371w\316\241\0026\324\207\3764d\227zsw\372"
+    sha256: "\244\307M\224\326L\341\253\3457`\376\003\211\335\224\037o\305X\320\332\263^G\300\205\241\036\310\017("
   }
   repo_index {
     value: 1
@@ -1037,7 +1037,7 @@ library {
 }
 library {
   digests {
-    sha256: "\303_\233K.$\230\224%\210\226P\300\236R{\356g(\177\342\'F\311\236d\312\263=;\003^"
+    sha256: "\2751\262kQ-\354\276\331\302e\n\v\205c\n\226)\343\021|Q\240\026<\b\362\214\362\n\337\244"
   }
 }
 library_dependencies {
@@ -1742,6 +1742,7 @@ module_dependencies {
   dependency_index: 49
   dependency_index: 59
   dependency_index: 65
+  dependency_index: 5
   dependency_index: 83
   dependency_index: 87
 }
@@ -1828,6 +1829,26 @@ repositories {
 repositories {
   maven_repo {
     url: "https://repo.maven.apache.org/maven2/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://dl.google.com/dl/android/maven2/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://repo.maven.apache.org/maven2/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://dl.google.com/dl/android/maven2/"
+  }
+}
+repositories {
+  maven_repo {
+    url: "https://jcenter.bintray.com/"
   }
 }
 repositories {

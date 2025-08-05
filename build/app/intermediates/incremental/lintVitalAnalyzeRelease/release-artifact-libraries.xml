@@ -33,10 +33,10 @@
       proguardRules="proguard.txt"/>
   <library
       name=":@@:flutter_tts::release"
-      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/13134f25f5587d752c0a6550c6285bc9/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/13134f25f5587d752c0a6550c6285bc9/transformed/out/jars/libs/R.jar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/1e0c9205e2039d6df78ba6b41ee7570b/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/1e0c9205e2039d6df78ba6b41ee7570b/transformed/out/jars/libs/R.jar"
       resolved="com.tundralabs.fluttertts:flutter_tts:1.0-SNAPSHOT"
       partialResultsDir="/workspace/build/flutter_tts/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
-      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/13134f25f5587d752c0a6550c6285bc9/transformed/out"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/1e0c9205e2039d6df78ba6b41ee7570b/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -88,11 +88,39 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name=":@@:permission_handler_android::release"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/5be6d6d16cf80c78dcf4a0b23bb70482/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/5be6d6d16cf80c78dcf4a0b23bb70482/transformed/out/jars/libs/R.jar"
+      resolved="com.baseflow.permissionhandler:permission_handler_android:1.0"
+      partialResultsDir="/workspace/build/permission_handler_android/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/5be6d6d16cf80c78dcf4a0b23bb70482/transformed/out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
       name=":@@:shared_preferences_android::release"
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/3e448a544cecc0d6bb92b539204d2e83/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/3e448a544cecc0d6bb92b539204d2e83/transformed/out/jars/libs/R.jar"
       resolved="io.flutter.plugins.sharedpreferences:shared_preferences_android:1.0-SNAPSHOT"
       partialResultsDir="/workspace/build/shared_preferences_android/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
       folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/3e448a544cecc0d6bb92b539204d2e83/transformed/out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name=":@@:speech_to_text::release"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/49f1dc85f0ebb723de724a9fb87f3530/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/49f1dc85f0ebb723de724a9fb87f3530/transformed/out/jars/libs/R.jar"
+      resolved="com.csdcorp.speech_to_text:speech_to_text:1.0-SNAPSHOT"
+      partialResultsDir="/workspace/build/speech_to_text/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/49f1dc85f0ebb723de724a9fb87f3530/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -116,9 +144,9 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
-      name="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0@jar"
-      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.9.0/f320478990d05e0cfaadd74f9619fd6027adbf37/kotlin-stdlib-jdk7-1.9.0.jar"
-      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0"/>
+      name="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.9.10/bc5bfc2690338defd5195b05c57562f2194eeb10/kotlin-stdlib-jdk7-1.9.10.jar"
+      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10"/>
   <library
       name="io.flutter:flutter_embedding_release:1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/io.flutter/flutter_embedding_release/1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262/73e796dcc72053d1d78a3515b9474d76b17795c/flutter_embedding_release-1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262.jar"
@@ -416,9 +444,9 @@
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.9.24/9928532f12c66ad816a625b3f9984f8368ca6d2b/kotlin-stdlib-1.9.24.jar"
       resolved="org.jetbrains.kotlin:kotlin-stdlib:1.9.24"/>
   <library
-      name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0@jar"
-      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.9.0/e000bd084353d84c9e888f6fb341dc1f5b79d948/kotlin-stdlib-jdk8-1.9.0.jar"
-      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0"/>
+      name="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.9.10/c7510d64a83411a649c76f2778304ddf71d7437b/kotlin-stdlib-jdk8-1.9.10.jar"
+      resolved="org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10"/>
   <library
       name="io.flutter:armeabi_v7a_release:1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/io.flutter/armeabi_v7a_release/1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262/bbd9a7ebd348cb2894ee724b000124de1081b410/armeabi_v7a_release-1.0.0-a18df97ca57a249df5d8d68cd0820600223ce262.jar"

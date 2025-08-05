@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:device_apps/device_apps.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 
@@ -270,9 +270,9 @@ class VoiceController {
 
   Future<void> _openApp(String packageName, String appName) async {
     try {
-      bool isInstalled = await DeviceApps.isAppInstalled(packageName);
-      if (isInstalled) {
-        await DeviceApps.openApp(packageName);
+      final url = 'package:$packageName';
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
         await _flutterTts.speak("Opening $appName");
       } else {
         await _flutterTts.speak("$appName is not installed");
@@ -511,8 +511,8 @@ class VoiceController {
       platforms.add(_openApp('com.whatsapp', 'WhatsApp'));
     }
     
-    if (command.contains('twitter')) {
-      platforms.add(_openApp('com.twitter.android', 'Twitter'));
+    if (command.contains('twitter') || command.contains('x')) {
+      platforms.add(_openApp('com.twitter.android', 'X (Twitter)'));
     }
     
     // Wait for screenshot, then open platforms
