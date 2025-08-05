@@ -18,7 +18,7 @@ class ThemeNotifier extends ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
 
   ThemeNotifier() {
-    _themeMode = ThemeMode.light;
+    _themeMode = ThemeMode.system;
     _loadFromPrefs();
   }
 
@@ -28,14 +28,14 @@ class ThemeNotifier extends ChangeNotifier {
 
   Future<void> _loadFromPrefs() async {
     await _initPrefs();
-    bool isDarkMode = _prefs?.getBool(key) ?? false;
-    _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    // Always use system theme mode
+    _themeMode = ThemeMode.system;
     notifyListeners();
   }
 
   Future<void> _saveToPrefs() async {
     await _initPrefs();
-    await _prefs?.setBool(key, _themeMode == ThemeMode.dark);
+    // No need to save system theme preference
   }
 
   void setTheme(ThemeMode themeMode) {
