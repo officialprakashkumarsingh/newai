@@ -90,14 +90,14 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF222831),
+    scaffoldBackgroundColor: const Color(0xFF000000), // AMOLED black
     primaryColor: const Color(0xFFFFFAEC),
     cardColor: const Color(0xFF31363F),
     appBarTheme: AppBarTheme(
-      color: const Color(0xFF222831),
+      color: const Color(0xFF000000), // AMOLED black to match scaffold
       elevation: 0,
       foregroundColor: const Color(0xFFFFFAEC),
-      surfaceTintColor: const Color(0xFF222831),
+      surfaceTintColor: const Color(0xFF000000), // AMOLED black to match scaffold
       iconTheme: const IconThemeData(color: Color(0xFFFFFAEC)),
       titleTextStyle: GoogleFonts.inter(color: const Color(0xFFFFFAEC), fontSize: 18, fontWeight: FontWeight.w600),
     ),
