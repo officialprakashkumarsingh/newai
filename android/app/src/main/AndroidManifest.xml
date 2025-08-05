@@ -48,6 +48,14 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        
+        <!-- Background Processing Service -->
+        <service
+            android:name=".BackgroundProcessingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+            
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
