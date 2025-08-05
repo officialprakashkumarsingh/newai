@@ -12,8 +12,9 @@
 ## 📥 Installation Instructions
 
 ### APK File Details
-- **Main File**: `aham-app-release.apk` *(latest with green theme & modern button)*
-- **Version 3**: `aham-app-release-v3.apk` *(same as above)*
+- **Main File**: `aham-app-release.apk` *(latest with Dracula/Slack themes)*
+- **Version 4**: `aham-app-release-v4.apk` *(same as above)*
+- **Previous**: `aham-app-release-v3.apk` *(green theme)*
 - **Previous**: `aham-app-release-v2.apk` *(warm cream theme)*
 - **Size**: ~25.7 MB
 - **Version**: 1.0.0+1
@@ -23,7 +24,7 @@
 ### Installation Steps
 
 1. **Download the APK**
-   - Download `aham-app-release.apk` from this repository (latest with green theme & modern button)
+   - Download `aham-app-release.apk` from this repository (latest with Dracula/Slack themes)
 
 2. **Enable Unknown Sources** (if not already enabled)
    - Go to Settings → Security → Unknown Sources
@@ -71,8 +72,9 @@ The app requires the following permissions:
 - **AI Models**: Gemini 2.5 Flash, GPT 4.1 Mini/Large, OpenAI O3, DeepSeek R1, SearchGPT, Grok variants, Claude 4 Sonnet
 - **Theme**: Automatic system-based theme switching (removed manual toggle)
 - **UI**: Grey user message bubbles (updated from black)
-- **Design**: Fresh green theme (#ECFAE5 background, #DDF6D2 buttons)
-- **User Messages**: Dark grey bubbles (#222831) for better contrast
+- **Design**: Dual professional themes - Dracula minimal light & Slack dark
+- **User Messages**: Dark grey bubbles (#222831) for better contrast  
+- **Welcome Screen**: Completely redesigned with modern card layout and gradients
 - **New Chat Button**: Modern design with gradient, shadow, and icon container
 - **File Support**: Document attachments, image uploads, archive processing
 - **Additional**: PDF generation, TTS, web search integration
@@ -86,7 +88,15 @@ The app requires the following permissions:
 
 ## 📝 Changelog
 
-### Version 3 (aham-app-release-v3.apk) - **LATEST**
+### Version 4 (aham-app-release-v4.apk) - **LATEST**
+- ✅ **Professional Dual Themes**: Dracula minimal light theme & Slack dark theme
+- ✅ **Light Mode**: Dracula-inspired colors with cream background (#F8F8F2) and purple accents (#BD93F9)
+- ✅ **Dark Mode**: Slack-inspired dark theme with deep background (#1A1D21) and cyan accents (#36C5F0)
+- ✅ **Welcome Screen Redesign**: Complete makeover with modern card layout, gradients, and brain icon
+- ✅ **Enhanced Suggestions**: Updated suggestion cards with icons and improved styling
+- ✅ **Professional Look**: Sophisticated design with proper shadows, borders, and color coordination
+
+### Version 3 (aham-app-release-v3.apk)
 - ✅ **Fresh Green Theme**: Changed to light green background (#ECFAE5)
 - ✅ **Green Buttons**: Updated to light green (#DDF6D2) for consistency
 - ✅ **Dark User Messages**: Changed user bubbles to dark grey (#222831) for better contrast
