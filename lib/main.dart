@@ -733,12 +733,7 @@ class _WelcomeInputAreaState extends State<WelcomeInputArea> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(28),
-                  borderSide: BorderSide(
-                    color: isLightTheme(context) 
-                        ? const Color(0xFFE8EAED) // Same as normal border (no active state)
-                        : const Color(0xFF333438),
-                    width: 1,
-                  ),
+                  borderSide: BorderSide.none, // No border when active
                 ),
               ),
             ),

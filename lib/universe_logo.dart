@@ -15,51 +15,18 @@ class UniverseLogo extends StatefulWidget {
   State<UniverseLogo> createState() => _UniverseLogoState();
 }
 
-class _UniverseLogoState extends State<UniverseLogo>
-    with TickerProviderStateMixin {
-  late AnimationController _rotationController;
-  late Animation<double> _rotationAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    
-    _rotationController = AnimationController(
-      duration: const Duration(seconds: 20),
-      vsync: this,
-    )..repeat();
-
-    _rotationAnimation = Tween<double>(
-      begin: 0,
-      end: 2 * math.pi,
-    ).animate(CurvedAnimation(
-      parent: _rotationController,
-      curve: Curves.linear,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _rotationController.dispose();
-    super.dispose();
-  }
-
+class _UniverseLogoState extends State<UniverseLogo> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _rotationController,
-      builder: (context, child) {
-        return SizedBox(
-          width: widget.size,
-          height: widget.size,
-          child: CustomPaint(
-            painter: UniverseLogoPainter(
-              rotationAngle: _rotationAnimation.value,
-              isDarkMode: widget.isDarkMode,
-            ),
-          ),
-        );
-      },
+    return SizedBox(
+      width: widget.size,
+      height: widget.size,
+      child: CustomPaint(
+        painter: UniverseLogoPainter(
+          rotationAngle: 0, // Static, no rotation
+          isDarkMode: widget.isDarkMode,
+        ),
+      ),
     );
   }
 }
