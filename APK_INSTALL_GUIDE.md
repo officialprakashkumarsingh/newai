@@ -12,7 +12,8 @@
 ## 📥 Installation Instructions
 
 ### APK File Details
-- **File**: `aham-app-release.apk`
+- **Main File**: `aham-app-release.apk` *(latest with updated design)*
+- **Alternative**: `aham-app-release-v2.apk` *(same as above)*
 - **Size**: ~25.7 MB
 - **Version**: 1.0.0+1
 - **Target SDK**: Android API 35 (Android 15)
@@ -21,7 +22,7 @@
 ### Installation Steps
 
 1. **Download the APK**
-   - Download `aham-app-release.apk` from this repository
+   - Download `aham-app-release.apk` from this repository (latest with updated design)
 
 2. **Enable Unknown Sources** (if not already enabled)
    - Go to Settings → Security → Unknown Sources
@@ -69,6 +70,8 @@ The app requires the following permissions:
 - **AI Models**: Gemini 2.5 Flash, GPT 4.1 Mini/Large, OpenAI O3, DeepSeek R1, SearchGPT, Grok variants, Claude 4 Sonnet
 - **Theme**: Automatic system-based theme switching (removed manual toggle)
 - **UI**: Grey user message bubbles (updated from black)
+- **Design**: Custom light theme with warm colors (#FAF7F3 background, #F0E4D3 buttons)
+- **New Chat Button**: Smaller, rounded button with "New Chat" label
 - **File Support**: Document attachments, image uploads, archive processing
 - **Additional**: PDF generation, TTS, web search integration
 
@@ -78,6 +81,20 @@ The app requires the following permissions:
 3. Add certificate pinning for API calls
 4. Implement input validation and sanitization
 5. Add proper error handling and logging
+
+## 📝 Changelog
+
+### Version 2 (aham-app-release-v2.apk)
+- ✅ **Light Theme Update**: Changed background from white to warm cream (#FAF7F3)
+- ✅ **Button Colors**: Updated button background to warm beige (#F0E4D3) with black text
+- ✅ **New Chat Button**: Redesigned as smaller, rounded button with "New Chat" label
+- ✅ **AppBar**: Updated to match new background color
+- ✅ **Cards**: Updated card background to match new button color
+
+### Version 1 (aham-app-release.apk)
+- ✅ System-based theme switching (removed manual dark mode toggle)
+- ✅ Grey user message bubbles (changed from black)
+- ✅ All original functionality preserved
 
 ---
 *Built with Flutter 3.24.5 • Created for testing and evaluation purposes*
