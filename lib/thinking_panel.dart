@@ -33,57 +33,39 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
             onTap: () => setState(() => _isExpanded = !_isExpanded),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? Colors.grey.shade100 
-                    : Colors.grey.shade800.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(8),
+                    ? const Color(0xFFF8F9FA)
+                    : const Color(0xFF1A1D21),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: isLightTheme(context) 
-                      ? Colors.grey.shade300 
-                      : Colors.grey.shade600,
+                      ? const Color(0xFFE9ECEF) 
+                      : const Color(0xFF2D3748),
                   width: 1,
                 ),
               ),
               child: Row(
                 children: [
-                  Icon(
-                    _isExpanded ? Icons.expand_less : Icons.expand_more,
-                    size: 20,
-                    color: isLightTheme(context) 
-                        ? Colors.grey.shade600 
-                        : Colors.grey.shade400,
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.psychology,
-                    size: 16,
-                    color: isLightTheme(context) 
-                        ? Colors.blue.shade600 
-                        : Colors.blue.shade400,
-                  ),
-                  const SizedBox(width: 6),
                   Text(
                     'Thinking...',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w500,
                       color: isLightTheme(context) 
-                          ? Colors.grey.shade700 
-                          : Colors.grey.shade300,
+                          ? Colors.grey.shade600 
+                          : Colors.grey.shade400,
                     ),
                   ),
                   const Spacer(),
-                  Text(
-                    _isExpanded ? 'Hide' : 'Show',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isLightTheme(context) 
-                          ? Colors.blue.shade600 
-                          : Colors.blue.shade400,
-                    ),
+                  Icon(
+                    _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    size: 18,
+                    color: isLightTheme(context) 
+                        ? Colors.grey.shade500 
+                        : Colors.grey.shade500,
                   ),
                 ],
               ),
