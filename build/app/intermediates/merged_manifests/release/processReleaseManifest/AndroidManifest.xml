@@ -13,6 +13,12 @@
 
     <!-- Voice Permissions -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Storage Permissions for saving images -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <!--
          Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
@@ -32,10 +38,6 @@
             <data android:mimeType="*/*" />
         </intent>
     </queries>
-
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
 
     <permission
         android:name="com.aham.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"

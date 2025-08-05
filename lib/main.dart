@@ -523,15 +523,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   final chat = currentChatList[index];
                   return ListTile(
                     leading: chat.isPinned ? Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20) : null,
-                    title: Row(
-                      children: [
-                        Expanded(child: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                        const SizedBox(width: 8),
-                        Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: _getCategoryColor(chat.category, context), borderRadius: BorderRadius.circular(10)), child: Text(chat.category, style: TextStyle(fontSize: 12, color: _getCategoryTextColor(chat.category, context), fontWeight: FontWeight.w500))),
-                      ],
-                    ),
+                    title: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis),
                     subtitle: Text(
-                      chat.messages.isEmpty ? 'No messages yet' : chat.messages.last.text,
+                      chat.messages.isEmpty ? 'No messages yet' : _stripMarkdown(chat.messages.last.text),
                       style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -1026,4 +1020,17 @@ class ModernStartButton extends StatelessWidget {
       ),
     );
   }
+}
+
+// Helper function to strip markdown formatting for chat preview
+String _stripMarkdown(String text) {
+  return text
+      .replaceAll(RegExp(r'\*\*(.*?)\*\*'), r'$1') // Bold
+      .replaceAll(RegExp(r'\*(.*?)\*'), r'$1') // Italic
+      .replaceAll(RegExp(r'`(.*?)`'), r'$1') // Inline code
+      .replaceAll(RegExp(r'```[\s\S]*?```'), '[Code]') // Code blocks
+      .replaceAll(RegExp(r'#{1,6}\s*'), '') // Headers
+      .replaceAll(RegExp(r'\[(.*?)\]\(.*?\)'), r'$1') // Links
+      .replaceAll(RegExp(r'\n+'), ' ') // Multiple newlines to space
+      .trim();
 }

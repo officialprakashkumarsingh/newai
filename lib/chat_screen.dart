@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:ahamai/web_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,8 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'ai_message_actions.dart';
 import 'api.dart';
@@ -584,7 +587,36 @@ Based on the context above, answer the following prompt: $input""";
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (message.imageBytes != null)
-                    Padding(padding: const EdgeInsets.only(bottom: 8.0), child: ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.memory(message.imageBytes!, height: 150))),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0), 
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12), 
+                            child: Image.memory(message.imageBytes!, height: 150)
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: (isDark ? Colors.black : Colors.white).withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.download_rounded,
+                                  size: 20,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                                onPressed: () => _saveImage(message.imageBytes!),
+                                tooltip: 'Save Image',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   
                   if (message.attachedFileName != null)
                     _FileAttachmentInMessage(message: message, isDark: isDark),
@@ -739,6 +771,67 @@ Based on the context above, answer the following prompt: $input""";
         ],
       ),
     );
+  }
+
+  Future<void> _saveImage(Uint8List imageBytes) async {
+    try {
+      // Request storage permission
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Storage permission required to save images')),
+        );
+        return;
+      }
+
+      // Get Downloads directory
+      Directory? downloadsDir;
+      if (Platform.isAndroid) {
+        downloadsDir = Directory('/storage/emulated/0/Download');
+        if (!await downloadsDir.exists()) {
+          downloadsDir = await getExternalStorageDirectory();
+        }
+      } else {
+        downloadsDir = await getDownloadsDirectory();
+      }
+
+      if (downloadsDir == null) {
+        throw Exception('Could not access downloads directory');
+      }
+
+      // Create AhamAI folder
+      final ahamAIDir = Directory('${downloadsDir.path}/AhamAI');
+      if (!await ahamAIDir.exists()) {
+        await ahamAIDir.create(recursive: true);
+      }
+
+      // Generate filename with timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = 'AhamAI_image_$timestamp.png';
+      final filePath = '${ahamAIDir.path}/$fileName';
+
+      // Save the image
+      final file = File(filePath);
+      await file.writeAsBytes(imageBytes);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Image saved to Downloads/AhamAI/$fileName'),
+          action: SnackBarAction(
+            label: 'Open Folder',
+            onPressed: () {
+              // Note: Opening folder programmatically requires additional permissions
+              // For now, just show the path
+            },
+          ),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save image: $e')),
+      );
+    }
   }
 }
 
