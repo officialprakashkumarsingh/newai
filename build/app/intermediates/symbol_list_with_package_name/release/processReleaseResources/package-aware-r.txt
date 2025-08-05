@@ -786,6 +786,7 @@ drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable preference_list_divider_material
+drawable stylish_widget_background
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
 drawable voice_button_background
@@ -887,10 +888,6 @@ id decor_content_parent
 id default_activity_button
 id dialog_button
 id disableHome
-id dynamic_battery
-id dynamic_island
-id dynamic_time
-id dynamic_weather
 id edit_query
 id edit_text_id
 id end

@@ -27,7 +27,6 @@ class AhamAIWidget : AppWidgetProvider() {
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
-            startFlagAnimation(context, appWidgetManager, appWidgetId)
         }
     }
 
@@ -41,47 +40,7 @@ class AhamAIWidget : AppWidgetProvider() {
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
-    private fun startFlagAnimation(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        val handler = Handler(Looper.getMainLooper())
-        
-        // Schedule flag animation every 30 seconds
-        val runnable = object : Runnable {
-            override fun run() {
-                animateFlag(context, appWidgetManager, appWidgetId)
-                handler.postDelayed(this, 30000) // 30 seconds
-            }
-        }
-        
-        // Start first animation after 5 seconds
-        handler.postDelayed(runnable, 5000)
-    }
 
-    private fun animateFlag(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-        val views = RemoteViews(context.packageName, R.layout.ahamai_widget)
-        val handler = Handler(Looper.getMainLooper())
-        
-        // Saffron phase
-        views.setInt(R.id.widget_search_bar, "setBackgroundResource", R.drawable.indian_saffron_bg)
-        appWidgetManager.updateAppWidget(appWidgetId, views)
-        
-        handler.postDelayed({
-            // White phase
-            views.setInt(R.id.widget_search_bar, "setBackgroundResource", R.drawable.indian_white_bg)
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-            
-            handler.postDelayed({
-                // Green phase
-                views.setInt(R.id.widget_search_bar, "setBackgroundResource", R.drawable.indian_green_bg)
-                appWidgetManager.updateAppWidget(appWidgetId, views)
-                
-                handler.postDelayed({
-                    // Back to normal
-                    views.setInt(R.id.widget_search_bar, "setBackgroundResource", R.drawable.minimal_search_background)
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
-                }, 1500)
-            }, 1500)
-        }, 1500)
-    }
 
     private fun createActionPendingIntent(context: Context, action: String): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {

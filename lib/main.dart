@@ -9,6 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
+import 'background_pattern.dart';
+import 'universe_logo.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 
@@ -465,121 +468,141 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Scaffold(
       appBar: _buildAppBar(context),
       extendBody: true, // Extend body behind system navigation bar
-      body: _chats.isEmpty
-          ? Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const HighlightedWelcomeText(),
-                    const SizedBox(height: 80), // More space above for better centering
-                    // "Let's Start with" text
-                    Text(
-                      "Let's Start with",
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 24), // Reduced gap between text and input
-                    // Center input area
-                    WelcomeInputArea(
-                      onSubmitted: (text) {
-                        if (text.trim().isNotEmpty) {
-                          Navigator.push(
-                            context, 
-                            MaterialPageRoute(
-                              builder: (context) => ChatScreen(
-                                chatInfoStream: _chatInfoStream,
-                                initialMessage: text.trim(),
-                              )
-                            )
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.only(bottom: 80),
-              itemCount: currentChatList.length,
-              itemBuilder: (context, index) {
-                final chat = currentChatList[index];
-                return ListTile(
-                  leading: chat.isPinned ? Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20) : null,
-                  title: Row(
+      body: BackgroundPattern(
+        isDarkMode: Theme.of(context).brightness == Brightness.dark,
+        child: _chats.isEmpty
+            ? Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(child: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                      const SizedBox(width: 8),
-                      Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: _getCategoryColor(chat.category, context), borderRadius: BorderRadius.circular(10)), child: Text(chat.category, style: TextStyle(fontSize: 12, color: _getCategoryTextColor(chat.category, context), fontWeight: FontWeight.w500))),
+                      // Universe Logo
+                      UniverseLogo(
+                        size: 140.0,
+                        isDarkMode: Theme.of(context).brightness == Brightness.dark,
+                      ),
+                      const SizedBox(height: 40),
+                      
+                      // AhamAI title with Source Code Pro
+                      Text(
+                        "AhamAI",
+                        style: GoogleFonts.sourceCodePro(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).primaryColor,
+                          letterSpacing: 2.0,
+                        ),
+                      ),
+                      const SizedBox(height: 60),
+                      
+                      // "Let's Start with" text using special font
+                      Text(
+                        "Let's Start with",
+                        style: GoogleFonts.orbitron(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      // Center input area
+                      WelcomeInputArea(
+                        onSubmitted: (text) {
+                          if (text.trim().isNotEmpty) {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                                builder: (context) => ChatScreen(
+                                  chatInfoStream: _chatInfoStream,
+                                  initialMessage: text.trim(),
+                                )
+                              )
+                            );
+                          }
+                        },
+                      ),
                     ],
                   ),
-                                      subtitle: Text(
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.only(bottom: 80),
+                itemCount: currentChatList.length,
+                itemBuilder: (context, index) {
+                  final chat = currentChatList[index];
+                  return ListTile(
+                    leading: chat.isPinned ? Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20) : null,
+                    title: Row(
+                      children: [
+                        Expanded(child: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                        const SizedBox(width: 8),
+                        Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: _getCategoryColor(chat.category, context), borderRadius: BorderRadius.circular(10)), child: Text(chat.category, style: TextStyle(fontSize: 12, color: _getCategoryTextColor(chat.category, context), fontWeight: FontWeight.w500))),
+                      ],
+                    ),
+                    subtitle: Text(
                       chat.messages.isEmpty ? 'No messages yet' : chat.messages.last.text,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatTitle: chat.title, initialMessages: chat.messages, chatId: chat.id, isPinned: chat.isPinned, isGenerating: chat.isGenerating, isStopped: chat.isStopped, chatInfoStream: _chatInfoStream))),
-                  onLongPress: () => showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    builder: (context) => Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            leading: const Icon(Icons.push_pin_outlined),
-                            title: Text(chat.isPinned ? 'Unpin Chat' : 'Pin Chat'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              setState(() {
-                                final updatedChat = chat.copyWith(isPinned: !chat.isPinned);
-                                final chatIndex = _chats.indexWhere((c) => c.id == chat.id);
-                                if (chatIndex != -1) _chats[chatIndex] = updatedChat;
-                                _chats.sort((a, b) {
-                                  if (a.isPinned && !b.isPinned) return -1;
-                                  if (!a.isPinned && b.isPinned) return 1;
-                                  return 0;
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatTitle: chat.title, initialMessages: chat.messages, chatId: chat.id, isPinned: chat.isPinned, isGenerating: chat.isGenerating, isStopped: chat.isStopped, chatInfoStream: _chatInfoStream))),
+                    onLongPress: () => showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                      builder: (context) => Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.push_pin_outlined),
+                              title: Text(chat.isPinned ? 'Unpin Chat' : 'Pin Chat'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                setState(() {
+                                  final updatedChat = chat.copyWith(isPinned: !chat.isPinned);
+                                  final chatIndex = _chats.indexWhere((c) => c.id == chat.id);
+                                  if (chatIndex != -1) _chats[chatIndex] = updatedChat;
+                                  _chats.sort((a, b) {
+                                    if (a.isPinned && !b.isPinned) return -1;
+                                    if (!a.isPinned && b.isPinned) return 1;
+                                    return 0;
+                                  });
+                                  _saveChats();
                                 });
-                                _saveChats();
-                              });
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.drive_file_rename_outline),
-                            title: const Text('Rename Chat'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              final originalIndex = _chats.indexWhere((c) => c.id == chat.id);
-                              if (originalIndex != -1) {
-                                _showRenameDialog(chat, originalIndex);
-                              }
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.delete_outline),
-                            title: const Text('Delete Chat'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              setState(() => _chats.removeWhere((c) => c.id == chat.id));
-                              _saveChats();
-                            },
-                          ),
-                          SizedBox(height: MediaQuery.of(context).padding.bottom),
-                        ],
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.edit_outlined),
+                              title: const Text('Rename Chat'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                _showRenameDialog(chat, _chats.indexWhere((c) => c.id == chat.id));
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.delete_outline, color: Colors.red),
+                              title: const Text('Delete Chat', style: TextStyle(color: Colors.red)),
+                              onTap: () {
+                                Navigator.pop(context);
+                                setState(() {
+                                  _chats.removeWhere((c) => c.id == chat.id);
+                                  _saveChats();
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
+      ),
+
       floatingActionButton: _chats.isEmpty ? null : Container(
         margin: const EdgeInsets.only(bottom: 20, right: 4),
         child: Container(

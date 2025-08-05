@@ -32,15 +32,12 @@ drawable indian_white_bg
 drawable launch_background
 drawable minimal_search_background
 drawable minimal_widget_background
+drawable stylish_widget_background
 drawable voice_button_background
 drawable widget_background
 drawable widget_button_background
 drawable widget_icon_background
 drawable widget_send_background
-id dynamic_battery
-id dynamic_island
-id dynamic_time
-id dynamic_weather
 id widget_search_bar
 id widget_search_text
 id widget_voice

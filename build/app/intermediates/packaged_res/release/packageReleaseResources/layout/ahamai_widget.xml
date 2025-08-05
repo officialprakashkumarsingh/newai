@@ -3,80 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="4dp">
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp">
 
-    <!-- Dynamic Island Status Strip -->
-    <LinearLayout
-        android:id="@+id/dynamic_island"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:background="@drawable/dynamic_island_background"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginBottom="8dp">
-        
-        <!-- Time -->
-        <TextView
-            android:id="@+id/dynamic_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="14:30"
-            android:textColor="@color/widget_text_color"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
-            android:layout_marginEnd="8dp" />
-            
-        <!-- Weather -->
-        <ImageView
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_weather"
-            android:layout_marginEnd="4dp" />
-            
-        <TextView
-            android:id="@+id/dynamic_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="24°C"
-            android:textColor="@color/widget_text_color"
-            android:textSize="12sp"
-            android:layout_marginEnd="8dp" />
-            
-        <!-- Battery -->
-        <ImageView
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_battery"
-            android:layout_marginEnd="2dp" />
-            
-        <TextView
-            android:id="@+id/dynamic_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="85%"
-            android:textColor="@color/widget_text_color"
-            android:textSize="12sp" />
-            
-    </LinearLayout>
-
-    <!-- Main Search Area with Indian Flag Animation -->
+    <!-- Stylish Search Area -->
     <LinearLayout
         android:id="@+id/widget_search_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:background="@drawable/indian_pride_animation"
+        android:layout_weight="1"
+        android:background="@drawable/stylish_widget_background"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:paddingEnd="12dp"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:layout_marginEnd="8dp">
         
                 <!-- Search Text -->
         <TextView

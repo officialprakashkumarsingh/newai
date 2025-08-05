@@ -57,10 +57,11 @@ class ThemeNotifier extends ChangeNotifier {
       foregroundColor: Color(0xFF202124), // Primary headline text
       surfaceTintColor: Color(0xFFF1F3F4), // Matches the background
       elevation: 0,
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
         color: Color(0xFF202124), // Primary headline text
         fontSize: 20,
         fontWeight: FontWeight.w600,
+        fontFamily: 'monospace', // Use monospace as fallback
       ),
       // systemOverlayStyle managed dynamically in main.dart based on theme
     ),
@@ -101,7 +102,7 @@ class ThemeNotifier extends ChangeNotifier {
       foregroundColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
       surfaceTintColor: const Color(0xFF202124), // Main Background to match scaffold
       iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)), // Primary Text - Pure white
-      titleTextStyle: GoogleFonts.inter(color: const Color(0xFFFFFFFF), fontSize: 18, fontWeight: FontWeight.w600), // Primary Text
+      titleTextStyle: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'monospace'), // AhamAI logo font
     ),
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
       bodyColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
