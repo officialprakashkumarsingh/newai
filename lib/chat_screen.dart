@@ -682,7 +682,7 @@ User Prompt: $input""";
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               decoration: BoxDecoration(
                   color: isLightTheme(context)
-                      ? const Color(0xFF333446) // New bubble color for light mode
+                      ? const Color(0xFF2A2A2A) // Modern dark gray bubble for light mode
                       : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
                   borderRadius: BorderRadius.circular(16)
                 ),

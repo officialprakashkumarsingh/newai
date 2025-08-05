@@ -45,33 +45,33 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Light theme
+  // Light theme - Perplexity-inspired modern design
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFEEEEEE), // Updated primary color
-    primaryColor: Colors.black,
-    cardColor: const Color(0xFFDCCFC0), // Updated button/card color
+    scaffoldBackgroundColor: const Color(0xFFFAFAFA), // Very light gray, modern and clean
+    primaryColor: const Color(0xFF1A1A1A), // Dark text color
+    cardColor: const Color(0xFFF5F5F5), // Clean light gray for cards/buttons
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFEEEEEE), // Updated to match scaffold
-      foregroundColor: Colors.black,
-      surfaceTintColor: Color(0xFFEEEEEE), // Updated to match scaffold
+      backgroundColor: Color(0xFFFAFAFA), // Match scaffold background
+      foregroundColor: Color(0xFF1A1A1A), // Dark text
+      surfaceTintColor: Color(0xFFFAFAFA), // Match scaffold background
       elevation: 0,
       titleTextStyle: TextStyle(
-        color: Colors.black,
+        color: Color(0xFF1A1A1A),
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
     ),
-    iconTheme: const IconThemeData(color: Colors.black),
+    iconTheme: const IconThemeData(color: Color(0xFF1A1A1A)),
     textTheme: GoogleFonts.interTextTheme().apply(
-      bodyColor: Colors.black,
-      displayColor: Colors.black,
+      bodyColor: const Color(0xFF1A1A1A),
+      displayColor: const Color(0xFF1A1A1A),
     ),
-    dividerColor: const Color(0xFFDCCFC0), // Updated divider color
+    dividerColor: const Color(0xFFE8E8E8), // Subtle light gray divider
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFDCCFC0), // Updated button color
-        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFFF5F5F5), // Clean light gray buttons
+        foregroundColor: const Color(0xFF1A1A1A), // Dark text on buttons
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
