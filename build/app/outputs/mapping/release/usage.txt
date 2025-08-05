@@ -10289,7 +10289,25 @@ com.aham.app.AhamAIWidget:
     public static final java.lang.String ACTION_VOICE
     public static final java.lang.String EXTRA_INPUT_TEXT
 com.aham.app.R$color
-com.aham.app.R$drawable
+com.aham.app.R$drawable:
+    public static int google_search_bar_background
+    public static int google_widget_background
+    public static int ic_attachment
+    public static int ic_mic
+    public static int ic_send
+    public static int ic_voice_minimal
+    public static int ic_web_search
+    public static int indian_flag_border_animation
+    public static int indian_flag_gradient_animation
+    public static int launch_background
+    public static int minimal_search_background
+    public static int minimal_widget_background
+    public static int voice_button_background
+    public static int widget_background
+    public static int widget_button_background
+    public static int widget_icon_background
+    public static int widget_send_background
+    private void <init>()
 com.aham.app.R$id:
     public static int widget_search_text
     private void <init>()

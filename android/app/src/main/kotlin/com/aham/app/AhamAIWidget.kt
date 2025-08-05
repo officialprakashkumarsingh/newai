@@ -29,6 +29,17 @@ class AhamAIWidget : AppWidgetProvider() {
         views.setOnClickPendingIntent(R.id.widget_search_bar, createActionPendingIntent(context, ACTION_SEARCH_TAP))
         views.setOnClickPendingIntent(R.id.widget_voice, createActionPendingIntent(context, ACTION_VOICE))
         
+        // Start Indian pride animation
+        try {
+            val searchBarDrawable = context.getDrawable(R.drawable.indian_pride_animation)
+            if (searchBarDrawable is android.graphics.drawable.AnimationDrawable) {
+                searchBarDrawable.start()
+            }
+        } catch (e: Exception) {
+            // Fallback to static background if animation fails
+            android.util.Log.w("AhamAIWidget", "Failed to start animation: ${e.message}")
+        }
+        
         appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 

@@ -1913,6 +1913,7 @@ valueTo
 suggest_icon_1
 suggest_icon_2
 PathProviderPlugin
+AhamAIWidget
 IS_SELECTED
 createAsync
 .Companion
@@ -2287,14 +2288,14 @@ Marking id:shortcut:2131230889 used because it matches string pool constant shor
 Marking attr:defaultValue:2130903148 used because it matches string pool constant defaultValue
 Marking attr:defaultValue:2130903148 used because it matches string pool constant defaultValue
 Marking attr:primaryActivityName:2130903297 used because it matches string pool constant primary
-Marking color:primary_dark_material_dark:2131034183 used because it matches string pool constant primary
-Marking color:primary_dark_material_light:2131034184 used because it matches string pool constant primary
-Marking color:primary_material_dark:2131034185 used because it matches string pool constant primary
-Marking color:primary_material_light:2131034186 used because it matches string pool constant primary
-Marking color:primary_text_default_material_dark:2131034187 used because it matches string pool constant primary
-Marking color:primary_text_default_material_light:2131034188 used because it matches string pool constant primary
-Marking color:primary_text_disabled_material_dark:2131034189 used because it matches string pool constant primary
-Marking color:primary_text_disabled_material_light:2131034190 used because it matches string pool constant primary
+Marking color:primary_dark_material_dark:2131034186 used because it matches string pool constant primary
+Marking color:primary_dark_material_light:2131034187 used because it matches string pool constant primary
+Marking color:primary_material_dark:2131034188 used because it matches string pool constant primary
+Marking color:primary_material_light:2131034189 used because it matches string pool constant primary
+Marking color:primary_text_default_material_dark:2131034190 used because it matches string pool constant primary
+Marking color:primary_text_default_material_light:2131034191 used because it matches string pool constant primary
+Marking color:primary_text_disabled_material_dark:2131034192 used because it matches string pool constant primary
+Marking color:primary_text_disabled_material_light:2131034193 used because it matches string pool constant primary
 Marking id:group_divider:2131230826 used because it matches string pool constant group
 Marking attr:clearTop:2130903120 used because it matches string pool constant clear
 Marking id:right:2131230866 used because it matches string pool constant right
@@ -2406,14 +2407,14 @@ Marking attr:height:2130903211 used because it matches string pool constant heig
 Marking attr:height:2130903211 used because it matches string pool constant height
 Marking attr:min:2130903262 used because it matches string pool constant min
 Marking attr:min:2130903262 used because it matches string pool constant min
-Marking drawable:minimal_search_background:2131165293 used because it matches string pool constant min
-Marking drawable:minimal_widget_background:2131165294 used because it matches string pool constant min
+Marking drawable:minimal_search_background:2131165296 used because it matches string pool constant min
+Marking drawable:minimal_widget_background:2131165297 used because it matches string pool constant min
 Marking attr:progressBarPadding:2130903298 used because it matches string pool constant progress
 Marking attr:progressBarStyle:2130903299 used because it matches string pool constant progress
 Marking id:progress_circular:2131230861 used because it matches string pool constant progress
 Marking id:progress_horizontal:2131230862 used because it matches string pool constant progress
 Marking attr:voiceIcon:2130903408 used because it matches string pool constant voice
-Marking drawable:voice_button_background:2131165311 used because it matches string pool constant voice
+Marking drawable:voice_button_background:2131165314 used because it matches string pool constant voice
 Marking id:bottom:2131230789 used because it matches string pool constant bottom
 Marking id:bottom:2131230789 used because it matches string pool constant bottom
 Marking id:bottomToTop:2131230790 used because it matches string pool constant bottom
@@ -2498,8 +2499,8 @@ Marking id:item_touch_helper_previous_elevation:2131230837 used because it match
 Marking attr:enabled:2130903183 used because it matches string pool constant enabled
 Marking attr:enabled:2130903183 used because it matches string pool constant enabled
 Marking attr:displayOptions:2130903159 used because it matches string pool constant display
-Marking color:notification_action_color_filter:2131034180 used because it matches string pool constant notification
-Marking color:notification_icon_bg_color:2131034181 used because it matches string pool constant notification
+Marking color:notification_action_color_filter:2131034183 used because it matches string pool constant notification
+Marking color:notification_icon_bg_color:2131034184 used because it matches string pool constant notification
 Marking dimen:notification_action_icon_size:2131099750 used because it matches string pool constant notification
 Marking dimen:notification_action_text_size:2131099751 used because it matches string pool constant notification
 Marking dimen:notification_big_circle_margin:2131099752 used because it matches string pool constant notification
@@ -2515,18 +2516,18 @@ Marking dimen:notification_small_icon_size_as_large:2131099761 used because it m
 Marking dimen:notification_subtext_size:2131099762 used because it matches string pool constant notification
 Marking dimen:notification_top_pad:2131099763 used because it matches string pool constant notification
 Marking dimen:notification_top_pad_large_text:2131099764 used because it matches string pool constant notification
-Marking drawable:notification_action_background:2131165295 used because it matches string pool constant notification
-Marking drawable:notification_bg:2131165296 used because it matches string pool constant notification
-Marking drawable:notification_bg_low:2131165297 used because it matches string pool constant notification
-Marking drawable:notification_bg_low_normal:2131165298 used because it matches string pool constant notification
-Marking drawable:notification_bg_low_pressed:2131165299 used because it matches string pool constant notification
-Marking drawable:notification_bg_normal:2131165300 used because it matches string pool constant notification
-Marking drawable:notification_bg_normal_pressed:2131165301 used because it matches string pool constant notification
-Marking drawable:notification_icon_background:2131165302 used because it matches string pool constant notification
-Marking drawable:notification_oversize_large_icon_bg:2131165303 used because it matches string pool constant notification
-Marking drawable:notification_template_icon_bg:2131165304 used because it matches string pool constant notification
-Marking drawable:notification_template_icon_low_bg:2131165305 used because it matches string pool constant notification
-Marking drawable:notification_tile_bg:2131165306 used because it matches string pool constant notification
+Marking drawable:notification_action_background:2131165298 used because it matches string pool constant notification
+Marking drawable:notification_bg:2131165299 used because it matches string pool constant notification
+Marking drawable:notification_bg_low:2131165300 used because it matches string pool constant notification
+Marking drawable:notification_bg_low_normal:2131165301 used because it matches string pool constant notification
+Marking drawable:notification_bg_low_pressed:2131165302 used because it matches string pool constant notification
+Marking drawable:notification_bg_normal:2131165303 used because it matches string pool constant notification
+Marking drawable:notification_bg_normal_pressed:2131165304 used because it matches string pool constant notification
+Marking drawable:notification_icon_background:2131165305 used because it matches string pool constant notification
+Marking drawable:notification_oversize_large_icon_bg:2131165306 used because it matches string pool constant notification
+Marking drawable:notification_template_icon_bg:2131165307 used because it matches string pool constant notification
+Marking drawable:notification_template_icon_low_bg:2131165308 used because it matches string pool constant notification
+Marking drawable:notification_tile_bg:2131165309 used because it matches string pool constant notification
 Marking id:notification_background:2131230851 used because it matches string pool constant notification
 Marking id:notification_main_column:2131230852 used because it matches string pool constant notification
 Marking id:notification_main_column_container:2131230853 used because it matches string pool constant notification
@@ -2540,8 +2541,8 @@ Marking id:locale:2131230843 used because it matches string pool constant locale
 Marking attr:tooltipForegroundColor:2130903398 used because it matches string pool constant tooltip
 Marking attr:tooltipFrameBackground:2130903399 used because it matches string pool constant tooltip
 Marking attr:tooltipText:2130903400 used because it matches string pool constant tooltip
-Marking color:tooltip_background_dark:2131034203 used because it matches string pool constant tooltip
-Marking color:tooltip_background_light:2131034204 used because it matches string pool constant tooltip
+Marking color:tooltip_background_dark:2131034206 used because it matches string pool constant tooltip
+Marking color:tooltip_background_light:2131034207 used because it matches string pool constant tooltip
 Marking dimen:tooltip_corner_radius:2131099772 used because it matches string pool constant tooltip
 Marking dimen:tooltip_horizontal_padding:2131099773 used because it matches string pool constant tooltip
 Marking dimen:tooltip_margin:2131099774 used because it matches string pool constant tooltip
@@ -2550,8 +2551,8 @@ Marking dimen:tooltip_precise_anchor_threshold:2131099776 used because it matche
 Marking dimen:tooltip_vertical_padding:2131099777 used because it matches string pool constant tooltip
 Marking dimen:tooltip_y_offset_non_touch:2131099778 used because it matches string pool constant tooltip
 Marking dimen:tooltip_y_offset_touch:2131099779 used because it matches string pool constant tooltip
-Marking drawable:tooltip_frame_dark:2131165309 used because it matches string pool constant tooltip
-Marking drawable:tooltip_frame_light:2131165310 used because it matches string pool constant tooltip
+Marking drawable:tooltip_frame_dark:2131165312 used because it matches string pool constant tooltip
+Marking drawable:tooltip_frame_light:2131165313 used because it matches string pool constant tooltip
 Marking attr:orderingFromXml:2130903271 used because it matches string pool constant ordering
 Marking attr:searchHintIcon:2130903308 used because it matches string pool constant search
 Marking attr:searchIcon:2130903309 used because it matches string pool constant search
@@ -3214,6 +3215,9 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @color/foreground_material_light : reachable=false
 @color/highlighted_text_material_dark : reachable=true
 @color/highlighted_text_material_light : reachable=true
+@color/indian_green : reachable=false
+@color/indian_saffron : reachable=false
+@color/indian_white : reachable=false
 @color/material_blue_grey_800 : reachable=false
 @color/material_blue_grey_900 : reachable=false
 @color/material_blue_grey_950 : reachable=false
@@ -3602,6 +3606,16 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @drawable/ic_voice_minimal : reachable=false
     @color/widget_voice_icon
 @drawable/ic_web_search : reachable=false
+@drawable/indian_flag_border_animation : reachable=false
+    @color/widget_search_background
+@drawable/indian_flag_gradient_animation : reachable=false
+    @color/widget_search_background
+@drawable/indian_pride_animation : reachable=true
+    @color/widget_search_background
+    @color/widget_border
+    @color/indian_saffron
+    @color/indian_white
+    @color/indian_green
 @drawable/launch_background : reachable=false
 @drawable/minimal_search_background : reachable=true
     @color/widget_search_background
@@ -4012,10 +4026,8 @@ Marking id:line3:2131230840 used because it matches string pool constant line
     @dimen/tooltip_vertical_padding
     @dimen/tooltip_margin
 @layout/ahamai_widget : reachable=true
-    @drawable/minimal_widget_background
-    @drawable/minimal_search_background
+    @drawable/indian_pride_animation
     @color/widget_text_color
-    @drawable/voice_button_background
     @drawable/ic_voice_minimal
 @layout/browser_actions_context_menu_page : reachable=false
     @color/browser_actions_bg_grey
@@ -5934,18 +5946,18 @@ The root reachable resources are:
  color:error_color_material_light:2131034163
  color:highlighted_text_material_dark:2131034166
  color:highlighted_text_material_light:2131034167
- color:notification_action_color_filter:2131034180
- color:notification_icon_bg_color:2131034181
- color:primary_dark_material_dark:2131034183
- color:primary_dark_material_light:2131034184
- color:primary_material_dark:2131034185
- color:primary_material_light:2131034186
- color:primary_text_default_material_dark:2131034187
- color:primary_text_default_material_light:2131034188
- color:primary_text_disabled_material_dark:2131034189
- color:primary_text_disabled_material_light:2131034190
- color:tooltip_background_dark:2131034203
- color:tooltip_background_light:2131034204
+ color:notification_action_color_filter:2131034183
+ color:notification_icon_bg_color:2131034184
+ color:primary_dark_material_dark:2131034186
+ color:primary_dark_material_light:2131034187
+ color:primary_material_dark:2131034188
+ color:primary_material_light:2131034189
+ color:primary_text_default_material_dark:2131034190
+ color:primary_text_default_material_light:2131034191
+ color:primary_text_disabled_material_dark:2131034192
+ color:primary_text_disabled_material_light:2131034193
+ color:tooltip_background_dark:2131034206
+ color:tooltip_background_light:2131034207
  dimen:abc_cascading_menus_min_smallest_width:2131099670
  dimen:abc_config_prefDialogWidth:2131099671
  dimen:abc_dropdownitem_icon_width:2131099689
@@ -6035,23 +6047,24 @@ The root reachable resources are:
  drawable:abc_textfield_search_default_mtrl_alpha:2131165267
  drawable:abc_textfield_search_material:2131165268
  drawable:abc_vector_test:2131165269
- drawable:minimal_search_background:2131165293
- drawable:minimal_widget_background:2131165294
- drawable:notification_action_background:2131165295
- drawable:notification_bg:2131165296
- drawable:notification_bg_low:2131165297
- drawable:notification_bg_low_normal:2131165298
- drawable:notification_bg_low_pressed:2131165299
- drawable:notification_bg_normal:2131165300
- drawable:notification_bg_normal_pressed:2131165301
- drawable:notification_icon_background:2131165302
- drawable:notification_oversize_large_icon_bg:2131165303
- drawable:notification_template_icon_bg:2131165304
- drawable:notification_template_icon_low_bg:2131165305
- drawable:notification_tile_bg:2131165306
- drawable:tooltip_frame_dark:2131165309
- drawable:tooltip_frame_light:2131165310
- drawable:voice_button_background:2131165311
+ drawable:indian_pride_animation:2131165294
+ drawable:minimal_search_background:2131165296
+ drawable:minimal_widget_background:2131165297
+ drawable:notification_action_background:2131165298
+ drawable:notification_bg:2131165299
+ drawable:notification_bg_low:2131165300
+ drawable:notification_bg_low_normal:2131165301
+ drawable:notification_bg_low_pressed:2131165302
+ drawable:notification_bg_normal:2131165303
+ drawable:notification_bg_normal_pressed:2131165304
+ drawable:notification_icon_background:2131165305
+ drawable:notification_oversize_large_icon_bg:2131165306
+ drawable:notification_template_icon_bg:2131165307
+ drawable:notification_template_icon_low_bg:2131165308
+ drawable:notification_tile_bg:2131165309
+ drawable:tooltip_frame_dark:2131165312
+ drawable:tooltip_frame_light:2131165313
+ drawable:voice_button_background:2131165314
  id:accessibility_action_clickable_span:2131230726
  id:accessibility_custom_action_0:2131230727
  id:accessibility_custom_action_1:2131230728
@@ -6308,23 +6321,23 @@ Unused resources are:
  color:dim_foreground_material_light:2131034161
  color:foreground_material_dark:2131034164
  color:foreground_material_light:2131034165
- color:material_blue_grey_800:2131034168
- color:material_blue_grey_900:2131034169
- color:material_blue_grey_950:2131034170
- color:material_grey_300:2131034174
- color:preference_fallback_accent_color:2131034182
- color:ripple_material_dark:2131034191
- color:ripple_material_light:2131034192
- color:secondary_text_default_material_dark:2131034193
- color:secondary_text_default_material_light:2131034194
- color:secondary_text_disabled_material_dark:2131034195
- color:secondary_text_disabled_material_light:2131034196
- color:switch_thumb_disabled_material_dark:2131034197
- color:switch_thumb_disabled_material_light:2131034198
- color:switch_thumb_material_dark:2131034199
- color:switch_thumb_material_light:2131034200
- color:switch_thumb_normal_material_dark:2131034201
- color:switch_thumb_normal_material_light:2131034202
+ color:material_blue_grey_800:2131034171
+ color:material_blue_grey_900:2131034172
+ color:material_blue_grey_950:2131034173
+ color:material_grey_300:2131034177
+ color:preference_fallback_accent_color:2131034185
+ color:ripple_material_dark:2131034194
+ color:ripple_material_light:2131034195
+ color:secondary_text_default_material_dark:2131034196
+ color:secondary_text_default_material_light:2131034197
+ color:secondary_text_disabled_material_dark:2131034198
+ color:secondary_text_disabled_material_light:2131034199
+ color:switch_thumb_disabled_material_dark:2131034200
+ color:switch_thumb_disabled_material_light:2131034201
+ color:switch_thumb_material_dark:2131034202
+ color:switch_thumb_material_light:2131034203
+ color:switch_thumb_normal_material_dark:2131034204
+ color:switch_thumb_normal_material_light:2131034205
  dimen:abc_action_bar_content_inset_material:2131099648
  dimen:abc_action_bar_content_inset_with_nav:2131099649
  dimen:abc_action_bar_default_height_material:2131099650
@@ -6430,11 +6443,13 @@ Unused resources are:
  drawable:ic_mic:2131165288
  drawable:ic_send:2131165289
  drawable:ic_web_search:2131165291
- drawable:preference_list_divider_material:2131165308
- drawable:widget_background:2131165312
- drawable:widget_button_background:2131165313
- drawable:widget_icon_background:2131165314
- drawable:widget_send_background:2131165315
+ drawable:indian_flag_border_animation:2131165292
+ drawable:indian_flag_gradient_animation:2131165293
+ drawable:preference_list_divider_material:2131165311
+ drawable:widget_background:2131165315
+ drawable:widget_button_background:2131165316
+ drawable:widget_icon_background:2131165317
+ drawable:widget_send_background:2131165318
  id:ALT:2131230720
  id:CTRL:2131230721
  id:FUNCTION:2131230722
