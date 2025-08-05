@@ -1,5 +1,8 @@
 R_DEF: Internal format may change without notice
 local
+color dynamic_island_bg
+color dynamic_island_border
+color dynamic_island_text
 color indian_green
 color indian_saffron
 color indian_white
@@ -10,12 +13,15 @@ color widget_text_color
 color widget_voice_icon
 color widget_voice_normal
 color widget_voice_pressed
+drawable dynamic_island_background
 drawable google_search_bar_background
 drawable google_widget_background
 drawable ic_attachment
+drawable ic_battery
 drawable ic_mic
 drawable ic_send
 drawable ic_voice_minimal
+drawable ic_weather
 drawable ic_web_search
 drawable indian_flag_border_animation
 drawable indian_flag_gradient_animation
@@ -31,6 +37,10 @@ drawable widget_background
 drawable widget_button_background
 drawable widget_icon_background
 drawable widget_send_background
+id dynamic_battery
+id dynamic_island
+id dynamic_time
+id dynamic_weather
 id widget_search_bar
 id widget_search_text
 id widget_voice

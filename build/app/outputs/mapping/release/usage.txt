@@ -10291,12 +10291,15 @@ com.aham.app.AhamAIWidget:
     public static final java.lang.String EXTRA_INPUT_TEXT
 com.aham.app.R$color
 com.aham.app.R$drawable:
+    public static int dynamic_island_background
     public static int google_search_bar_background
     public static int google_widget_background
     public static int ic_attachment
+    public static int ic_battery
     public static int ic_mic
     public static int ic_send
     public static int ic_voice_minimal
+    public static int ic_weather
     public static int ic_web_search
     public static int indian_flag_border_animation
     public static int indian_flag_gradient_animation
@@ -10310,6 +10313,10 @@ com.aham.app.R$drawable:
     public static int widget_send_background
     private void <init>()
 com.aham.app.R$id:
+    public static int dynamic_battery
+    public static int dynamic_island
+    public static int dynamic_time
+    public static int dynamic_weather
     public static int widget_search_text
     private void <init>()
 com.aham.app.R$layout:

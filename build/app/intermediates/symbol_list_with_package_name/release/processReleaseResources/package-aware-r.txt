@@ -464,6 +464,9 @@ color dim_foreground_disabled_material_dark
 color dim_foreground_disabled_material_light
 color dim_foreground_material_dark
 color dim_foreground_material_light
+color dynamic_island_bg
+color dynamic_island_border
+color dynamic_island_text
 color error_color_material_dark
 color error_color_material_light
 color foreground_material_dark
@@ -743,10 +746,12 @@ drawable btn_radio_off_mtrl
 drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
+drawable dynamic_island_background
 drawable google_search_bar_background
 drawable google_widget_background
 drawable ic_arrow_down_24dp
 drawable ic_attachment
+drawable ic_battery
 drawable ic_call_answer
 drawable ic_call_answer_low
 drawable ic_call_answer_video
@@ -756,6 +761,7 @@ drawable ic_call_decline_low
 drawable ic_mic
 drawable ic_send
 drawable ic_voice_minimal
+drawable ic_weather
 drawable ic_web_search
 drawable indian_flag_border_animation
 drawable indian_flag_gradient_animation
@@ -881,6 +887,10 @@ id decor_content_parent
 id default_activity_button
 id dialog_button
 id disableHome
+id dynamic_battery
+id dynamic_island
+id dynamic_time
+id dynamic_weather
 id edit_query
 id edit_text_id
 id end

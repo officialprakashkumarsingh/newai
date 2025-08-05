@@ -13,4 +13,9 @@
     <color name="indian_saffron">#FF9933</color>
     <color name="indian_white">#FFFFFF</color>
     <color name="indian_green">#138808</color>
+    
+    <!-- Dynamic Island Colors (Dark Theme) -->
+    <color name="dynamic_island_bg">#1C1C1E</color>
+    <color name="dynamic_island_border">#38383A</color>
+    <color name="dynamic_island_text">#FFFFFF</color>
 </resources>
