@@ -122,19 +122,19 @@ class ImageApi {
         final Map<String, dynamic> responseJson = jsonDecode(response.body);
         final List<dynamic> modelsData = responseJson['data'] ?? [];
         final models = modelsData.map((model) => model['id'] as String).toList();
-        return models.isNotEmpty ? models : ['dall-e-3']; // Default fallback
+        return models.isNotEmpty ? models : ['flux']; // Default fallback
       } else {
-        return ['dall-e-3']; // Fallback
+        return ['flux']; // Fallback
       }
     } catch (e) {
       print("Error fetching image models: $e");
-      return ['dall-e-3']; // Fallback
+      return ['flux']; // Fallback
     }
   }
 
   static Future<String> generateImage(String prompt, {String? model}) async {
     try {
-      final selectedModel = model ?? 'dall-e-3';
+      final selectedModel = model ?? 'flux';
       final response = await http.post(
         Uri.parse('$_baseUrl/v1/images/generations'),
         headers: {
@@ -150,10 +150,25 @@ class ImageApi {
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> responseJson = jsonDecode(response.body);
-        final List<dynamic> data = responseJson['data'] ?? [];
-        if (data.isNotEmpty) {
-          return data[0]['url'] as String;
+        // Check if response is image data (binary) or JSON
+        final contentType = response.headers['content-type'] ?? '';
+        
+        if (contentType.startsWith('image/')) {
+          // Response is direct image data, convert to base64 data URL
+          final base64Image = base64Encode(response.bodyBytes);
+          final mimeType = contentType.split(';')[0]; // Remove any additional parameters
+          return 'data:$mimeType;base64,$base64Image';
+        } else {
+          // Try to parse as JSON (standard OpenAI format)
+          try {
+            final Map<String, dynamic> responseJson = jsonDecode(response.body);
+            final List<dynamic> data = responseJson['data'] ?? [];
+            if (data.isNotEmpty) {
+              return data[0]['url'] as String;
+            }
+          } catch (jsonError) {
+            print("Failed to parse JSON response: $jsonError");
+          }
         }
       }
       throw Exception('Failed to generate image: ${response.statusCode}');
