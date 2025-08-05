@@ -52,6 +52,7 @@ callbackHandle
 flutter/platform_views
 addFontWeightStyle
 TextCapitalization.words
+com.aham.app.ACTION_SEND
 EXTRA_BENCHMARK_OPERATION
 _
 a
@@ -436,7 +437,6 @@ FIXED32_LIST
 DIAGNOSTIC_CURRENT_PROFILE_EXISTS
 .immediate
 TextInputAction.unspecified
-chat
 char
 TAG
 IMMERSIVE
@@ -477,6 +477,7 @@ INT32_LIST_PACKED
 consumerIndex
 point
 _removedRef
+attachment
 androidx.activity.result.contract.ext...
 alias
 dev.flutter.pigeon.shared_preferences...
@@ -584,7 +585,6 @@ DORMANT
 HYBRID_ONLY
 coordinator
 kHdmi
-com.aham.app.ACTION_CHAT
 TextInputType.name
 appWidgetManager
 navigation_bar_height
@@ -773,6 +773,7 @@ height
 PACKED_VECTOR
 CUT
 $method
+input_text
 android.intent.action.OPEN_DOCUMENT_TREE
 _decision
 $this$require
@@ -816,7 +817,6 @@ android.widget.EditText
 NO_DECISION
 JPEGInterchangeFormat
 postalCode
-presentation
 TextInput.setEditingState
 enableDomStorage
 androidx.profileinstaller.action.INST...
@@ -914,6 +914,7 @@ java.lang.Comparable
 ALARMS
 ACTION_SET_TEXT
 getVolumeList
+voice
 msg
 android.widget.Switch
 resizeUpRightDownLeft
@@ -1191,6 +1192,7 @@ onResume
 basicMetadata
 java.util.List
 hybrid
+com.aham.app.ACTION_VOICE
 getDirectory
 kotlin.Int
 ImageDescription
@@ -1554,7 +1556,6 @@ resizeUpDown
 search
 popRoute
 listEncoder
-com.aham.app.ACTION_PRESENTATION
 EDITIONS
 androidx.window.extensions.WindowExte...
 completion
@@ -1589,7 +1590,6 @@ DOWNLOADS
 image
 android.speech.extra.MAX_RESULTS
 TextInputChannel
-com.aham.app.ACTION_THINKING
 MOVIES
 preferences_
 Failed
@@ -1670,7 +1670,6 @@ classLoader
 telephoneNumber
 extras
 cancelBackGesture
-thinking
 java.util.ArrayList
 delegate
 suggest_intent_action
@@ -1735,6 +1734,7 @@ canonicalPath
 Exif
 SET_MEMOIZED_IS_INITIALIZED
 androidx.datastore.preferences.protob...
+com.aham.app.ACTION_ATTACHMENT
 TextInputType.visiblePassword
 nm
 p0
@@ -1819,7 +1819,6 @@ RTL
 ENUM_LIST_PACKED
 SystemUiMode.immersive
 HALF_OPENED
-com.aham.app.ACTION_IMAGE
 maxHeight
 ImageResizer
 vector
@@ -1913,6 +1912,7 @@ REMOVED_TASK
 getInstance
 ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY
 xx
+com.aham.app.ACTION_WEB_SEARCH
 android.intent.extra.PROCESS_TEXT
 INT64_LIST_PACKED
 GPSProcessingMethod
@@ -2256,6 +2256,7 @@ Marking attr:progressBarPadding:2130903298 used because it matches string pool c
 Marking attr:progressBarStyle:2130903299 used because it matches string pool constant progress
 Marking id:progress_circular:2131230861 used because it matches string pool constant progress
 Marking id:progress_horizontal:2131230862 used because it matches string pool constant progress
+Marking attr:voiceIcon:2130903408 used because it matches string pool constant voice
 Marking id:bottom:2131230789 used because it matches string pool constant bottom
 Marking id:bottom:2131230789 used because it matches string pool constant bottom
 Marking id:bottomToTop:2131230790 used because it matches string pool constant bottom
@@ -2357,18 +2358,18 @@ Marking dimen:notification_small_icon_size_as_large:2131099761 used because it m
 Marking dimen:notification_subtext_size:2131099762 used because it matches string pool constant notification
 Marking dimen:notification_top_pad:2131099763 used because it matches string pool constant notification
 Marking dimen:notification_top_pad_large_text:2131099764 used because it matches string pool constant notification
-Marking drawable:notification_action_background:2131165286 used because it matches string pool constant notification
-Marking drawable:notification_bg:2131165287 used because it matches string pool constant notification
-Marking drawable:notification_bg_low:2131165288 used because it matches string pool constant notification
-Marking drawable:notification_bg_low_normal:2131165289 used because it matches string pool constant notification
-Marking drawable:notification_bg_low_pressed:2131165290 used because it matches string pool constant notification
-Marking drawable:notification_bg_normal:2131165291 used because it matches string pool constant notification
-Marking drawable:notification_bg_normal_pressed:2131165292 used because it matches string pool constant notification
-Marking drawable:notification_icon_background:2131165293 used because it matches string pool constant notification
-Marking drawable:notification_oversize_large_icon_bg:2131165294 used because it matches string pool constant notification
-Marking drawable:notification_template_icon_bg:2131165295 used because it matches string pool constant notification
-Marking drawable:notification_template_icon_low_bg:2131165296 used because it matches string pool constant notification
-Marking drawable:notification_tile_bg:2131165297 used because it matches string pool constant notification
+Marking drawable:notification_action_background:2131165292 used because it matches string pool constant notification
+Marking drawable:notification_bg:2131165293 used because it matches string pool constant notification
+Marking drawable:notification_bg_low:2131165294 used because it matches string pool constant notification
+Marking drawable:notification_bg_low_normal:2131165295 used because it matches string pool constant notification
+Marking drawable:notification_bg_low_pressed:2131165296 used because it matches string pool constant notification
+Marking drawable:notification_bg_normal:2131165297 used because it matches string pool constant notification
+Marking drawable:notification_bg_normal_pressed:2131165298 used because it matches string pool constant notification
+Marking drawable:notification_icon_background:2131165299 used because it matches string pool constant notification
+Marking drawable:notification_oversize_large_icon_bg:2131165300 used because it matches string pool constant notification
+Marking drawable:notification_template_icon_bg:2131165301 used because it matches string pool constant notification
+Marking drawable:notification_template_icon_low_bg:2131165302 used because it matches string pool constant notification
+Marking drawable:notification_tile_bg:2131165303 used because it matches string pool constant notification
 Marking id:notification_background:2131230851 used because it matches string pool constant notification
 Marking id:notification_main_column:2131230852 used because it matches string pool constant notification
 Marking id:notification_main_column_container:2131230853 used because it matches string pool constant notification
@@ -2392,8 +2393,8 @@ Marking dimen:tooltip_precise_anchor_threshold:2131099776 used because it matche
 Marking dimen:tooltip_vertical_padding:2131099777 used because it matches string pool constant tooltip
 Marking dimen:tooltip_y_offset_non_touch:2131099778 used because it matches string pool constant tooltip
 Marking dimen:tooltip_y_offset_touch:2131099779 used because it matches string pool constant tooltip
-Marking drawable:tooltip_frame_dark:2131165300 used because it matches string pool constant tooltip
-Marking drawable:tooltip_frame_light:2131165301 used because it matches string pool constant tooltip
+Marking drawable:tooltip_frame_dark:2131165306 used because it matches string pool constant tooltip
+Marking drawable:tooltip_frame_light:2131165307 used because it matches string pool constant tooltip
 Marking attr:orderingFromXml:2130903271 used because it matches string pool constant ordering
 Marking attr:searchHintIcon:2130903308 used because it matches string pool constant search
 Marking attr:searchIcon:2130903309 used because it matches string pool constant search
@@ -2408,7 +2409,7 @@ Marking id:search_mag_icon:2131230882 used because it matches string pool consta
 Marking id:search_plate:2131230883 used because it matches string pool constant search
 Marking id:search_src_text:2131230884 used because it matches string pool constant search
 Marking id:search_voice_btn:2131230885 used because it matches string pool constant search
-Marking string:search_menu_title:2131558444 used because it matches string pool constant search
+Marking string:search_menu_title:2131558445 used because it matches string pool constant search
 Marking attr:font:2130903196 used because it matches string pool constant font
 Marking attr:font:2130903196 used because it matches string pool constant font
 Marking attr:fontFamily:2130903197 used because it matches string pool constant font
@@ -2936,7 +2937,7 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @attr/updatesContinuously : reachable=true
 @attr/useSimpleSummaryProvider : reachable=false
 @attr/viewInflaterClass : reachable=true
-@attr/voiceIcon : reachable=false
+@attr/voiceIcon : reachable=true
 @attr/widgetLayout : reachable=false
 @attr/windowActionBar : reachable=true
 @attr/windowActionBarOverlay : reachable=true
@@ -3416,13 +3417,19 @@ Marking id:line3:2131230840 used because it matches string pool constant line
     @anim/btn_radio_to_off_mtrl_ring_outer_animation
     @anim/btn_radio_to_off_mtrl_ring_outer_path_animation
     @anim/btn_radio_to_off_mtrl_dot_group_animation
+@drawable/google_search_bar_background : reachable=false
+@drawable/google_widget_background : reachable=false
 @drawable/ic_arrow_down_24dp : reachable=false
+@drawable/ic_attachment : reachable=false
 @drawable/ic_call_answer : reachable=false
 @drawable/ic_call_answer_low : reachable=false
 @drawable/ic_call_answer_video : reachable=false
 @drawable/ic_call_answer_video_low : reachable=false
 @drawable/ic_call_decline : reachable=false
 @drawable/ic_call_decline_low : reachable=false
+@drawable/ic_mic : reachable=false
+@drawable/ic_send : reachable=false
+@drawable/ic_web_search : reachable=false
 @drawable/launch_background : reachable=false
 @drawable/notification_action_background : reachable=true
     @color/androidx_core_ripple_material_light
@@ -3458,6 +3465,8 @@ Marking id:line3:2131230840 used because it matches string pool constant line
     @dimen/tooltip_corner_radius
 @drawable/widget_background : reachable=false
 @drawable/widget_button_background : reachable=false
+@drawable/widget_icon_background : reachable=false
+@drawable/widget_send_background : reachable=false
 @id/ALT : reachable=false
 @id/CTRL : reachable=false
 @id/FUNCTION : reachable=false
@@ -3681,10 +3690,11 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @id/view_tree_saved_state_registry_owner : reachable=true
 @id/view_tree_view_model_store_owner : reachable=true
 @id/visible_removing_fragment_view_tag : reachable=false
-@id/widget_chat : reachable=true
-@id/widget_image : reachable=true
-@id/widget_presentation : reachable=true
-@id/widget_thinking : reachable=true
+@id/widget_attachment : reachable=true
+@id/widget_input : reachable=false
+@id/widget_send : reachable=true
+@id/widget_voice : reachable=true
+@id/widget_web_search : reachable=true
 @id/withText : reachable=false
 @id/wrap_content : reachable=false
 @integer/abc_config_activityDefaultDur : reachable=false
@@ -3824,8 +3834,14 @@ Marking id:line3:2131230840 used because it matches string pool constant line
     @dimen/tooltip_vertical_padding
     @dimen/tooltip_margin
 @layout/ahamai_widget : reachable=true
-    @drawable/widget_background
-    @drawable/widget_button_background
+    @drawable/google_widget_background
+    @drawable/google_search_bar_background
+    @drawable/widget_icon_background
+    @drawable/ic_web_search
+    @drawable/ic_attachment
+    @drawable/ic_mic
+    @drawable/widget_send_background
+    @drawable/ic_send
 @layout/browser_actions_context_menu_page : reachable=false
     @color/browser_actions_bg_grey
     @color/browser_actions_title_color
@@ -3959,6 +3975,7 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @string/fallback_menu_item_copy_link : reachable=false
 @string/fallback_menu_item_open_in_browser : reachable=false
 @string/fallback_menu_item_share_link : reachable=false
+@string/google_widget_description : reachable=false
 @string/not_set : reachable=true
 @string/preference_copied : reachable=false
 @string/search_menu_title : reachable=true
@@ -5553,7 +5570,7 @@ Marking id:line3:2131230840 used because it matches string pool constant line
 @style/Widget_Support_CoordinatorLayout : reachable=false
     @attr/statusBarBackground
 @xml/ahamai_widget_info : reachable=true
-    @string/widget_description
+    @string/google_widget_description
     @layout/ahamai_widget
 @xml/flutter_image_picker_file_paths : reachable=true
 @xml/image_share_filepaths : reachable=true
@@ -5711,6 +5728,7 @@ The root reachable resources are:
  attr:tooltipText:2130903400
  attr:updatesContinuously:2130903405
  attr:viewInflaterClass:2130903407
+ attr:voiceIcon:2130903408
  attr:windowActionBar:2130903410
  attr:windowActionBarOverlay:2130903411
  attr:windowActionModeOverlay:2130903412
@@ -5837,20 +5855,20 @@ The root reachable resources are:
  drawable:abc_textfield_search_default_mtrl_alpha:2131165267
  drawable:abc_textfield_search_material:2131165268
  drawable:abc_vector_test:2131165269
- drawable:notification_action_background:2131165286
- drawable:notification_bg:2131165287
- drawable:notification_bg_low:2131165288
- drawable:notification_bg_low_normal:2131165289
- drawable:notification_bg_low_pressed:2131165290
- drawable:notification_bg_normal:2131165291
- drawable:notification_bg_normal_pressed:2131165292
- drawable:notification_icon_background:2131165293
- drawable:notification_oversize_large_icon_bg:2131165294
- drawable:notification_template_icon_bg:2131165295
- drawable:notification_template_icon_low_bg:2131165296
- drawable:notification_tile_bg:2131165297
- drawable:tooltip_frame_dark:2131165300
- drawable:tooltip_frame_light:2131165301
+ drawable:notification_action_background:2131165292
+ drawable:notification_bg:2131165293
+ drawable:notification_bg_low:2131165294
+ drawable:notification_bg_low_normal:2131165295
+ drawable:notification_bg_low_pressed:2131165296
+ drawable:notification_bg_normal:2131165297
+ drawable:notification_bg_normal_pressed:2131165298
+ drawable:notification_icon_background:2131165299
+ drawable:notification_oversize_large_icon_bg:2131165300
+ drawable:notification_template_icon_bg:2131165301
+ drawable:notification_template_icon_low_bg:2131165302
+ drawable:notification_tile_bg:2131165303
+ drawable:tooltip_frame_dark:2131165306
+ drawable:tooltip_frame_light:2131165307
  id:accessibility_action_clickable_span:2131230726
  id:accessibility_custom_action_0:2131230727
  id:accessibility_custom_action_1:2131230728
@@ -5990,10 +6008,10 @@ The root reachable resources are:
  id:view_tree_on_back_pressed_dispatcher_owner:2131230939
  id:view_tree_saved_state_registry_owner:2131230940
  id:view_tree_view_model_store_owner:2131230941
- id:widget_chat:2131230943
- id:widget_image:2131230944
- id:widget_presentation:2131230945
- id:widget_thinking:2131230946
+ id:widget_attachment:2131230943
+ id:widget_send:2131230945
+ id:widget_voice:2131230946
+ id:widget_web_search:2131230947
  integer:cancel_button_image_alpha:2131296258
  integer:preferences_detail_pane_weight:2131296260
  integer:preferences_header_pane_weight:2131296261
@@ -6043,8 +6061,8 @@ The root reachable resources are:
  string:call_notification_screening_text:2131558435
  string:copy:2131558436
  string:copy_toast_msg:2131558437
- string:not_set:2131558442
- string:search_menu_title:2131558444
+ string:not_set:2131558443
+ string:search_menu_title:2131558445
  style:Animation_AppCompat_Tooltip:2131623940
  style:LaunchTheme:2131624098
  style:NormalTheme:2131624099
@@ -6223,14 +6241,16 @@ Unused resources are:
  drawable:abc_list_selector_disabled_holo_light:2131165235
  drawable:abc_list_selector_holo_dark:2131165236
  drawable:abc_list_selector_holo_light:2131165237
- drawable:ic_arrow_down_24dp:2131165278
- drawable:ic_call_answer:2131165279
- drawable:ic_call_answer_low:2131165280
- drawable:ic_call_answer_video:2131165281
- drawable:ic_call_answer_video_low:2131165282
- drawable:ic_call_decline:2131165283
- drawable:ic_call_decline_low:2131165284
- drawable:preference_list_divider_material:2131165299
+ drawable:ic_arrow_down_24dp:2131165280
+ drawable:ic_call_answer:2131165282
+ drawable:ic_call_answer_low:2131165283
+ drawable:ic_call_answer_video:2131165284
+ drawable:ic_call_answer_video_low:2131165285
+ drawable:ic_call_decline:2131165286
+ drawable:ic_call_decline_low:2131165287
+ drawable:preference_list_divider_material:2131165305
+ drawable:widget_background:2131165308
+ drawable:widget_button_background:2131165309
  id:ALT:2131230720
  id:CTRL:2131230721
  id:FUNCTION:2131230722
@@ -6315,8 +6335,9 @@ Unused resources are:
  id:uniform:2131230935
  id:useLogo:2131230937
  id:visible_removing_fragment_view_tag:2131230942
- id:withText:2131230947
- id:wrap_content:2131230948
+ id:widget_input:2131230944
+ id:withText:2131230948
+ id:wrap_content:2131230949
  integer:abc_config_activityDefaultDur:2131296256
  integer:abc_config_activityShortDur:2131296257
  integer:status_bar_notification_info_maxnum:2131296262
@@ -6375,11 +6396,12 @@ Unused resources are:
  string:fallback_menu_item_copy_link:2131558439
  string:fallback_menu_item_open_in_browser:2131558440
  string:fallback_menu_item_share_link:2131558441
- string:preference_copied:2131558443
- string:status_bar_notification_info_overflow:2131558445
- string:summary_collapsed_preference_list:2131558446
- string:v7_preference_off:2131558447
- string:v7_preference_on:2131558448
+ string:preference_copied:2131558444
+ string:status_bar_notification_info_overflow:2131558446
+ string:summary_collapsed_preference_list:2131558447
+ string:v7_preference_off:2131558448
+ string:v7_preference_on:2131558449
+ string:widget_description:2131558450
  style:AlertDialog_AppCompat:2131623936
  style:AlertDialog_AppCompat_Light:2131623937
  style:Animation_AppCompat_Dialog:2131623938

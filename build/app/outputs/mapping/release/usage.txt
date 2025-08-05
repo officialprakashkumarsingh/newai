@@ -10284,12 +10284,14 @@ androidx.window.reflection.ReflectionUtils:
     public static synthetic boolean validateReflection$window_release$default(java.lang.String,kotlin.jvm.functions.Function0,int,java.lang.Object)
 androidx.window.reflection.WindowExtensionsConstants
 com.aham.app.AhamAIWidget:
-    public static final java.lang.String ACTION_CHAT
-    public static final java.lang.String ACTION_IMAGE
-    public static final java.lang.String ACTION_PRESENTATION
-    public static final java.lang.String ACTION_THINKING
+    public static final java.lang.String ACTION_ATTACHMENT
+    public static final java.lang.String ACTION_SEND
+    public static final java.lang.String ACTION_VOICE
+    public static final java.lang.String ACTION_WEB_SEARCH
+    public static final java.lang.String EXTRA_INPUT_TEXT
 com.aham.app.R$drawable
 com.aham.app.R$id:
+    public static int widget_input
     private void <init>()
 com.aham.app.R$layout:
     private void <init>()

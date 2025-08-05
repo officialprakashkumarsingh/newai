@@ -1,15 +1,25 @@
 R_DEF: Internal format may change without notice
 local
+drawable google_search_bar_background
+drawable google_widget_background
+drawable ic_attachment
+drawable ic_mic
+drawable ic_send
+drawable ic_web_search
 drawable launch_background
 drawable widget_background
 drawable widget_button_background
-id widget_chat
-id widget_image
-id widget_presentation
-id widget_thinking
+drawable widget_icon_background
+drawable widget_send_background
+id widget_attachment
+id widget_input
+id widget_send
+id widget_voice
+id widget_web_search
 layout ahamai_widget
 mipmap ic_launcher
 string app_name
+string google_widget_description
 string widget_description
 style LaunchTheme
 style NormalTheme

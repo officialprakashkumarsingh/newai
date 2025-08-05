@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AhamAI</string>
+    <string name="google_widget_description">Google-style AhamAI search bar with voice, attachment, web search, and instant chat access</string>
     <string name="widget_description">Quick access to AhamAI features - Chat, Image Generation, Presentations, and Thinking mode</string>
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         

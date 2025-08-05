@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
+    android:background="@drawable/google_widget_background"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -19,75 +19,92 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="🤖 AhamAI"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:gravity="center" />
+            android:textColor="#202124"
+            android:gravity="start" />
             
     </LinearLayout>
 
-    <!-- Quick Actions Grid -->
+    <!-- Google-style Search Bar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:background="@drawable/google_search_bar_background"
         android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp">
         
-        <Button
-            android:id="@+id/widget_chat"
+        <!-- Input Area -->
+        <EditText
+            android:id="@+id/widget_input"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="💬 Chat"
-            android:textSize="12sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/widget_button_background"
-            android:textAllCaps="false" />
+            android:background="@android:color/transparent"
+            android:hint="Ask AhamAI anything..."
+            android:textColorHint="#5F6368"
+            android:textColor="#202124"
+            android:textSize="16sp"
+            android:padding="0dp"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:imeOptions="actionSend"
+            android:maxLines="1" />
             
-        <Button
-            android:id="@+id/widget_image"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:text="🖼️ Image"
-            android:textSize="12sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/widget_button_background"
-            android:textAllCaps="false" />
+        <!-- Action Icons -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
             
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <!-- Web Search Icon -->
+            <ImageButton
+                android:id="@+id/widget_web_search"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/widget_icon_background"
+                android:src="@drawable/ic_web_search"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="Web Search" />
+                
+            <!-- File Attachment Icon -->
+            <ImageButton
+                android:id="@+id/widget_attachment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/widget_icon_background"
+                android:src="@drawable/ic_attachment"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="Attach File" />
+                
+            <!-- Voice Input Icon -->
+            <ImageButton
+                android:id="@+id/widget_voice"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/widget_icon_background"
+                android:src="@drawable/ic_mic"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="4dp"
+                android:contentDescription="Voice Input" />
+                
+            <!-- Send Button -->
+            <ImageButton
+                android:id="@+id/widget_send"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/widget_send_background"
+                android:src="@drawable/ic_send"
+                android:scaleType="centerInside"
+                android:contentDescription="Send" />
+                
+        </LinearLayout>
         
-        <Button
-            android:id="@+id/widget_presentation"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="📊 Present"
-            android:textSize="12sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/widget_button_background"
-            android:textAllCaps="false" />
-            
-        <Button
-            android:id="@+id/widget_thinking"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:text="🧠 Think"
-            android:textSize="12sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/widget_button_background"
-            android:textAllCaps="false" />
-            
     </LinearLayout>
 
 </LinearLayout>

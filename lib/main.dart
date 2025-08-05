@@ -97,60 +97,28 @@ class _AhamAppState extends State<AhamApp> {
     // Handle widget action after build completes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       switch (action) {
-        case 'chat':
+        case 'send':
           _navigateToChat();
           break;
-        case 'image':
-          _navigateToImageGeneration();
+        case 'web_search':
+          _navigateToChat(initialMessage: "Search the web for ");
           break;
-        case 'presentation':
-          _navigateToPresentation();
+        case 'attachment':
+          _navigateToChat(initialMessage: "Help me with this file: ");
           break;
-        case 'thinking':
-          _navigateToThinkingMode();
+        case 'voice':
+          _navigateToChat(initialMessage: "Voice input: ");
           break;
       }
     });
   }
 
-  void _navigateToChat() {
+  void _navigateToChat({String? initialMessage}) {
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
         builder: (context) => ChatScreen(
           chatInfoStream: StreamController<ChatInfo>.broadcast(),
-        ),
-      ),
-    );
-  }
-
-  void _navigateToImageGeneration() {
-    _navigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          chatInfoStream: StreamController<ChatInfo>.broadcast(),
-          initialMessage: "Generate an image of ",
-        ),
-      ),
-    );
-  }
-
-  void _navigateToPresentation() {
-    _navigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          chatInfoStream: StreamController<ChatInfo>.broadcast(),
-          initialMessage: "Create a presentation about ",
-        ),
-      ),
-    );
-  }
-
-  void _navigateToThinkingMode() {
-    _navigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          chatInfoStream: StreamController<ChatInfo>.broadcast(),
-          initialMessage: "Think deeply about ",
+          initialMessage: initialMessage,
         ),
       ),
     );
