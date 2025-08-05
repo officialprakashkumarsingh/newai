@@ -92,45 +92,45 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF000000), // AMOLED black
-    primaryColor: const Color(0xFFFFFAEC),
-    cardColor: const Color(0xFF31363F),
+    scaffoldBackgroundColor: const Color(0xFF202124), // Main Background - Very dark gray
+    primaryColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
+    cardColor: const Color(0xFF2C2C2E), // Card Background - Dark gray with bluish tint
     appBarTheme: AppBarTheme(
-      color: const Color(0xFF000000), // AMOLED black to match scaffold
+      color: const Color(0xFF202124), // Main Background to match scaffold
       elevation: 0,
-      foregroundColor: const Color(0xFFFFFAEC),
-      surfaceTintColor: const Color(0xFF000000), // AMOLED black to match scaffold
-      iconTheme: const IconThemeData(color: Color(0xFFFFFAEC)),
-      titleTextStyle: GoogleFonts.inter(color: const Color(0xFFFFFAEC), fontSize: 18, fontWeight: FontWeight.w600),
+      foregroundColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
+      surfaceTintColor: const Color(0xFF202124), // Main Background to match scaffold
+      iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)), // Primary Text - Pure white
+      titleTextStyle: GoogleFonts.inter(color: const Color(0xFFFFFFFF), fontSize: 18, fontWeight: FontWeight.w600), // Primary Text
     ),
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
-      bodyColor: const Color(0xFFFFFAEC),
-      displayColor: const Color(0xFFFFFAEC),
+      bodyColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
+      displayColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
     ),
-    iconTheme: const IconThemeData(color: Color(0xFFFFFAEC)),
-    dividerColor: const Color(0xFF31363F),
+    iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)), // Primary Text - Pure white
+    dividerColor: const Color(0xFF333438), // Secondary Background - Dark gray with bluish tint
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF31363F),
-        foregroundColor: const Color(0xFFFFFAEC),
+        backgroundColor: const Color(0xFF2C2C2E), // Card Background
+        foregroundColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: const Color(0xFFFFFAEC)),
+      style: TextButton.styleFrom(foregroundColor: const Color(0xFFFFFFFF)), // Primary Text - Pure white
     ),
-    dialogBackgroundColor: const Color(0xFF31363F),
+    dialogBackgroundColor: const Color(0xFF2C2C2E), // Card Background
     switchTheme: SwitchThemeData(
       thumbColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
           return draculaGreen;
         }
-        return const Color(0xFFFFFAEC);
+        return const Color(0xFFB0B0B0); // Secondary Text - Light gray
       }),
       trackColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
           return draculaGreen.withOpacity(0.5);
         }
-        return const Color(0xFF31363F);
+        return const Color(0xFF333438); // Secondary Background
       }),
     ),
   );

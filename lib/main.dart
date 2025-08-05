@@ -39,7 +39,7 @@ class AhamApp extends StatelessWidget {
         final systemIconBrightness = isLightMode ? Brightness.dark : Brightness.light;
         final navBarColor = isLightMode
             ? const Color(0xFFFFFFFF) // Pure white for light mode
-            : const Color(0xFF000000); // AMOLED black for dark mode
+            : const Color(0xFF202124); // Main Background - Very dark gray for dark mode
 
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,

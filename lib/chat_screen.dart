@@ -556,9 +556,9 @@ Based on the context above, answer the following prompt: $input""";
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               decoration: BoxDecoration(
-                  color: isLightTheme(context)
-                      ? const Color(0xFF0F0F10) // Near black bubble for light mode - high contrast
-                      : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
+                                  color: isLightTheme(context)
+                    ? const Color(0xFF0F0F10) // Near black bubble for light mode - high contrast
+                    : const Color(0xFF2C2C2E), // Dark mode: Card Background
                   borderRadius: BorderRadius.circular(16)
                 ),
               child: Column(
@@ -667,12 +667,12 @@ Based on the context above, answer the following prompt: $input""";
             decoration: BoxDecoration(
               color: isLightTheme(context) 
                   ? const Color(0xFFFAFAFA) // Light mode: very subtle gray
-                  : const Color(0xFF2A2A2A), // Dark mode: cleaner dark background
+                  : const Color(0xFF2C2C2E), // Dark mode: Card Background
               borderRadius: BorderRadius.circular(28), // Fully rounded corners
               border: Border.all(
-                color: isLightTheme(context) 
-                    ? const Color(0xFFE1E5E9) // Light border for light mode
-                    : const Color(0xFF404040), // Dark border for dark mode
+                                  color: isLightTheme(context) 
+                      ? const Color(0xFFE1E5E9) // Light border for light mode
+                      : const Color(0xFF333438), // Secondary Background for dark mode
                 width: 1,
               ),
               boxShadow: [
@@ -701,7 +701,7 @@ Based on the context above, answer the following prompt: $input""";
                     decoration: InputDecoration(
                       hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
                       hintStyle: TextStyle(
-                        color: isLightTheme(context) ? const Color(0xFF9CA3AF) : Colors.white.withOpacity(0.6),
+                        color: isLightTheme(context) ? const Color(0xFF9CA3AF) : const Color(0xFFB0B0B0), // Secondary Text - Light gray
                         fontSize: 16,
                       ),
                       filled: true, 
