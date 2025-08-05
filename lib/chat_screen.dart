@@ -235,13 +235,8 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Enhanced state tracking
-    _currentStreamingMessage = input;
-    _currentStreamingChatId = widget.chatInfoStream.hashCode.toString();
-    _streamStartTime = DateTime.now();
-    _retryAttempts = 0;
-    
-    print('💾 Starting stream tracking: message=$input, chatId=$_currentStreamingChatId');
+    // Store message for processing
+    print('💾 Processing message: $input');
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -344,13 +339,8 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
     _scrollToBottom();
 
-    // Clear enhanced tracking
-    print('✅ Stream completed, clearing tracking state');
-    _currentStreamingMessage = null;
-    _currentStreamingChatId = null;
-    _streamStartTime = null;
-    _retryAttempts = 0;
-    // Stream cleanup handled automatically
+    // Stream completed
+    print('✅ Stream completed successfully');
   }
 
   void _onStreamingError(dynamic error) {
