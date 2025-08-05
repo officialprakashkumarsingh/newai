@@ -9,7 +9,11 @@ import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.io.IOException
 import org.json.JSONObject
+import org.json.JSONArray
 import android.util.Log
 
 class BackgroundProcessingService : Service() {
@@ -45,34 +49,82 @@ class BackgroundProcessingService : Service() {
                 val message = intent.getStringExtra(EXTRA_MESSAGE) ?: return START_NOT_STICKY
                 val model = intent.getStringExtra(EXTRA_MODEL) ?: "gpt-4"
                 val processType = intent.getStringExtra(EXTRA_PROCESS_TYPE) ?: "chat"
+                val retryAttempts = intent.getIntExtra("retryAttempts", 0)
+                val priority = intent.getStringExtra("priority") ?: "normal"
+                val timeout = intent.getLongExtra("timeout", 180000) // 3 minutes default
                 
-                startForegroundProcessing(chatId, message, model, processType)
+                Log.d(TAG, "🚀 Enhanced background processing (priority: $priority, timeout: ${timeout}ms, retry: $retryAttempts): $message")
+                startForegroundProcessing(chatId, message, model, processType, retryAttempts, priority, timeout)
             }
             ACTION_STOP_PROCESSING -> {
+                Log.d(TAG, "⏹️ Stopping background processing")
                 stopProcessing()
             }
         }
         return START_STICKY
     }
     
-    private fun startForegroundProcessing(chatId: String, message: String, model: String, processType: String) {
-        val notification = createOngoingNotification(processType)
+    private fun startForegroundProcessing(
+        chatId: String, 
+        message: String, 
+        model: String, 
+        processType: String,
+        retryAttempts: Int = 0,
+        priority: String = "normal",
+        timeout: Long = 180000
+    ) {
+        val notification = createOngoingNotification(processType, priority)
         startForeground(NOTIFICATION_ID, notification)
         
-        Log.d(TAG, "Starting background processing for: $message")
+        Log.d(TAG, "🔄 Starting enhanced processing (attempt ${retryAttempts + 1}) for: $message")
         
         processingJob = serviceScope.launch {
             try {
-                val result = processRequest(message, model)
+                // Apply timeout
+                val result = withTimeout(timeout) {
+                    processRequest(message, model, retryAttempts)
+                }
+                
                 onProcessingComplete(chatId, processType, result)
+            } catch (e: TimeoutCancellationException) {
+                Log.e(TAG, "⏰ Processing timeout after ${timeout}ms", e)
+                onProcessingError(chatId, processType, "Request timed out after ${timeout / 1000}s")
             } catch (e: Exception) {
-                Log.e(TAG, "Processing error: ${e.message}")
-                onProcessingError(chatId, processType, e.message ?: "Unknown error")
+                Log.e(TAG, "❌ Processing failed (attempt ${retryAttempts + 1}): ${e.message}")
+                
+                // Implement retry logic for certain errors
+                if (retryAttempts < 2 && isRetriableError(e)) {
+                    Log.d(TAG, "🔄 Retrying request (attempt ${retryAttempts + 2}/3)...")
+                    delay(2000L * (retryAttempts + 1)) // Exponential backoff
+                    startForegroundProcessing(chatId, message, model, processType, retryAttempts + 1, priority, timeout)
+                } else {
+                    onProcessingError(chatId, processType, e.message ?: "Unknown error")
+                }
             }
         }
     }
     
-    private suspend fun processRequest(message: String, model: String): String {
+    /// Check if error is retriable
+    private fun isRetriableError(error: Exception): Boolean {
+        return when (error) {
+            is SocketTimeoutException,
+            is UnknownHostException,
+            is IOException -> true
+            else -> {
+                // Check for HTTP error codes that are retriable
+                val message = error.message?.lowercase() ?: ""
+                message.contains("timeout") || 
+                message.contains("connection") || 
+                message.contains("network") ||
+                message.contains("500") ||
+                message.contains("502") ||
+                message.contains("503") ||
+                message.contains("504")
+            }
+        }
+    }
+    
+    private suspend fun processRequest(message: String, model: String, retryAttempts: Int = 0): String {
         return withContext(Dispatchers.IO) {
             Log.d(TAG, "Making API request for: $message")
             
@@ -235,13 +287,15 @@ class BackgroundProcessingService : Service() {
         }
     }
     
-    private fun createOngoingNotification(processType: String): Notification {
+    private fun createOngoingNotification(processType: String, priority: String = "normal"): Notification {
         val contentText = when (processType) {
             "chat" -> "Generating AI response..."
             "image" -> "Creating image..."
             "presentation" -> "Building presentation..."
             else -> "Processing your request..."
         }
+        
+        val priorityText = if (priority == "high") " (Priority)" else ""
         
         val intent = packageManager.getLaunchIntentForPackage(packageName)
         val pendingIntent = PendingIntent.getActivity(
@@ -250,11 +304,12 @@ class BackgroundProcessingService : Service() {
         )
         
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("AhamAI Processing")
-            .setContentText(contentText)
+            .setContentTitle("🔄 AhamAI Processing$priorityText")
+            .setContentText("$contentText\n⏳ Continue using other apps!")
             .setSmallIcon(android.R.drawable.ic_popup_sync)
             .setOngoing(true)
             .setContentIntent(pendingIntent)
+            .setPriority(if (priority == "high") NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_LOW)
             .build()
     }
     

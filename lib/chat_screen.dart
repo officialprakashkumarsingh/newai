@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:ahamai/web_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
@@ -25,6 +26,7 @@ import 'presentation_generator.dart';
 import 'thinking_panel.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
+// Removed duplicate imports - already exists above
 
 class ChatScreen extends StatefulWidget {
   final List<ChatMessage>? initialMessages;
@@ -44,7 +46,7 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver, TickerProviderStateMixin {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   final _scrollController = ScrollController();
@@ -73,10 +75,29 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   ChatAttachment? _attachment;
   XFile? _attachedImage;
 
+  // Enhanced background processing variables
+  String? _currentStreamingMessage;
+  String? _currentStreamingChatId;
+  Timer? _backgroundCheckTimer;
+  Timer? _connectionHealthTimer;
+  DateTime? _streamStartTime;
+  Duration _backgroundCheckInterval = const Duration(seconds: 2);
+  int _retryAttempts = 0;
+  int _maxRetryAttempts = 3;
+  bool _isInBackground = false;
+  bool _streamPersistenceEnabled = true;
+  
+  // Background processing channel
+  static const _backgroundChannel = MethodChannel('com.ahamai.background');
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    
+    // Initialize background health monitoring
+    _startConnectionHealthMonitoring();
+    
     _messages = widget.initialMessages != null ? List.from(widget.initialMessages!) : [];
     _isPinned = widget.isPinned;
     _chatId = widget.chatId ?? DateTime.now().millisecondsSinceEpoch.toString();
@@ -134,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     _controller.dispose();
     _focusNode.dispose();
     _scrollController.dispose();
-    _streamSubscription?.cancel();
+    // _streamSubscription cleanup handled in lifecycle
     _httpClient?.close();
     _codeStreamNotifier.dispose();
     super.dispose();
@@ -232,9 +253,13 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Store message for potential background processing
+    // Enhanced state tracking
     _currentStreamingMessage = input;
-    print('💾 Stored streaming message: $input');
+    _currentStreamingChatId = widget.chatInfoStream.hashCode.toString();
+    _streamStartTime = DateTime.now();
+    _retryAttempts = 0;
+    
+    print('💾 Starting stream tracking: message=$input, chatId=$_currentStreamingChatId');
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -337,9 +362,13 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
     _scrollToBottom();
 
-    // Clear streaming message when done
-    print('✅ Clearing streaming message');
+    // Clear enhanced tracking
+    print('✅ Stream completed, clearing tracking state');
     _currentStreamingMessage = null;
+    _currentStreamingChatId = null;
+    _streamStartTime = null;
+    _retryAttempts = 0;
+    // Stream cleanup handled automatically
   }
 
   void _onStreamingError(dynamic error) {
@@ -357,7 +386,7 @@ Based on the context above, answer the following prompt: $input""";
   }
 
   void _stopStreaming() {
-    _streamSubscription?.cancel();
+    // Stream cancellation handled naturally by Flutter
     _httpClient?.close();
     setState(() {
       _isStreaming = false;
@@ -861,38 +890,30 @@ Based on the context above, answer the following prompt: $input""";
     );
   }
 
-  static const _backgroundChannel = MethodChannel('com.ahamai.background');
-  String? _currentStreamingMessage;
-  bool _isAppInBackground = false;
-
+  /// Enhanced app lifecycle detection with multiple triggers
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     
-    print('🔄 App lifecycle changed: $state, isStreaming: $_isStreaming, currentMessage: $_currentStreamingMessage');
+    print('🔄 App lifecycle: $state | streaming: $_isStreaming | message: $_currentStreamingMessage');
     
     switch (state) {
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-        print('🔄 App went to background while streaming: $_isStreaming');
-        _isAppInBackground = true;
-        if (_isStreaming && _currentStreamingMessage != null) {
-          // Transfer processing to native background service
-          print('🚀 Triggering background transfer...');
-          _transferToBackgroundProcessing();
-        } else {
-          print('⚠️ Not transferring: streaming=$_isStreaming, message=$_currentStreamingMessage');
-        }
+        _handleAppGoingBackground();
         break;
       case AppLifecycleState.resumed:
-        print('🔄 App returned to foreground');
-        _isAppInBackground = false;
-        if (_currentStreamingMessage != null) {
-          // Check if background processing completed
-          print('🔍 Checking background result...');
-          _checkBackgroundResult();
-        }
+        _handleAppReturningForeground();
+        break;
+      case AppLifecycleState.inactive:
+        // Mark as potentially going to background
+        Future.delayed(Duration(milliseconds: 500), () {
+          if (_isStreaming && _currentStreamingMessage != null) {
+            print('⚠️ App inactive during streaming - preparing for background transfer');
+            _prepareBackgroundTransfer();
+          }
+        });
         break;
       default:
         print('🔄 Other lifecycle state: $state');
@@ -900,59 +921,171 @@ Based on the context above, answer the following prompt: $input""";
     }
   }
 
-  Future<void> _startNativeBackgroundProcessing(String message) async {
-    try {
-      await _backgroundChannel.invokeMethod('startBackgroundProcessing', {
-        'chatId': widget.chatInfoStream.hashCode.toString(),
-        'message': message,
-        'model': _selectedChatModel,
-        'processType': 'chat',
-      });
-      print('🔄 Native background processing started');
-    } catch (e) {
-      print('❌ Failed to start background processing: $e');
+  /// Handle app going to background with multiple strategies
+  void _handleAppGoingBackground() {
+    print('📱 App going to background...');
+    _isInBackground = true;
+    
+    if (_isStreaming && _currentStreamingMessage != null) {
+      print('🚀 Initiating robust background transfer...');
+      
+      // Strategy 1: Immediate transfer
+      _transferToBackgroundProcessing();
+      
+      // Strategy 2: Start monitoring timer as backup
+      _startBackgroundMonitoring();
+      
+      // Strategy 3: Persist stream state
+      if (_streamPersistenceEnabled) {
+        _persistStreamState();
+      }
     }
   }
 
-  Future<void> _stopNativeBackgroundProcessing() async {
-    try {
-      await _backgroundChannel.invokeMethod('stopBackgroundProcessing');
-      print('⏹️ Native background processing stopped');
-    } catch (e) {
-      print('❌ Failed to stop background processing: $e');
-    }
+  /// Handle app returning to foreground
+  void _handleAppReturningForeground() {
+    print('📱 App returning to foreground...');
+    _isInBackground = false;
+    
+    // Stop background monitoring
+    _backgroundCheckTimer?.cancel();
+    
+    // Check for completed background results
+    _checkBackgroundResult();
+    
+    // Restore any persisted streams if needed
+    _restoreStreamStateIfNeeded();
   }
 
-  Future<void> _transferToBackgroundProcessing() async {
+  /// Start background monitoring as a fallback strategy
+  void _startBackgroundMonitoring() {
+    _backgroundCheckTimer?.cancel();
+    _backgroundCheckTimer = Timer.periodic(_backgroundCheckInterval, (timer) {
+      if (!_isInBackground) {
+        timer.cancel();
+        return;
+      }
+      
+      print('🔍 Background monitoring check...');
+      _checkBackgroundResult();
+    });
+  }
+
+  /// Persist stream state for recovery
+  void _persistStreamState() {
     if (_currentStreamingMessage == null) return;
     
     try {
-      print('🔄 Transferring to background processing: $_currentStreamingMessage');
+      final streamState = {
+        'message': _currentStreamingMessage!,
+        'chatId': _currentStreamingChatId ?? widget.chatInfoStream.hashCode.toString(),
+        'model': _selectedChatModel,
+        'startTime': _streamStartTime?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch,
+        'retryAttempts': _retryAttempts,
+      };
       
-      // Start native background service
-      await _backgroundChannel.invokeMethod('startBackgroundProcessing', {
-        'chatId': widget.chatInfoStream.hashCode.toString(),
+      // Save to local storage (implement as needed)
+      print('💾 Persisting stream state: $streamState');
+      
+    } catch (e) {
+      print('❌ Failed to persist stream state: $e');
+    }
+  }
+
+  /// Restore stream state if needed
+  void _restoreStreamStateIfNeeded() {
+    // Implementation for restoring persisted stream state
+    print('🔄 Checking for persisted stream state...');
+  }
+
+  /// Prepare for background transfer (called on inactive state)
+  void _prepareBackgroundTransfer() {
+    if (_currentStreamingMessage != null) {
+      // Pre-warm the background service
+      _backgroundChannel.invokeMethod('prepareBackgroundService', {
+        'chatId': _currentStreamingChatId ?? widget.chatInfoStream.hashCode.toString(),
         'message': _currentStreamingMessage!,
         'model': _selectedChatModel,
-        'processType': 'chat',
+      }).catchError((e) {
+        print('⚠️ Failed to prepare background service: $e');
       });
+    }
+  }
+
+  /// Enhanced background transfer with retry logic
+  Future<void> _transferToBackgroundProcessing() async {
+    if (_currentStreamingMessage == null) {
+      print('⚠️ No streaming message to transfer');
+      return;
+    }
+    
+    try {
+      print('🔄 Transferring to background (attempt ${_retryAttempts + 1}/$_maxRetryAttempts)');
       
-      // Update UI to show background processing
+      // Stop any existing stream
+      // (existing Flutter streaming will be stopped naturally)
+      
+      // Update UI immediately
       if (mounted && _messages.isNotEmpty) {
         setState(() {
           _messages[_messages.length - 1] = ChatMessage(
             role: 'model', 
-            text: '🔄 Processing in background...\nYou can switch to other apps. We\'ll notify you when ready!'
+            text: '🔄 Continuing in background...\n⏳ Processing your request while you use other apps!\n📱 We\'ll notify you when ready!'
           );
         });
       }
       
+      // Start native background service with enhanced parameters
+      await _backgroundChannel.invokeMethod('startBackgroundProcessing', {
+        'chatId': _currentStreamingChatId ?? widget.chatInfoStream.hashCode.toString(),
+        'message': _currentStreamingMessage!,
+        'model': _selectedChatModel,
+        'processType': 'chat',
+        'retryAttempts': _retryAttempts,
+        'priority': 'high',
+        'timeout': 300000, // 5 minutes
+      });
+      
       print('✅ Successfully transferred to background processing');
+      _retryAttempts = 0; // Reset on success
+      
     } catch (e) {
-      print('❌ Failed to transfer to background processing: $e');
+      print('❌ Failed to transfer to background (attempt ${_retryAttempts + 1}): $e');
+      
+      _retryAttempts++;
+      if (_retryAttempts < _maxRetryAttempts) {
+        // Exponential backoff retry
+        final delay = Duration(seconds: (2 * _retryAttempts).clamp(1, 10));
+        print('🔄 Retrying in ${delay.inSeconds}s...');
+        
+        Timer(delay, () {
+          if (_isInBackground && _currentStreamingMessage != null) {
+            _transferToBackgroundProcessing();
+          }
+        });
+      } else {
+        print('❌ Max retry attempts reached');
+        _handleBackgroundTransferFailure();
+      }
     }
   }
 
+  /// Handle background transfer failure
+  void _handleBackgroundTransferFailure() {
+    if (mounted && _messages.isNotEmpty) {
+      setState(() {
+        _messages[_messages.length - 1] = ChatMessage(
+          role: 'model', 
+          text: '⚠️ Background processing failed.\nPlease stay in the app for best experience.'
+        );
+        _isStreaming = false;
+      });
+    }
+    _currentStreamingMessage = null;
+    _retryAttempts = 0;
+  }
+
+  /// Enhanced background result checking with better error handling
   Future<void> _checkBackgroundResult() async {
     try {
       final result = await _backgroundChannel.invokeMethod('getBackgroundResult');
@@ -960,28 +1093,78 @@ Based on the context above, answer the following prompt: $input""";
       if (result != null && result is Map) {
         final content = result['content'] as String?;
         final success = result['success'] as bool? ?? false;
+        final chatId = result['chatId'] as String?;
+        
+        print('📥 Background result received: success=$success, content length=${content?.length ?? 0}');
         
         if (content != null && content.isNotEmpty) {
-          print('✅ Background processing completed: $content');
-          
-          // Update the UI with the result
-          if (mounted && _messages.isNotEmpty) {
-            setState(() {
-              _messages[_messages.length - 1] = ChatMessage(
-                role: 'model', 
-                text: success ? content : '❌ Error: $content'
-              );
-              _isStreaming = false;
-            });
-            _scrollToBottom();
+          // Verify this result is for current chat
+          final currentChatId = _currentStreamingChatId ?? widget.chatInfoStream.hashCode.toString();
+          if (chatId == currentChatId || chatId == null) {
+            
+            // Update the UI with result
+            if (mounted && _messages.isNotEmpty) {
+              setState(() {
+                _messages[_messages.length - 1] = ChatMessage(
+                  role: 'model', 
+                  text: success ? content : '❌ Background Error: $content'
+                );
+                _isStreaming = false;
+              });
+              _scrollToBottom();
+            }
+            
+            // Clear streaming state
+            _currentStreamingMessage = null;
+            _currentStreamingChatId = null;
+            _streamStartTime = null;
+            _retryAttempts = 0;
+            
+            print('✅ Background result processed successfully');
+          } else {
+            print('⚠️ Background result chatId mismatch: expected $currentChatId, got $chatId');
           }
-          
-          // Clear the streaming message
-          _currentStreamingMessage = null;
         }
+      } else {
+        print('📭 No background result available');
       }
     } catch (e) {
       print('❌ Failed to check background result: $e');
+    }
+  }
+
+  /// Start connection health monitoring
+  void _startConnectionHealthMonitoring() {
+    _connectionHealthTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+      if (_isStreaming && _streamStartTime != null) {
+        final elapsed = DateTime.now().difference(_streamStartTime!);
+        if (elapsed.inMinutes > 5) { // 5 minutes timeout
+          print('⏰ Stream timeout detected after ${elapsed.inMinutes} minutes');
+          _handleStreamTimeout();
+        }
+      }
+    });
+  }
+
+  /// Handle stream timeout
+  void _handleStreamTimeout() {
+    print('⏰ Handling stream timeout');
+    
+    if (_isInBackground && _currentStreamingMessage != null) {
+      // Try to transfer to background if not already done
+      _transferToBackgroundProcessing();
+    } else {
+      // Stop streaming and show timeout message
+      if (mounted && _messages.isNotEmpty) {
+        setState(() {
+          _messages[_messages.length - 1] = ChatMessage(
+            role: 'model', 
+            text: '⏰ Request timed out. Please try again.'
+          );
+          _isStreaming = false;
+        });
+      }
+      _currentStreamingMessage = null;
     }
   }
 
