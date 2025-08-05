@@ -47,7 +47,7 @@ class AhamApp extends StatelessWidget {
         ));
 
         return MaterialApp(
-          title: 'Aham',
+          title: 'AhamAI',
           debugShowCheckedModeBanner: false,
           theme: ThemeNotifier.lightTheme,
           darkTheme: ThemeNotifier.darkTheme,
@@ -304,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     } else {
       return AppBar(
         leading: IconButton(icon: const Icon(Icons.person_outline), onPressed: () => _showProfileSheet(context), tooltip: 'Profile & Settings'),
-        title: const Text('Aham'),
+        title: const Text('AhamAI'),
         centerTitle: true,
         actions: [if (_chats.isNotEmpty) IconButton(icon: const Icon(Icons.search), onPressed: () => setState(() => _isSearching = true)), const SizedBox(width: 4)],
       );
@@ -395,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     ],
                   ),
                   subtitle: Text(
-                    chat.messages.isEmpty ? 'No messages yet' : (chat.messages.last.role == 'user' ? 'You: ' : 'Aham: ') + chat.messages.last.text,
+                    chat.messages.isEmpty ? 'No messages yet' : (chat.messages.last.role == 'user' ? 'You: ' : 'AhamAI: ') + chat.messages.last.text,
                     style: Theme.of(context).textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -500,6 +500,34 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSuggestionCard(BuildContext context, String suggestion) {
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion, chatInfoStream: _chatInfoStream))),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Theme.of(context).dividerColor,
+            width: 1.5,
+          ),
+        ),
+        child: Text(
+          suggestion,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 13,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
