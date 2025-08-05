@@ -926,38 +926,37 @@ Based on the context above, answer the following prompt: $input""";
       );
     }
   }
-}
 
-String _determineCategory(List<ChatMessage> messages) {
-  if (messages.isEmpty) return 'General';
-  
-  // For new chats with less than 5 messages, use simple categorization
-  if (messages.length < 5) {
-    final userMessages = messages.where((m) => m.role == 'user').map((m) => m.text.toLowerCase()).join(' ');
-    if (userMessages.contains('code') || userMessages.contains('programming') || userMessages.contains('debug') || userMessages.contains('flutter') || userMessages.contains('python')) return 'Coding';
-    if (userMessages.contains('write') || userMessages.contains('poem') || userMessages.contains('story') || userMessages.contains('script') || userMessages.contains('lyrics')) return 'Creative';
-    if (userMessages.contains('science') || userMessages.contains('physics') || userMessages.contains('biology') || userMessages.contains('chemistry') || userMessages.contains('astronomy')) return 'Science';
-    if (userMessages.contains('health') || userMessages.contains('medical') || userMessages.contains('fitness') || userMessages.contains('diet') || userMessages.contains('wellness')) return 'Health';
-    if (userMessages.contains('history') || userMessages.contains('ancient') || userMessages.contains('war') || userMessages.contains('historical')) return 'History';
-    if (userMessages.contains('tech') || userMessages.contains('gadget') || userMessages.contains('software') || userMessages.contains('computer') || userMessages.contains('ai')) return 'Technology';
-    if (userMessages.contains('plan') || userMessages.contains('trip') || userMessages.contains('schedule') || userMessages.contains('travel') || userMessages.contains('itinerary') || userMessages.contains('vacation')) return 'Travel & Plans';
-    if (userMessages.contains('weather') || userMessages.contains('forecast') || userMessages.contains('temperature')) return 'Weather';
-    if (userMessages.contains('fact') || userMessages.contains('trivia') || userMessages.contains('knowledge')) return 'Facts';
-    return 'General';
-  }
-  
-  // For chats with 5+ messages, trigger AI-based categorization in background
-  _generateAICategory(messages);
-  return 'General'; // Fallback while AI categorization is processing
-}
-
-/// Generate AI-based category for chats with sufficient conversation history  
-void _generateAICategory(List<ChatMessage> chatMessages) async {
-  try {
-    // Take first 5 messages for context
-    final contextMessages = chatMessages.take(5).map((m) => '${m.role}: ${m.text}').join('\n');
+  String _determineCategory(List<ChatMessage> messages) {
+    if (messages.isEmpty) return 'General';
     
-    final categorizationPrompt = '''
+    // For new chats with less than 5 messages, use simple categorization
+    if (messages.length < 5) {
+      final userMessages = messages.where((m) => m.role == 'user').map((m) => m.text.toLowerCase()).join(' ');
+      if (userMessages.contains('code') || userMessages.contains('programming') || userMessages.contains('debug') || userMessages.contains('flutter') || userMessages.contains('python')) return 'Coding';
+      if (userMessages.contains('write') || userMessages.contains('poem') || userMessages.contains('story') || userMessages.contains('script') || userMessages.contains('lyrics')) return 'Creative';
+      if (userMessages.contains('science') || userMessages.contains('physics') || userMessages.contains('biology') || userMessages.contains('chemistry') || userMessages.contains('astronomy')) return 'Science';
+      if (userMessages.contains('health') || userMessages.contains('medical') || userMessages.contains('fitness') || userMessages.contains('diet') || userMessages.contains('wellness')) return 'Health';
+      if (userMessages.contains('history') || userMessages.contains('ancient') || userMessages.contains('war') || userMessages.contains('historical')) return 'History';
+      if (userMessages.contains('tech') || userMessages.contains('gadget') || userMessages.contains('software') || userMessages.contains('computer') || userMessages.contains('ai')) return 'Technology';
+      if (userMessages.contains('plan') || userMessages.contains('trip') || userMessages.contains('schedule') || userMessages.contains('travel') || userMessages.contains('itinerary') || userMessages.contains('vacation')) return 'Travel & Plans';
+      if (userMessages.contains('weather') || userMessages.contains('forecast') || userMessages.contains('temperature')) return 'Weather';
+      if (userMessages.contains('fact') || userMessages.contains('trivia') || userMessages.contains('knowledge')) return 'Facts';
+      return 'General';
+    }
+    
+    // For chats with 5+ messages, trigger AI-based categorization in background
+    _generateAICategory(messages);
+    return 'General'; // Fallback while AI categorization is processing
+    }
+
+  /// Generate AI-based category for chats with sufficient conversation history  
+  void _generateAICategory(List<ChatMessage> chatMessages) async {
+    try {
+      // Take first 5 messages for context
+      final contextMessages = chatMessages.take(5).map((m) => '${m.role}: ${m.text}').join('\n');
+      
+      final categorizationPrompt = '''
 Based on this conversation, categorize it into ONE of these categories:
 - Coding (programming, development, debugging)
 - Creative (writing, art, storytelling, music)
@@ -975,42 +974,41 @@ $contextMessages
 
 Respond with only the category name, nothing else.''';
 
-    // Use a simple API call for categorization
-    final requestMessages = [ChatMessage(role: 'user', text: categorizationPrompt)];
-    final responseStream = ApiService.sendChatMessage(
-      messages: requestMessages,
-      model: 'gpt-3.5-turbo',
-      chatId: 'categorization-${DateTime.now().millisecondsSinceEpoch}',
-    );
-    
-    String fullResponse = '';
-    await for (final chunk in responseStream) {
-      fullResponse += chunk;
-    }
-    
-    if (fullResponse.isNotEmpty) {
-      final aiCategory = fullResponse.trim();
+      // Use the correct API call for categorization
+      final responseStream = ApiService.sendChatMessage(
+        message: categorizationPrompt,
+        model: 'gpt-3.5-turbo',
+      );
       
-      // Validate the category is one of our predefined ones
-      final validCategories = ['Coding', 'Creative', 'Science', 'Health', 'History', 'Technology', 'Travel & Plans', 'Weather', 'Facts', 'General'];
-      
-      if (validCategories.contains(aiCategory)) {
-        if (mounted) {
-          setState(() {
-            _category = aiCategory;
-          });
-          
-          // Update the chat info with new category
-          _updateChatInfo(false, false);
-          
-          print('🧠 AI categorized chat as: $aiCategory');
-        }
-      } else {
-        print('⚠️ Invalid AI category: $aiCategory');
+      String fullResponse = '';
+      await for (final chunk in responseStream) {
+        fullResponse += chunk;
       }
+      
+      if (fullResponse.isNotEmpty) {
+        final aiCategory = fullResponse.trim();
+        
+        // Validate the category is one of our predefined ones
+        final validCategories = ['Coding', 'Creative', 'Science', 'Health', 'History', 'Technology', 'Travel & Plans', 'Weather', 'Facts', 'General'];
+        
+        if (validCategories.contains(aiCategory)) {
+          if (mounted) {
+            setState(() {
+              _category = aiCategory;
+            });
+            
+            // Update the chat info with new category
+            _updateChatInfo(false, false);
+            
+            print('🧠 AI categorized chat as: $aiCategory');
+          }
+        } else {
+          print('⚠️ Invalid AI category: $aiCategory');
+        }
+      }
+    } catch (e) {
+      print('❌ AI categorization failed: $e');
+      // Keep existing category as fallback
     }
-  } catch (e) {
-    print('❌ AI categorization failed: $e');
-    // Keep existing category as fallback
   }
 }
