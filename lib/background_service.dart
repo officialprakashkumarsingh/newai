@@ -198,9 +198,68 @@ class BackgroundService {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    // This runs in the background
-    // For now, we'll let the main app handle the actual processing
-    // and just maintain the notification state
-    return Future.value(true);
+    try {
+      final chatId = inputData?['chatId'] as String?;
+      final processType = inputData?['processType'] as String?;
+      final processData = inputData?['processData'] as Map<String, dynamic>?;
+      
+      if (chatId == null || processType == null || processData == null) {
+        return Future.value(false);
+      }
+      
+      print('🔄 Background processing started for $processType');
+      
+      if (processType == 'chat') {
+        // Just wait for the main app to signal completion
+        // This is a simple approach - just maintain the ongoing notification
+        // The actual API processing happens in the main app
+        print('🔄 Background task registered, waiting for main app completion...');
+      }
+      
+      return Future.value(true);
+    } catch (e) {
+      print('❌ Background processing error: $e');
+      return Future.value(false);
+    }
   });
+}
+
+Future<void> _notifyProcessingComplete(String chatId, String processType, String result) async {
+  try {
+    // Initialize notifications for background context
+    final FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsPlugin();
+    
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initSettings = InitializationSettings(android: androidSettings);
+    await notificationsPlugin.initialize(initSettings);
+    
+    // Show completion notification
+    const androidDetails = AndroidNotificationDetails(
+      'ahamai_complete',
+      'AhamAI Completed Tasks',
+      channelDescription: 'Shows when AI tasks are completed',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+      autoCancel: true,
+    );
+    
+    const notificationDetails = NotificationDetails(android: androidDetails);
+    
+    await notificationsPlugin.show(
+      1002,
+      'AhamAI Complete!',
+      'Response ready - tap to view',
+      notificationDetails,
+      payload: jsonEncode({
+        'chatId': chatId,
+        'processType': processType,
+        'action': 'open_chat',
+      }),
+    );
+    
+    print('✅ Background processing notification sent');
+  } catch (e) {
+    print('❌ Error sending completion notification: $e');
+  }
 }

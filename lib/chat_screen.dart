@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'background_service.dart';
+// import 'background_service.dart'; // Temporarily disabled
 
 import 'ai_message_actions.dart';
 import 'api.dart';
@@ -230,16 +230,7 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Start background processing for this chat (non-blocking)
-    BackgroundService.startBackgroundProcess(
-      chatId: widget.chatInfoStream.hashCode.toString(),
-      processType: 'chat',
-      processData: {
-        'message': input,
-        'model': _selectedChatModel,
-        'timestamp': DateTime.now().millisecondsSinceEpoch,
-      },
-    ).catchError((e) => print('Background service error: $e'));
+    // Note: Background processing temporarily disabled for stability
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -342,12 +333,7 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
     _scrollToBottom();
 
-    // Notify background service that processing is complete
-    BackgroundService.processCompleted(
-      chatId: widget.chatInfoStream.hashCode.toString(),
-      processType: 'chat',
-      result: _messages.isNotEmpty ? _messages.last.text : '',
-    );
+    // Background processing temporarily disabled
   }
 
   void _onStreamingError(dynamic error) {
@@ -498,8 +484,10 @@ Based on the context above, answer the following prompt: $input""";
       final imageUrl = await ImageApi.generateImage(prompt, model: model);
       
       // Download image bytes for save functionality
+      print('🖼️ Downloading image bytes from: $imageUrl');
       final response = await http.get(Uri.parse(imageUrl));
       final imageBytes = response.statusCode == 200 ? response.bodyBytes : null;
+      print('💾 ImageBytes length: ${imageBytes?.length ?? 'null'}');
       
       final imageMessage = ChatMessage(
         role: 'model', 
@@ -508,6 +496,7 @@ Based on the context above, answer the following prompt: $input""";
         imageUrl: imageUrl,
         imageBytes: imageBytes
       );
+      print('📱 Message created with imageBytes: ${imageMessage.imageBytes != null}');
       
       // Precache the image
       await precacheImage(NetworkImage(imageUrl), context);
@@ -612,7 +601,10 @@ Based on the context above, answer the following prompt: $input""";
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (message.imageBytes != null)
-                    Padding(
+                    Builder(
+                      builder: (context) {
+                        print('💾 Rendering save button for image with ${message.imageBytes!.length} bytes');
+                        return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0), 
                       child: Container(
                         constraints: const BoxConstraints(
@@ -661,6 +653,8 @@ Based on the context above, answer the following prompt: $input""";
                           ],
                         ),
                       ),
+                        ); // Close Builder
+                      },
                     ),
                   
                   if (message.attachedFileName != null)

@@ -11,7 +11,7 @@ import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
 import 'background_pattern.dart';
 import 'universe_logo.dart';
-import 'background_service.dart';
+// import 'background_service.dart'; // Temporarily disabled
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -24,8 +24,8 @@ void main() async {
   // Enable edge-to-edge mode (system UI will be configured per-theme)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Initialize background service
-  await BackgroundService.initialize();
+  // Background service temporarily disabled
+  // await BackgroundService.initialize();
 
   runApp(
     ChangeNotifierProvider(
