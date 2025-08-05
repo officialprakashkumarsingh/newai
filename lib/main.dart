@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data'; // <-- ADDED: For Uint8List
 import 'package:ahamai/web_search.dart';
+import 'package:ahamai/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
@@ -572,13 +573,35 @@ class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
   void initState() {
     super.initState();
     _loadSettings();
+    _loadAvailableModels();
   }
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _selectedChatModel = prefs.getString('chat_model') ?? ChatModels.gemini;
+      _selectedChatModel = prefs.getString('chat_model') ?? '';
     });
+  }
+
+  Future<void> _loadAvailableModels() async {
+    try {
+      final models = await ApiService.getAvailableModels();
+      setState(() {
+        _availableModels = models;
+        _isLoadingModels = false;
+        
+        // If no model is selected, use the first available model
+        if (_selectedChatModel.isEmpty && models.isNotEmpty) {
+          _selectedChatModel = models.first;
+          _saveChatModel(_selectedChatModel);
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _availableModels = [];
+        _isLoadingModels = false;
+      });
+    }
   }
 
   Future<void> _saveChatModel(String model) async {
@@ -619,94 +642,31 @@ class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text('Chat AI Model', style: Theme.of(context).textTheme.titleMedium),
             ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Gemini 2.5 Flash'),
-              subtitle: const Text('depth and good response'),
-              value: ChatModels.gemini,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('GPT 4.1 Mini'),
-              subtitle: const Text('Creative model'),
-              value: ChatModels.gpt4_1_mini,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('GPT 4.1'),
-              subtitle: const Text('Advanced creative model'),
-              value: ChatModels.gpt4_1,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('OpenAI O3'),
-              subtitle: const Text('Advanced reasoning model'),
-              value: ChatModels.openai_o3,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('DeepSeek R1 0528'),
-              subtitle: const Text('Advanced reasoning model'),
-              value: ChatModels.deepseek_r1,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('SearchGPT'),
-              subtitle: const Text('Web-connected search model'),
-              value: ChatModels.searchGpt,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Grok 3'),
-              subtitle: const Text('Stable'),
-              value: ChatModels.grok_3,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Grok 3 Mini'),
-              subtitle: const Text('Stable'),
-              value: ChatModels.grok_3_mini,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Grok 3 Fast'),
-              subtitle: const Text('Stable, fast'),
-              value: ChatModels.grok_3_fast,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Grok 3 Mini Fast'),
-              subtitle: const Text('Stable, mini, fast'),
-              value: ChatModels.grok_3_mini_fast,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Claude 4 Sonnet'),
-              subtitle: const Text('Best for coding'),
-              value: ChatModels.claude_4_sonnet,
-              groupValue: _selectedChatModel,
-              onChanged: (val) => _saveChatModel(val!),
-            ),
+            
+            // Dynamic model list from API
+            if (_isLoadingModels)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (_availableModels.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Text(
+                  'No models available. Please check your connection.',
+                  style: TextStyle(color: Colors.grey.shade600),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              ..._availableModels.map((model) => RadioListTile<String>(
+                contentPadding: EdgeInsets.zero,
+                title: Text(_getModelDisplayName(model)),
+                subtitle: Text(_getModelDescription(model)),
+                value: model,
+                groupValue: _selectedChatModel,
+                onChanged: (val) => _saveChatModel(val!),
+              )).toList(),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
           ],
         ),
