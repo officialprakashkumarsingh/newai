@@ -9,6 +9,7 @@
     proguardFiles="/workspace/build/app/intermediates/default_proguard_files/global/proguard-android.txt-8.7.0:/opt/flutter/packages/flutter_tools/gradle/flutter_proguard_rules.pro:proguard-rules.pro"
     partialResultsDir="/workspace/build/app/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out">
   <buildFeatures
+      coreLibraryDesugaring="true"
       namespacing="REQUIRED"/>
   <sourceProviders>
     <sourceProvider
@@ -32,6 +33,6 @@
       applicationId="com.aham.app"
       generatedSourceFolders="/workspace/build/app/generated/ap_generated_sources/release/out"
       generatedResourceFolders="/workspace/build/app/generated/res/resValues/release"
-      desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/3adbb3bb01723295743cb1b8c19b7701/transformed/D8BackportedDesugaredMethods.txt">
+      desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/58790b95091d77ba962b2ea3e19b8b3e/transformed/desugar_jdk_libs_configuration-2.0.4-desugar-lint.txt:/home/ubuntu/.gradle/caches/8.10.2/transforms/f018fc565ede373327e2d8397000e5d0/transformed/D8BackportedDesugaredMethods.txt">
   </artifact>
 </variant>

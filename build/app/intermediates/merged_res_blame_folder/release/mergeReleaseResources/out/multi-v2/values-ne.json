@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.aham.app-mergeReleaseResources-40:/values-ne/values-ne.xml",
+            "outputFile": "com.aham.app-mergeReleaseResources-46:/values-ne/values-ne.xml",
             "map": [
                 {
                     "source": "/home/ubuntu/.gradle/caches/8.10.2/transforms/baadfda3653433f7e2fac3a03af80773/transformed/preference-1.2.1/res/values-ne/values-ne.xml",

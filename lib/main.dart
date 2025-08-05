@@ -11,6 +11,7 @@ import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
 import 'background_pattern.dart';
 import 'universe_logo.dart';
+import 'background_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -18,10 +19,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'chat_screen.dart';
 import 'theme.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Enable edge-to-edge mode (system UI will be configured per-theme)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  // Initialize background service
+  await BackgroundService.initialize();
 
   runApp(
     ChangeNotifierProvider(
@@ -50,6 +54,7 @@ class _AhamAppState extends State<AhamApp> {
     super.initState();
     _initializeSharing();
     _initializeWidget();
+    _initializeNotifications();
   }
 
   void _initializeSharing() {
@@ -83,6 +88,32 @@ class _AhamAppState extends State<AhamApp> {
   void _initializeWidget() {
     // Check for widget action when app starts
     _getInitialWidgetAction();
+  }
+
+  void _initializeNotifications() {
+    // Set up notification handler for background service
+    const backgroundChannel = MethodChannel('com.ahamai.background');
+    backgroundChannel.setMethodCallHandler((call) async {
+      if (call.method == 'notificationTapped') {
+        final String chatId = call.arguments['chatId'];
+        final String processType = call.arguments['processType'];
+        print("Notification tapped: chatId=$chatId, processType=$processType");
+        
+        // Navigate to the specific chat
+        _navigateToSpecificChat(chatId, processType);
+      }
+    });
+  }
+
+  void _navigateToSpecificChat(String chatId, String processType) {
+    // Simply navigate to the main screen which will show the completed chat
+    // The user can then see their completed request in the chat history
+    print("Navigating to chat with completed $processType");
+    
+    // If we're not already on the main screen, navigate there
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   Future<void> _getInitialWidgetAction() async {

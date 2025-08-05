@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'background_service.dart';
 
 import 'ai_message_actions.dart';
 import 'api.dart';
@@ -229,6 +230,17 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
+    // Start background processing for this chat
+    await BackgroundService.startBackgroundProcess(
+      chatId: widget.chatInfoStream.hashCode.toString(),
+      processType: 'chat',
+      processData: {
+        'message': input,
+        'model': _selectedChatModel,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      },
+    );
+
     String? webContext;
     if (_isWebSearchEnabled) {
       setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: 'Searching the web...'));
@@ -329,6 +341,13 @@ Based on the context above, answer the following prompt: $input""";
     setState(() => _isStreaming = false);
     _updateChatInfo(false, false);
     _scrollToBottom();
+
+    // Notify background service that processing is complete
+    BackgroundService.processCompleted(
+      chatId: widget.chatInfoStream.hashCode.toString(),
+      processType: 'chat',
+      result: _messages.isNotEmpty ? _messages.last.text : '',
+    );
   }
 
   void _onStreamingError(dynamic error) {
@@ -589,45 +608,52 @@ Based on the context above, answer the following prompt: $input""";
                   if (message.imageBytes != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0), 
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12), 
-                            child: Image.memory(message.imageBytes!, height: 150)
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Material(
-                              color: Colors.transparent,
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          maxHeight: 300,
+                          maxWidth: double.infinity,
+                        ),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12), 
+                              child: Image.memory(
+                                message.imageBytes!, 
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              )
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
                               child: Container(
-                                width: 40,
-                                height: 40,
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
-                                  color: (isDark ? Colors.black87 : Colors.white).withOpacity(0.9),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.download_rounded,
-                                    size: 22,
-                                    color: isDark ? Colors.white : Colors.black87,
+                                  color: Colors.black.withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(22),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.3),
+                                    width: 1,
                                   ),
-                                  onPressed: () => _saveImage(message.imageBytes!),
-                                  tooltip: 'Save Image',
-                                  padding: EdgeInsets.zero,
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(22),
+                                    onTap: () => _saveImage(message.imageBytes!),
+                                    child: Icon(
+                                      Icons.file_download_outlined,
+                                      size: 24,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   

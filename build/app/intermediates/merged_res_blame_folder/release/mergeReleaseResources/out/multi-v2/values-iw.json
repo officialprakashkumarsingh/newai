@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.aham.app-mergeReleaseResources-40:/values-iw/values-iw.xml",
+            "outputFile": "com.aham.app-mergeReleaseResources-46:/values-iw/values-iw.xml",
             "map": [
                 {
                     "source": "/home/ubuntu/.gradle/caches/8.10.2/transforms/b7afdc810aa3c152069d43f671a2cdfc/transformed/core-1.13.1/res/values-iw/values-iw.xml",

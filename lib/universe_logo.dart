@@ -18,9 +18,7 @@ class UniverseLogo extends StatefulWidget {
 class _UniverseLogoState extends State<UniverseLogo>
     with TickerProviderStateMixin {
   late AnimationController _rotationController;
-  late AnimationController _pulseController;
   late Animation<double> _rotationAnimation;
-  late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
@@ -31,11 +29,6 @@ class _UniverseLogoState extends State<UniverseLogo>
       vsync: this,
     )..repeat();
 
-    _pulseController = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    )..repeat(reverse: true);
-
     _rotationAnimation = Tween<double>(
       begin: 0,
       end: 2 * math.pi,
@@ -43,38 +36,26 @@ class _UniverseLogoState extends State<UniverseLogo>
       parent: _rotationController,
       curve: Curves.linear,
     ));
-
-    _pulseAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
   }
 
   @override
   void dispose() {
     _rotationController.dispose();
-    _pulseController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge([_rotationController, _pulseController]),
+      animation: _rotationController,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _pulseAnimation.value,
-          child: SizedBox(
-            width: widget.size,
-            height: widget.size,
-            child: CustomPaint(
-              painter: UniverseLogoPainter(
-                rotationAngle: _rotationAnimation.value,
-                isDarkMode: widget.isDarkMode,
-              ),
+        return SizedBox(
+          width: widget.size,
+          height: widget.size,
+          child: CustomPaint(
+            painter: UniverseLogoPainter(
+              rotationAngle: _rotationAnimation.value,
+              isDarkMode: widget.isDarkMode,
             ),
           ),
         );
@@ -161,18 +142,6 @@ class UniverseLogoPainter extends CustomPainter {
 
     // Draw the crossbar
     canvas.drawLine(crossLeft, crossRight, paint);
-
-    // Add a subtle glow effect (static)
-    final glowPaint = Paint()
-      ..color = color.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 12.0
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8.0);
-
-    canvas.drawPath(path, glowPaint);
-    canvas.drawLine(crossLeft, crossRight, glowPaint);
   }
 
   void _drawOrbitingParticles(Canvas canvas, Offset center, double radius, Color color) {

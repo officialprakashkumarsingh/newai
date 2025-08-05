@@ -7,6 +7,9 @@
       name=":@@:file_picker::release"
       project=":file_picker"/>
   <library
+      name=":@@:flutter_local_notifications::release"
+      project=":flutter_local_notifications"/>
+  <library
       name=":@@:flutter_plugin_android_lifecycle::release"
       project=":flutter_plugin_android_lifecycle"/>
   <library
@@ -33,6 +36,9 @@
   <library
       name=":@@:url_launcher_android::release"
       project=":url_launcher_android"/>
+  <library
+      name=":@@:workmanager::release"
+      project=":workmanager"/>
   <library
       name="org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.9.10/bc5bfc2690338defd5195b05c57562f2194eeb10/kotlin-stdlib-jdk7-1.9.10.jar"
@@ -380,6 +386,19 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name="androidx.media:media:1.1.0@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/c63821fec9f2546e795bb80957bb7f34/transformed/media-1.1.0/jars/classes.jar"
+      resolved="androidx.media:media:1.1.0"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/c63821fec9f2546e795bb80957bb7f34/transformed/media-1.1.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
       name="androidx.preference:preference:1.2.1@aar"
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/baadfda3653433f7e2fac3a03af80773/transformed/preference-1.2.1/jars/classes.jar"
       resolved="androidx.preference:preference:1.2.1"
@@ -436,6 +455,19 @@
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0/jars/classes.jar"
       resolved="androidx.browser:browser:1.8.0"
       folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/cc1d23be878f4cc1b675da75f4246b78/transformed/browser-1.8.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="androidx.work:work-runtime:2.8.1@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/565e106bd6489252e8b60eeebd78c555/transformed/work-runtime-2.8.1/jars/classes.jar"
+      resolved="androidx.work:work-runtime:2.8.1"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/565e106bd6489252e8b60eeebd78c555/transformed/work-runtime-2.8.1"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -514,6 +546,19 @@
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/f1abbf680ba37a7b3295479470137e42/transformed/jetified-lifecycle-runtime-ktx-2.7.0/jars/classes.jar"
       resolved="androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
       folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/f1abbf680ba37a7b3295479470137e42/transformed/jetified-lifecycle-runtime-ktx-2.7.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="androidx.lifecycle:lifecycle-service:2.7.0@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/23fc0b46dc6b255ce6267463ecd4257b/transformed/jetified-lifecycle-service-2.7.0/jars/classes.jar"
+      resolved="androidx.lifecycle:lifecycle-service:2.7.0"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/23fc0b46dc6b255ce6267463ecd4257b/transformed/jetified-lifecycle-service-2.7.0"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -666,6 +711,10 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name="androidx.concurrent:concurrent-futures:1.1.0@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/androidx.concurrent/concurrent-futures/1.1.0/50b7fb98350d5f42a4e49704b03278542293ba48/concurrent-futures-1.1.0.jar"
+      resolved="androidx.concurrent:concurrent-futures:1.1.0"/>
+  <library
       name="androidx.interpolator:interpolator:1.0.0@aar"
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/1f5524727ddc92d25fc7cc1819987cb1/transformed/interpolator-1.0.0/jars/classes.jar"
       resolved="androidx.interpolator:interpolator:1.0.0"
@@ -738,14 +787,53 @@
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/androidx.collection/collection-ktx/1.1.0/f807b2f366f7b75142a67d2f3c10031065b5168/collection-ktx-1.1.0.jar"
       resolved="androidx.collection:collection-ktx:1.1.0"/>
   <library
-      name="androidx.concurrent:concurrent-futures:1.1.0@jar"
-      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/androidx.concurrent/concurrent-futures/1.1.0/50b7fb98350d5f42a4e49704b03278542293ba48/concurrent-futures-1.1.0.jar"
-      resolved="androidx.concurrent:concurrent-futures:1.1.0"/>
+      name="androidx.room:room-runtime:2.5.0@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/16bf629d51a8426489ae44f5810163df/transformed/room-runtime-2.5.0/jars/classes.jar"
+      resolved="androidx.room:room-runtime:2.5.0"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/16bf629d51a8426489ae44f5810163df/transformed/room-runtime-2.5.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="androidx.sqlite:sqlite-framework:2.3.0@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/1f2f62827c6ae1407999ab18cb1ed0b8/transformed/sqlite-framework-2.3.0/jars/classes.jar"
+      resolved="androidx.sqlite:sqlite-framework:2.3.0"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/1f2f62827c6ae1407999ab18cb1ed0b8/transformed/sqlite-framework-2.3.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
   <library
       name="androidx.cursoradapter:cursoradapter:1.0.0@aar"
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/6f609c5bdc6c259e42396bcf488a521f/transformed/cursoradapter-1.0.0/jars/classes.jar"
       resolved="androidx.cursoradapter:cursoradapter:1.0.0"
       folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/6f609c5bdc6c259e42396bcf488a521f/transformed/cursoradapter-1.0.0"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="androidx.room:room-common:2.5.0@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/androidx.room/room-common/2.5.0/829a83fb92f1696a8a32f3beea884dfc87b2693/room-common-2.5.0.jar"
+      resolved="androidx.room:room-common:2.5.0"/>
+  <library
+      name="androidx.sqlite:sqlite:2.3.0@aar"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/754e0ed168d3b8f251c8dc6633df9ed0/transformed/sqlite-2.3.0/jars/classes.jar"
+      resolved="androidx.sqlite:sqlite:2.3.0"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/754e0ed168d3b8f251c8dc6633df9ed0/transformed/sqlite-2.3.0"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -818,6 +906,10 @@
       name="com.squareup.okio:okio-jvm:3.4.0@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.4.0/4e8bd78a52ab935ce383d0092646922154295e54/okio-jvm-3.4.0.jar"
       resolved="com.squareup.okio:okio-jvm:3.4.0"/>
+  <library
+      name="com.google.code.gson:gson:2.8.9@jar"
+      jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.9/8a432c1d6825781e21a02db2e2c33c5fde2833b9/gson-2.8.9.jar"
+      resolved="com.google.code.gson:gson:2.8.9"/>
   <library
       name="com.google.guava:listenablefuture:1.0@jar"
       jars="/home/ubuntu/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/1.0/c949a840a6acbc5268d088e47b04177bf90b3cad/listenablefuture-1.0.jar"
