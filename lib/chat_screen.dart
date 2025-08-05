@@ -44,7 +44,7 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   final _scrollController = ScrollController();
@@ -230,8 +230,7 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
     _updateChatInfo(true, false);
 
-    // Start native background processing
-    _startNativeBackgroundProcessing(input);
+    // Background processing temporarily disabled for stability
 
     String? webContext;
     if (_isWebSearchEnabled) {
@@ -334,8 +333,7 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
     _scrollToBottom();
 
-    // Stop native background processing when done
-    _stopNativeBackgroundProcessing();
+    // Background processing disabled
   }
 
   void _onStreamingError(dynamic error) {
@@ -605,7 +603,8 @@ Based on the context above, answer the following prompt: $input""";
                   if (message.imageBytes != null)
                     Builder(
                       builder: (context) {
-                        print('💾 Rendering save button for image with ${message.imageBytes!.length} bytes');
+                        final showSaveButton = message.type == MessageType.image && message.role == 'model';
+                        print('💾 Image detected: type=${message.type}, role=${message.role}, showSave=$showSaveButton');
                         return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0), 
                       child: Container(
@@ -624,34 +623,31 @@ Based on the context above, answer the following prompt: $input""";
                                 width: double.infinity,
                               )
                             ),
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.7),
-                                  borderRadius: BorderRadius.circular(22),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
-                                    width: 1,
+                            if (showSaveButton)
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black87,
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
-                                ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(22),
-                                    onTap: () => _saveImage(message.imageBytes!),
-                                    child: Icon(
-                                      Icons.file_download_outlined,
-                                      size: 24,
-                                      color: Colors.white,
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () => _saveImage(message.imageBytes!),
+                                      child: Icon(
+                                        Icons.download,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),

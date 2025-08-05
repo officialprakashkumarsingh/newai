@@ -77,10 +77,10 @@ class BackgroundProcessingService : Service() {
             Log.d(TAG, "Making API request for: $message")
             
             try {
-                // Get API key from shared preferences or metadata
-                val apiKey = getApiKey()
+                // Use the same API endpoint as the Flutter app
+                val apiKey = "ahamaibyprakash25"
                 
-                val url = URL("https://api.openai.com/v1/chat/completions")
+                val url = URL("https://ahamai-api.officialprakashkrsingh.workers.dev/v1/chat/completions")
                 val connection = url.openConnection() as HttpURLConnection
                 
                 connection.apply {
