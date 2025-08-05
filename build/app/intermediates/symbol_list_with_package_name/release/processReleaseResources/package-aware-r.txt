@@ -759,7 +759,10 @@ drawable ic_voice_minimal
 drawable ic_web_search
 drawable indian_flag_border_animation
 drawable indian_flag_gradient_animation
+drawable indian_green_bg
 drawable indian_pride_animation
+drawable indian_saffron_bg
+drawable indian_white_bg
 drawable launch_background
 drawable minimal_search_background
 drawable minimal_widget_background

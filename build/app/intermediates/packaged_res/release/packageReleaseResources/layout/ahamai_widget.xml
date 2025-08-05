@@ -20,9 +20,9 @@
         android:paddingEnd="12dp"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginEnd="8dp">
+        android:layout_marginEnd="4dp">
         
-        <!-- Search Text -->
+                <!-- Search Text -->
         <TextView
             android:id="@+id/widget_search_text"
             android:layout_width="0dp"
@@ -34,16 +34,17 @@
             android:textSize="16sp"
             android:gravity="center_vertical" />
             
-    </LinearLayout>
-    
-            <!-- Voice Button -->
+        <!-- Voice Button Inside Input -->
         <ImageButton
             android:id="@+id/widget_voice"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_voice_minimal"
             android:scaleType="centerInside"
-            android:contentDescription="Voice Input" />
+            android:contentDescription="Voice Input"
+            android:layout_marginEnd="4dp" />
+            
+    </LinearLayout>
 
 </LinearLayout>

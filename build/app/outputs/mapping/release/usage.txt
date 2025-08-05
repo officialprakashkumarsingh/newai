@@ -10286,6 +10286,7 @@ androidx.window.reflection.ReflectionUtils:
 androidx.window.reflection.WindowExtensionsConstants
 com.aham.app.AhamAIWidget:
     public static final java.lang.String ACTION_SEARCH_TAP
+    public static final java.lang.String ACTION_START_ANIMATION
     public static final java.lang.String ACTION_VOICE
     public static final java.lang.String EXTRA_INPUT_TEXT
 com.aham.app.R$color
@@ -10299,8 +10300,8 @@ com.aham.app.R$drawable:
     public static int ic_web_search
     public static int indian_flag_border_animation
     public static int indian_flag_gradient_animation
+    public static int indian_pride_animation
     public static int launch_background
-    public static int minimal_search_background
     public static int minimal_widget_background
     public static int voice_button_background
     public static int widget_background

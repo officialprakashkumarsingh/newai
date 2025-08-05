@@ -71,7 +71,7 @@ class VoiceController {
           }
         },
         listenFor: const Duration(seconds: 10),
-        pauseFor: const Duration(seconds: 3),
+        pauseFor: const Duration(seconds: 2), // Reduced pause time
         cancelOnError: true,
         partialResults: false,
       );

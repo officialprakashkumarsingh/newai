@@ -31,9 +31,10 @@ class ChatScreen extends StatefulWidget {
   final bool isGenerating;
   final bool isStopped;
   final bool autoSend;
+  final bool enableKeyboard;
   final StreamController<ChatInfo> chatInfoStream;
 
-  const ChatScreen({super.key, this.initialMessages, this.initialMessage, this.chatId, this.chatTitle, this.isPinned = false, this.isGenerating = false, this.isStopped = false, this.autoSend = true, required this.chatInfoStream});
+  const ChatScreen({super.key, this.initialMessages, this.initialMessage, this.chatId, this.chatTitle, this.isPinned = false, this.isGenerating = false, this.isStopped = false, this.autoSend = true, this.enableKeyboard = false, required this.chatInfoStream});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -103,6 +104,11 @@ class _ChatScreenState extends State<ChatScreen> {
         if (widget.autoSend) {
           _sendMessage(widget.initialMessage!);
         }
+      });
+    } else if (widget.enableKeyboard && mounted) {
+      // Enable keyboard even without initial message (from widget tap)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _focusNode.requestFocus();
       });
     }
   }
