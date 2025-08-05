@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/minimal_widget_background"
+    android:background="@android:color/transparent"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="12dp">
+    android:padding="4dp">
 
     <!-- Minimalistic Search Area -->
     <LinearLayout
@@ -36,14 +36,14 @@
             
     </LinearLayout>
     
-    <!-- Voice Button -->
-    <ImageButton
-        android:id="@+id/widget_voice"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/voice_button_background"
-        android:src="@drawable/ic_voice_minimal"
-        android:scaleType="centerInside"
-        android:contentDescription="Voice Input" />
+            <!-- Voice Button -->
+        <ImageButton
+            android:id="@+id/widget_voice"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_voice_minimal"
+            android:scaleType="centerInside"
+            android:contentDescription="Voice Input" />
 
 </LinearLayout>

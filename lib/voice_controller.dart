@@ -87,29 +87,10 @@ class VoiceController {
   }
 
   Future<void> _processVoiceCommand(String command) async {
-    debugPrint('🎙️ Processing command: $command');
+    debugPrint('🎙️ Voice input received: $command');
     
-    try {
-      // Parse multiple tasks from the command
-      final tasks = _parseMultipleTasks(command);
-      
-      if (tasks.length > 1) {
-        await _flutterTts.speak("Processing ${tasks.length} tasks simultaneously");
-        
-        // Execute all tasks in parallel
-        final futures = tasks.map((task) => _executeTask(task)).toList();
-        await Future.wait(futures);
-        
-        await _flutterTts.speak("All tasks completed!");
-      } else {
-        // Single task processing
-        await _executeTask(command);
-      }
-      
-    } catch (e) {
-      debugPrint('❌ Error processing voice command: $e');
-      await _flutterTts.speak("Sorry, I couldn't process that command");
-    }
+    // Simple mode - just pass the text to the callback, no command execution
+    onSpeechResult?.call(command);
   }
 
   List<String> _parseMultipleTasks(String command) {

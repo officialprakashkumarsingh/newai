@@ -30,9 +30,10 @@ class ChatScreen extends StatefulWidget {
   final bool isPinned;
   final bool isGenerating;
   final bool isStopped;
+  final bool autoSend;
   final StreamController<ChatInfo> chatInfoStream;
 
-  const ChatScreen({super.key, this.initialMessages, this.initialMessage, this.chatId, this.chatTitle, this.isPinned = false, this.isGenerating = false, this.isStopped = false, required this.chatInfoStream});
+  const ChatScreen({super.key, this.initialMessages, this.initialMessage, this.chatId, this.chatTitle, this.isPinned = false, this.isGenerating = false, this.isStopped = false, this.autoSend = true, required this.chatInfoStream});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -93,9 +94,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (widget.initialMessage != null && mounted) {
       _controller.text = widget.initialMessage!;
-      // Auto-focus keyboard for immediate typing from widget
+      
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Always focus keyboard for immediate typing
         _focusNode.requestFocus();
+        
+        // Auto-send if enabled (default behavior)
+        if (widget.autoSend) {
+          _sendMessage(widget.initialMessage!);
+        }
       });
     }
   }

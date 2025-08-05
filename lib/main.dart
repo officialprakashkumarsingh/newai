@@ -112,22 +112,23 @@ class _AhamAppState extends State<AhamApp> {
   Future<void> _startVoiceMode() async {
     final voiceController = VoiceController();
     
-    // Set up voice result callback
+    // Set up voice result callback - just fill input, don't execute commands
     voiceController.onSpeechResult = (text) {
-      // Navigate to chat with voice input
-      _navigateToChat(initialMessage: text);
+      // Navigate to chat with voice input pre-filled (no auto-send)
+      _navigateToChat(initialMessage: text, autoSend: false);
     };
     
     // Start listening
     await voiceController.startListening();
   }
 
-  void _navigateToChat({String? initialMessage}) {
+  void _navigateToChat({String? initialMessage, bool autoSend = true}) {
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
         builder: (context) => ChatScreen(
           chatInfoStream: StreamController<ChatInfo>.broadcast(),
           initialMessage: initialMessage,
+          autoSend: autoSend,
         ),
       ),
     );
