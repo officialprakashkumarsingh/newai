@@ -327,54 +327,53 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   children: [
                     const HighlightedWelcomeText(),
                     const SizedBox(height: 32),
-                    ...suggestions.map((suggestion) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 24),
-                          child: GestureDetector(
-                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion, chatInfoStream: _chatInfoStream))),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).cardColor,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: Theme.of(context).dividerColor,
-                                  width: 1.5,
-                                ),
+                    // "Start with?" text
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        'Start with?',
+                        style: TextStyle(
+                          fontFamily: 'monospace',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Suggestions in 2x2 grid
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        children: [
+                          // First row
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildSuggestionCard(context, suggestions[0]),
                               ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Icon(
-                                      Icons.lightbulb_outline,
-                                      size: 18,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: Text(
-                                      suggestion,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                    color: Theme.of(context).iconTheme.color?.withOpacity(0.6),
-                                  ),
-                                ],
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildSuggestionCard(context, suggestions[1]),
                               ),
-                            ),
+                            ],
                           ),
-                        )),
+                          const SizedBox(height: 12),
+                          // Second row
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildSuggestionCard(context, suggestions[2]),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildSuggestionCard(context, suggestions[3]),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 24),
                     ModernStartButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream)))),
                   ],
@@ -484,7 +483,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     child: Icon(
                       Icons.add_rounded, 
                       size: 16, 
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -493,7 +492,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     style: TextStyle(
                       fontSize: 14, 
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.white,
                       letterSpacing: 0.2,
                     ),
                   ),
@@ -756,7 +755,7 @@ class ModernStartButton extends StatelessWidget {
                 child: Icon(
                   Icons.add_rounded, 
                   size: 18, 
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(width: 12),
@@ -765,7 +764,7 @@ class ModernStartButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16, 
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.white,
                   letterSpacing: 0.2,
                 ),
               ),

@@ -631,16 +631,16 @@ Based on the context above, answer the following prompt: $input""";
         final userMessageStyle = MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
           p: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: isLightTheme(context) 
-                ? Colors.white  // Light mode: white text on dark bubble
+                ? Colors.black  // Light mode: black text on light bubble
                 : const Color(0xFF222831) // Dark mode: dark text on light bubble
           ),
           code: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontFamily: 'monospace', 
             backgroundColor: isLightTheme(context) 
-                ? Colors.black.withOpacity(0.15) 
+                ? Colors.black.withOpacity(0.1) 
                 : Colors.black.withOpacity(0.2), 
             color: isLightTheme(context) 
-                ? Colors.white 
+                ? Colors.black 
                 : const Color(0xFF222831)
           ),
         );
@@ -655,7 +655,7 @@ Based on the context above, answer the following prompt: $input""";
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFF222831)  // Light mode: dark bubble
+                    ? const Color(0xFFF0E4D3)  // Light mode: light bubble
                     : const Color(0xFFFFFAEC), // Dark mode: light bubble
                 borderRadius: BorderRadius.circular(16)
               ),
