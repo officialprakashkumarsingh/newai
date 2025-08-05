@@ -183,9 +183,9 @@
     },
     {
       "name": "flutter_math_fork",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_math_fork-0.7.4",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_math_fork-0.6.3+1",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "2.17"
     },
     {
       "name": "flutter_plugin_android_lifecycle",
@@ -195,9 +195,9 @@
     },
     {
       "name": "flutter_svg",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_svg-2.1.0",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_svg-1.1.6",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.17"
     },
     {
       "name": "flutter_test",
@@ -414,6 +414,12 @@
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path-1.9.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "path_drawing",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path_drawing-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "path_parsing",
@@ -734,24 +740,6 @@
       "languageVersion": "3.4"
     },
     {
-      "name": "vector_graphics",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_graphics-1.1.18",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "vector_graphics_codec",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "vector_graphics_compiler",
-      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.1.16",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
       "name": "vector_math",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -806,7 +794,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-05T23:09:21.767162Z",
+  "generated": "2025-08-05T23:14:09.079030Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///opt/flutter",

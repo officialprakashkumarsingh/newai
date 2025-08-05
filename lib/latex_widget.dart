@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tex/flutter_tex.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'theme.dart';
 
 /// Widget for rendering LaTeX mathematical expressions
@@ -35,13 +35,13 @@ class LaTeXWidget extends StatelessWidget {
             width: 1,
           ),
         ) : null,
-        child: TeXView(
-          child: TeXViewDocument(latex),
-          style: TeXViewStyle(
-            backgroundColor: Colors.transparent,
-            contentColor: isDark ? Colors.white : Colors.black87,
-            fontSize: (fontSize ?? (isDisplayMode ? 18 : 16)).toInt(),
+        child: Math.tex(
+          latex,
+          textStyle: TextStyle(
+            fontSize: fontSize ?? (isDisplayMode ? 18 : 16),
+            color: isDark ? Colors.white : Colors.black87,
           ),
+          mathStyle: isDisplayMode ? MathStyle.display : MathStyle.text,
         ),
       );
     } catch (e) {
@@ -71,19 +71,16 @@ class LaTeXProcessor {
   static final RegExp _displayMathRegex = RegExp(r'\$\$(.*?)\$\$', multiLine: true, dotAll: true);
   static final RegExp _inlineMathRegex = RegExp(r'\$(.*?)\$');
 
-  /// Converts text with LaTeX to a list of widgets
-  static List<Widget> processText(String text, BuildContext context) {
-    final widgets = <Widget>[];
+  /// Parse content into LaTeX and non-LaTeX parts
+  static List<ContentPart> parseContent(String text) {
+    final parts = <ContentPart>[];
     var currentIndex = 0;
 
-    // Find all display math expressions first
-    final displayMatches = _displayMathRegex.allMatches(text);
-    final inlineMatches = _inlineMathRegex.allMatches(text);
-
-    // Combine and sort all matches by position
+    // Find all math expressions
     final allMatches = <_MathMatch>[];
     
-    for (final match in displayMatches) {
+    // Add display math
+    for (final match in _displayMathRegex.allMatches(text)) {
       allMatches.add(_MathMatch(
         start: match.start,
         end: match.end,
@@ -92,10 +89,10 @@ class LaTeXProcessor {
       ));
     }
     
-    for (final match in inlineMatches) {
-      // Skip if this inline match is inside a display match
+    // Add inline math (skip if inside display math)
+    for (final match in _inlineMathRegex.allMatches(text)) {
       bool insideDisplay = false;
-      for (final displayMatch in displayMatches) {
+      for (final displayMatch in _displayMathRegex.allMatches(text)) {
         if (match.start >= displayMatch.start && match.end <= displayMatch.end) {
           insideDisplay = true;
           break;
@@ -111,22 +108,27 @@ class LaTeXProcessor {
       }
     }
 
-    // Sort matches by position
+    // Sort by position
     allMatches.sort((a, b) => a.start.compareTo(b.start));
 
-    // Process text and create widgets
+    // Create content parts
     for (final match in allMatches) {
-      // Add text before the match
+      // Add text before math
       if (currentIndex < match.start) {
         final beforeText = text.substring(currentIndex, match.start);
         if (beforeText.trim().isNotEmpty) {
-          widgets.add(_createTextWidget(beforeText, context));
+          parts.add(ContentPart(
+            content: beforeText,
+            isLatex: false,
+            isDisplayMode: false,
+          ));
         }
       }
 
-      // Add the LaTeX widget
-      widgets.add(LaTeXWidget(
-        latex: match.latex,
+      // Add LaTeX part
+      parts.add(ContentPart(
+        content: match.latex,
+        isLatex: true,
         isDisplayMode: match.isDisplay,
       ));
 
@@ -137,26 +139,24 @@ class LaTeXProcessor {
     if (currentIndex < text.length) {
       final remainingText = text.substring(currentIndex);
       if (remainingText.trim().isNotEmpty) {
-        widgets.add(_createTextWidget(remainingText, context));
+        parts.add(ContentPart(
+          content: remainingText,
+          isLatex: false,
+          isDisplayMode: false,
+        ));
       }
     }
 
-    // If no LaTeX was found, return the original text
-    if (widgets.isEmpty) {
-      widgets.add(_createTextWidget(text, context));
+    // If no LaTeX found, return the original text as one part
+    if (parts.isEmpty) {
+      parts.add(ContentPart(
+        content: text,
+        isLatex: false,
+        isDisplayMode: false,
+      ));
     }
 
-    return widgets;
-  }
-
-  static Widget _createTextWidget(String text, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodyLarge,
-      ),
-    );
+    return parts;
   }
 
   /// Check if text contains LaTeX expressions
@@ -201,6 +201,19 @@ class _MathMatch {
     required this.end,
     required this.latex,
     required this.isDisplay,
+  });
+}
+
+/// Represents a part of content that can be either LaTeX or regular text
+class ContentPart {
+  final String content;
+  final bool isLatex;
+  final bool isDisplayMode;
+
+  ContentPart({
+    required this.content,
+    required this.isLatex,
+    required this.isDisplayMode,
   });
 }
 

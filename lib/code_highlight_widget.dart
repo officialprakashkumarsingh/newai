@@ -4,6 +4,7 @@ import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'theme.dart';
+import 'latex_widget.dart';
 
 
 /// Custom code highlight widget for markdown
@@ -167,6 +168,11 @@ class EnhancedMarkdownBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if content contains LaTeX
+    if (LaTeXProcessor.containsLaTeX(data)) {
+      return _buildContentWithLatex(context);
+    }
+    
     return MarkdownBody(
       data: data,
       selectable: selectable,
@@ -177,10 +183,35 @@ class EnhancedMarkdownBody extends StatelessWidget {
       syntaxHighlighter: CustomSyntaxHighlighter(),
     );
   }
-  // LaTeX support simplified for now
-}
 
-// Math support temporarily removed for compatibility
+  Widget _buildContentWithLatex(BuildContext context) {
+    // Split content into LaTeX and non-LaTeX parts
+    final parts = LaTeXProcessor.parseContent(data);
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: parts.map((part) {
+        if (part.isLatex) {
+          return LaTeXWidget(
+            latex: part.content,
+            isDisplayMode: part.isDisplayMode,
+          );
+        } else {
+          // Regular markdown content
+          return MarkdownBody(
+            data: part.content,
+            selectable: selectable,
+            styleSheet: styleSheet,
+            builders: {
+              'code': codeHighlightBuilder,
+            },
+            syntaxHighlighter: CustomSyntaxHighlighter(),
+          );
+        }
+      }).toList(),
+    );
+  }
+}
 
 /// Custom syntax highlighter for inline code and code blocks
 class CustomSyntaxHighlighter extends SyntaxHighlighter {
