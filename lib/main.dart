@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data'; // <-- ADDED: For Uint8List
-import 'package:aham/web_search.dart';
+import 'package:ahamai/web_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
