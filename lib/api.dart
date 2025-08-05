@@ -107,19 +107,12 @@ class ModelService {
   }
 
   static List<String> _getFallbackModels() {
-    return [
-      'gpt-4o',
-      'gpt-4o-mini',
-      'claude-3-5-sonnet-20241022',
-      'deepseek-r1',
-      'o1-preview',
-      'grok-beta',
-    ];
+    return []; // No fallback models - only use API fetched models
   }
 
   static Future<String> getDefaultModel() async {
     final models = await getAvailableModels();
-    return models.isNotEmpty ? models.first : 'gpt-4o';
+    return models.isNotEmpty ? models.first : '';
   }
 }
 
