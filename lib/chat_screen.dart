@@ -257,7 +257,7 @@ Based on the context above, answer the following prompt: $input""";
       if (_isThinkingModeEnabled) {
         apiUrl = ApiConfig.openRouterChatUrl;
         apiKey = ApiConfig.openRouterApiKey;
-        modelName = ApiConfig.openRouterModel;
+        modelName = ApiConfig.thinkingModeModel; // Use deepseek-r1 for thinking mode
       } else {
         switch (_selectedChatModel) {
           case ChatModels.grok_3:
