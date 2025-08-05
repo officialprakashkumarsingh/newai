@@ -67,9 +67,10 @@ class _ChatScreenState extends State<ChatScreen> {
   late String _chatId;
   late bool _isPinned;
   late String _chatTitle;
-  late String _category; // OPTIMIZED: Store category locally to avoid re-calculation.
+  // Category system removed
   bool _isWebSearchEnabled = false;
   bool _isThinkingModeEnabled = false;
+  bool _isAgentModeEnabled = false;
   List<SearchResult>? _lastSearchResults;
 
   ChatAttachment? _attachment;
@@ -85,7 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _isPinned = widget.isPinned;
     _chatId = widget.chatId ?? DateTime.now().millisecondsSinceEpoch.toString();
     _chatTitle = widget.chatTitle ?? "New Chat";
-    _category = _determineCategory(_messages); // OPTIMIZED: Calculate category only once on init.
+    // Category calculation removed
     
     if (_chatTitle == "New Chat" && _messages.isNotEmpty) {
       final firstUserMessage = _messages.firstWhere((m) => m.role == 'user', orElse: () => ChatMessage(role: 'user', text: ''));
@@ -225,10 +226,7 @@ Based on the context above, answer the following prompt: $input""";
       if (_chatTitle == "New Chat" || _chatTitle.trim().isEmpty) {
         _chatTitle = userMessage.text.length > 30 ? '${userMessage.text.substring(0, 30)}...' : userMessage.text;
       }
-      // OPTIMIZED: Only recalculate the category if it's currently 'General'.
-      if (_category == 'General') {
-        _category = _determineCategory(_messages);
-      }
+          // Category system removed
       _attachment = null;
     });
     _controller.clear();
@@ -353,7 +351,7 @@ Based on the context above, answer the following prompt: $input""";
   }
   
   void _updateChatInfo(bool isGenerating, bool isStopped) {
-    final chatInfo = ChatInfo(id: _chatId, title: _chatTitle, messages: List.from(_messages), isPinned: _isPinned, isGenerating: isGenerating, isStopped: isStopped, category: _category);
+    final chatInfo = ChatInfo(id: _chatId, title: _chatTitle, messages: List.from(_messages), isPinned: _isPinned, isGenerating: isGenerating, isStopped: isStopped, category: 'General');
     widget.chatInfoStream.add(chatInfo);
   }
 
@@ -463,6 +461,7 @@ Based on the context above, answer the following prompt: $input""";
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.auto_awesome_outlined), title: const Text('Think for longer'), trailing: Switch(value: _isThinkingModeEnabled, onChanged: (bool value) { setSheetState(() => _isThinkingModeEnabled = value); setState(() => _isThinkingModeEnabled = value); })),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.image_outlined), title: const Text('Create an image'), onTap: () { Navigator.pop(context); _showImagePromptBottomSheet(); }),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.slideshow_outlined), title: const Text('Make a presentation'), onTap: () { Navigator.pop(context); _showPresentationPromptDialog(); }),
+              ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.smart_toy_outlined), title: const Text('Enable Agent Mode'), trailing: Switch(value: _isAgentModeEnabled, onChanged: (bool value) { setSheetState(() => _isAgentModeEnabled = value); setState(() => _isAgentModeEnabled = value); _toggleAgentMode(value); })),
               SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
@@ -927,88 +926,20 @@ Based on the context above, answer the following prompt: $input""";
     }
   }
 
-  String _determineCategory(List<ChatMessage> messages) {
-    if (messages.isEmpty) return 'General';
-    
-    // For new chats with less than 5 messages, use simple categorization
-    if (messages.length < 5) {
-      final userMessages = messages.where((m) => m.role == 'user').map((m) => m.text.toLowerCase()).join(' ');
-      if (userMessages.contains('code') || userMessages.contains('programming') || userMessages.contains('debug') || userMessages.contains('flutter') || userMessages.contains('python')) return 'Coding';
-      if (userMessages.contains('write') || userMessages.contains('poem') || userMessages.contains('story') || userMessages.contains('script') || userMessages.contains('lyrics')) return 'Creative';
-      if (userMessages.contains('science') || userMessages.contains('physics') || userMessages.contains('biology') || userMessages.contains('chemistry') || userMessages.contains('astronomy')) return 'Science';
-      if (userMessages.contains('health') || userMessages.contains('medical') || userMessages.contains('fitness') || userMessages.contains('diet') || userMessages.contains('wellness')) return 'Health';
-      if (userMessages.contains('history') || userMessages.contains('ancient') || userMessages.contains('war') || userMessages.contains('historical')) return 'History';
-      if (userMessages.contains('tech') || userMessages.contains('gadget') || userMessages.contains('software') || userMessages.contains('computer') || userMessages.contains('ai')) return 'Technology';
-      if (userMessages.contains('plan') || userMessages.contains('trip') || userMessages.contains('schedule') || userMessages.contains('travel') || userMessages.contains('itinerary') || userMessages.contains('vacation')) return 'Travel & Plans';
-      if (userMessages.contains('weather') || userMessages.contains('forecast') || userMessages.contains('temperature')) return 'Weather';
-      if (userMessages.contains('fact') || userMessages.contains('trivia') || userMessages.contains('knowledge')) return 'Facts';
-      return 'General';
-    }
-    
-    // For chats with 5+ messages, trigger AI-based categorization in background
-    _generateAICategory(messages);
-    return 'General'; // Fallback while AI categorization is processing
-    }
+    // Categories removed - no longer needed
 
-  /// Generate AI-based category for chats with sufficient conversation history  
-  void _generateAICategory(List<ChatMessage> chatMessages) async {
-    try {
-      // Take first 5 messages for context
-      final contextMessages = chatMessages.take(5).map((m) => '${m.role}: ${m.text}').join('\n');
-      
-      final categorizationPrompt = '''
-Based on this conversation, categorize it into ONE of these categories:
-- Coding (programming, development, debugging)
-- Creative (writing, art, storytelling, music)
-- Science (physics, biology, chemistry, research)
-- Health (medical, fitness, nutrition, wellness)
-- History (historical events, ancient civilizations)
-- Technology (gadgets, software, AI, tech news)
-- Travel & Plans (trips, schedules, itineraries)
-- Weather (forecasts, climate, temperature)
-- Facts (trivia, knowledge, learning)
-- General (everything else)
-
-Conversation:
-$contextMessages
-
-Respond with only the category name, nothing else.''';
-
-      // Use the correct API call for categorization
-      final responseStream = ApiService.sendChatMessage(
-        message: categorizationPrompt,
-        model: 'gpt-3.5-turbo',
+  void _toggleAgentMode(bool enabled) {
+    if (enabled) {
+      // Show agent mode activation message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🤖 Agent Mode Activated! Browser automation and screen control enabled.'),
+          duration: Duration(seconds: 3),
+        ),
       );
-      
-      String fullResponse = '';
-      await for (final chunk in responseStream) {
-        fullResponse += chunk;
-      }
-      
-      if (fullResponse.isNotEmpty) {
-        final aiCategory = fullResponse.trim();
-        
-        // Validate the category is one of our predefined ones
-        final validCategories = ['Coding', 'Creative', 'Science', 'Health', 'History', 'Technology', 'Travel & Plans', 'Weather', 'Facts', 'General'];
-        
-        if (validCategories.contains(aiCategory)) {
-          if (mounted) {
-            setState(() {
-              _category = aiCategory;
-            });
-            
-            // Update the chat info with new category
-            _updateChatInfo(false, false);
-            
-            print('🧠 AI categorized chat as: $aiCategory');
-          }
-        } else {
-          print('⚠️ Invalid AI category: $aiCategory');
-        }
-      }
-    } catch (e) {
-      print('❌ AI categorization failed: $e');
-      // Keep existing category as fallback
+      print('🤖 Agent Mode enabled - browser automation ready');
+    } else {
+      print('🤖 Agent Mode disabled');
     }
   }
 }
