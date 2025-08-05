@@ -88,10 +88,10 @@ class MarkdownRenderer(private val context: Context) {
                     // Add copy buttons to code blocks
                     addCopyButtons();
                     
-                    // Notify Android that rendering is complete
-                    setTimeout(() => {
-                        Android.onRenderComplete();
-                    }, 100);
+                                                        // Notify Android that rendering is complete
+                                    setTimeout(() => {
+                                        Android.onRenderComplete();
+                                    }, 50);
                 }).catch((err) => {
                     console.error('MathJax rendering error:', err);
                     Android.onRenderError(err.toString());
@@ -440,7 +440,7 @@ class MarkdownRenderer(private val context: Context) {
                                             error = "Failed to capture bitmap: ${e.message}"
                                         ))
                                     }
-                                }, 500) // Wait 500ms for rendering to complete
+                                }, 200) // Wait 200ms for rendering to complete
                             } catch (e: Exception) {
                                 future.complete(MarkdownRenderResult(
                                     success = false,
@@ -478,7 +478,7 @@ class MarkdownRenderer(private val context: Context) {
             
             // Set timeout for rendering
             GlobalScope.launch {
-                delay(15000) // 15 second timeout
+                delay(6000) // 6 second timeout
                 if (!future.isDone) {
                     future.complete(MarkdownRenderResult(
                         success = false,

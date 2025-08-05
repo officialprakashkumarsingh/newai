@@ -616,7 +616,7 @@ Based on the context above, answer the following prompt: $input""";
           if (message.text.isEmpty && _isStreaming && index == _messages.length - 1) return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: const GeneratingIndicator()));
           if (message.text == 'Searching the web...' || message.text == 'Thinking deeply...') return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: Row(mainAxisSize: MainAxisSize.min, children: [Text(message.text), const SizedBox(width: 12), GeneratingIndicator(size: 16)])));
           final bool showActionButtons = (!_isStreaming || index != _messages.length - 1) && !_isStoppedByUser;
-          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : CustomMarkdownWidget(data: message.text, selectable: true)), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
+          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : _buildMessageContent(message.text)), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
         }
         
         final isDark = !isLightTheme(context);
@@ -930,5 +930,112 @@ Based on the context above, answer the following prompt: $input""";
 
     // Categories removed - no longer needed
 
-  // Agent feature removed as requested
+     // Agent feature removed as requested
+
+  Widget _buildMessageContent(String text) {
+    // Use simple text for short messages or when streaming
+    if (text.length < 100 || _isStreaming) {
+      return SelectableText(
+        text,
+        style: Theme.of(context).textTheme.bodyLarge,
+      );
+    }
+
+    // Check if content has complex markdown features
+    final hasComplexMarkdown = text.contains('```') ||  // Code blocks
+                              text.contains('\$') ||   // LaTeX
+                              text.contains('|') ||    // Tables
+                              text.contains('![') ||   // Images
+                              text.contains('#') ||    // Headers
+                              text.contains('*') ||    // Bold/italic
+                              text.contains('_') ||    // Underscore formatting
+                              text.contains('[') ||    // Links
+                              text.split('\n').length > 5; // Multi-line
+
+    if (hasComplexMarkdown) {
+      // Use custom renderer with timeout fallback
+      return FutureBuilder<Widget>(
+        future: _renderWithTimeout(text),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  children: [
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    SizedBox(width: 8),
+                    Text('Rendering...', style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                // Show text preview while loading
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    text.length > 200 ? '${text.substring(0, 200)}...' : text,
+                    style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError || !snapshot.hasData) {
+            // Fallback to simple text if rendering fails
+            return Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: Colors.orange.withOpacity(0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.warning, size: 16, color: Colors.orange[700]),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Rendering failed - showing plain text',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.orange[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  SelectableText(
+                    text,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return snapshot.data!;
+          }
+        },
+      );
+    } else {
+      // Use simple text for basic content
+      return SelectableText(
+        text,
+        style: Theme.of(context).textTheme.bodyLarge,
+      );
+    }
+  }
+
+  Future<Widget> _renderWithTimeout(String text) async {
+    // Simply return the widget - timeout is handled in CustomMarkdownWidget
+    return CustomMarkdownWidget(data: text, selectable: true);
+  }
 }

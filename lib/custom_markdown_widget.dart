@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:async';
 import 'theme.dart';
 
 /// Custom markdown widget that uses Kotlin-based renderer
@@ -44,12 +45,13 @@ class _CustomMarkdownWidgetState extends State<CustomMarkdownWidget> {
   Future<Widget> _renderMarkdown() async {
     final isDark = !isLightTheme(context);
     
-    try {
-      final result = await platform.invokeMethod('renderMarkdown', {
-        'markdown': widget.data,
-        'isDarkTheme': isDark,
-        'fontSize': widget.fontSize ?? 16.0,
-      });
+          try {
+        // Add timeout to prevent hanging
+        final result = await platform.invokeMethod('renderMarkdown', {
+          'markdown': widget.data,
+          'isDarkTheme': isDark,
+          'fontSize': widget.fontSize ?? 16.0,
+        }).timeout(const Duration(seconds: 8));
       
       if (result['success'] == true && result['image'] != null) {
         final imageBytes = base64Decode(result['image']);
@@ -69,42 +71,9 @@ class _CustomMarkdownWidgetState extends State<CustomMarkdownWidget> {
       }
     } catch (e) {
       // Fallback to simple text display
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.orange.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Colors.orange.withOpacity(0.3)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.warning, size: 16, color: Colors.orange[700]),
-                const SizedBox(width: 4),
-                Text(
-                  'Markdown Rendering Failed',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.orange[700],
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            SelectableText(
-              widget.data,
-              style: TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 14,
-                color: Theme.of(context).textTheme.bodyLarge?.color,
-              ),
-            ),
-          ],
-        ),
+      return SelectableText(
+        widget.data,
+        style: Theme.of(context).textTheme.bodyLarge,
       );
     }
   }
