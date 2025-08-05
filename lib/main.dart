@@ -325,6 +325,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     return Scaffold(
       appBar: _buildAppBar(context),
+      extendBody: true, // Extend body behind system navigation bar
       body: _chats.isEmpty
           ? Center(
               child: SingleChildScrollView(

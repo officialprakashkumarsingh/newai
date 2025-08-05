@@ -643,6 +643,7 @@ Based on the context above, answer the following prompt: $input""";
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_chatTitle), centerTitle: true),
+      extendBody: true, // Extend body behind system navigation bar
       body: Column(
         children: [
           Expanded(
@@ -661,8 +662,8 @@ Based on the context above, answer the following prompt: $input""";
               ),
             ),
           Container(
-            margin: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-            padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
+            margin: EdgeInsets.fromLTRB(12, 8, 12, MediaQuery.of(context).padding.bottom),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             decoration: BoxDecoration(
               color: isLightTheme(context) 
                   ? const Color(0xFFFAFAFA) // Light mode: very subtle gray
