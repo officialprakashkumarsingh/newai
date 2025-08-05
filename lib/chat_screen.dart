@@ -641,7 +641,7 @@ Based on the context above, answer the following prompt: $input""";
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(color: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}), borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(color: Colors.grey[600], borderRadius: BorderRadius.circular(16)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,

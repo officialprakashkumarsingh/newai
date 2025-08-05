@@ -483,15 +483,7 @@ class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text('Profile & Settings', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20)),
             ),
-            Consumer<ThemeNotifier>(
-              builder: (context, theme, child) => SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Dark Theme'),
-                value: theme.themeMode == ThemeMode.dark,
-                onChanged: (value) => theme.setTheme(value ? ThemeMode.dark : ThemeMode.light),
-                secondary: const Icon(Icons.dark_mode_outlined),
-              ),
-            ),
+
             const Divider(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
