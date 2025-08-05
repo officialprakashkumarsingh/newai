@@ -629,8 +629,20 @@ Based on the context above, answer the following prompt: $input""";
         
         final isDark = !isLightTheme(context);
         final userMessageStyle = MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-          p: Theme.of(context).textTheme.bodyLarge?.copyWith(color: isDark ? draculaBackground : Colors.white),
-          code: Theme.of(context).textTheme.bodyMedium?.copyWith(fontFamily: 'monospace', backgroundColor: isDark ? Colors.black.withOpacity(0.2) : Colors.black.withOpacity(0.15), color: isDark ? Colors.white : Colors.white),
+          p: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: isLightTheme(context) 
+                ? Colors.white  // Light mode: white text on dark bubble
+                : const Color(0xFF222831) // Dark mode: dark text on light bubble
+          ),
+          code: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontFamily: 'monospace', 
+            backgroundColor: isLightTheme(context) 
+                ? Colors.black.withOpacity(0.15) 
+                : Colors.black.withOpacity(0.2), 
+            color: isLightTheme(context) 
+                ? Colors.white 
+                : const Color(0xFF222831)
+          ),
         );
 
         return GestureDetector(
@@ -641,7 +653,12 @@ Based on the context above, answer the following prompt: $input""";
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(color: const Color(0xFF222831), borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(
+                color: isLightTheme(context) 
+                    ? const Color(0xFF222831)  // Light mode: dark bubble
+                    : const Color(0xFFFFFAEC), // Dark mode: light bubble
+                borderRadius: BorderRadius.circular(16)
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,

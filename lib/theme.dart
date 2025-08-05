@@ -47,24 +47,24 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: const Color(0xFFFFFAEC),
     primaryColor: Colors.black,
-    cardColor: Colors.grey[50],
+    cardColor: const Color(0xFFF5ECD5),
     appBarTheme: AppBarTheme(
-      color: Colors.white,
+      color: const Color(0xFFFFFAEC),
       elevation: 0,
       foregroundColor: Colors.black,
-      surfaceTintColor: Colors.white,
+      surfaceTintColor: const Color(0xFFFFFAEC),
       iconTheme: const IconThemeData(color: Colors.black),
       titleTextStyle: GoogleFonts.inter(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
     ),
     textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
     iconTheme: const IconThemeData(color: Colors.black54),
-    dividerColor: Colors.grey.shade200,
+    dividerColor: const Color(0xFFF5ECD5),
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.black,
-      foregroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF5ECD5),
+      foregroundColor: Colors.black,
     )),
     textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(foregroundColor: Colors.black)),
@@ -86,45 +86,45 @@ class ThemeNotifier extends ChangeNotifier {
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: draculaBackground,
-    primaryColor: draculaForeground,
-    cardColor: draculaCurrentLine,
+    scaffoldBackgroundColor: const Color(0xFF222831),
+    primaryColor: const Color(0xFFFFFAEC),
+    cardColor: const Color(0xFF31363F),
     appBarTheme: AppBarTheme(
-      color: draculaBackground,
+      color: const Color(0xFF222831),
       elevation: 0,
-      foregroundColor: draculaForeground,
-      surfaceTintColor: draculaBackground,
-      iconTheme: const IconThemeData(color: draculaForeground),
-      titleTextStyle: GoogleFonts.inter(color: draculaForeground, fontSize: 18, fontWeight: FontWeight.w600),
+      foregroundColor: const Color(0xFFFFFAEC),
+      surfaceTintColor: const Color(0xFF222831),
+      iconTheme: const IconThemeData(color: Color(0xFFFFFAEC)),
+      titleTextStyle: GoogleFonts.inter(color: const Color(0xFFFFFAEC), fontSize: 18, fontWeight: FontWeight.w600),
     ),
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
-      bodyColor: draculaForeground,
-      displayColor: draculaForeground,
+      bodyColor: const Color(0xFFFFFAEC),
+      displayColor: const Color(0xFFFFFAEC),
     ),
-    iconTheme: const IconThemeData(color: draculaComment),
-    dividerColor: draculaCurrentLine,
+    iconTheme: const IconThemeData(color: Color(0xFFFFFAEC)),
+    dividerColor: const Color(0xFF31363F),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: draculaForeground,
-        foregroundColor: draculaBackground,
+        backgroundColor: const Color(0xFF31363F),
+        foregroundColor: const Color(0xFFFFFAEC),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: draculaForeground),
+      style: TextButton.styleFrom(foregroundColor: const Color(0xFFFFFAEC)),
     ),
-    dialogBackgroundColor: draculaCurrentLine,
+    dialogBackgroundColor: const Color(0xFF31363F),
     switchTheme: SwitchThemeData(
       thumbColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
           return draculaGreen;
         }
-        return draculaComment;
+        return const Color(0xFFFFFAEC);
       }),
       trackColor: MaterialStateProperty.resolveWith((states) {
         if (states.contains(MaterialState.selected)) {
           return draculaGreen.withOpacity(0.5);
         }
-        return draculaCurrentLine;
+        return const Color(0xFF31363F);
       }),
     ),
   );

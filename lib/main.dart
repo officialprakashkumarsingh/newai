@@ -328,47 +328,47 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     const HighlightedWelcomeText(),
                     const SizedBox(height: 32),
                     ...suggestions.map((suggestion) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 24),
                           child: GestureDetector(
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(initialMessage: suggestion, chatInfoStream: _chatInfoStream))),
                             child: Container(
-                              padding: const EdgeInsets.all(16),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                               decoration: BoxDecoration(
                                 color: Theme.of(context).cardColor,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Theme.of(context).dividerColor),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Theme.of(context).dividerColor,
+                                  width: 1.5,
+                                ),
                               ),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.lightbulb_outline,
-                                    size: 20,
-                                    color: Theme.of(context).iconTheme.color,
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      Icons.lightbulb_outline,
+                                      size: 18,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: 16),
                                   Expanded(
                                     child: Text(
                                       suggestion,
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    ),
-                                  ),
-                                  AnimatedBuilder(
-                                    animation: _arrowAnimation,
-                                    builder: (context, child) => Transform.translate(
-                                      offset: Offset(_arrowAnimation.value, 0),
-                                      child: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 16,
-                                        color: Theme.of(context).iconTheme.color,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15,
                                       ),
                                     ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: Theme.of(context).iconTheme.color?.withOpacity(0.6),
                                   ),
                                 ],
                               ),
@@ -458,58 +458,46 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
       floatingActionButton: _chats.isEmpty ? null : Container(
         margin: const EdgeInsets.only(bottom: 20, right: 4),
-        child: Material(
-          elevation: 8,
-          shadowColor: const Color(0xFFDDF6D2).withOpacity(0.4),
-          borderRadius: BorderRadius.circular(28),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  const Color(0xFFDDF6D2),
-                  const Color(0xFFDDF6D2).withOpacity(0.9),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: const Color(0xFFECFAE5),
-                width: 1,
-              ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: Theme.of(context).dividerColor,
+              width: 1.5,
             ),
-            child: InkWell(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream))),
-              borderRadius: BorderRadius.circular(28),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.add_rounded, 
-                        size: 16, 
-                        color: Colors.black87,
-                      ),
+          ),
+          child: InkWell(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream))),
+            borderRadius: BorderRadius.circular(28),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      'New Chat', 
-                      style: TextStyle(
-                        fontSize: 14, 
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                        letterSpacing: 0.2,
-                      ),
+                    child: Icon(
+                      Icons.add_rounded, 
+                      size: 16, 
+                      color: Theme.of(context).primaryColor,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'New Chat', 
+                    style: TextStyle(
+                      fontSize: 14, 
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).primaryColor,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -732,23 +720,7 @@ class HighlightedWelcomeText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        children: [
-          Icon(
-            Icons.psychology_rounded,
-            size: 48,
-            color: Theme.of(context).primaryColor,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Your AI companion for all questions.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ],
-      ),
+      child: const SizedBox.shrink(), // Empty widget - removed brain icon and AI companion text
     );
   }
 }
@@ -758,22 +730,48 @@ class ModernStartButton extends StatelessWidget {
   const ModernStartButton({required this.onPressed, super.key});
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
-        elevation: 2,
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 1.5,
+        ),
       ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.add, size: 20),
-          SizedBox(width: 8),
-          Text('Start New Chat', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-          SizedBox(width: 8),
-          Icon(Icons.arrow_forward, size: 20),
-        ],
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(28),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.add_rounded, 
+                  size: 18, 
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'New Chat', 
+                style: TextStyle(
+                  fontSize: 16, 
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).primaryColor,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
