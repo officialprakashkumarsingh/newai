@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:receive_sharing_intent/receive_sharing_intent.dart'; // TODO: Fix API and re-enable
 
 
 import 'chat_screen.dart';
@@ -25,8 +26,45 @@ void main() {
   );
 }
 
-class AhamApp extends StatelessWidget {
+class AhamApp extends StatefulWidget {
   const AhamApp({super.key});
+
+  @override
+  State<AhamApp> createState() => _AhamAppState();
+}
+
+class _AhamAppState extends State<AhamApp> {
+  // late StreamSubscription _intentDataStreamSubscription; // TODO: Uncomment when sharing is implemented
+  String? _sharedText;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSharing();
+  }
+
+  void _initializeSharing() {
+    // TODO: Implement text sharing once we fix the API issue
+    // For now, let's get the basic functionality working
+    print("Text sharing will be implemented in future update");
+  }
+
+  void _handleSharedText(String text) {
+    // Store the shared text to pass to HomeScreen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // The shared text will be handled by the home screen
+      setState(() {
+        _sharedText = text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // _intentDataStreamSubscription.cancel(); // TODO: Uncomment when sharing is implemented
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +90,11 @@ class AhamApp extends StatelessWidget {
         return MaterialApp(
           title: 'AhamAI',
           debugShowCheckedModeBanner: false,
+          navigatorKey: _navigatorKey,
           theme: ThemeNotifier.lightTheme,
           darkTheme: ThemeNotifier.darkTheme,
           themeMode: theme.themeMode,
-          home: const HomeScreen(),
+          home: HomeScreen(sharedText: _sharedText),
         );
       },
     );
@@ -145,7 +184,8 @@ class ChatInfo {
 
 // HOME SCREEN
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String? sharedText;
+  const HomeScreen({super.key, this.sharedText});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -166,6 +206,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _animationController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this)..repeat(reverse: true);
     _arrowAnimation = Tween<double>(begin: 0, end: 8).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
     _searchController.addListener(() => setState(() {}));
+    
+    // Handle shared text - navigate to chat after build completes
+    if (widget.sharedText != null && widget.sharedText!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              chatInfoStream: _chatInfoStream,
+              initialMessage: widget.sharedText!,
+            ),
+          ),
+        );
+      });
+    }
     _chatInfoSubscription = _chatInfoStream.stream.listen((chatInfo) {
       setState(() {
         final index = _chats.indexWhere((c) => c.id == chatInfo.id);

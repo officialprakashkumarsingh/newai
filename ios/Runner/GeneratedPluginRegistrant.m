@@ -30,6 +30,12 @@
 @import path_provider_foundation;
 #endif
 
+#if __has_include(<receive_sharing_intent/ReceiveSharingIntentPlugin.h>)
+#import <receive_sharing_intent/ReceiveSharingIntentPlugin.h>
+#else
+@import receive_sharing_intent;
+#endif
+
 #if __has_include(<shared_preferences_foundation/SharedPreferencesPlugin.h>)
 #import <shared_preferences_foundation/SharedPreferencesPlugin.h>
 #else
@@ -49,6 +55,7 @@
   [FlutterTtsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterTtsPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [PathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"PathProviderPlugin"]];
+  [ReceiveSharingIntentPlugin registerWithRegistrar:[registry registrarForPlugin:@"ReceiveSharingIntentPlugin"]];
   [SharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];
   [URLLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"URLLauncherPlugin"]];
 }

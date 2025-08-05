@@ -254,6 +254,10 @@ provider
 2.12
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/provider-6.1.5/
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/provider-6.1.5/lib/
+receive_sharing_intent
+2.17
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/receive_sharing_intent-1.8.1/
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/receive_sharing_intent-1.8.1/lib/
 screen_retriever
 3.0
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/screen_retriever-0.2.0/
