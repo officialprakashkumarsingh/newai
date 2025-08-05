@@ -492,7 +492,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     child: Icon(
                       Icons.add_rounded, 
                       size: 16, 
-                      color: Colors.white,
+                      color: isLightTheme(context)
+                          ? const Color(0xFF374151) // Dark for light mode
+                          : Colors.white,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -501,7 +503,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     style: TextStyle(
                       fontSize: 14, 
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: isLightTheme(context)
+                          ? const Color(0xFF374151) // Dark for light mode
+                          : Colors.white,
                       letterSpacing: 0.2,
                     ),
                   ),
@@ -532,16 +536,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           children: [
             Icon(
               suggestion['icon'],
-              size: 20,
-              color: Colors.white,
+              size: 22,
+              color: isLightTheme(context) 
+                  ? const Color(0xFF374151) // Dark gray for light mode
+                  : Colors.white,
             ),
             const SizedBox(height: 8),
             Text(
               suggestion['text'],
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w500,
-                fontSize: 12,
-                color: Colors.white,
+                fontSize: 13,
+                color: isLightTheme(context) 
+                    ? const Color(0xFF374151) // Dark gray for light mode  
+                    : Colors.white,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -808,7 +816,9 @@ class ModernStartButton extends StatelessWidget {
                 child: Icon(
                   Icons.add_rounded, 
                   size: 18, 
-                  color: Colors.white,
+                  color: isLightTheme(context)
+                      ? const Color(0xFF374151) // Dark for light mode
+                      : Colors.white,
                 ),
               ),
               const SizedBox(width: 12),
@@ -817,7 +827,9 @@ class ModernStartButton extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16, 
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: isLightTheme(context)
+                      ? const Color(0xFF374151) // Dark for light mode
+                      : Colors.white,
                   letterSpacing: 0.2,
                 ),
               ),

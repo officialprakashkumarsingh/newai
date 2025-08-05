@@ -13,13 +13,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'ai_message_actions.dart';
 import 'api.dart';
+import 'api_service.dart';
 import 'chat_ui_helpers.dart';
 import 'file_processing.dart';
 import 'main.dart';
 import 'presentation_generator.dart';
+import 'thinking_panel.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
-import 'thinking_panel.dart';
 
 class ChatScreen extends StatefulWidget {
   final List<ChatMessage>? initialMessages;
@@ -231,104 +232,57 @@ Based on the context above, answer the following prompt: $input""";
     });
     _scrollToBottom();
 
-    _httpClient = http.Client();
     try {
-      String apiUrl;
-      String apiKey;
-      String modelName;
 
-      if (_isThinkingModeEnabled) {
-        apiUrl = ApiConfig.openRouterChatUrl;
-        apiKey = ApiConfig.openRouterApiKey;
-        modelName = ApiConfig.thinkingModeModel; // Use deepseek-r1 for thinking mode
-      } else {
-        switch (_selectedChatModel) {
-          case ChatModels.grok_3:
-          case ChatModels.grok_3_mini:
-          case ChatModels.grok_3_fast:
-          case ChatModels.grok_3_mini_fast:
-            apiUrl = '${ApiConfig.grokApiBaseUrl}/chat/completions';
-            apiKey = ApiConfig.grokApiKey;
-            modelName = _selectedChatModel;
-            break;
-          case ChatModels.claude_4_sonnet:
-            apiUrl = '${ApiConfig.claudeApiBaseUrl}/chat/completions';
-            apiKey = ApiConfig.claudeApiKey;
-            modelName = _selectedChatModel;
-            break;
-          default:
-            _onStreamingError('Model not configured for OpenAI-compatible streaming.');
-            return;
-        }
-      }
+      // Build conversation history for context
+      final conversationHistory = _messages
+          .where((m) => m.text.isNotEmpty)
+          .map((m) => {'role': m.role == 'user' ? 'user' : 'assistant', 'content': m.text})
+          .toList();
 
+      // System prompt with current capabilities
       final now = DateTime.now().toIso8601String();
-      String finalPrompt = """System Knowledge: 
+      String systemPrompt = '''System Knowledge: 
 1. Current date: $now
 2. Screenshot Capability: You can generate website screenshots using the format: https://s0.wp.com/mshots/v1/https%3A%2F%2F[URL]?w=[WIDTH]&h=[HEIGHT]
    - Replace [URL] with the URL-encoded website address
    - Replace [WIDTH] and [HEIGHT] with desired dimensions (default: w=1280&h=720)
    - Example: https://s0.wp.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1280&h=720
    - The markdown renderer will automatically display these as images
-   - Use this when users ask for website previews, screenshots, or visual representations of websites
+   - Use this when users ask for website previews, screenshots, or visual representations of websites''';
 
-User Prompt: $input""";
       if (webSearchResults != null && webSearchResults.isNotEmpty) {
-        finalPrompt = """Use the following context to answer the user's prompt.\n---\nCONTEXT:\n1. Current Date: $now\n2. Web Search Results:\n$webSearchResults\n---\nUSER PROMPT:\n$input""";
+        systemPrompt += '\n3. Web Search Results: $webSearchResults';
       }
 
-      final history = _messages.map((m) { return {"role": m.role == 'user' ? "user" : "assistant", "content": m.text}; }).toList();
-      history.removeLast();
-      history.add({"role": "user", "content": finalPrompt});
-
-      final request = http.Request('POST', Uri.parse(apiUrl))
-        ..headers.addAll({'Content-Type': 'application/json', 'Authorization': 'Bearer $apiKey'})
-        ..body = jsonEncode({'model': modelName, 'messages': history, 'stream': true});
-
-      final response = await _httpClient!.send(request);
-      
-      String buffer = '';
-      _streamSubscription = response.stream.transform(utf8.decoder).listen(
-        (chunk) {
-          if (_isStoppedByUser) { _streamSubscription?.cancel(); return; }
-          buffer += chunk;
-          while (true) {
-            final lineEnd = buffer.indexOf('\n');
-            if (lineEnd == -1) break;
-            final line = buffer.substring(0, lineEnd).trim();
-            buffer = buffer.substring(lineEnd + 1);
-            if (line.startsWith('data: ')) {
-              final data = line.substring(6);
-              if (data == '[DONE]') return;
-              try {
-                final parsed = jsonDecode(data);
-                final content = parsed['choices']?[0]?['delta']?['content'];
-                if (content != null) {
-                                  _currentModelResponse += content;
-                
-                // Parse content to separate thinking and final content
-                final parsedContent = ThinkingContentParser.parseContent(_currentModelResponse);
-                final thinkingContent = parsedContent['thinking'];
-                final finalContent = parsedContent['final'];
-                
-                setState(() => _messages[_messages.length - 1] = ChatMessage(
-                  role: 'model', 
-                  text: finalContent ?? _currentModelResponse,
-                  thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
-                ));
-                   _scrollToBottom();
-                }
-              } catch (e) { /* Ignore incomplete chunks */ }
-            }
-          }
-        },
-        onDone: () { _httpClient?.close(); _onStreamingDone(); },
-        onError: (error) { _httpClient?.close(); _onStreamingError(error); },
-        cancelOnError: true,
-      );
+      // Use ApiService for streaming
+      await for (final chunk in ApiService.sendChatMessage(
+        message: input,
+        model: _selectedChatModel,
+        systemPrompt: systemPrompt,
+        conversationHistory: conversationHistory,
+        isThinkingMode: _isThinkingModeEnabled,
+      )) {
+        if (_isStoppedByUser) break;
+        
+        _currentModelResponse += chunk;
+        
+        // Parse content to separate thinking and final content
+        final parsedContent = ThinkingContentParser.parseContent(_currentModelResponse);
+        final thinkingContent = parsedContent['thinking'];
+        final finalContent = parsedContent['final'];
+        
+        setState(() => _messages[_messages.length - 1] = ChatMessage(
+          role: 'model', 
+          text: finalContent ?? _currentModelResponse,
+          thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+        ));
+        _scrollToBottom();
+       }
     } catch (e) {
-      _httpClient?.close();
       _onStreamingError(e);
+    } finally {
+      _onStreamingDone();
     }
   }
 
@@ -586,7 +540,7 @@ User Prompt: $input""";
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               decoration: BoxDecoration(
                   color: isLightTheme(context)
-                      ? const Color(0xFF2A2A2A) // Modern dark gray bubble for light mode
+                      ? const Color(0xFF0F0F10) // Near black bubble for light mode - high contrast
                       : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
                   borderRadius: BorderRadius.circular(16)
                 ),
@@ -693,12 +647,15 @@ User Prompt: $input""";
             padding: EdgeInsets.fromLTRB(8, 8, 8, 8 + MediaQuery.of(context).padding.bottom),
             decoration: BoxDecoration(
               color: isLightTheme(context) 
-                  ? const Color(0xFFFAFAFA) // Light mode: match page background
+                  ? const Color(0xFFFFFFFF) // Light mode: pure white background
                   : const Color(0xFF31363F), // Dark mode: match suggestion prompt background
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(24),
                 topRight: Radius.circular(24),
               ),
+              border: isLightTheme(context) ? Border(
+                top: BorderSide(color: const Color(0xFFE5E7EB), width: 1),
+              ) : null,
             ), // Clean rounded input area
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -713,15 +670,15 @@ User Prompt: $input""";
                     maxLines: 5, 
                     minLines: 1, 
                     style: TextStyle(
-                      color: isLightTheme(context) ? const Color(0xFF1A1A1A) : Colors.white,
+                      color: isLightTheme(context) ? const Color(0xFF0F0F10) : Colors.white,
                     ),
                     decoration: InputDecoration(
                       hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
                       hintStyle: TextStyle(
-                        color: isLightTheme(context) ? Colors.grey.shade600 : Colors.white.withOpacity(0.7),
+                        color: isLightTheme(context) ? const Color(0xFF6B7280) : Colors.white.withOpacity(0.7),
                       ),
                       filled: true, 
-                      fillColor: isLightTheme(context) ? const Color(0xFFF5F5F5) : const Color(0xFF31363F), // Match card color
+                      fillColor: isLightTheme(context) ? const Color(0xFFF8F9FA) : const Color(0xFF31363F), // Very subtle gray
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), 
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24), 

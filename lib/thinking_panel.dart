@@ -33,32 +33,39 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
             onTap: () => setState(() => _isExpanded = !_isExpanded),
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFFF8F9FA)
+                    ? const Color(0xFFFBFBFC) // Very subtle blue-gray
                     : const Color(0xFF1A1D21),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isLightTheme(context) 
-                      ? const Color(0xFFE9ECEF) 
+                      ? const Color(0xFFE1E5E9) // Subtle border
                       : const Color(0xFF2D3748),
                   width: 1,
                 ),
+                boxShadow: isLightTheme(context) ? [
+                  BoxShadow(
+                    color: const Color(0xFF000000).withOpacity(0.02),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ] : null,
               ),
               child: Row(
                 children: [
-                  Text(
-                    'Thinking...',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: isLightTheme(context) 
-                          ? Colors.grey.shade600 
-                          : Colors.grey.shade400,
+                                      Text(
+                      'Thinking...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: isLightTheme(context) 
+                            ? const Color(0xFF374151) // Darker text for better contrast
+                            : Colors.grey.shade400,
+                      ),
                     ),
-                  ),
                   const Spacer(),
                   Icon(
                     _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -76,38 +83,45 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
           if (_isExpanded)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(16),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFFFBFCFD)
+                    ? const Color(0xFFF9FAFB) // Very subtle background
                     : const Color(0xFF0F1419),
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isLightTheme(context) 
-                      ? const Color(0xFFE9ECEF) 
+                      ? const Color(0xFFE1E5E9) 
                       : const Color(0xFF2D3748),
                   width: 1,
                 ),
+                boxShadow: isLightTheme(context) ? [
+                  BoxShadow(
+                    color: const Color(0xFF000000).withOpacity(0.02),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ] : null,
               ),
-              child: MarkdownBody(
+                              child: MarkdownBody(
                 data: widget.thinkingContent,
                 styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
                   p: TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     color: isLightTheme(context) 
-                        ? Colors.grey.shade700 
+                        ? const Color(0xFF374151) // Darker for better readability
                         : Colors.grey.shade300,
-                    height: 1.4,
+                    height: 1.5,
                   ),
                   code: TextStyle(
-                    fontSize: 12,
+                    fontSize: 13,
                     fontFamily: 'monospace',
                     backgroundColor: isLightTheme(context) 
-                        ? Colors.grey.shade200 
+                        ? const Color(0xFFF3F4F6)
                         : Colors.grey.shade800,
                     color: isLightTheme(context) 
-                        ? Colors.grey.shade800 
+                        ? const Color(0xFF1F2937)
                         : Colors.grey.shade200,
                   ),
                 ),

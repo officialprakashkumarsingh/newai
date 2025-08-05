@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,29 +46,30 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Light theme - Perplexity-inspired modern design
+  // Light theme - Latest Perplexity-inspired clean design
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFFFAFAFA), // Very light gray, modern and clean
-    primaryColor: const Color(0xFF1A1A1A), // Dark text color
-    cardColor: const Color(0xFFF5F5F5), // Clean light gray for cards/buttons
+    scaffoldBackgroundColor: const Color(0xFFFFFFFF), // Pure white like latest Perplexity
+    primaryColor: const Color(0xFF0F0F10), // Almost black text 
+    cardColor: const Color(0xFFF8F9FA), // Very subtle gray for cards/buttons
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFFAFAFA), // Match scaffold background
-      foregroundColor: Color(0xFF1A1A1A), // Dark text
-      surfaceTintColor: Color(0xFFFAFAFA), // Match scaffold background
+      backgroundColor: Color(0xFFFFFFFF), // Pure white background
+      foregroundColor: Color(0xFF0F0F10), // Almost black text
+      surfaceTintColor: Color(0xFFFFFFFF), // Pure white
       elevation: 0,
       titleTextStyle: TextStyle(
-        color: Color(0xFF1A1A1A),
+        color: Color(0xFF0F0F10),
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
+      systemOverlayStyle: SystemUiOverlayStyle.dark, // Fix system navigation bar
     ),
-    iconTheme: const IconThemeData(color: Color(0xFF1A1A1A)),
+    iconTheme: const IconThemeData(color: Color(0xFF0F0F10)),
     textTheme: GoogleFonts.interTextTheme().apply(
-      bodyColor: const Color(0xFF1A1A1A),
-      displayColor: const Color(0xFF1A1A1A),
+      bodyColor: const Color(0xFF0F0F10),
+      displayColor: const Color(0xFF0F0F10),
     ),
-    dividerColor: const Color(0xFFE8E8E8), // Subtle light gray divider
+    dividerColor: const Color(0xFFE5E7EB), // Very subtle divider
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFF5F5F5), // Clean light gray buttons
