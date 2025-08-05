@@ -73,11 +73,9 @@ class _AhamAppState extends State<AhamApp> {
   }
 
   void _handleSharedText(String text) {
-    // Store the shared text to pass to HomeScreen
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _sharedText = text;
-      });
+    // Store the shared text - HomeScreen will handle navigation automatically
+    setState(() {
+      _sharedText = text;
     });
   }
 
@@ -114,7 +112,10 @@ class _AhamAppState extends State<AhamApp> {
           theme: ThemeNotifier.lightTheme,
           darkTheme: ThemeNotifier.darkTheme,
           themeMode: theme.themeMode,
-          home: HomeScreen(sharedText: _sharedText),
+          home: HomeScreen(
+            key: ValueKey(_sharedText), // Force rebuild when shared text changes
+            sharedText: _sharedText,
+          ),
         );
       },
     );
@@ -229,7 +230,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     
     // Handle shared text - navigate to chat after build completes
     if (widget.sharedText != null && widget.sharedText!.isNotEmpty) {
+      print("HomeScreen: Handling shared text: ${widget.sharedText}");
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        print("HomeScreen: Navigating to chat with shared text");
         Navigator.push(
           context,
           MaterialPageRoute(
