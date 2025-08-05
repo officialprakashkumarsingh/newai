@@ -19,6 +19,7 @@ import 'main.dart';
 import 'presentation_generator.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
+import 'thinking_panel.dart';
 
 class ChatScreen extends StatefulWidget {
   final List<ChatMessage>? initialMessages;
@@ -321,8 +322,18 @@ User Prompt: $input""";
                 final parsed = jsonDecode(data);
                 final content = parsed['choices']?[0]?['delta']?['content'];
                 if (content != null) {
-                  _currentModelResponse += content;
-                  setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: _currentModelResponse));
+                                  _currentModelResponse += content;
+                
+                // Parse content to separate thinking and final content
+                final parsedContent = ThinkingContentParser.parseContent(_currentModelResponse);
+                final thinkingContent = parsedContent['thinking'];
+                final finalContent = parsedContent['final'];
+                
+                setState(() => _messages[_messages.length - 1] = ChatMessage(
+                  role: 'model', 
+                  text: finalContent ?? _currentModelResponse,
+                  thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+                ));
                    _scrollToBottom();
                 }
               } catch (e) { /* Ignore incomplete chunks */ }
@@ -642,7 +653,7 @@ User Prompt: $input""";
           if (message.text.isEmpty && _isStreaming && index == _messages.length - 1) return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: const GeneratingIndicator()));
           if (message.text == 'Searching the web...' || message.text == 'Thinking deeply...') return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: Row(mainAxisSize: MainAxisSize.min, children: [Text(message.text), const SizedBox(width: 12), GeneratingIndicator(size: 16)])));
           final bool showActionButtons = (!_isStreaming || index != _messages.length - 1) && !_isStoppedByUser;
-          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: MarkdownBody(data: message.text, selectable: true, styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)))), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
+          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : MarkdownBody(data: message.text, selectable: true, styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)))), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
         }
         
         final isDark = !isLightTheme(context);

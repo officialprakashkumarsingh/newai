@@ -72,6 +72,7 @@ class ChatMessage {
   final Uint8List? imageBytes;
   final String? attachedFileName;
   final List<String>? attachedContainedFiles;
+  final String? thinkingContent; // Added for thinking/reasoning content
 
   ChatMessage({
     required this.role,
@@ -83,6 +84,7 @@ class ChatMessage {
     this.imageBytes,
     this.attachedFileName,
     this.attachedContainedFiles,
+    this.thinkingContent, // Added thinking content parameter
   });
 
   Map<String, dynamic> toJson() => {
@@ -93,6 +95,7 @@ class ChatMessage {
         'slides': slides,
         'searchResults': searchResults?.map((r) => r.toJson()).toList(),
         'attachedFileName': attachedFileName,
+        'thinkingContent': thinkingContent,
         'attachedContainedFiles': attachedContainedFiles,
         // Note: For simplicity, user-uploaded image bytes are not serialized.
         // They will only exist for the current session.
