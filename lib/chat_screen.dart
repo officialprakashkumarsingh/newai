@@ -26,7 +26,8 @@ import 'presentation_generator.dart';
 import 'thinking_panel.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
-import 'agent/agent_controller.dart';
+import 'code_highlight_widget.dart';
+
 // Removed duplicate imports - already exists above
 
 class ChatScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
   // Category system removed
   bool _isWebSearchEnabled = false;
   bool _isThinkingModeEnabled = false;
-  bool _isAgentModeEnabled = false;
+
   List<SearchResult>? _lastSearchResults;
 
   ChatAttachment? _attachment;
@@ -462,7 +463,7 @@ Based on the context above, answer the following prompt: $input""";
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.auto_awesome_outlined), title: const Text('Think for longer'), trailing: Switch(value: _isThinkingModeEnabled, onChanged: (bool value) { setSheetState(() => _isThinkingModeEnabled = value); setState(() => _isThinkingModeEnabled = value); })),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.image_outlined), title: const Text('Create an image'), onTap: () { Navigator.pop(context); _showImagePromptBottomSheet(); }),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.slideshow_outlined), title: const Text('Make a presentation'), onTap: () { Navigator.pop(context); _showPresentationPromptDialog(); }),
-              ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.smart_toy_outlined), title: const Text('Enable Agent Mode'), trailing: Switch(value: _isAgentModeEnabled, onChanged: (bool value) { setSheetState(() => _isAgentModeEnabled = value); setState(() => _isAgentModeEnabled = value); _toggleAgentMode(value); })),
+
               SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
@@ -615,7 +616,7 @@ Based on the context above, answer the following prompt: $input""";
           if (message.text.isEmpty && _isStreaming && index == _messages.length - 1) return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: const GeneratingIndicator()));
           if (message.text == 'Searching the web...' || message.text == 'Thinking deeply...') return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: Row(mainAxisSize: MainAxisSize.min, children: [Text(message.text), const SizedBox(width: 12), GeneratingIndicator(size: 16)])));
           final bool showActionButtons = (!_isStreaming || index != _messages.length - 1) && !_isStoppedByUser;
-          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : MarkdownBody(data: message.text, selectable: true, styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)))), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
+          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : EnhancedMarkdownBody(data: message.text, selectable: true, styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)))), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
         }
         
         final isDark = !isLightTheme(context);
@@ -929,126 +930,5 @@ Based on the context above, answer the following prompt: $input""";
 
     // Categories removed - no longer needed
 
-  void _toggleAgentMode(bool enabled) async {
-    if (enabled) {
-      try {
-        // Initialize agent controller
-        final AgentController agentController = AgentController();
-        await agentController.initialize();
-        await agentController.activate();
-
-        // Show agent mode activation message with capabilities
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '🤖 Agent Mode Activated!',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Capabilities: ${agentController.status.capabilities.take(3).join(', ')}...',
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
-            duration: const Duration(seconds: 4),
-            action: SnackBarAction(
-              label: 'View All',
-              onPressed: () => _showAgentCapabilities(agentController),
-            ),
-          ),
-        );
-        
-        print('🤖 Agent Mode enabled - ${agentController.status.capabilities.length} capabilities ready');
-      } catch (e) {
-        print('❌ Failed to activate agent mode: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ Failed to activate Agent Mode: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        setState(() {
-          _isAgentModeEnabled = false;
-        });
-      }
-    } else {
-      try {
-        final AgentController agentController = AgentController();
-        agentController.deactivate();
-        print('🤖 Agent Mode disabled');
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🤖 Agent Mode Deactivated'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      } catch (e) {
-        print('⚠️ Error deactivating agent: $e');
-      }
-    }
-  }
-
-  void _showAgentCapabilities(AgentController agentController) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.smart_toy, color: Colors.blue),
-            SizedBox(width: 8),
-            Text('Agent Capabilities'),
-          ],
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Your AI Agent can perform these automation tasks:',
-                style: TextStyle(fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 16),
-              ...agentController.status.capabilities.map((capability) => 
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.check_circle, color: Colors.green, size: 16),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(capability)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  '💡 Try commands like:\n"Navigate to Google and search for Flutter"\n"Fill out this contact form"\n"Take a screenshot of this page"',
-                  style: TextStyle(fontSize: 13),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Got it!'),
-          ),
-        ],
-      ),
-    );
-  }
+  // Agent feature removed as requested
 }

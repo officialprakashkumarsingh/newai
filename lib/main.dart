@@ -420,11 +420,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   void _showProfileSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) => ProfileSettingsSheet(onClearAllChats: _clearAllChats),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProfileSettingsScreen(onClearAllChats: _clearAllChats),
+      ),
     );
   }
 
@@ -484,7 +483,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       );
     } else {
       return AppBar(
-        leading: IconButton(icon: const Icon(Icons.person_outline), onPressed: () => _showProfileSheet(context), tooltip: 'Profile & Settings'),
+        leading: IconButton(icon: const Icon(Icons.account_circle), onPressed: () => _showProfileSheet(context), tooltip: 'Profile & Settings'),
         title: const Text('AhamAI'),
         centerTitle: true,
         actions: [if (_chats.isNotEmpty) IconButton(icon: const Icon(Icons.search), onPressed: () => setState(() => _isSearching = true)), const SizedBox(width: 4)],
@@ -761,15 +760,15 @@ class _WelcomeInputAreaState extends State<WelcomeInputArea> {
   }
 }
 
-class ProfileSettingsSheet extends StatefulWidget {
+class ProfileSettingsScreen extends StatefulWidget {
   final VoidCallback onClearAllChats;
-  const ProfileSettingsSheet({super.key, required this.onClearAllChats});
+  const ProfileSettingsScreen({super.key, required this.onClearAllChats});
 
   @override
-  State<ProfileSettingsSheet> createState() => _ProfileSettingsSheetState();
+  State<ProfileSettingsScreen> createState() => _ProfileSettingsScreenState();
 }
 
-class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
+class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   String _selectedChatModel = '';
   List<String> _availableModels = [];
   bool _isLoadingModels = true;
@@ -819,60 +818,144 @@ class _ProfileSettingsSheetState extends State<ProfileSettingsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile & Settings'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text('Profile & Settings', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20)),
+            // Profile Section
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+                      child: Icon(
+                        Icons.account_circle,
+                        size: 60,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'AhamAI User',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Premium AI Assistant',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
 
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text('Data Control', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 24),
+
+            // AI Model Section
+            Text(
+              'Chat AI Model',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.delete_sweep_outlined, color: Colors.red.shade400),
-              title: Text('Clear All Chats', style: TextStyle(color: Colors.red.shade400)),
-              onTap: widget.onClearAllChats,
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text('Chat AI Model', style: Theme.of(context).textTheme.titleMedium),
-            ),
-            
-            // Dynamic model list from API
-            if (_isLoadingModels)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (_availableModels.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text(
-                  'No models available. Please check your connection.',
-                  style: TextStyle(color: Colors.grey.shade600),
-                  textAlign: TextAlign.center,
+            const SizedBox(height: 16),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Select AI Model',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Dynamic model list from API
+                    if (_isLoadingModels)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(24),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else if (_availableModels.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          'No models available. Please check your connection.',
+                          style: TextStyle(color: Colors.grey.shade600),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    else
+                      ..._availableModels.map((model) => RadioListTile<String>(
+                        title: Text(_getModelDisplayName(model)),
+                        subtitle: Text(_getModelDescription(model)),
+                        value: model,
+                        groupValue: _selectedChatModel,
+                        onChanged: (val) => _saveChatModel(val!),
+                      )).toList(),
+                  ],
                 ),
-              )
-            else
-              ..._availableModels.map((model) => RadioListTile<String>(
-                contentPadding: EdgeInsets.zero,
-                title: Text(_getModelDisplayName(model)),
-                subtitle: Text(_getModelDescription(model)),
-                value: model,
-                groupValue: _selectedChatModel,
-                onChanged: (val) => _saveChatModel(val!),
-              )).toList(),
-            SizedBox(height: MediaQuery.of(context).padding.bottom),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Data Control Section
+            Text(
+              'Data Control',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.delete_sweep_outlined, color: Colors.red.shade400),
+                title: Text('Clear All Chats', style: TextStyle(color: Colors.red.shade400)),
+                subtitle: const Text('Delete all chat history permanently'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  widget.onClearAllChats();
+                },
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // App Info Section
+            Text(
+              'About',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.info_outline),
+                    title: const Text('Version'),
+                    subtitle: const Text('AhamAI v9.1'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.code),
+                    title: const Text('Built with Flutter'),
+                    subtitle: const Text('Advanced AI chat assistant'),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 24),
           ],
         ),
       ),
