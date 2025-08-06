@@ -2327,6 +2327,13 @@ Topic: $topic''',
           case 8226: cleaned += "-"; break; // Bullet
           case 8259: cleaned += "-"; break; // Hyphen bullet
           case 8282: cleaned += ":"; break; // Two dot punctuation (U+205A)
+          case 8289: cleaned += ""; break; // Function application (U+2061) - invisible
+          
+          // Additional invisible operators and format characters
+          case 8288: cleaned += ""; break; // Word joiner (U+2060)
+          case 8290: cleaned += ""; break; // Invisible times (U+2062)
+          case 8291: cleaned += ""; break; // Invisible separator (U+2063)
+          case 8292: cleaned += ""; break; // Invisible plus (U+2064)
           
           // Mathematical symbols
           case 8734: cleaned += "infinity"; break; // Infinity
@@ -2423,6 +2430,21 @@ Topic: $topic''',
           case 8328: cleaned += "8"; break;
           case 8329: cleaned += "9"; break;
           
+          // Additional subscript letters
+          case 8336: cleaned += "a"; break; // Latin subscript a (U+2090)
+          case 8337: cleaned += "e"; break; // Latin subscript e (U+2091)
+          case 8338: cleaned += "o"; break; // Latin subscript o (U+2092)
+          case 8339: cleaned += "x"; break; // Latin subscript x (U+2093)
+          case 8340: cleaned += "e"; break; // Latin subscript schwa (U+2094)
+          case 8341: cleaned += "h"; break; // Latin subscript h (U+2095)
+          case 8342: cleaned += "k"; break; // Latin subscript k (U+2096)
+          case 8343: cleaned += "l"; break; // Latin subscript l (U+2097)
+          case 8344: cleaned += "m"; break; // Latin subscript m (U+2098)
+          case 8345: cleaned += "n"; break; // Latin subscript n (U+2099) - THE ONE CAUSING ERROR!
+          case 8346: cleaned += "p"; break; // Latin subscript p (U+209A)
+          case 8347: cleaned += "s"; break; // Latin subscript s (U+209B)
+          case 8348: cleaned += "t"; break; // Latin subscript t (U+209C)
+          
           // Currency symbols
           case 8364: cleaned += "EUR"; break; // Euro
           case 163: cleaned += "GBP"; break; // Pound
@@ -2458,6 +2480,23 @@ Topic: $topic''',
           case 9670: cleaned += "-"; break; // Diamond
           case 8250: cleaned += ">"; break; // Single right angle quote
           case 8249: cleaned += "<"; break; // Single left angle quote
+          
+          // Additional common problematic characters
+          case 8203: cleaned += ""; break; // Zero width space (U+200B)
+          case 8204: cleaned += ""; break; // Zero width non-joiner (U+200C)
+          case 8205: cleaned += ""; break; // Zero width joiner (U+200D)
+          case 8206: cleaned += ""; break; // Left-to-right mark (U+200E)
+          case 8207: cleaned += ""; break; // Right-to-left mark (U+200F)
+          case 65279: cleaned += ""; break; // Byte order mark / Zero width no-break space (U+FEFF)
+          case 173: cleaned += "-"; break; // Soft hyphen (U+00AD)
+          case 160: cleaned += " "; break; // Non-breaking space (U+00A0)
+          
+          // More mathematical and technical symbols
+          case 8629: cleaned += "enter"; break; // Downwards arrow with corner leftwards (return symbol)
+          case 8617: cleaned += "tab"; break; // Rightwards arrow to bar (tab symbol)
+          case 8618: cleaned += "shift"; break; // Rightwards arrow over leftwards arrow
+          case 9251: cleaned += " "; break; // Open box (sometimes used for spaces)
+          case 9166: cleaned += "return"; break; // Return symbol
           
           // Fraction-like characters
           case 188: cleaned += "1/4"; break; // One quarter
