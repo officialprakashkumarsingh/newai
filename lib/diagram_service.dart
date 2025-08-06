@@ -241,59 +241,60 @@ Generate realistic data relevant to: $prompt''',
 
     final size = getFlexibleSize();
 
-    return Card(
-      color: Theme.of(context).cardColor,
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Simple title row
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
               children: [
-                _getChartIcon(type),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600, 
+                    fontSize: 15,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
+                const Spacer(),
                 IconButton(
                   icon: Icon(
                     Icons.download_rounded,
-                    size: 24,
+                    size: 20,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   onPressed: () => downloadDiagram(chartKey, title, type, diagramData, context),
-                  tooltip: 'Save Diagram',
+                  tooltip: 'Save',
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  padding: const EdgeInsets.all(4),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            // Interactive diagram area with pinch-to-zoom
-            Container(
-              height: math.min(size.height, 400), // Max height in chat
-              width: double.infinity,
-              child: InteractiveViewer(
-                boundaryMargin: const EdgeInsets.all(20),
-                minScale: 0.1,
-                maxScale: 5.0,
-                constrained: false,
-                child: RepaintBoundary(
-                  key: chartKey,
-                  child: Container(
-                    width: size.width,
-                    height: size.height,
-                    // Clean export area - no background decoration
-                    child: _buildOptimizedChart(type, diagramData, context),
-                  ),
+          ),
+          // Direct diagram rendering without extra containers
+          Container(
+            height: math.min(size.height, 350),
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: InteractiveViewer(
+              boundaryMargin: const EdgeInsets.all(10),
+              minScale: 0.1,
+              maxScale: 5.0,
+              constrained: false,
+              child: RepaintBoundary(
+                key: chartKey,
+                child: Container(
+                  width: size.width,
+                  height: size.height,
+                  child: _buildOptimizedChart(type, diagramData, context),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

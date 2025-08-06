@@ -275,64 +275,69 @@ Topic: $topic''',
     final List<dynamic> slides = presentationData['slides'] ?? [];
     final GlobalKey presentationKey = GlobalKey();
 
-    return Card(
-      color: Theme.of(context).cardColor,
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Simple title row
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
               children: [
-                const Icon(Icons.slideshow_rounded, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600, 
+                    fontSize: 15,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
+                const Spacer(),
                 IconButton(
                   icon: Icon(
                     Icons.picture_as_pdf_rounded,
-                    size: 24,
+                    size: 20,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   onPressed: () => savePresentationAsPDF(presentationData, context),
-                  tooltip: 'Save as PDF',
+                  tooltip: 'Save PDF',
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  padding: const EdgeInsets.all(4),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            // Presentation preview
-            Container(
-              height: 200,
-              width: double.infinity,
-              child: RepaintBoundary(
-                key: presentationKey,
-                child: PageView.builder(
-                  itemCount: slides.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      child: _buildSlidePreview(slides[index], context, true),
-                    );
-                  },
-                ),
+          ),
+          // Direct presentation preview
+          Container(
+            height: 180,
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: RepaintBoundary(
+              key: presentationKey,
+              child: PageView.builder(
+                itemCount: slides.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    child: _buildSlidePreview(slides[index], context, true),
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
+          ),
+          // Slide count info
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(
               '${slides.length} slides • Swipe to preview',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 color: Colors.grey.shade600,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1414,17 +1419,25 @@ Topic: $topic''',
 
   static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context) async {
     try {
+      print('Starting PDF generation...');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Creating PDF presentation...'), duration: Duration(seconds: 2)),
       );
 
       final String title = presentationData['title'] ?? 'Presentation';
       final List<dynamic> slides = presentationData['slides'] ?? [];
+      print('Title: $title, Slides count: ${slides.length}');
+
+      if (slides.isEmpty) {
+        throw Exception('No slides to generate PDF');
+      }
 
       // Create PDF document
       final PdfDocument document = PdfDocument();
+      print('PDF document created');
       
       for (int i = 0; i < slides.length; i++) {
+        print('Processing slide ${i + 1}/${slides.length}');
         final slide = slides[i];
         final PdfPage page = document.pages.add();
         final PdfGraphics graphics = page.graphics;
@@ -1435,22 +1448,33 @@ Topic: $topic''',
       }
 
       // Save PDF
+      print('Generating PDF bytes...');
       final List<int> bytes = await document.save();
       document.dispose();
+      print('PDF bytes generated: ${bytes.length} bytes');
 
       final fileName = '${title.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}_presentation_${DateTime.now().millisecondsSinceEpoch}.pdf';
-      await _savePDFToAhamAIFolder(Uint8List.fromList(bytes), fileName);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Presentation saved to Downloads/AhamAI/$fileName'),
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      print('Saving to file: $fileName');
+      
+      final success = await _savePDFToAhamAIFolder(Uint8List.fromList(bytes), fileName);
+      
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('✅ Presentation saved: $fileName'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        throw Exception('Failed to save PDF file');
+      }
     } catch (error) {
       print('Error saving presentation: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving presentation: $error')),
+        SnackBar(
+          content: Text('❌ Error saving presentation: $error'),
+          duration: const Duration(seconds: 4),
+        ),
       );
     }
   }
@@ -1840,30 +1864,43 @@ Topic: $topic''',
     }
   }
 
-  static Future<void> _savePDFToAhamAIFolder(Uint8List bytes, String fileName) async {
+  static Future<bool> _savePDFToAhamAIFolder(Uint8List bytes, String fileName) async {
     try {
+      print('Attempting to save to external storage...');
       final directory = await getExternalStorageDirectory();
       final downloadsPath = '${directory!.parent.parent.parent.parent.path}/Download';
       final ahamAIPath = '$downloadsPath/AhamAI';
       
       final ahamAIDirectory = Directory(ahamAIPath);
       if (!await ahamAIDirectory.exists()) {
+        print('Creating directory: $ahamAIPath');
         await ahamAIDirectory.create(recursive: true);
       }
       
       final file = File('$ahamAIPath/$fileName');
       await file.writeAsBytes(bytes);
+      print('✅ Successfully saved to: ${file.path}');
+      return true;
     } catch (error) {
-      final directory = await getApplicationDocumentsDirectory();
-      final ahamAIPath = '${directory.path}/AhamAI';
-      
-      final ahamAIDirectory = Directory(ahamAIPath);
-      if (!await ahamAIDirectory.exists()) {
-        await ahamAIDirectory.create(recursive: true);
+      print('External storage failed: $error, trying app documents...');
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        final ahamAIPath = '${directory.path}/AhamAI';
+        
+        final ahamAIDirectory = Directory(ahamAIPath);
+        if (!await ahamAIDirectory.exists()) {
+          print('Creating app documents directory: $ahamAIPath');
+          await ahamAIDirectory.create(recursive: true);
+        }
+        
+        final file = File('$ahamAIPath/$fileName');
+        await file.writeAsBytes(bytes);
+        print('✅ Successfully saved to app documents: ${file.path}');
+        return true;
+      } catch (appError) {
+        print('❌ Both storage methods failed: $appError');
+        return false;
       }
-      
-      final file = File('$ahamAIPath/$fileName');
-      await file.writeAsBytes(bytes);
     }
   }
 
