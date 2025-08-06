@@ -922,20 +922,6 @@ Generate realistic data relevant to: $prompt''',
 
   static Future<void> downloadDiagram(GlobalKey chartKey, String title, String type, Map<String, dynamic> diagramData, BuildContext context) async {
     try {
-      showStyledSnackBar(context, 'Preparing to save diagram...');
-
-      // Request storage permission first
-      final hasPermission = await _requestStoragePermission();
-      if (!hasPermission) {
-        showStyledSnackBar(
-          context, 
-          'Storage permission required to save diagrams. Please grant permission in app settings.',
-          backgroundColor: Colors.orange.shade600,
-          duration: const Duration(seconds: 4),
-        );
-        return;
-      }
-
       showStyledSnackBar(context, 'Saving diagram...');
 
       final boundary = chartKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
@@ -956,18 +942,18 @@ Generate realistic data relevant to: $prompt''',
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         final fileName = '${title.replaceAll(' ', '_')}_${type}_$timestamp.png';
         
-        final success = await _saveImageToAhamAIFolder(uint8List, fileName);
-        if (success) {
+        final result = await _saveImageToAhamAIFolder(uint8List, fileName);
+        if (result['success']) {
           showStyledSnackBar(
             context, 
-            'Diagram saved as $fileName in AhamAI folder',
+            'Diagram saved as $fileName\nLocation: ${result['path']}',
             backgroundColor: Colors.green.shade600,
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 4),
           );
         } else {
           showStyledSnackBar(
             context, 
-            'Error saving diagram. Check storage permissions.',
+            'Error saving diagram: ${result['error']}',
             backgroundColor: Colors.red.shade600,
             duration: const Duration(seconds: 3),
           );
