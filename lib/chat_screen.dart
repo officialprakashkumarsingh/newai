@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 import 'package:ahamai/web_search.dart';
 import 'package:ahamai/diagram_service.dart';
 import 'package:ahamai/presentation_service.dart';
+import 'package:ahamai/queue_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -62,6 +63,10 @@ class _ChatScreenState extends State<ChatScreen> {
   String _currentModelResponse = '';
   bool _isStreaming = false;
   bool _isStoppedByUser = false;
+  
+  // Message queue system
+  final List<String> _messageQueue = [];
+  bool _isProcessingQueue = false;
   
   // GenerativeModel removed - now using ApiService
 
@@ -203,8 +208,27 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage(String input) async {
-    if (!_isModelSetupComplete || _isStreaming) return;
+    if (!_isModelSetupComplete) return;
     if (input.trim().isEmpty && _attachment == null && _attachedImage == null) return;
+    
+    // If streaming, add to queue instead of blocking
+    if (_isStreaming && _attachedImage == null) {
+      setState(() {
+        _messageQueue.add(input.trim());
+      });
+      _controller.clear();
+      // Show queue status
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Message added to queue (${_messageQueue.length} pending)'),
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(bottom: 100, left: 16, right: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+      return;
+    }
     
     // REMOVED: The call to _handleSocialShare was here, removing it significantly improves performance.
 
@@ -398,6 +422,9 @@ Based on the context above, answer the following prompt: $input""";
 
     // Stream completed
     print('✅ Stream completed successfully');
+    
+    // Process any queued messages
+    Future.microtask(() => _processMessageQueue());
   }
 
   void _onStreamingError(dynamic error) {
@@ -406,8 +433,10 @@ Based on the context above, answer the following prompt: $input""";
       _isStreaming = false;
     });
     _updateChatInfo(false, false);
-    _scrollToBottom();
     _saveMessages(); // Save messages after error
+    
+    // Process any queued messages even after error
+    Future.microtask(() => _processMessageQueue());
   }
   
   void _updateChatInfo(bool isGenerating, bool isStopped) {
@@ -617,12 +646,14 @@ Based on the context above, answer the following prompt: $input""";
           type: MessageType.presentation, 
           presentationData: presentationData
         ));
+        _saveMessages(); // Save after successful presentation generation
       } else {
         setState(() => _messages[placeholderIndex] = ChatMessage(
           role: 'model', 
           text: 'Could not generate presentation for "$topic". Please try again.', 
           type: MessageType.text
         ));
+        _saveMessages(); // Save even if presentation generation failed
       }
     } catch (error) {
       if (!mounted) return;
@@ -631,6 +662,7 @@ Based on the context above, answer the following prompt: $input""";
         text: 'Error generating presentation: $error', 
         type: MessageType.text
       ));
+      _saveMessages(); // Save even if there was an error
     }
     
     _updateChatInfo(false, false);
@@ -703,12 +735,14 @@ Based on the context above, answer the following prompt: $input""";
           type: MessageType.diagram, 
           diagramData: diagramData
         ));
+        _saveMessages(); // Save after successful diagram generation
       } else {
         setState(() => _messages[placeholderIndex] = ChatMessage(
           role: 'model', 
           text: 'Could not generate diagram for "$prompt". Please try again.', 
           type: MessageType.text
         ));
+        _saveMessages(); // Save even if diagram generation failed
       }
     } catch (error) {
       if (!mounted) return;
@@ -717,6 +751,7 @@ Based on the context above, answer the following prompt: $input""";
         text: 'Error generating diagram: $error', 
         type: MessageType.text
       ));
+      _saveMessages(); // Save even if there was an error
     }
     
     _updateChatInfo(false, false);
@@ -1775,6 +1810,15 @@ Generate realistic data relevant to: $prompt''',
           Expanded(
             child: ListView.builder(controller: _scrollController, padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8), itemCount: _messages.length, itemBuilder: (context, index) => _buildMessage(_messages[index], index)),
           ),
+          // Queue panel for showing queued messages
+          if (_messageQueue.isNotEmpty || _isProcessingQueue)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: QueuePanel(
+                queuedMessages: _messageQueue,
+                isProcessing: _isProcessingQueue,
+              ),
+            ),
           if (_attachment != null)
             AttachmentPreview(attachment: _attachment!, onClear: () => setState(() => _attachment = null)),
           if (_attachedImage != null)
@@ -1812,12 +1856,12 @@ Generate realistic data relevant to: $prompt''',
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                IconButton(icon: const Icon(Icons.apps_outlined), onPressed: _isStreaming ? null : _showToolsBottomSheet, tooltip: 'Tools', color: _isStreaming ? Theme.of(context).disabledColor : Theme.of(context).iconTheme.color),
+                IconButton(icon: const Icon(Icons.apps_outlined), onPressed: _showToolsBottomSheet, tooltip: 'Tools', color: Theme.of(context).iconTheme.color),
                 Expanded(
                   child: TextField(
                     controller: _controller, 
-                    enabled: !_isStreaming, 
-                    onSubmitted: _isStreaming ? null : (val) => _sendMessage(val), 
+                    enabled: true, // Always enabled - queue messages during streaming
+                    onSubmitted: (val) => _sendMessage(val), // Always allow input
                     textInputAction: TextInputAction.send, 
                     maxLines: 5, 
                     minLines: 1, 
@@ -1825,7 +1869,11 @@ Generate realistic data relevant to: $prompt''',
                       color: isLightTheme(context) ? const Color(0xFF0F0F10) : Colors.white,
                     ),
                     decoration: InputDecoration(
-                      hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
+                      hintText: _isStreaming 
+                        ? (_messageQueue.isEmpty 
+                            ? 'AhamAI is responding... (type to queue)' 
+                            : 'Queued: ${_messageQueue.length} messages')
+                        : 'Ask AhamAI anything...', 
                       hintStyle: TextStyle(
                         color: isLightTheme(context) ? const Color(0xFF5F6368) : const Color(0xFFB0B0B0), // Google secondary text
                         fontSize: 16,
@@ -1930,6 +1978,27 @@ Generate realistic data relevant to: $prompt''',
       selectable: true,
       styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
     );
+  }
+
+  Future<void> _processMessageQueue() async {
+    if (_messageQueue.isEmpty || _isProcessingQueue || _isStreaming) return;
+    
+    _isProcessingQueue = true;
+    
+    while (_messageQueue.isNotEmpty && !_isStreaming) {
+      final nextMessage = _messageQueue.removeAt(0);
+      setState(() {}); // Update UI to show queue count change
+      
+      // Send the queued message
+      await _sendTextMessage(nextMessage);
+      
+      // Wait for streaming to complete before processing next message
+      while (_isStreaming) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+    }
+    
+    _isProcessingQueue = false;
   }
 }
 

@@ -263,8 +263,7 @@ class ChatMessage {
         'attachedContainedFiles': attachedContainedFiles,
         'diagramData': diagramData, // Added diagram data serialization
         'presentationData': presentationData, // Added presentation data serialization
-        // Note: For simplicity, user-uploaded image bytes are not serialized.
-        // They will only exist for the current session.
+        'imageBytes': imageBytes != null ? base64Encode(imageBytes!) : null, // Added imageBytes serialization for generated images
       };
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
@@ -279,7 +278,7 @@ class ChatMessage {
         attachedContainedFiles: json['attachedContainedFiles'] != null ? List<String>.from(json['attachedContainedFiles']) : null,
         diagramData: json['diagramData'] != null ? Map<String, dynamic>.from(json['diagramData']) : null, // Added diagram data deserialization
         presentationData: json['presentationData'] != null ? Map<String, dynamic>.from(json['presentationData']) : null, // Added presentation data deserialization
-        // User image bytes are not loaded from JSON.
+        imageBytes: json['imageBytes'] != null ? base64Decode(json['imageBytes']) : null, // Added imageBytes deserialization for generated images
       );
 }
 

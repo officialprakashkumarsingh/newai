@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import 'api_service.dart';
@@ -900,22 +899,30 @@ Generate realistic data relevant to: $prompt''',
     }
   }
 
-  // Custom snackbar with theme-appropriate styling
+  // Clean snackbar with proper positioning away from input area
   static void showStyledSnackBar(BuildContext context, String message, {Color? backgroundColor, Duration? duration}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            color: Colors.white, 
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
         ),
         backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
         duration: duration ?? const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
         ),
-        margin: const EdgeInsets.all(16),
-        elevation: 8,
+        margin: const EdgeInsets.only(
+          bottom: 100, // Keep away from input area
+          left: 16,
+          right: 16,
+        ),
+        elevation: 2, // Minimal elevation
       ),
     );
   }
