@@ -632,15 +632,10 @@ Generate realistic data relevant to: $prompt''',
 
     return ScatterChart(
       ScatterChartData(
-        scatterSpots: chartData.map((item) {
+        scatterSpots: chartData.map<ScatterSpot>((item) {
           final x = (item['x'] as num?)?.toDouble() ?? 0;
           final y = (item['y'] as num?)?.toDouble() ?? 0;
-          return ScatterSpot(
-            x,
-            y,
-            color: _getColorFromString(item['color']?.toString() ?? 'blue'),
-            radius: 8,
-          );
+          return ScatterSpot(x, y);
         }).toList(),
         minX: 0,
         maxX: chartData.isNotEmpty 
@@ -1138,7 +1133,7 @@ class GanttChartPainter extends CustomPainter {
       final barWidth = duration * scale;
 
       // Draw task bar
-      paint.color = _getColorFromString(task['color']?.toString() ?? 'blue');
+      paint.color = DiagramService._getColorFromString(task['color']?.toString() ?? 'blue');
       canvas.drawRRect(
         RRect.fromLTRBR(barX, y, barX + barWidth, y + taskHeight, const Radius.circular(4)),
         paint,
@@ -1495,7 +1490,7 @@ class NetworkDiagramPainter extends CustomPainter {
       
       if (position != null) {
         // Draw node circle
-        paint.color = _getColorFromString(node['color']?.toString() ?? 'blue');
+        paint.color = DiagramService._getColorFromString(node['color']?.toString() ?? 'blue');
         canvas.drawCircle(position, nodeRadius, paint);
 
         // Draw node label

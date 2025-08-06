@@ -2145,7 +2145,7 @@ Topic: $topic''',
           _cleanTextForPDF('Diagram: $diagramType'),
           PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
           brush: PdfSolidBrush(PdfColor(0, 0, 0)),
-          bounds: Rect.fromLTWH(40, yPosition, pageWidth - 80, 30),
+          bounds: Rect.fromLTWH(40, yPosition, 515, 30),
         );
         yPosition += 40;
         
@@ -2155,7 +2155,7 @@ Topic: $topic''',
           _cleanTextForPDF(description),
           PdfStandardFont(PdfFontFamily.helvetica, 12),
           brush: PdfSolidBrush(PdfColor(80, 80, 80)),
-          bounds: Rect.fromLTWH(40, yPosition, pageWidth - 80, 100),
+          bounds: Rect.fromLTWH(40, yPosition, 515, 100),
           format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top),
         );
         yPosition += 120;
@@ -2163,13 +2163,13 @@ Topic: $topic''',
         // Draw a simple placeholder box for the diagram
         graphics.drawRectangle(
           pen: PdfPen(PdfColor(150, 150, 150)),
-          bounds: Rect.fromLTWH(40, yPosition, pageWidth - 80, 200),
+          bounds: Rect.fromLTWH(40, yPosition, 515, 200),
         );
         graphics.drawString(
           _cleanTextForPDF('[$diagramType Diagram]'),
           PdfStandardFont(PdfFontFamily.helvetica, 12),
           brush: PdfSolidBrush(PdfColor(120, 120, 120)),
-          bounds: Rect.fromLTWH(40, yPosition + 90, pageWidth - 80, 30),
+          bounds: Rect.fromLTWH(40, yPosition + 90, 515, 30),
           format: PdfStringFormat(alignment: PdfTextAlignment.center, lineAlignment: PdfVerticalAlignment.middle),
         );
         break;
