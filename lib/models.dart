@@ -7,6 +7,7 @@ class ChatMessage {
   final List<dynamic>? slides;
   final List<SearchResult>? searchResults;
   final String? thinkingContent;
+  final Map<String, dynamic>? diagramData;
 
   ChatMessage({
     required this.role,
@@ -17,6 +18,7 @@ class ChatMessage {
     this.slides,
     this.searchResults,
     this.thinkingContent,
+    this.diagramData,
   });
 }
 
@@ -24,6 +26,7 @@ enum MessageType {
   text,
   image,
   presentation,
+  diagram,
 }
 
 class ChatInfo {

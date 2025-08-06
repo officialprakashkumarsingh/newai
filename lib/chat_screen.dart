@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -462,6 +463,7 @@ Based on the context above, answer the following prompt: $input""";
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.auto_awesome_outlined), title: const Text('Think for longer'), trailing: Switch(value: _isThinkingModeEnabled, onChanged: (bool value) { setSheetState(() => _isThinkingModeEnabled = value); setState(() => _isThinkingModeEnabled = value); })),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.image_outlined), title: const Text('Create an image'), onTap: () { Navigator.pop(context); _showImagePromptBottomSheet(); }),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.slideshow_outlined), title: const Text('Make a presentation'), onTap: () { Navigator.pop(context); _showPresentationPromptDialog(); }),
+              ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.bar_chart_outlined), title: const Text('Generate diagram'), onTap: () { Navigator.pop(context); _showDiagramPromptDialog(); }),
 
               SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
@@ -553,6 +555,433 @@ Based on the context above, answer the following prompt: $input""";
     _updateChatInfo(false, false);
   }
 
+  void _showDiagramPromptDialog() {
+    final TextEditingController promptController = TextEditingController();
+    showDialog(
+      context: context, 
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Generate Diagram'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Describe the diagram you want to create:', style: TextStyle(fontSize: 14)),
+            const SizedBox(height: 12),
+            TextField(
+              controller: promptController, 
+              autofocus: true, 
+              maxLines: 3,
+              decoration: const InputDecoration(
+                hintText: 'e.g., Bar chart showing sales data for 2024\nFlowchart for user registration process\nPie chart of market share distribution',
+                border: OutlineInputBorder(),
+              ), 
+              onSubmitted: (prompt) { 
+                if (prompt.trim().isNotEmpty) { 
+                  Navigator.of(context).pop(); 
+                  _generateDiagram(prompt); 
+                } 
+              }
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () { 
+              final prompt = promptController.text; 
+              if (prompt.trim().isNotEmpty) { 
+                Navigator.of(context).pop(); 
+                _generateDiagram(prompt); 
+              } 
+            }, 
+            child: const Text('Generate')
+          ),
+        ],
+      )
+    );
+  }
+
+  Future<void> _generateDiagram(String prompt) async {
+    _messages.add(ChatMessage(role: 'user', text: prompt));
+    _messages.add(ChatMessage(role: 'model', text: 'Generating diagram...', type: MessageType.diagram, diagramData: null));
+    final int placeholderIndex = _messages.length - 1;
+    setState(() {});
+    _scrollToBottom();
+
+    try {
+      // Generate diagram data using AI
+      final diagramData = await _generateDiagramData(prompt);
+      if (!mounted) return;
+      
+      if (diagramData != null) {
+        setState(() => _messages[placeholderIndex] = ChatMessage(
+          role: 'model', 
+          text: 'Diagram ready: $prompt', 
+          type: MessageType.diagram, 
+          diagramData: diagramData
+        ));
+      } else {
+        setState(() => _messages[placeholderIndex] = ChatMessage(
+          role: 'model', 
+          text: 'Could not generate diagram for "$prompt". Please try again.', 
+          type: MessageType.text
+        ));
+      }
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _messages[placeholderIndex] = ChatMessage(
+        role: 'model', 
+        text: 'Error generating diagram: $error', 
+        type: MessageType.text
+      ));
+    }
+    
+    _updateChatInfo(false, false);
+  }
+
+  Future<Map<String, dynamic>?> _generateDiagramData(String prompt) async {
+    try {
+      // Use AI to generate structured data for the diagram
+      final response = await ApiService.sendChatMessage(
+        message: '''Create structured data for this diagram request: "$prompt"
+
+Please respond with ONLY a JSON object in this exact format (no markdown, no explanation):
+{
+  "type": "bar|line|pie|flowchart",
+  "title": "Chart Title",
+  "data": [
+    {"label": "Category 1", "value": 25},
+    {"label": "Category 2", "value": 35},
+    {"label": "Category 3", "value": 40}
+  ]
+}
+
+For flowcharts, use this format:
+{
+  "type": "flowchart",
+  "title": "Process Title",
+  "steps": [
+    {"id": "start", "text": "Start", "type": "start"},
+    {"id": "step1", "text": "Step 1", "type": "process"},
+    {"id": "end", "text": "End", "type": "end"}
+  ],
+  "connections": [
+    {"from": "start", "to": "step1"},
+    {"from": "step1", "to": "end"}
+  ]
+}''',
+        model: _selectedChatModel,
+      ).first;
+
+      // Parse the JSON response
+      final jsonStr = response.trim();
+      final jsonData = json.decode(jsonStr);
+      return jsonData;
+    } catch (error) {
+      print('Error generating diagram data: $error');
+      // Return sample data as fallback
+      return {
+        "type": "bar",
+        "title": "Sample Chart",
+        "data": [
+          {"label": "A", "value": 30},
+          {"label": "B", "value": 50},
+          {"label": "C", "value": 20}
+        ]
+      };
+    }
+  }
+
+  Widget _buildDiagramWidget(Map<String, dynamic> diagramData) {
+    final String type = diagramData['type'] ?? 'bar';
+    final String title = diagramData['title'] ?? 'Chart';
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.bar_chart, size: 20),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          height: 250,
+          width: double.infinity,
+          child: _buildChart(type, diagramData),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChart(String type, Map<String, dynamic> diagramData) {
+    switch (type.toLowerCase()) {
+      case 'bar':
+        return _buildBarChart(diagramData);
+      case 'line':
+        return _buildLineChart(diagramData);
+      case 'pie':
+        return _buildPieChart(diagramData);
+      case 'flowchart':
+        return _buildFlowChart(diagramData);
+      default:
+        return _buildBarChart(diagramData);
+    }
+  }
+
+  Widget _buildBarChart(Map<String, dynamic> diagramData) {
+    final List<dynamic> data = diagramData['data'] ?? [];
+    
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        maxY: data.isNotEmpty 
+          ? data.map((e) => (e['value'] as num).toDouble()).reduce((a, b) => a > b ? a : b) * 1.2
+          : 100,
+        barTouchData: BarTouchData(enabled: true),
+        titlesData: FlTitlesData(
+          show: true,
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                final index = value.toInt();
+                if (index < 0 || index >= data.length) return Text('');
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    data[index]['label'] ?? '',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              },
+              reservedSize: 38,
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 28,
+              interval: 1,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                return Text(
+                  value.toInt().toString(),
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        barGroups: data.asMap().entries.map((entry) {
+          return BarChartGroupData(
+            x: entry.key,
+            barRods: [
+              BarChartRodData(
+                toY: (entry.value['value'] as num).toDouble(),
+                color: Colors.lightBlueAccent,
+                width: 22,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildLineChart(Map<String, dynamic> diagramData) {
+    final List<dynamic> data = diagramData['data'] ?? [];
+    
+    return LineChart(
+      LineChartData(
+        gridData: const FlGridData(show: true),
+        titlesData: FlTitlesData(
+          show: true,
+          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30,
+              interval: 1,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                final index = value.toInt();
+                if (index < 0 || index >= data.length) return Text('');
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    data[index]['label'] ?? '',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              interval: 1,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                return Text(
+                  value.toInt().toString(),
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                  ),
+                );
+              },
+              reservedSize: 32,
+            ),
+          ),
+        ),
+        borderData: FlBorderData(
+          show: true,
+          border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        ),
+        minX: 0,
+        maxX: data.length.toDouble() - 1,
+        minY: 0,
+        maxY: data.isNotEmpty 
+          ? data.map((e) => (e['value'] as num).toDouble()).reduce((a, b) => a > b ? a : b) * 1.2
+          : 100,
+        lineBarsData: [
+          LineChartBarData(
+            spots: data.asMap().entries.map((entry) {
+              return FlSpot(
+                entry.key.toDouble(),
+                (entry.value['value'] as num).toDouble(),
+              );
+            }).toList(),
+            isCurved: true,
+            color: Colors.blue,
+            barWidth: 3,
+            isStrokeCapRound: true,
+            dotData: const FlDotData(show: true),
+            belowBarData: BarAreaData(
+              show: true,
+              color: Colors.blue.withOpacity(0.3),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPieChart(Map<String, dynamic> diagramData) {
+    final List<dynamic> data = diagramData['data'] ?? [];
+    final colors = [
+      Colors.blue,
+      Colors.red,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.teal,
+    ];
+
+    return PieChart(
+      PieChartData(
+        pieTouchData: PieTouchData(enabled: true),
+        borderData: FlBorderData(show: false),
+        sectionsSpace: 0,
+        centerSpaceRadius: 40,
+        sections: data.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          final double value = (item['value'] as num).toDouble();
+          final double total = data.fold(0.0, (sum, item) => sum + (item['value'] as num));
+          final double percentage = (value / total) * 100;
+
+          return PieChartSectionData(
+            color: colors[index % colors.length],
+            value: value,
+            title: '${percentage.toStringAsFixed(1)}%',
+            radius: 60,
+            titleStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildFlowChart(Map<String, dynamic> diagramData) {
+    final List<dynamic> steps = diagramData['steps'] ?? [];
+    
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: steps.asMap().entries.map((entry) {
+          final step = entry.value;
+          final isLast = entry.key == steps.length - 1;
+          
+          return Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: _getFlowChartStepColor(step['type']),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Text(
+                  step['text'] ?? '',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              if (!isLast) ...[
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward, color: Colors.grey),
+                const SizedBox(width: 8),
+              ],
+            ],
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Color _getFlowChartStepColor(String? type) {
+    switch (type) {
+      case 'start': return Colors.green;
+      case 'end': return Colors.red;
+      case 'decision': return Colors.orange;
+      case 'process':
+      default: return Colors.blue;
+    }
+  }
+
   Widget _buildMessage(ChatMessage message, int index) {
     switch (message.type) {
       case MessageType.image:
@@ -608,6 +1037,28 @@ Based on the context above, answer the following prompt: $input""";
         }
       case MessageType.presentation:
         return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: message.slides == null ? Row(mainAxisSize: MainAxisSize.min, children: [const Text('Generating presentation...'), const SizedBox(width: 12), GeneratingIndicator(size: 16)]) : InkWell(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PresentationViewScreen(slides: message.slides!, topic: message.text.replaceFirst('Presentation ready: ', '')))), child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.slideshow, size: 20), const SizedBox(width: 12), Flexible(child: Text(message.text, style: const TextStyle(fontWeight: FontWeight.bold)))]))));
+      case MessageType.diagram:
+        return Align(
+          alignment: Alignment.centerLeft, 
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), 
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), 
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor, 
+              borderRadius: BorderRadius.circular(16)
+            ), 
+            child: message.diagramData == null 
+              ? Row(
+                  mainAxisSize: MainAxisSize.min, 
+                  children: [
+                    const Text('Generating diagram...'), 
+                    const SizedBox(width: 12), 
+                    GeneratingIndicator(size: 16)
+                  ]
+                ) 
+              : _buildDiagramWidget(message.diagramData!)
+          )
+        );
       case MessageType.text:
       default:
         final isModelMessage = message.role == 'model';

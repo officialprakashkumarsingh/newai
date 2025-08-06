@@ -220,7 +220,7 @@ class _AhamAppState extends State<AhamApp> {
 }
 
 // DATA MODELS
-enum MessageType { text, image, presentation }
+enum MessageType { text, image, presentation, diagram }
 
 class ChatMessage {
   final String role;
@@ -233,6 +233,7 @@ class ChatMessage {
   final String? attachedFileName;
   final List<String>? attachedContainedFiles;
   final String? thinkingContent; // Added for thinking/reasoning content
+  final Map<String, dynamic>? diagramData; // Added for diagram data
 
   ChatMessage({
     required this.role,
@@ -245,6 +246,7 @@ class ChatMessage {
     this.attachedFileName,
     this.attachedContainedFiles,
     this.thinkingContent, // Added thinking content parameter
+    this.diagramData, // Added diagram data parameter
   });
 
   Map<String, dynamic> toJson() => {
