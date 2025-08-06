@@ -638,8 +638,6 @@ Generate realistic data relevant to: $prompt''',
           return ScatterSpot(
             x,
             y,
-            color: _getColorFromString(item['color']?.toString() ?? 'blue'),
-            radius: 8,
           );
         }).toList(),
         minX: 0,
@@ -1138,7 +1136,7 @@ class GanttChartPainter extends CustomPainter {
       final barWidth = duration * scale;
 
       // Draw task bar
-      paint.color = _getColorFromString(task['color']?.toString() ?? 'blue');
+      paint.color = DiagramService._getColorFromString(task['color']?.toString() ?? 'blue');
       canvas.drawRRect(
         RRect.fromLTRBR(barX, y, barX + barWidth, y + taskHeight, const Radius.circular(4)),
         paint,
@@ -1495,7 +1493,7 @@ class NetworkDiagramPainter extends CustomPainter {
       
       if (position != null) {
         // Draw node circle
-        paint.color = _getColorFromString(node['color']?.toString() ?? 'blue');
+        paint.color = DiagramService._getColorFromString(node['color']?.toString() ?? 'blue');
         canvas.drawCircle(position, nodeRadius, paint);
 
         // Draw node label
