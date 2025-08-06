@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:ahamai/diagram_service.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import 'api_service.dart';
@@ -70,6 +71,25 @@ Use this exact format with ANY NUMBER OF SLIDES based on topic complexity:
         "• Point 2"
       ],
       "background": "gradient"
+    },
+    {
+      "type": "diagram",
+      "title": "Process Flow Diagram",
+      "diagram_type": "flowchart",
+      "diagram_data": {
+        "steps": [
+          {"id": "start", "label": "Start Process", "type": "start"},
+          {"id": "step1", "label": "Analyze Data", "type": "process"},
+          {"id": "decision", "label": "Valid?", "type": "decision"},
+          {"id": "end", "label": "Complete", "type": "end"}
+        ],
+        "connections": [
+          {"from": "start", "to": "step1"},
+          {"from": "step1", "to": "decision"},
+          {"from": "decision", "to": "end"}
+        ]
+      },
+      "background": "white"
     },
     {
       "type": "statistics",
@@ -1254,6 +1274,37 @@ Topic: $topic''',
         );
         break;
         
+      case 'diagram':
+        final String diagramType = slide['diagram_type'] ?? 'flowchart';
+        final Map<String, dynamic> diagramData = slide['diagram_data'] ?? {};
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(padding / 2),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DiagramService.buildChart(diagramType, diagramData, context),
+              ),
+            ),
+          ],
+        );
+        break;
+        
       case 'flowchart':
         final List<dynamic> steps = slide['steps'] ?? [];
         final List<dynamic> connections = slide['connections'] ?? [];
@@ -1424,9 +1475,7 @@ Topic: $topic''',
   static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context) async {
     try {
       print('Starting PDF generation...');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Creating PDF presentation...'), duration: Duration(seconds: 2)),
-      );
+      DiagramService.showStyledSnackBar(context, 'Creating PDF presentation...');
 
       final String title = presentationData['title'] ?? 'Presentation';
       final List<dynamic> slides = presentationData['slides'] ?? [];
@@ -1463,11 +1512,11 @@ Topic: $topic''',
       final success = await _savePDFToAhamAIFolder(Uint8List.fromList(bytes), fileName);
       
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('✅ Presentation saved: $fileName'),
-            duration: const Duration(seconds: 3),
-          ),
+        DiagramService.showStyledSnackBar(
+          context, 
+          'Presentation saved: $fileName',
+          backgroundColor: Colors.green.shade600,
+          duration: const Duration(seconds: 3),
         );
       } else {
         throw Exception('Failed to save PDF file');
@@ -2085,6 +2134,44 @@ Topic: $topic''',
             yPosition += rowHeight;
           }
         }
+        break;
+        
+      case 'diagram':
+        final String diagramType = slide['diagram_type'] ?? 'flowchart';
+        final Map<String, dynamic> diagramData = slide['diagram_data'] ?? {};
+        
+        // Draw diagram placeholder in PDF (actual diagram rendering would need special handling)
+        graphics.drawString(
+          _cleanTextForPDF('Diagram: $diagramType'),
+          PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+          brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+          bounds: Rect.fromLTWH(40, yPosition, pageWidth - 80, 30),
+        );
+        yPosition += 40;
+        
+        // Draw diagram description or key elements
+        final description = slide['description']?.toString() ?? 'Interactive diagram content (see presentation view)';
+        graphics.drawString(
+          _cleanTextForPDF(description),
+          PdfStandardFont(PdfFontFamily.helvetica, 12),
+          brush: PdfSolidBrush(PdfColor(80, 80, 80)),
+          bounds: Rect.fromLTWH(40, yPosition, pageWidth - 80, 100),
+          format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top),
+        );
+        yPosition += 120;
+        
+        // Draw a simple placeholder box for the diagram
+        graphics.drawRectangle(
+          pen: PdfPen(PdfColor(150, 150, 150)),
+          bounds: Rect.fromLTWH(40, yPosition, pageWidth - 80, 200),
+        );
+        graphics.drawString(
+          _cleanTextForPDF('[$diagramType Diagram]'),
+          PdfStandardFont(PdfFontFamily.helvetica, 12),
+          brush: PdfSolidBrush(PdfColor(120, 120, 120)),
+          bounds: Rect.fromLTWH(40, yPosition + 90, pageWidth - 80, 30),
+          format: PdfStringFormat(alignment: PdfTextAlignment.center, lineAlignment: PdfVerticalAlignment.middle),
+        );
         break;
         
       case 'flowchart':

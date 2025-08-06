@@ -347,42 +347,46 @@ Generate realistic data relevant to: $prompt''',
   static Widget buildChart(String type, Map<String, dynamic> diagramData, BuildContext context) {
     switch (type.toLowerCase()) {
       case 'bar':
-        return _buildBarChart(diagramData);
+        return _buildBarChart(diagramData, context);
       case 'line':
-        return _buildLineChart(diagramData);
+        return _buildLineChart(diagramData, context);
       case 'pie':
-        return _buildPieChart(diagramData);
+        return _buildPieChart(diagramData, context);
       case 'doughnut':
-        return _buildDoughnutChart(diagramData);
+        return _buildDoughnutChart(diagramData, context);
       case 'scatter':
-        return _buildScatterChart(diagramData);
+        return _buildScatterChart(diagramData, context);
       case 'radar':
         return _buildRadarChart(diagramData);
       case 'area':
-        return _buildAreaChart(diagramData);
+        return _buildAreaChart(diagramData, context);
       case 'flowchart':
         return _buildFlowChart(diagramData);
       case 'mindmap':
         return _buildMindMap(diagramData, context);
       case 'gantt':
-        return _buildGanttChart(diagramData);
+        return _buildGanttChart(diagramData, context);
       case 'orgchart':
         return _buildOrgChart(diagramData, context);
       case 'network':
         return _buildNetworkDiagram(diagramData, context);
       default:
-        return _buildBarChart(diagramData);
+        return _buildBarChart(diagramData, context);
     }
   }
 
-  static Widget _buildBarChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
+  static Widget _buildBarChart(Map<String, dynamic> data, BuildContext context) {
+    final chartData = data['data'] as List<dynamic>? ?? [];
+    
+    if (chartData.isEmpty) {
+      return const Center(child: Text('No data available for bar chart'));
+    }
     
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
-        maxY: data.isNotEmpty 
-          ? data.map((e) => (e['value'] as num).toDouble()).reduce((a, b) => a > b ? a : b) * 1.2
+        maxY: chartData.isNotEmpty 
+          ? chartData.map((e) => (e['value'] as num?)?.toDouble() ?? 0).reduce((a, b) => a > b ? a : b) * 1.2
           : 100,
         barTouchData: BarTouchData(enabled: true),
         titlesData: FlTitlesData(
@@ -394,34 +398,34 @@ Generate realistic data relevant to: $prompt''',
               showTitles: true,
               getTitlesWidget: (double value, TitleMeta meta) {
                 final index = value.toInt();
-                if (index < 0 || index >= data.length) return const Text('');
-                return Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    data[index]['label'] ?? '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                if (index >= 0 && index < chartData.length) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      chartData[index]['label']?.toString() ?? '',
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
+                return const Text('');
               },
-              reservedSize: 38,
             ),
           ),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 28,
-              interval: 1,
               getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    value.toInt().toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontSize: 12,
+                    ),
                   ),
                 );
               },
@@ -429,15 +433,18 @@ Generate realistic data relevant to: $prompt''',
           ),
         ),
         borderData: FlBorderData(show: false),
-        barGroups: data.asMap().entries.map((entry) {
+        barGroups: chartData.asMap().entries.map((entry) {
           return BarChartGroupData(
             x: entry.key,
             barRods: [
               BarChartRodData(
-                toY: (entry.value['value'] as num).toDouble(),
-                color: Colors.lightBlueAccent,
-                width: 22,
-                borderRadius: BorderRadius.circular(4),
+                toY: (entry.value['value'] as num?)?.toDouble() ?? 0,
+                color: _getColorFromString(entry.value['color']?.toString() ?? 'blue'),
+                width: 16,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  topRight: Radius.circular(4),
+                ),
               ),
             ],
           );
@@ -446,9 +453,13 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  static Widget _buildLineChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
+  static Widget _buildLineChart(Map<String, dynamic> data, BuildContext context) {
+    final chartData = data['data'] as List<dynamic>? ?? [];
     
+    if (chartData.isEmpty) {
+      return const Center(child: Text('No data available for line chart'));
+    }
+
     return LineChart(
       LineChartData(
         gridData: const FlGridData(show: true),
@@ -459,99 +470,97 @@ Generate realistic data relevant to: $prompt''',
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 30,
-              interval: 1,
               getTitlesWidget: (double value, TitleMeta meta) {
                 final index = value.toInt();
-                if (index < 0 || index >= data.length) return const Text('');
-                return Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    data[index]['label'] ?? '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
+                if (index >= 0 && index < chartData.length) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      chartData[index]['label']?.toString() ?? '',
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
+                return const Text('');
               },
             ),
           ),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              interval: 1,
               getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    value.toInt().toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontSize: 12,
+                    ),
                   ),
                 );
               },
-              reservedSize: 32,
             ),
           ),
         ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Colors.grey.withOpacity(0.3)),
-        ),
+        borderData: FlBorderData(show: true),
         minX: 0,
-        maxX: data.length.toDouble() - 1,
+        maxX: (chartData.length - 1).toDouble(),
         minY: 0,
-        maxY: data.isNotEmpty 
-          ? data.map((e) => (e['value'] as num).toDouble()).reduce((a, b) => a > b ? a : b) * 1.2
+        maxY: chartData.isNotEmpty 
+          ? chartData.map((e) => (e['value'] as num?)?.toDouble() ?? 0).reduce((a, b) => a > b ? a : b) * 1.2
           : 100,
         lineBarsData: [
           LineChartBarData(
-            spots: data.asMap().entries.map((entry) {
+            spots: chartData.asMap().entries.map((entry) {
               return FlSpot(
                 entry.key.toDouble(),
-                (entry.value['value'] as num).toDouble(),
+                (entry.value['value'] as num?)?.toDouble() ?? 0,
               );
             }).toList(),
             isCurved: true,
-            color: Colors.blue,
+            color: _getColorFromString(data['color']?.toString() ?? 'blue'),
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),
-            belowBarData: BarAreaData(
-              show: true,
-              color: Colors.blue.withOpacity(0.3),
-            ),
+            belowBarData: BarAreaData(show: false),
           ),
         ],
       ),
     );
   }
 
-  static Widget _buildPieChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
+  static Widget _buildPieChart(Map<String, dynamic> data, BuildContext context) {
+    final chartData = data['data'] as List<dynamic>? ?? [];
+    
+    if (chartData.isEmpty) {
+      return const Center(child: Text('No data available for pie chart'));
+    }
+
     final colors = [
-      Colors.blue,
-      Colors.red,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.teal,
+      _getColorFromString('blue'),
+      _getColorFromString('red'),
+      _getColorFromString('green'),
+      _getColorFromString('orange'),
+      _getColorFromString('purple'),
+      _getColorFromString('yellow'),
     ];
 
     return PieChart(
       PieChartData(
         pieTouchData: PieTouchData(enabled: true),
         borderData: FlBorderData(show: false),
-        sectionsSpace: 0,
+        sectionsSpace: 2,
         centerSpaceRadius: 40,
-        sections: data.asMap().entries.map((entry) {
+        sections: chartData.asMap().entries.map((entry) {
           final index = entry.key;
           final item = entry.value;
-          final double value = (item['value'] as num).toDouble();
-          final double total = data.fold(0.0, (sum, item) => sum + (item['value'] as num));
-          final double percentage = (value / total) * 100;
+          final double value = (item['value'] as num?)?.toDouble() ?? 0;
+          final double total = chartData.fold(0.0, (sum, item) => sum + ((item['value'] as num?)?.toDouble() ?? 0));
+          final double percentage = total > 0 ? (value / total) * 100 : 0;
 
           return PieChartSectionData(
             color: colors[index % colors.length],
@@ -569,17 +578,20 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  static Widget _buildDoughnutChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
+  static Widget _buildDoughnutChart(Map<String, dynamic> data, BuildContext context) {
+    final chartData = data['data'] as List<dynamic>? ?? [];
+    
+    if (chartData.isEmpty) {
+      return const Center(child: Text('No data available for doughnut chart'));
+    }
+
     final colors = [
-      Colors.blue,
-      Colors.red,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.teal,
-      Colors.pink,
-      Colors.amber,
+      _getColorFromString('blue'),
+      _getColorFromString('red'),
+      _getColorFromString('green'),
+      _getColorFromString('orange'),
+      _getColorFromString('purple'),
+      _getColorFromString('yellow'),
     ];
 
     return PieChart(
@@ -588,20 +600,20 @@ Generate realistic data relevant to: $prompt''',
         borderData: FlBorderData(show: false),
         sectionsSpace: 2,
         centerSpaceRadius: 80,
-        sections: data.asMap().entries.map((entry) {
+        sections: chartData.asMap().entries.map((entry) {
           final index = entry.key;
           final item = entry.value;
-          final double value = (item['value'] as num).toDouble();
-          final double total = data.fold(0.0, (sum, item) => sum + (item['value'] as num));
-          final double percentage = (value / total) * 100;
+          final double value = (item['value'] as num?)?.toDouble() ?? 0;
+          final double total = chartData.fold(0.0, (sum, item) => sum + ((item['value'] as num?)?.toDouble() ?? 0));
+          final double percentage = total > 0 ? (value / total) * 100 : 0;
 
           return PieChartSectionData(
             color: colors[index % colors.length],
             value: value,
             title: '${percentage.toStringAsFixed(1)}%',
-            radius: 50,
+            radius: 40,
             titleStyle: const TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
@@ -611,12 +623,33 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  static Widget _buildScatterChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
+  static Widget _buildScatterChart(Map<String, dynamic> data, BuildContext context) {
+    final chartData = data['data'] as List<dynamic>? ?? [];
     
-    return LineChart(
-      LineChartData(
-        gridData: const FlGridData(show: true),
+    if (chartData.isEmpty) {
+      return const Center(child: Text('No data available for scatter chart'));
+    }
+
+    return ScatterChart(
+      ScatterChartData(
+        scatterSpots: chartData.map((item) {
+          final x = (item['x'] as num?)?.toDouble() ?? 0;
+          final y = (item['y'] as num?)?.toDouble() ?? 0;
+          return ScatterSpot(
+            x,
+            y,
+            color: _getColorFromString(item['color']?.toString() ?? 'blue'),
+            radius: 8,
+          );
+        }).toList(),
+        minX: 0,
+        maxX: chartData.isNotEmpty 
+          ? chartData.map((e) => (e['x'] as num?)?.toDouble() ?? 0).reduce((a, b) => a > b ? a : b) * 1.2
+          : 100,
+        minY: 0,
+        maxY: chartData.isNotEmpty 
+          ? chartData.map((e) => (e['y'] as num?)?.toDouble() ?? 0).reduce((a, b) => a > b ? a : b) * 1.2
+          : 100,
         titlesData: FlTitlesData(
           show: true,
           rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -624,14 +657,15 @@ Generate realistic data relevant to: $prompt''',
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 30,
               getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10,
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    value.toInt().toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontSize: 12,
+                    ),
                   ),
                 );
               },
@@ -641,46 +675,22 @@ Generate realistic data relevant to: $prompt''',
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    value.toInt().toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontSize: 12,
+                    ),
                   ),
                 );
               },
-              reservedSize: 32,
             ),
           ),
         ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Colors.grey.withOpacity(0.3)),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: data.map((item) {
-              final x = (item['x'] as num?)?.toDouble() ?? 0;
-              final y = (item['y'] as num?)?.toDouble() ?? 0;
-              return FlSpot(x, y);
-            }).toList(),
-            isCurved: false,
-            color: Colors.transparent,
-            barWidth: 0,
-            dotData: FlDotData(
-              show: true,
-              getDotPainter: (spot, percent, barData, index) {
-                return FlDotCirclePainter(
-                  radius: 6,
-                  color: Colors.blue,
-                  strokeWidth: 2,
-                  strokeColor: Colors.white,
-                );
-              },
-            ),
-          ),
-        ],
+        borderData: FlBorderData(show: true),
+        gridData: const FlGridData(show: true),
       ),
     );
   }
@@ -694,9 +704,13 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  static Widget _buildAreaChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
+  static Widget _buildAreaChart(Map<String, dynamic> data, BuildContext context) {
+    final chartData = data['data'] as List<dynamic>? ?? [];
     
+    if (chartData.isEmpty) {
+      return const Center(child: Text('No data available for area chart'));
+    }
+
     return LineChart(
       LineChartData(
         gridData: const FlGridData(show: true),
@@ -707,77 +721,65 @@ Generate realistic data relevant to: $prompt''',
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 30,
-              interval: 1,
               getTitlesWidget: (double value, TitleMeta meta) {
                 final index = value.toInt();
-                if (index < 0 || index >= data.length) return const Text('');
-                return Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    data[index]['label'] ?? '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
+                if (index >= 0 && index < chartData.length) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      chartData[index]['label']?.toString() ?? '',
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
+                return const Text('');
               },
             ),
           ),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              interval: 1,
               getTitlesWidget: (double value, TitleMeta meta) {
-                return Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    value.toInt().toString(),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
+                      fontSize: 12,
+                    ),
                   ),
                 );
               },
-              reservedSize: 32,
             ),
           ),
         ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Colors.grey.withOpacity(0.3)),
-        ),
+        borderData: FlBorderData(show: true),
         minX: 0,
-        maxX: data.length.toDouble() - 1,
+        maxX: (chartData.length - 1).toDouble(),
         minY: 0,
-        maxY: data.isNotEmpty 
-          ? data.map((e) => (e['value'] as num).toDouble()).reduce((a, b) => a > b ? a : b) * 1.2
+        maxY: chartData.isNotEmpty 
+          ? chartData.map((e) => (e['value'] as num?)?.toDouble() ?? 0).reduce((a, b) => a > b ? a : b) * 1.2
           : 100,
         lineBarsData: [
           LineChartBarData(
-            spots: data.asMap().entries.map((entry) {
+            spots: chartData.asMap().entries.map((entry) {
               return FlSpot(
                 entry.key.toDouble(),
-                (entry.value['value'] as num).toDouble(),
+                (entry.value['value'] as num?)?.toDouble() ?? 0,
               );
             }).toList(),
             isCurved: true,
-            color: Colors.blue,
+            color: _getColorFromString(data['color']?.toString() ?? 'blue'),
             barWidth: 3,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: Colors.blue.withOpacity(0.3),
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.blue.withOpacity(0.6),
-                  Colors.blue.withOpacity(0.1),
-                ],
-              ),
+              color: _getColorFromString(data['color']?.toString() ?? 'blue').withOpacity(0.3),
             ),
           ),
         ],
@@ -835,127 +837,23 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  static Widget _buildGanttChart(Map<String, dynamic> diagramData) {
-    final List<dynamic> data = diagramData['data'] ?? [];
-    final int maxWeeks = 12; // Timeline weeks
-    final double weekWidth = 80.0; // Width per week
-    final double taskHeight = 45.0;
+  static Widget _buildGanttChart(Map<String, dynamic> data, BuildContext context) {
+    final tasks = data['tasks'] as List<dynamic>? ?? [];
     
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Timeline header
-        Container(
-          height: 35,
-          child: Row(
-            children: [
-              // Task name header
-              Container(
-                width: 150,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: const Text(
-                  'Task',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                ),
-              ),
-              // Week headers
-              ...List.generate(maxWeeks, (index) => 
-                Container(
-                  width: weekWidth,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Text(
-                    'W${index + 1}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Tasks
-        ...data.asMap().entries.map((entry) {
-          final task = entry.value;
-          final taskName = task['task'] ?? 'Task ${entry.key + 1}';
-          final start = (task['start'] as num?)?.toDouble() ?? 0;
-          final duration = (task['duration'] as num?)?.toDouble() ?? 1;
-          final color = _getColorFromString(task['color'] ?? 'blue');
+    if (tasks.isEmpty) {
+      return const Center(child: Text('No tasks available for Gantt chart'));
+    }
 
-          return Container(
-            height: taskHeight,
-            child: Row(
-              children: [
-                // Task name
-                Container(
-                  width: 150,
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Text(
-                    taskName,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                // Timeline area
-                Container(
-                  width: maxWeeks * weekWidth,
-                  height: taskHeight,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Stack(
-                    children: [
-                      // Grid lines
-                      ...List.generate(maxWeeks, (index) => 
-                        Positioned(
-                          left: index * weekWidth,
-                          child: Container(
-                            width: 1,
-                            height: taskHeight,
-                            color: Colors.grey.shade300,
-                          ),
-                        ),
-                      ),
-                      // Task bar
-                      Positioned(
-                        left: start * weekWidth,
-                        child: Container(
-                          height: 25,
-                          width: duration * weekWidth,
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${duration.toInt()}w',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        width: math.max(600, tasks.length * 80.0),
+        height: 300,
+        child: CustomPaint(
+          painter: GanttChartPainter(tasks),
+          size: Size(math.max(600, tasks.length * 80.0), 300),
+        ),
+      ),
     );
   }
 
@@ -966,7 +864,7 @@ Generate realistic data relevant to: $prompt''',
 
     return CustomPaint(
       size: Size.infinite,
-      painter: OrgChartPainter(rootName, children, context),
+      painter: OrgChartPainter(data),
     );
   }
 
@@ -977,7 +875,7 @@ Generate realistic data relevant to: $prompt''',
 
     return CustomPaint(
       size: Size.infinite,
-      painter: NetworkDiagramPainter(nodes, connections, context),
+      painter: NetworkDiagramPainter(data),
     );
   }
 
@@ -1005,45 +903,66 @@ Generate realistic data relevant to: $prompt''',
     }
   }
 
+  // Custom snackbar with theme-appropriate styling
+  static void showStyledSnackBar(BuildContext context, String message, {Color? backgroundColor, Duration? duration}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        ),
+        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+        duration: duration ?? const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        margin: const EdgeInsets.all(16),
+        elevation: 8,
+      ),
+    );
+  }
+
   static Future<void> downloadDiagram(GlobalKey chartKey, String title, String type, Map<String, dynamic> diagramData, BuildContext context) async {
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saving diagram...'), duration: Duration(seconds: 1)),
-      );
+      showStyledSnackBar(context, 'Saving diagram...');
 
-      final RenderRepaintBoundary boundary = 
-          chartKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      
-      // Get the actual size of the diagram
-      final size = boundary.size;
-      print('Diagram size: ${size.width} x ${size.height}');
-      
-      // Capture at high resolution to ensure full diagram is saved
+      final boundary = chartKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
       final image = await boundary.toImage(pixelRatio: 4.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      final pngBytes = byteData!.buffer.asUint8List();
+      final uint8List = byteData?.buffer.asUint8List();
 
-      print('Image size: ${image.width} x ${image.height} pixels');
-
-      final fileName = '${title.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}_${type}_${DateTime.now().millisecondsSinceEpoch}.png';
-      
-      await _saveImageToAhamAIFolder(pngBytes, fileName);
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Diagram saved to Downloads/AhamAI/$fileName'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      if (uint8List != null) {
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName = '${title.replaceAll(' ', '_')}_${type}_$timestamp.png';
+        
+        final success = await _saveImageToAhamAIFolder(uint8List, fileName);
+        if (success) {
+          showStyledSnackBar(
+            context, 
+            'Diagram saved as $fileName',
+            backgroundColor: Colors.green.shade600,
+          );
+        } else {
+          showStyledSnackBar(
+            context, 
+            'Error saving diagram',
+            backgroundColor: Colors.red.shade600,
+          );
+        }
+      }
     } catch (error) {
-      print('Error saving diagram: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving diagram: $error')),
+      showStyledSnackBar(
+        context, 
+        'Error saving diagram: $error',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }
 
-  static Future<void> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
+  static Future<bool> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
     try {
       final directory = await getExternalStorageDirectory();
       final downloadsPath = '${directory!.parent.parent.parent.parent.path}/Download';
@@ -1057,18 +976,24 @@ Generate realistic data relevant to: $prompt''',
       
       final file = File('$ahamAIPath/$fileName');
       await file.writeAsBytes(bytes);
+      return true; // Indicate success
     } catch (error) {
       // Fallback to app directory
-      final directory = await getApplicationDocumentsDirectory();
-      final ahamAIPath = '${directory.path}/AhamAI';
-      
-      final ahamAIDirectory = Directory(ahamAIPath);
-      if (!await ahamAIDirectory.exists()) {
-        await ahamAIDirectory.create(recursive: true);
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        final ahamAIPath = '${directory.path}/AhamAI';
+        
+        final ahamAIDirectory = Directory(ahamAIPath);
+        if (!await ahamAIDirectory.exists()) {
+          await ahamAIDirectory.create(recursive: true);
+        }
+        
+        final file = File('$ahamAIPath/$fileName');
+        await file.writeAsBytes(bytes);
+        return true; // Indicate success
+      } catch (appError) {
+        return false; // Both methods failed
       }
-      
-      final file = File('$ahamAIPath/$fileName');
-      await file.writeAsBytes(bytes);
     }
   }
 }
@@ -1082,69 +1007,179 @@ class RadarChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.4;
+    final radius = math.min(size.width, size.height) / 2 - 20;
+    
     final paint = Paint()
-      ..color = Colors.blue
+      ..color = Colors.grey.withOpacity(0.3)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 1;
+
+    final dataCount = data.length;
+    if (dataCount == 0) return;
 
     // Draw radar grid
     for (int i = 1; i <= 5; i++) {
-      canvas.drawCircle(center, radius * i / 5, paint);
+      final gridRadius = radius * i / 5;
+      canvas.drawCircle(center, gridRadius, paint);
     }
 
     // Draw axes
-    final angleStep = 2 * math.pi / data.length;
-    for (int i = 0; i < data.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
+    for (int i = 0; i < dataCount; i++) {
+      final angle = (i * 2 * math.pi / dataCount) - math.pi / 2;
       final endPoint = Offset(
         center.dx + radius * math.cos(angle),
         center.dy + radius * math.sin(angle),
       );
       canvas.drawLine(center, endPoint, paint);
+      
+      // Draw labels
+      final labelOffset = Offset(
+        center.dx + (radius + 15) * math.cos(angle),
+        center.dy + (radius + 15) * math.sin(angle),
+      );
+      
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: data[i]['label']?.toString() ?? '',
+          style: const TextStyle(color: Colors.black, fontSize: 12),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(labelOffset.dx - textPainter.width / 2, labelOffset.dy - textPainter.height / 2),
+      );
     }
 
-    // Draw data points
+    // Draw data
     final dataPaint = Paint()
       ..color = Colors.blue.withOpacity(0.3)
       ..style = PaintingStyle.fill;
 
-    final dataPath = Path();
-    for (int i = 0; i < data.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
+    final dataStroke = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    final path = Path();
+    final dataPoints = <Offset>[];
+
+    for (int i = 0; i < dataCount; i++) {
       final value = (data[i]['value'] as num?)?.toDouble() ?? 0;
-      final normalizedValue = (value / 100) * radius;
+      final maxValue = data.map((e) => (e['value'] as num?)?.toDouble() ?? 0).reduce((a, b) => a > b ? a : b);
+      final normalizedValue = maxValue > 0 ? value / maxValue : 0;
       
+      final angle = (i * 2 * math.pi / dataCount) - math.pi / 2;
       final point = Offset(
-        center.dx + normalizedValue * math.cos(angle),
-        center.dy + normalizedValue * math.sin(angle),
+        center.dx + radius * normalizedValue * math.cos(angle),
+        center.dy + radius * normalizedValue * math.sin(angle),
       );
+      
+      dataPoints.add(point);
       
       if (i == 0) {
-        dataPath.moveTo(point.dx, point.dy);
+        path.moveTo(point.dx, point.dy);
       } else {
-        dataPath.lineTo(point.dx, point.dy);
+        path.lineTo(point.dx, point.dy);
       }
     }
-    dataPath.close();
-    canvas.drawPath(dataPath, dataPaint);
-
-    // Draw data point circles
-    final pointPaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.fill;
-
-    for (int i = 0; i < data.length; i++) {
-      final angle = i * angleStep - math.pi / 2;
-      final value = (data[i]['value'] as num?)?.toDouble() ?? 0;
-      final normalizedValue = (value / 100) * radius;
+    
+    if (dataPoints.isNotEmpty) {
+      path.lineTo(dataPoints.first.dx, dataPoints.first.dy);
+      canvas.drawPath(path, dataPaint);
+      canvas.drawPath(path, dataStroke);
       
-      final point = Offset(
-        center.dx + normalizedValue * math.cos(angle),
-        center.dy + normalizedValue * math.sin(angle),
+      // Draw data points
+      for (final point in dataPoints) {
+        canvas.drawCircle(point, 4, Paint()..color = Colors.blue);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class GanttChartPainter extends CustomPainter {
+  final List<dynamic> tasks;
+
+  GanttChartPainter(this.tasks);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (tasks.isEmpty) return;
+
+    final paint = Paint()..style = PaintingStyle.fill;
+    final taskHeight = 40.0;
+    final taskSpacing = 10.0;
+    final leftMargin = 150.0;
+    final topMargin = 30.0;
+
+    // Find the maximum duration to scale the chart
+    double maxDuration = 0;
+    for (final task in tasks) {
+      final start = (task['start'] as num?)?.toDouble() ?? 0;
+      final duration = (task['duration'] as num?)?.toDouble() ?? 1;
+      maxDuration = math.max(maxDuration, start + duration);
+    }
+
+    final chartWidth = size.width - leftMargin - 20;
+    final scale = maxDuration > 0 ? chartWidth / maxDuration : 1;
+
+    for (int i = 0; i < tasks.length; i++) {
+      final task = tasks[i];
+      final taskName = task['name']?.toString() ?? 'Task ${i + 1}';
+      final start = (task['start'] as num?)?.toDouble() ?? 0;
+      final duration = (task['duration'] as num?)?.toDouble() ?? 1;
+      
+      final y = topMargin + i * (taskHeight + taskSpacing);
+      final barX = leftMargin + start * scale;
+      final barWidth = duration * scale;
+
+      // Draw task bar
+      paint.color = _getColorFromString(task['color']?.toString() ?? 'blue');
+      canvas.drawRRect(
+        RRect.fromLTRBR(barX, y, barX + barWidth, y + taskHeight, const Radius.circular(4)),
+        paint,
+      );
+
+      // Draw task name
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: taskName,
+          style: const TextStyle(color: Colors.black, fontSize: 12),
+        ),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      );
+      textPainter.layout(maxWidth: leftMargin - 10);
+      textPainter.paint(canvas, Offset(10, y + (taskHeight - textPainter.height) / 2));
+    }
+
+    // Draw time scale
+    final timeSteps = 5;
+    for (int i = 0; i <= timeSteps; i++) {
+      final time = (maxDuration * i / timeSteps);
+      final x = leftMargin + time * scale;
+      
+      // Draw time line
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, size.height),
+        Paint()..color = Colors.grey.withOpacity(0.3)..strokeWidth = 1,
       );
       
-      canvas.drawCircle(point, 4, pointPaint);
+      // Draw time label
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: time.toStringAsFixed(1),
+          style: const TextStyle(color: Colors.black, fontSize: 10),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(x - textPainter.width / 2, 5));
     }
   }
 
@@ -1328,115 +1363,78 @@ class MindMapPainter extends CustomPainter {
 }
 
 class OrgChartPainter extends CustomPainter {
-  final String rootName;
-  final List<dynamic> children;
-  final BuildContext context;
-  
-  OrgChartPainter(this.rootName, this.children, this.context);
-  
+  final Map<String, dynamic> orgData;
+
+  OrgChartPainter(this.orgData);
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.fill;
 
-    // Draw root
-    final rootRect = Rect.fromCenter(
-      center: Offset(size.width / 2, 60),
-      width: 120,
-      height: 40,
-    );
-    canvas.drawRRect(RRect.fromRectAndRadius(rootRect, const Radius.circular(8)), paint);
+    final linePaint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
 
-    // Draw root text
-    final rootTextPainter = TextPainter(
-      text: TextSpan(
-        text: rootName,
-        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    rootTextPainter.layout();
-    rootTextPainter.paint(
-      canvas,
-      Offset(rootRect.center.dx - rootTextPainter.width / 2, rootRect.center.dy - rootTextPainter.height / 2),
-    );
+    final center = Offset(size.width / 2, 50);
+    final boxWidth = 120.0;
+    final boxHeight = 40.0;
+    final levelHeight = 80.0;
 
-    // Draw children
-    final childWidth = size.width / children.length;
-    for (int i = 0; i < children.length; i++) {
-      final child = children[i];
-      final childName = child['name'] ?? 'Employee';
-      final childCenter = Offset(childWidth * i + childWidth / 2, 160);
-
-      // Draw connection line
-      final linePaint = Paint()
-        ..color = Colors.grey
-        ..strokeWidth = 2;
-      canvas.drawLine(rootRect.bottomCenter, childCenter.translate(0, -20), linePaint);
-
-      // Draw child box
-      final childRect = Rect.fromCenter(
-        center: childCenter,
-        width: 100,
-        height: 40,
+    void drawNode(Map<String, dynamic> node, Offset position, int level) {
+      // Draw box
+      final rect = Rect.fromCenter(
+        center: position,
+        width: boxWidth,
+        height: boxHeight,
       );
-      paint.color = Colors.green;
-      canvas.drawRRect(RRect.fromRectAndRadius(childRect, const Radius.circular(8)), paint);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(8)),
+        paint,
+      );
 
-      // Draw child text
-      final childTextPainter = TextPainter(
+      // Draw text
+      final textPainter = TextPainter(
         text: TextSpan(
-          text: childName,
-          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+          text: node['name']?.toString() ?? 'Node',
+          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
         ),
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
       );
-      childTextPainter.layout();
-      childTextPainter.paint(
+      textPainter.layout(maxWidth: boxWidth - 10);
+      textPainter.paint(
         canvas,
-        Offset(childRect.center.dx - childTextPainter.width / 2, childRect.center.dy - childTextPainter.height / 2),
+        Offset(position.dx - textPainter.width / 2, position.dy - textPainter.height / 2),
       );
 
-      // Draw grandchildren
-      final grandChildren = child['children'] as List<dynamic>? ?? [];
-      if (grandChildren.isNotEmpty) {
-        final grandChildWidth = childWidth / grandChildren.length;
-        for (int j = 0; j < grandChildren.length; j++) {
-          final grandChildName = grandChildren[j].toString();
-          final grandChildCenter = Offset(
-            childCenter.dx - childWidth / 2 + grandChildWidth * j + grandChildWidth / 2,
-            260,
+      // Draw children
+      final children = node['children'] as List<dynamic>? ?? [];
+      if (children.isNotEmpty) {
+        final childY = position.dy + levelHeight;
+        final totalWidth = children.length * (boxWidth + 20) - 20;
+        final startX = position.dx - totalWidth / 2 + boxWidth / 2;
+
+        for (int i = 0; i < children.length; i++) {
+          final childX = startX + i * (boxWidth + 20);
+          final childPosition = Offset(childX, childY);
+
+          // Draw line to child
+          canvas.drawLine(
+            Offset(position.dx, position.dy + boxHeight / 2),
+            Offset(childPosition.dx, childPosition.dy - boxHeight / 2),
+            linePaint,
           );
 
-          // Draw connection
-          canvas.drawLine(childRect.bottomCenter, grandChildCenter.translate(0, -20), linePaint);
-
-          // Draw grandchild box
-          final grandChildRect = Rect.fromCenter(
-            center: grandChildCenter,
-            width: 80,
-            height: 30,
-          );
-          paint.color = Colors.orange;
-          canvas.drawRRect(RRect.fromRectAndRadius(grandChildRect, const Radius.circular(6)), paint);
-
-          // Draw grandchild text
-          final grandChildTextPainter = TextPainter(
-            text: TextSpan(
-              text: grandChildName,
-              style: const TextStyle(color: Colors.white, fontSize: 8),
-            ),
-            textDirection: TextDirection.ltr,
-          );
-          grandChildTextPainter.layout();
-          grandChildTextPainter.paint(
-            canvas,
-            Offset(grandChildRect.center.dx - grandChildTextPainter.width / 2, grandChildRect.center.dy - grandChildTextPainter.height / 2),
-          );
+          // Recursively draw child
+          drawNode(children[i], childPosition, level + 1);
         }
       }
     }
+
+    drawNode(orgData, center, 0);
   }
 
   @override
@@ -1444,72 +1442,76 @@ class OrgChartPainter extends CustomPainter {
 }
 
 class NetworkDiagramPainter extends CustomPainter {
-  final List<dynamic> nodes;
-  final List<dynamic> connections;
-  final BuildContext context;
-  
-  NetworkDiagramPainter(this.nodes, this.connections, this.context);
-  
+  final Map<String, dynamic> networkData;
+
+  NetworkDiagramPainter(this.networkData);
+
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..style = PaintingStyle.fill;
+    final nodes = networkData['nodes'] as List<dynamic>? ?? [];
+    final edges = networkData['edges'] as List<dynamic>? ?? [];
+    
+    if (nodes.isEmpty) return;
+
+    final paint = Paint()..style = PaintingStyle.fill;
+    final linePaint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
 
     // Position nodes in a circle
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.3;
-    Map<String, Offset> nodePositions = {};
+    final radius = math.min(size.width, size.height) / 2 - 50;
+    final nodePositions = <String, Offset>{};
+    final nodeRadius = 25.0;
 
+    // Calculate node positions
     for (int i = 0; i < nodes.length; i++) {
-      final node = nodes[i];
-      final nodeId = node['id'] ?? 'node_$i';
-      final angle = (i / nodes.length) * 2 * math.pi;
+      final angle = (i * 2 * math.pi / nodes.length);
       final position = Offset(
         center.dx + radius * math.cos(angle),
         center.dy + radius * math.sin(angle),
       );
-      nodePositions[nodeId] = position;
-
-      // Draw node
-      Color nodeColor;
-      switch (node['type']) {
-        case 'router': nodeColor = Colors.blue; break;
-        case 'server': nodeColor = Colors.green; break;
-        case 'client': nodeColor = Colors.orange; break;
-        default: nodeColor = Colors.grey;
-      }
-      
-      paint.color = nodeColor;
-      canvas.drawCircle(position, 25, paint);
-
-      // Draw node label
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: node['label'] ?? nodeId,
-          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(position.dx - textPainter.width / 2, position.dy - textPainter.height / 2),
-      );
+      nodePositions[nodes[i]['id']?.toString() ?? i.toString()] = position;
     }
 
-    // Draw connections
-    final linePaint = Paint()
-      ..color = Colors.grey
-      ..strokeWidth = 2;
+    // Draw edges
+    for (final edge in edges) {
+      final sourceId = edge['source']?.toString() ?? '';
+      final targetId = edge['target']?.toString() ?? '';
+      final sourcePos = nodePositions[sourceId];
+      final targetPos = nodePositions[targetId];
 
-    for (final connection in connections) {
-      final fromId = connection['from'];
-      final toId = connection['to'];
-      final fromPos = nodePositions[fromId];
-      final toPos = nodePositions[toId];
+      if (sourcePos != null && targetPos != null) {
+        canvas.drawLine(sourcePos, targetPos, linePaint);
+      }
+    }
 
-      if (fromPos != null && toPos != null) {
-        canvas.drawLine(fromPos, toPos, linePaint);
+    // Draw nodes
+    for (int i = 0; i < nodes.length; i++) {
+      final node = nodes[i];
+      final nodeId = node['id']?.toString() ?? i.toString();
+      final position = nodePositions[nodeId];
+      
+      if (position != null) {
+        // Draw node circle
+        paint.color = _getColorFromString(node['color']?.toString() ?? 'blue');
+        canvas.drawCircle(position, nodeRadius, paint);
+
+        // Draw node label
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: node['label']?.toString() ?? nodeId,
+            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+          ),
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.center,
+        );
+        textPainter.layout(maxWidth: nodeRadius * 2 - 4);
+        textPainter.paint(
+          canvas,
+          Offset(position.dx - textPainter.width / 2, position.dy - textPainter.height / 2),
+        );
       }
     }
   }
