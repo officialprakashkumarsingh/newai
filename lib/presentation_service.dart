@@ -2215,132 +2215,195 @@ Topic: $topic''',
 
   // Clean text for PDF rendering to avoid font issues
   static String _cleanTextForPDF(String text) {
-    return text
-        .replaceAll('•', '-') // Replace bullets
-        .replaceAll('◦', '-')
-        .replaceAll('▪', '-')
-        .replaceAll('▫', '-')
-        .replaceAll('"', '"') // Replace smart quotes
-        .replaceAll('"', '"')
-        .replaceAll('„', '"')
-        .replaceAll('‚', ',')
-        .replaceAll(''', "'") // Replace smart apostrophes
-        .replaceAll(''', "'")
-        .replaceAll('`', "'")
-        .replaceAll('´', "'")
-        .replaceAll('–', '-') // Replace en-dash
-        .replaceAll('—', '--') // Replace em-dash
-        .replaceAll('―', '--')
-        .replaceAll('…', '...') // Replace ellipsis
-        .replaceAll('°', ' degrees') // Replace degree symbol
-        .replaceAll('¹', '1') // Replace superscripts
-        .replaceAll('²', '2')
-        .replaceAll('³', '3')
-        .replaceAll('⁴', '4')
-        .replaceAll('⁵', '5')
-        .replaceAll('⁶', '6')
-        .replaceAll('⁷', '7')
-        .replaceAll('⁸', '8')
-        .replaceAll('⁹', '9')
-        .replaceAll('⁰', '0')
-        .replaceAll('₁', '1') // Replace subscripts
-        .replaceAll('₂', '2')
-        .replaceAll('₃', '3')
-        .replaceAll('₄', '4')
-        .replaceAll('₅', '5')
-        .replaceAll('α', 'alpha') // Replace Greek letters
-        .replaceAll('β', 'beta')
-        .replaceAll('γ', 'gamma')
-        .replaceAll('δ', 'delta')
-        .replaceAll('ε', 'epsilon')
-        .replaceAll('ζ', 'zeta')
-        .replaceAll('η', 'eta')
-        .replaceAll('θ', 'theta')
-        .replaceAll('ι', 'iota')
-        .replaceAll('κ', 'kappa')
-        .replaceAll('λ', 'lambda')
-        .replaceAll('μ', 'mu')
-        .replaceAll('ν', 'nu')
-        .replaceAll('ξ', 'xi')
-        .replaceAll('π', 'pi')
-        .replaceAll('ρ', 'rho')
-        .replaceAll('σ', 'sigma')
-        .replaceAll('τ', 'tau')
-        .replaceAll('υ', 'upsilon')
-        .replaceAll('φ', 'phi')
-        .replaceAll('χ', 'chi')
-        .replaceAll('ψ', 'psi')
-        .replaceAll('ω', 'omega')
-        .replaceAll('Α', 'Alpha') // Uppercase Greek
-        .replaceAll('Β', 'Beta')
-        .replaceAll('Γ', 'Gamma')
-        .replaceAll('Δ', 'Delta')
-        .replaceAll('Ε', 'Epsilon')
-        .replaceAll('Ζ', 'Zeta')
-        .replaceAll('Η', 'Eta')
-        .replaceAll('Θ', 'Theta')
-        .replaceAll('Ι', 'Iota')
-        .replaceAll('Κ', 'Kappa')
-        .replaceAll('Λ', 'Lambda')
-        .replaceAll('Μ', 'Mu')
-        .replaceAll('Ν', 'Nu')
-        .replaceAll('Ξ', 'Xi')
-        .replaceAll('Π', 'Pi')
-        .replaceAll('Ρ', 'Rho')
-        .replaceAll('Σ', 'Sigma')
-        .replaceAll('Τ', 'Tau')
-        .replaceAll('Υ', 'Upsilon')
-        .replaceAll('Φ', 'Phi')
-        .replaceAll('Χ', 'Chi')
-        .replaceAll('Ψ', 'Psi')
-        .replaceAll('Ω', 'Omega')
-        .replaceAll('∞', 'infinity') // Math symbols
-        .replaceAll('≈', 'approx')
-        .replaceAll('≠', '!=')
-        .replaceAll('≤', '<=')
-        .replaceAll('≥', '>=')
-        .replaceAll('±', '+/-')
-        .replaceAll('∓', '-/+')
-        .replaceAll('×', 'x')
-        .replaceAll('÷', '/')
-        .replaceAll('√', 'sqrt')
-        .replaceAll('∛', 'cbrt')
-        .replaceAll('∜', '4thrt')
-        .replaceAll('∑', 'sum')
-        .replaceAll('∏', 'product')
-        .replaceAll('∫', 'integral')
-        .replaceAll('∮', 'contour_integral')
-        .replaceAll('∂', 'partial')
-        .replaceAll('∇', 'nabla')
-        .replaceAll('∆', 'Delta')
-        .replaceAll('∅', 'empty_set')
-        .replaceAll('∈', 'in')
-        .replaceAll('∉', 'not_in')
-        .replaceAll('∩', 'intersection')
-        .replaceAll('∪', 'union')
-        .replaceAll('⊂', 'subset')
-        .replaceAll('⊃', 'superset')
-        .replaceAll('⊆', 'subset_eq')
-        .replaceAll('⊇', 'superset_eq')
-        .replaceAll('€', 'EUR') // Currency symbols
-        .replaceAll('£', 'GBP')
-        .replaceAll('¥', 'JPY')
-        .replaceAll('¢', 'cents')
-        .replaceAll('©', '(C)') // Special symbols
-        .replaceAll('®', '(R)')
-        .replaceAll('™', '(TM)')
-        .replaceAll('§', 'section')
-        .replaceAll('¶', 'paragraph')
-        .replaceAll('†', 'dagger')
-        .replaceAll('‡', 'double_dagger')
-        .replaceAll('←', '<-') // Arrows
-        .replaceAll('→', '->')
-        .replaceAll('↑', '^')
-        .replaceAll('↓', 'v')
-        .replaceAll('↔', '<->')
-        .replaceAll('↕', '<->')
-        .replaceAll('⇐', '<=')
-        .replaceAll('⇒', '=>')
-        .replaceAll('⇔', '<=>');
+    // First, remove all non-ASCII characters that aren't basic symbols
+    String cleaned = '';
+    for (int i = 0; i < text.length; i++) {
+      int charCode = text.codeUnitAt(i);
+      
+      // Keep basic ASCII characters (32-126), newlines (10), carriage returns (13), and tabs (9)
+      if ((charCode >= 32 && charCode <= 126) || charCode == 10 || charCode == 13 || charCode == 9) {
+        cleaned += text[i];
+      }
+      // Replace common problematic characters with safe alternatives
+      else {
+        switch (charCode) {
+          // Smart quotes and apostrophes
+          case 8216: case 8217: cleaned += "'"; break; // Left/right single quotes
+          case 8218: cleaned += ","; break; // Single low quote
+          case 8220: case 8221: cleaned += '"'; break; // Left/right double quotes
+          case 8222: cleaned += '"'; break; // Double low quote
+          
+          // Dashes and punctuation
+          case 8211: cleaned += "-"; break; // En dash
+          case 8212: cleaned += "--"; break; // Em dash
+          case 8230: cleaned += "..."; break; // Ellipsis
+          case 8226: cleaned += "-"; break; // Bullet
+          case 8259: cleaned += "-"; break; // Hyphen bullet
+          case 8282: cleaned += ":"; break; // Two dot punctuation (U+205A)
+          
+          // Mathematical symbols
+          case 8734: cleaned += "infinity"; break; // Infinity
+          case 8776: cleaned += "approx"; break; // Approximately equal
+          case 8800: cleaned += "!="; break; // Not equal
+          case 8804: cleaned += "<="; break; // Less than or equal
+          case 8805: cleaned += ">="; break; // Greater than or equal
+          case 177: cleaned += "+/-"; break; // Plus-minus
+          case 215: cleaned += "x"; break; // Multiplication
+          case 247: cleaned += "/"; break; // Division
+          case 8730: cleaned += "sqrt"; break; // Square root
+          case 8721: cleaned += "sum"; break; // Summation
+          case 8719: cleaned += "product"; break; // Product
+          case 8747: cleaned += "integral"; break; // Integral
+          case 8706: cleaned += "partial"; break; // Partial derivative
+          case 8711: cleaned += "nabla"; break; // Nabla
+          case 8709: cleaned += "empty_set"; break; // Empty set
+          case 8712: cleaned += "in"; break; // Element of
+          case 8713: cleaned += "not_in"; break; // Not element of
+          case 8745: cleaned += "intersection"; break; // Intersection
+          case 8746: cleaned += "union"; break; // Union
+          
+          // Greek letters (lowercase)
+          case 945: cleaned += "alpha"; break;
+          case 946: cleaned += "beta"; break;
+          case 947: cleaned += "gamma"; break;
+          case 948: cleaned += "delta"; break;
+          case 949: cleaned += "epsilon"; break;
+          case 950: cleaned += "zeta"; break;
+          case 951: cleaned += "eta"; break;
+          case 952: cleaned += "theta"; break;
+          case 953: cleaned += "iota"; break;
+          case 954: cleaned += "kappa"; break;
+          case 955: cleaned += "lambda"; break;
+          case 956: cleaned += "mu"; break;
+          case 957: cleaned += "nu"; break;
+          case 958: cleaned += "xi"; break;
+          case 960: cleaned += "pi"; break;
+          case 961: cleaned += "rho"; break;
+          case 963: cleaned += "sigma"; break;
+          case 964: cleaned += "tau"; break;
+          case 965: cleaned += "upsilon"; break;
+          case 966: cleaned += "phi"; break;
+          case 967: cleaned += "chi"; break;
+          case 968: cleaned += "psi"; break;
+          case 969: cleaned += "omega"; break;
+          
+          // Greek letters (uppercase)
+          case 913: cleaned += "Alpha"; break;
+          case 914: cleaned += "Beta"; break;
+          case 915: cleaned += "Gamma"; break;
+          case 916: cleaned += "Delta"; break;
+          case 917: cleaned += "Epsilon"; break;
+          case 918: cleaned += "Zeta"; break;
+          case 919: cleaned += "Eta"; break;
+          case 920: cleaned += "Theta"; break;
+          case 921: cleaned += "Iota"; break;
+          case 922: cleaned += "Kappa"; break;
+          case 923: cleaned += "Lambda"; break;
+          case 924: cleaned += "Mu"; break;
+          case 925: cleaned += "Nu"; break;
+          case 926: cleaned += "Xi"; break;
+          case 928: cleaned += "Pi"; break;
+          case 929: cleaned += "Rho"; break;
+          case 931: cleaned += "Sigma"; break;
+          case 932: cleaned += "Tau"; break;
+          case 933: cleaned += "Upsilon"; break;
+          case 934: cleaned += "Phi"; break;
+          case 935: cleaned += "Chi"; break;
+          case 936: cleaned += "Psi"; break;
+          case 937: cleaned += "Omega"; break;
+          
+          // Superscripts
+          case 8304: cleaned += "0"; break;
+          case 185: cleaned += "1"; break;
+          case 178: cleaned += "2"; break;
+          case 179: cleaned += "3"; break;
+          case 8308: cleaned += "4"; break;
+          case 8309: cleaned += "5"; break;
+          case 8310: cleaned += "6"; break;
+          case 8311: cleaned += "7"; break;
+          case 8312: cleaned += "8"; break;
+          case 8313: cleaned += "9"; break;
+          
+          // Subscripts
+          case 8320: cleaned += "0"; break;
+          case 8321: cleaned += "1"; break;
+          case 8322: cleaned += "2"; break;
+          case 8323: cleaned += "3"; break;
+          case 8324: cleaned += "4"; break;
+          case 8325: cleaned += "5"; break;
+          case 8326: cleaned += "6"; break;
+          case 8327: cleaned += "7"; break;
+          case 8328: cleaned += "8"; break;
+          case 8329: cleaned += "9"; break;
+          
+          // Currency symbols
+          case 8364: cleaned += "EUR"; break; // Euro
+          case 163: cleaned += "GBP"; break; // Pound
+          case 165: cleaned += "JPY"; break; // Yen
+          case 162: cleaned += "cents"; break; // Cent
+          
+          // Arrows
+          case 8592: cleaned += "<-"; break; // Left arrow
+          case 8594: cleaned += "->"; break; // Right arrow
+          case 8593: cleaned += "^"; break; // Up arrow
+          case 8595: cleaned += "v"; break; // Down arrow
+          case 8596: cleaned += "<->"; break; // Left-right arrow
+          case 8597: cleaned += "<->"; break; // Up-down arrow
+          case 8656: cleaned += "<="; break; // Double left arrow
+          case 8658: cleaned += "=>"; break; // Double right arrow
+          case 8660: cleaned += "<=>"; break; // Double left-right arrow
+          
+          // Special symbols
+          case 169: cleaned += "(C)"; break; // Copyright
+          case 174: cleaned += "(R)"; break; // Registered
+          case 8482: cleaned += "(TM)"; break; // Trademark
+          case 167: cleaned += "section"; break; // Section
+          case 182: cleaned += "paragraph"; break; // Paragraph
+          case 8224: cleaned += "dagger"; break; // Dagger
+          case 8225: cleaned += "double_dagger"; break; // Double dagger
+          case 176: cleaned += " degrees"; break; // Degree symbol
+          
+          // Other bullet-like characters
+          case 9679: cleaned += "-"; break; // Black circle
+          case 9675: cleaned += "-"; break; // White circle
+          case 9642: cleaned += "-"; break; // Black small square
+          case 9643: cleaned += "-"; break; // White small square
+          case 9670: cleaned += "-"; break; // Diamond
+          case 8250: cleaned += ">"; break; // Single right angle quote
+          case 8249: cleaned += "<"; break; // Single left angle quote
+          
+          // Fraction-like characters
+          case 188: cleaned += "1/4"; break; // One quarter
+          case 189: cleaned += "1/2"; break; // One half
+          case 190: cleaned += "3/4"; break; // Three quarters
+          case 8531: cleaned += "1/3"; break; // One third
+          case 8532: cleaned += "2/3"; break; // Two thirds
+          case 8533: cleaned += "1/5"; break; // One fifth
+          case 8534: cleaned += "2/5"; break; // Two fifths
+          case 8535: cleaned += "3/5"; break; // Three fifths
+          case 8536: cleaned += "4/5"; break; // Four fifths
+          case 8537: cleaned += "1/6"; break; // One sixth
+          case 8538: cleaned += "5/6"; break; // Five sixths
+          case 8539: cleaned += "1/8"; break; // One eighth
+          case 8540: cleaned += "3/8"; break; // Three eighths
+          case 8541: cleaned += "5/8"; break; // Five eighths
+          case 8542: cleaned += "7/8"; break; // Seven eighths
+          
+          // Default: replace with space for any other problematic character
+          default:
+            if (charCode > 127) {
+              cleaned += " ";
+            } else {
+              cleaned += text[i];
+            }
+            break;
+        }
+      }
+    }
+    
+    // Clean up multiple spaces and trim
+    return cleaned
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 }
