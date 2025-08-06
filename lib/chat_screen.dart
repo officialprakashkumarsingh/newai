@@ -753,6 +753,22 @@ Generate realistic data relevant to: $prompt''',
     final String title = diagramData['title'] ?? 'Chart';
     final GlobalKey chartKey = GlobalKey();
 
+    // Calculate flexible height based on chart type and data
+    double getFlexibleHeight() {
+      final List<dynamic> data = diagramData['data'] ?? diagramData['steps'] ?? [];
+      switch (type.toLowerCase()) {
+        case 'flowchart':
+          return math.max(150, math.min(400, data.length * 60.0));
+        case 'radar':
+          return 300; // Fixed for radar
+        case 'pie':
+        case 'doughnut':
+          return 280; // Fixed for circular charts
+        default:
+          return math.max(200, math.min(450, data.length * 40.0 + 100));
+      }
+    }
+
     return Card(
       color: Theme.of(context).cardColor,
       elevation: 2,
@@ -777,7 +793,7 @@ Generate realistic data relevant to: $prompt''',
                   onSelected: (value) async {
                     switch (value) {
                       case 'download':
-                        await _downloadDiagram(chartKey, title, type);
+                        await _downloadDiagram(chartKey, title, type, diagramData);
                         break;
                       case 'fullscreen':
                         _showFullscreenDiagram(diagramData);
@@ -810,19 +826,14 @@ Generate realistic data relevant to: $prompt''',
               ],
             ),
             const SizedBox(height: 16),
+            // Flexible sizing without fixed background container
             RepaintBoundary(
               key: chartKey,
               child: Container(
-                height: 250,
+                height: getFlexibleHeight(),
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _buildOptimizedChart(type, diagramData),
-                ),
+                // Remove background color and decoration for clean diagram export
+                child: _buildOptimizedChart(type, diagramData),
               ),
             ),
             const SizedBox(height: 8),
