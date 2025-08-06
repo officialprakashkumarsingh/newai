@@ -1888,7 +1888,31 @@ Generate realistic data relevant to: $prompt''',
                   ),
                 ),
                 const SizedBox(width: 8),
-                CircleAvatar(backgroundColor: _isStreaming ? Colors.red : Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}), radius: 24, child: IconButton(icon: Icon(_isStreaming ? Icons.stop : Icons.arrow_upward, color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})), onPressed: _isStreaming ? _stopStreaming : () => _sendMessage(_controller.text))),
+                // Always show send button, with stop functionality on a separate small button during streaming
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}), 
+                  radius: 24, 
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_upward, 
+                      color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})
+                    ), 
+                    onPressed: () => _sendMessage(_controller.text),
+                  ),
+                ),
+                // Add a small stop button next to send button during streaming
+                if (_isStreaming) ...[
+                  const SizedBox(width: 4),
+                  CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 16,
+                    child: IconButton(
+                      icon: const Icon(Icons.stop, size: 16, color: Colors.white),
+                      onPressed: _stopStreaming,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
