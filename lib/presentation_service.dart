@@ -224,10 +224,145 @@ Use this exact format with ANY NUMBER OF SLIDES based on topic complexity:
       "title": "Key Takeaways",
       "content": [
         "• Main conclusion point 1",
-        "• Main conclusion point 2",
+        "• Main conclusion point 2", 
         "• Call to action"
       ],
       "background": "dark"
+    },
+    {
+      "type": "matrix",
+      "title": "Decision Matrix",
+      "criteria": ["Cost", "Time", "Quality", "Risk"],
+      "options": [
+        {"name": "Option A", "scores": [8, 6, 9, 7]},
+        {"name": "Option B", "scores": [6, 9, 7, 8]},
+        {"name": "Option C", "scores": [9, 5, 8, 6]}
+      ],
+      "background": "white"
+    },
+    {
+      "type": "hierarchy",
+      "title": "Organizational Structure",
+      "levels": [
+        {"level": 1, "items": ["CEO"]},
+        {"level": 2, "items": ["CTO", "CFO", "CMO"]},
+        {"level": 3, "items": ["Dev Team", "QA Team", "Marketing Team", "Sales Team"]}
+      ],
+      "background": "light"
+    },
+    {
+      "type": "roadmap",
+      "title": "Product Roadmap",
+      "phases": [
+        {"phase": "Phase 1", "duration": "Q1 2024", "milestones": ["MVP Development", "Core Features"]},
+        {"phase": "Phase 2", "duration": "Q2 2024", "milestones": ["Beta Testing", "User Feedback"]},
+        {"phase": "Phase 3", "duration": "Q3 2024", "milestones": ["Public Launch", "Marketing Campaign"]}
+      ],
+      "background": "gradient"
+    },
+    {
+      "type": "equation_set",
+      "title": "System of Equations",
+      "equations": [
+        {"equation": "x + 2y = 5", "description": "Linear equation 1"},
+        {"equation": "3x - y = 1", "description": "Linear equation 2"},
+        {"equation": "Solution: x = 1, y = 2", "description": "System solution"}
+      ],
+      "method": "Substitution method",
+      "background": "white"
+    },
+    {
+      "type": "theorem",
+      "title": "Pythagorean Theorem",
+      "statement": "In a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides",
+      "formula": "a² + b² = c²",
+      "proof_steps": [
+        "Consider a right triangle with sides a, b, and hypotenuse c",
+        "Draw a square with side (a + b)",
+        "The area can be calculated in two ways",
+        "This leads to the proof of a² + b² = c²"
+      ],
+      "applications": ["Distance calculation", "Navigation", "Engineering"],
+      "background": "white"
+    },
+    {
+      "type": "algorithm",
+      "title": "Binary Search Algorithm",
+      "complexity": "O(log n)",
+      "steps": [
+        "1. Set left = 0, right = array.length - 1",
+        "2. While left <= right:",
+        "3.   Calculate mid = (left + right) / 2",
+        "4.   If array[mid] == target, return mid",
+        "5.   If array[mid] < target, left = mid + 1",
+        "6.   Else right = mid - 1",
+        "7. Return -1 (not found)"
+      ],
+      "advantages": ["Fast search", "Logarithmic complexity"],
+      "background": "dark"
+    },
+    {
+      "type": "chemical",
+      "title": "Chemical Reaction",
+      "reaction": "2H₂ + O₂ → 2H₂O",
+      "type_reaction": "Synthesis/Combination",
+      "conditions": ["Temperature: 500°C", "Pressure: 1 atm", "Catalyst: Platinum"],
+      "products": [
+        {"compound": "H₂O", "name": "Water", "state": "Gas (steam)"}
+      ],
+      "energy_change": "Exothermic (-286 kJ/mol)",
+      "background": "white"
+    },
+    {
+      "type": "physics",
+      "title": "Newton's Laws of Motion",
+      "laws": [
+        {"number": "First Law", "statement": "An object at rest stays at rest unless acted upon by force", "formula": "F = 0 → a = 0"},
+        {"number": "Second Law", "statement": "Force equals mass times acceleration", "formula": "F = ma"},
+        {"number": "Third Law", "statement": "For every action, there is an equal and opposite reaction", "formula": "F₁ = -F₂"}
+      ],
+      "applications": ["Vehicle design", "Spacecraft", "Sports physics"],
+      "background": "light"
+    },
+    {
+      "type": "swot",
+      "title": "SWOT Analysis",
+      "strengths": ["Strong brand", "Loyal customers", "Quality products"],
+      "weaknesses": ["High costs", "Limited market", "Slow innovation"],
+      "opportunities": ["New markets", "Digital transformation", "Partnerships"],
+      "threats": ["Competition", "Economic downturn", "Regulation changes"],
+      "background": "white"
+    },
+    {
+      "type": "methodology",
+      "title": "Research Methodology",
+      "approach": "Mixed Methods Research",
+      "phases": [
+        {"phase": "Planning", "activities": ["Literature review", "Hypothesis formation"]},
+        {"phase": "Data Collection", "activities": ["Surveys", "Interviews", "Observations"]},
+        {"phase": "Analysis", "activities": ["Statistical analysis", "Qualitative coding"]},
+        {"phase": "Reporting", "activities": ["Results interpretation", "Conclusions"]}
+      ],
+      "tools": ["SPSS", "NVivo", "Excel"],
+      "background": "gradient"
+    },
+    {
+      "type": "experiment",
+      "title": "Laboratory Experiment",
+      "objective": "Determine the effect of pH on enzyme activity",
+      "materials": ["Enzyme solution", "Buffer solutions", "pH meter", "Spectrophotometer"],
+      "procedure": [
+        "Prepare buffer solutions at pH 4, 6, 8, 10",
+        "Add enzyme to each solution",
+        "Measure reaction rate using spectrophotometer",
+        "Record data at 30-second intervals"
+      ],
+      "variables": {
+        "independent": "pH level",
+        "dependent": "Enzyme activity rate",
+        "controlled": ["Temperature", "Enzyme concentration", "Time"]
+      },
+      "background": "white"
     }
   ]
 }
@@ -248,7 +383,19 @@ SLIDE TYPES AVAILABLE:
 - "scientific": Research results with hypothesis and methodology
 - "data_table": Tabular data with headers and rows
 - "flowchart": Process flowcharts with decision points
+- "diagram": Interactive diagrams using DiagramService
 - "conclusion": Final takeaways and next steps
+- "matrix": Decision matrices with criteria and scoring
+- "hierarchy": Organizational charts and hierarchical structures
+- "roadmap": Project timelines with phases and milestones
+- "equation_set": Systems of mathematical equations with solutions
+- "theorem": Mathematical theorems with proofs and applications
+- "algorithm": Computer algorithms with complexity and steps
+- "chemical": Chemical reactions with equations and conditions
+- "physics": Physics laws and principles with formulas
+- "swot": SWOT analysis with strengths, weaknesses, opportunities, threats
+- "methodology": Research methodologies with phases and tools
+- "experiment": Scientific experiments with procedures and variables
 
 Generate AS MANY SLIDES AS NEEDED to thoroughly cover the topic. For complex topics, create 10-15+ slides. For simple topics, 5-8 slides are fine. Make content detailed and professional.
 Topic: $topic''',
@@ -1381,6 +1528,589 @@ Topic: $topic''',
         );
         break;
         
+      case 'matrix':
+        final List<dynamic> criteria = slide['criteria'] ?? [];
+        final List<dynamic> options = slide['options'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            if (criteria.isNotEmpty && options.isNotEmpty)
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Table(
+                    border: TableBorder.all(color: textColor.withOpacity(0.3)),
+                    children: [
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(padding / 2),
+                            child: Text('Options', style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize, color: textColor)),
+                          ),
+                          ...criteria.map((criterion) => Padding(
+                            padding: EdgeInsets.all(padding / 2),
+                            child: Text(criterion.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize * 0.9, color: textColor)),
+                          )).toList(),
+                        ],
+                      ),
+                      ...options.map((option) {
+                        final scores = option['scores'] as List<dynamic>? ?? [];
+                        return TableRow(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(padding / 2),
+                              child: Text(option['name']?.toString() ?? '', style: TextStyle(fontSize: fontSize, color: textColor)),
+                            ),
+                            ...scores.map((score) => Padding(
+                              padding: EdgeInsets.all(padding / 2),
+                              child: Text(score.toString(), style: TextStyle(fontSize: fontSize, color: textColor)),
+                            )).toList(),
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        );
+        break;
+
+      case 'hierarchy':
+        final List<dynamic> levels = slide['levels'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: levels.map((level) {
+                    final items = level['items'] as List<dynamic>? ?? [];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: padding / 2),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: textColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: textColor),
+                            ),
+                            child: Center(
+                              child: Text(
+                                level['level'].toString(),
+                                style: TextStyle(fontSize: fontSize * 0.8, fontWeight: FontWeight.bold, color: textColor),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: padding),
+                          Expanded(
+                            child: Wrap(
+                              spacing: padding / 2,
+                              children: items.map((item) => Chip(
+                                label: Text(item.toString(), style: TextStyle(fontSize: fontSize * 0.8, color: textColor)),
+                                backgroundColor: backgroundColor.withOpacity(0.1),
+                              )).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'equation_set':
+        final List<dynamic> equations = slide['equations'] ?? [];
+        final String method = slide['method']?.toString() ?? '';
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            if (method.isNotEmpty)
+              Container(
+                padding: EdgeInsets.all(padding / 2),
+                decoration: BoxDecoration(
+                  color: textColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Method: $method',
+                  style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500, color: textColor),
+                ),
+              ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: equations.map((eq) => Container(
+                    margin: EdgeInsets.only(bottom: padding),
+                    padding: EdgeInsets.all(padding),
+                    decoration: BoxDecoration(
+                      color: backgroundColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: textColor.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          eq['equation']?.toString() ?? '',
+                          style: TextStyle(fontSize: fontSize * 1.2, fontWeight: FontWeight.bold, color: textColor, fontFamily: 'monospace'),
+                        ),
+                        if (eq['description'] != null)
+                          Padding(
+                            padding: EdgeInsets.only(top: padding / 2),
+                            child: Text(
+                              eq['description'].toString(),
+                              style: TextStyle(fontSize: fontSize * 0.9, color: textColor.withOpacity(0.8)),
+                            ),
+                          ),
+                      ],
+                    ),
+                  )).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'theorem':
+        final String statement = slide['statement']?.toString() ?? '';
+        final String formula = slide['formula']?.toString() ?? '';
+        final List<dynamic> proofSteps = slide['proof_steps'] ?? [];
+        final List<dynamic> applications = slide['applications'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            if (statement.isNotEmpty)
+              Container(
+                padding: EdgeInsets.all(padding),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  statement,
+                  style: TextStyle(fontSize: fontSize, fontStyle: FontStyle.italic, color: textColor),
+                ),
+              ),
+            if (formula.isNotEmpty) ...[
+              SizedBox(height: padding),
+              Container(
+                padding: EdgeInsets.all(padding),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  formula,
+                  style: TextStyle(fontSize: fontSize * 1.3, fontWeight: FontWeight.bold, color: textColor, fontFamily: 'monospace'),
+                ),
+              ),
+            ],
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (proofSteps.isNotEmpty) ...[
+                      Text(
+                        'Proof Steps:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...proofSteps.map((step) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('• ${step.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                    if (applications.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Applications:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...applications.map((app) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('• ${app.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'algorithm':
+        final String complexity = slide['complexity']?.toString() ?? '';
+        final List<dynamic> steps = slide['steps'] ?? [];
+        final List<dynamic> advantages = slide['advantages'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            if (complexity.isNotEmpty) ...[
+              SizedBox(height: padding / 2),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding / 2),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  'Complexity: $complexity',
+                  style: TextStyle(fontSize: fontSize * 0.9, fontWeight: FontWeight.w500, color: textColor),
+                ),
+              ),
+            ],
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (steps.isNotEmpty) ...[
+                      Text(
+                        'Algorithm Steps:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      Container(
+                        padding: EdgeInsets.all(padding),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: steps.map((step) => Padding(
+                            padding: EdgeInsets.only(bottom: padding / 3),
+                            child: Text(step.toString(), style: TextStyle(fontSize: fontSize * 0.9, color: textColor, fontFamily: 'monospace')),
+                          )).toList(),
+                        ),
+                      ),
+                    ],
+                    if (advantages.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Advantages:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...advantages.map((adv) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('• ${adv.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'chemical':
+        final String reaction = slide['reaction']?.toString() ?? '';
+        final String reactionType = slide['type_reaction']?.toString() ?? '';
+        final List<dynamic> conditions = slide['conditions'] ?? [];
+        final String energyChange = slide['energy_change']?.toString() ?? '';
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            if (reaction.isNotEmpty)
+              Container(
+                padding: EdgeInsets.all(padding),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  reaction,
+                  style: TextStyle(fontSize: fontSize * 1.3, fontWeight: FontWeight.bold, color: textColor, fontFamily: 'monospace'),
+                ),
+              ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (reactionType.isNotEmpty)
+                      _buildScienceSection('Reaction Type:', reactionType, Colors.green, fontSize, textColor, padding),
+                    if (conditions.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Reaction Conditions:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...conditions.map((condition) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('• ${condition.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                    if (energyChange.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      _buildScienceSection('Energy Change:', energyChange, Colors.red, fontSize, textColor, padding),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'physics':
+        final List<dynamic> laws = slide['laws'] ?? [];
+        final List<dynamic> applications = slide['applications'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ...laws.map((law) => Container(
+                      margin: EdgeInsets.only(bottom: padding),
+                      padding: EdgeInsets.all(padding),
+                      decoration: BoxDecoration(
+                        color: backgroundColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: textColor.withOpacity(0.3)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            law['number']?.toString() ?? '',
+                            style: TextStyle(fontSize: fontSize * 1.1, fontWeight: FontWeight.bold, color: Colors.blue),
+                          ),
+                          SizedBox(height: padding / 2),
+                          Text(
+                            law['statement']?.toString() ?? '',
+                            style: TextStyle(fontSize: fontSize, color: textColor),
+                          ),
+                          if (law['formula'] != null) ...[
+                            SizedBox(height: padding / 2),
+                            Container(
+                              padding: EdgeInsets.all(padding / 2),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                law['formula'].toString(),
+                                style: TextStyle(fontSize: fontSize * 1.1, fontWeight: FontWeight.bold, color: textColor, fontFamily: 'monospace'),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    )).toList(),
+                    if (applications.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Applications:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...applications.map((app) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('• ${app.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'swot':
+        final List<dynamic> strengths = slide['strengths'] ?? [];
+        final List<dynamic> weaknesses = slide['weaknesses'] ?? [];
+        final List<dynamic> opportunities = slide['opportunities'] ?? [];
+        final List<dynamic> threats = slide['threats'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: padding,
+                mainAxisSpacing: padding,
+                children: [
+                  _buildSWOTQuadrant('Strengths', strengths, Colors.green, fontSize, textColor, padding),
+                  _buildSWOTQuadrant('Weaknesses', weaknesses, Colors.red, fontSize, textColor, padding),
+                  _buildSWOTQuadrant('Opportunities', opportunities, Colors.blue, fontSize, textColor, padding),
+                  _buildSWOTQuadrant('Threats', threats, Colors.orange, fontSize, textColor, padding),
+                ],
+              ),
+            ),
+          ],
+        );
+        break;
+
+      case 'experiment':
+        final String objective = slide['objective']?.toString() ?? '';
+        final List<dynamic> materials = slide['materials'] ?? [];
+        final List<dynamic> procedure = slide['procedure'] ?? [];
+        final Map<String, dynamic> variables = slide['variables'] as Map<String, dynamic>? ?? {};
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (objective.isNotEmpty)
+                      _buildScienceSection('Objective:', objective, Colors.blue, fontSize, textColor, padding),
+                    if (materials.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Materials:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...materials.map((material) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('• ${material.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                    if (procedure.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Procedure:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...procedure.asMap().entries.map((entry) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('${entry.key + 1}. ${entry.value.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                    if (variables.isNotEmpty) ...[
+                      SizedBox(height: padding),
+                      Text(
+                        'Variables:',
+                        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      ),
+                      SizedBox(height: padding / 2),
+                      ...variables.entries.map((entry) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 2),
+                        child: Text('${entry.key}: ${entry.value.toString()}', style: TextStyle(fontSize: fontSize * 0.9, color: textColor)),
+                      )).toList(),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+        
       default: // content and conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
         content = Column(
@@ -1414,6 +2144,45 @@ Topic: $topic''',
       ),
       padding: EdgeInsets.all(padding),
       child: content,
+    );
+  }
+
+  static Widget _buildSWOTQuadrant(String title, List<dynamic> items, Color color, double fontSize, Color textColor, double padding) {
+    return Container(
+      padding: EdgeInsets.all(padding),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          SizedBox(height: padding / 2),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: items.map((item) => Padding(
+                  padding: EdgeInsets.only(bottom: padding / 3),
+                  child: Text(
+                    '• ${item.toString()}',
+                    style: TextStyle(fontSize: fontSize * 0.8, color: textColor),
+                  ),
+                )).toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -2406,6 +3175,279 @@ Topic: $topic''',
           }
         }
         break;
+
+      case 'matrix':
+        final List<dynamic> criteria = slide['criteria'] ?? [];
+        final List<dynamic> options = slide['options'] ?? [];
+        
+        if (criteria.isNotEmpty && options.isNotEmpty) {
+          // Draw table headers
+          double tableX = 40;
+          double tableY = yPosition;
+          double cellWidth = (pageSize.width - 80) / (criteria.length + 1);
+          double cellHeight = 25;
+          
+          // Header row
+          _drawTextSafely(graphics, 'Options', 
+            PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(tableX, tableY, cellWidth, cellHeight));
+            
+          for (int i = 0; i < criteria.length; i++) {
+            _drawTextSafely(graphics, _cleanTextForPDF(criteria[i].toString()),
+              PdfStandardFont(PdfFontFamily.helvetica, 10, style: PdfFontStyle.bold),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(tableX + (i + 1) * cellWidth, tableY, cellWidth, cellHeight));
+          }
+          tableY += cellHeight;
+          
+          // Data rows
+          for (final option in options) {
+            final scores = option['scores'] as List<dynamic>? ?? [];
+            _drawTextSafely(graphics, _cleanTextForPDF(option['name']?.toString() ?? ''),
+              PdfStandardFont(PdfFontFamily.helvetica, 12),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(tableX, tableY, cellWidth, cellHeight));
+              
+            for (int i = 0; i < scores.length && i < criteria.length; i++) {
+              _drawTextSafely(graphics, scores[i].toString(),
+                PdfStandardFont(PdfFontFamily.helvetica, 12),
+                PdfSolidBrush(pdfTextColor),
+                Rect.fromLTWH(tableX + (i + 1) * cellWidth, tableY, cellWidth, cellHeight));
+            }
+            tableY += cellHeight;
+          }
+        }
+        break;
+
+      case 'equation_set':
+        final List<dynamic> equations = slide['equations'] ?? [];
+        final String method = slide['method']?.toString() ?? '';
+        
+        if (method.isNotEmpty) {
+          _drawTextSafely(graphics, 'Method: ${_cleanTextForPDF(method)}',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            PdfSolidBrush(PdfColor(0, 100, 200)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 35;
+        }
+        
+        for (final eq in equations) {
+          final equation = _processFormulaText(eq['equation']?.toString() ?? '');
+          final description = eq['description']?.toString() ?? '';
+          
+          // Draw equation in larger font
+          _drawTextSafely(graphics, equation,
+            PdfStandardFont(PdfFontFamily.courier, 16, style: PdfFontStyle.bold),
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 30));
+          yPosition += 35;
+          
+          if (description.isNotEmpty) {
+            _drawTextSafely(graphics, _cleanTextForPDF(description),
+              PdfStandardFont(PdfFontFamily.helvetica, 12),
+              PdfSolidBrush(PdfColor(100, 100, 100)),
+              Rect.fromLTWH(60, yPosition, pageSize.width - 100, 20));
+            yPosition += 25;
+          }
+          yPosition += 10;
+        }
+        break;
+
+      case 'theorem':
+        final String statement = slide['statement']?.toString() ?? '';
+        final String formula = slide['formula']?.toString() ?? '';
+        final List<dynamic> proofSteps = slide['proof_steps'] ?? [];
+        final List<dynamic> applications = slide['applications'] ?? [];
+        
+        if (statement.isNotEmpty) {
+          _drawTextSafely(graphics, 'Statement: ${_cleanTextForPDF(statement)}',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.italic),
+            PdfSolidBrush(PdfColor(0, 0, 150)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 60),
+            format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top));
+          yPosition += 70;
+        }
+        
+        if (formula.isNotEmpty) {
+          _drawTextSafely(graphics, _processFormulaText(formula),
+            PdfStandardFont(PdfFontFamily.courier, 18, style: PdfFontStyle.bold),
+            PdfSolidBrush(PdfColor(0, 150, 0)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40));
+          yPosition += 50;
+        }
+        
+        if (proofSteps.isNotEmpty) {
+          _drawTextSafely(graphics, 'Proof Steps:',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 30;
+          
+          for (final step in proofSteps) {
+            _drawTextSafely(graphics, '• ${_cleanTextForPDF(step.toString())}',
+              PdfStandardFont(PdfFontFamily.helvetica, 12),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(60, yPosition, pageSize.width - 100, 20));
+            yPosition += 25;
+          }
+        }
+        break;
+
+      case 'algorithm':
+        final String complexity = slide['complexity']?.toString() ?? '';
+        final List<dynamic> steps = slide['steps'] ?? [];
+        final List<dynamic> advantages = slide['advantages'] ?? [];
+        
+        if (complexity.isNotEmpty) {
+          _drawTextSafely(graphics, 'Complexity: ${_cleanTextForPDF(complexity)}',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            PdfSolidBrush(PdfColor(200, 100, 0)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 35;
+        }
+        
+        if (steps.isNotEmpty) {
+          _drawTextSafely(graphics, 'Algorithm Steps:',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 30;
+          
+          for (final step in steps) {
+            _drawTextSafely(graphics, _cleanTextForPDF(step.toString()),
+              PdfStandardFont(PdfFontFamily.courier, 11),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(60, yPosition, pageSize.width - 100, 20));
+            yPosition += 25;
+          }
+        }
+        break;
+
+      case 'chemical':
+        final String reaction = slide['reaction']?.toString() ?? '';
+        final String reactionType = slide['type_reaction']?.toString() ?? '';
+        final List<dynamic> conditions = slide['conditions'] ?? [];
+        final String energyChange = slide['energy_change']?.toString() ?? '';
+        
+        if (reaction.isNotEmpty) {
+          _drawTextSafely(graphics, _processFormulaText(reaction),
+            PdfStandardFont(PdfFontFamily.courier, 18, style: PdfFontStyle.bold),
+            PdfSolidBrush(PdfColor(0, 100, 200)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40));
+          yPosition += 50;
+        }
+        
+        if (reactionType.isNotEmpty) {
+          _drawTextSafely(graphics, 'Reaction Type: ${_cleanTextForPDF(reactionType)}',
+            PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+            PdfSolidBrush(PdfColor(0, 150, 0)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 30;
+        }
+        
+        if (conditions.isNotEmpty) {
+          _drawTextSafely(graphics, 'Conditions:',
+            PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 25;
+          
+          for (final condition in conditions) {
+            _drawTextSafely(graphics, '• ${_cleanTextForPDF(condition.toString())}',
+              PdfStandardFont(PdfFontFamily.helvetica, 11),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(60, yPosition, pageSize.width - 100, 20));
+            yPosition += 22;
+          }
+        }
+        break;
+
+      case 'physics':
+        final List<dynamic> laws = slide['laws'] ?? [];
+        final List<dynamic> applications = slide['applications'] ?? [];
+        
+        for (final law in laws) {
+          final number = law['number']?.toString() ?? '';
+          final statement = law['statement']?.toString() ?? '';
+          final formula = law['formula']?.toString() ?? '';
+          
+          if (number.isNotEmpty) {
+            _drawTextSafely(graphics, number,
+              PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+              PdfSolidBrush(PdfColor(0, 100, 200)),
+              Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+            yPosition += 30;
+          }
+          
+          if (statement.isNotEmpty) {
+            _drawTextSafely(graphics, _cleanTextForPDF(statement),
+              PdfStandardFont(PdfFontFamily.helvetica, 12),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
+              format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top));
+            yPosition += 45;
+          }
+          
+          if (formula.isNotEmpty) {
+            _drawTextSafely(graphics, _processFormulaText(formula),
+              PdfStandardFont(PdfFontFamily.courier, 14, style: PdfFontStyle.bold),
+              PdfSolidBrush(PdfColor(0, 150, 0)),
+              Rect.fromLTWH(60, yPosition, pageSize.width - 120, 25));
+            yPosition += 35;
+          }
+          yPosition += 10;
+        }
+        break;
+
+      case 'swot':
+        final List<dynamic> strengths = slide['strengths'] ?? [];
+        final List<dynamic> weaknesses = slide['weaknesses'] ?? [];
+        final List<dynamic> opportunities = slide['opportunities'] ?? [];
+        final List<dynamic> threats = slide['threats'] ?? [];
+        
+        double quadrantWidth = (pageSize.width - 120) / 2;
+        double quadrantHeight = 150;
+        
+        // Draw SWOT quadrants
+        _drawSWOTQuadrantPDF(graphics, 'Strengths', strengths, 40, yPosition, quadrantWidth, quadrantHeight, PdfColor(0, 150, 0), pdfTextColor);
+        _drawSWOTQuadrantPDF(graphics, 'Weaknesses', weaknesses, 60 + quadrantWidth, yPosition, quadrantWidth, quadrantHeight, PdfColor(200, 0, 0), pdfTextColor);
+        _drawSWOTQuadrantPDF(graphics, 'Opportunities', opportunities, 40, yPosition + quadrantHeight + 20, quadrantWidth, quadrantHeight, PdfColor(0, 100, 200), pdfTextColor);
+        _drawSWOTQuadrantPDF(graphics, 'Threats', threats, 60 + quadrantWidth, yPosition + quadrantHeight + 20, quadrantWidth, quadrantHeight, PdfColor(200, 100, 0), pdfTextColor);
+        break;
+
+      case 'experiment':
+        final String objective = slide['objective']?.toString() ?? '';
+        final List<dynamic> materials = slide['materials'] ?? [];
+        final List<dynamic> procedure = slide['procedure'] ?? [];
+        final Map<String, dynamic> variables = slide['variables'] as Map<String, dynamic>? ?? {};
+        
+        if (objective.isNotEmpty) {
+          _drawTextSafely(graphics, 'Objective: ${_cleanTextForPDF(objective)}',
+            PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+            PdfSolidBrush(PdfColor(0, 100, 200)),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
+            format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top));
+          yPosition += 50;
+        }
+        
+        if (materials.isNotEmpty) {
+          _drawTextSafely(graphics, 'Materials:',
+            PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25));
+          yPosition += 25;
+          
+          for (final material in materials) {
+            _drawTextSafely(graphics, '• ${_cleanTextForPDF(material.toString())}',
+              PdfStandardFont(PdfFontFamily.helvetica, 11),
+              PdfSolidBrush(pdfTextColor),
+              Rect.fromLTWH(60, yPosition, pageSize.width - 100, 20));
+            yPosition += 22;
+          }
+          yPosition += 10;
+        }
+        break;
         
       default: // content, image, conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
@@ -2510,6 +3552,113 @@ Topic: $topic''',
     }
   }
   
+  // ULTRA-ROBUST font-safe text processing for formulas and scientific content
+  static String _processFormulaText(String text) {
+    try {
+      // Special handling for mathematical and scientific notation
+      return text
+          // Mathematical operators
+          .replaceAll('×', 'x')
+          .replaceAll('÷', '/')
+          .replaceAll('∞', 'infinity')
+          .replaceAll('≈', '~=')
+          .replaceAll('≠', '!=')
+          .replaceAll('≤', '<=')
+          .replaceAll('≥', '>=')
+          .replaceAll('√', 'sqrt')
+          .replaceAll('∑', 'sum')
+          .replaceAll('∏', 'product')
+          .replaceAll('∫', 'integral')
+          // Chemical notation
+          .replaceAll('₁', '1')
+          .replaceAll('₂', '2')
+          .replaceAll('₃', '3')
+          .replaceAll('₄', '4')
+          .replaceAll('₅', '5')
+          .replaceAll('₆', '6')
+          .replaceAll('₇', '7')
+          .replaceAll('₈', '8')
+          .replaceAll('₉', '9')
+          .replaceAll('₀', '0')
+          // Superscripts
+          .replaceAll('¹', '1')
+          .replaceAll('²', '2')
+          .replaceAll('³', '3')
+          .replaceAll('⁴', '4')
+          .replaceAll('⁵', '5')
+          .replaceAll('⁶', '6')
+          .replaceAll('⁷', '7')
+          .replaceAll('⁸', '8')
+          .replaceAll('⁹', '9')
+          .replaceAll('⁰', '0')
+          // Greek letters commonly used in formulas
+          .replaceAll('α', 'alpha')
+          .replaceAll('β', 'beta')
+          .replaceAll('γ', 'gamma')
+          .replaceAll('δ', 'delta')
+          .replaceAll('θ', 'theta')
+          .replaceAll('λ', 'lambda')
+          .replaceAll('μ', 'mu')
+          .replaceAll('π', 'pi')
+          .replaceAll('σ', 'sigma')
+          .replaceAll('Ω', 'Omega')
+          // Arrows and other symbols
+          .replaceAll('→', '->')
+          .replaceAll('←', '<-')
+          .replaceAll('↔', '<->')
+          .replaceAll('°', ' degrees')
+          // Apply general cleaning
+          ;
+    } catch (e) {
+      print('Error processing formula text: $e');
+      return text.replaceAll(RegExp(r'[^\x20-\x7E\n\r\t]'), ' ');
+    }
+  }
+
+  // Enhanced font-safe drawing with multiple fallback strategies
+  static void _drawTextSafely(PdfGraphics graphics, String text, PdfStandardFont font, PdfSolidBrush brush, Rect bounds, {PdfStringFormat? format}) {
+    try {
+      // First attempt: Clean the text thoroughly
+      String cleanText = _cleanTextForPDF(text);
+      
+      if (cleanText.trim().isEmpty && text.trim().isNotEmpty) {
+        cleanText = 'Content processed for PDF compatibility';
+      }
+      
+      try {
+        graphics.drawString(cleanText, font, brush: brush, bounds: bounds, format: format);
+      } catch (fontError) {
+        print('Font error with cleaned text, trying ultra-safe mode: $fontError');
+        
+        // Ultra-safe fallback: Only basic ASCII
+        String ultraSafeText = cleanText.replaceAll(RegExp(r'[^\x20-\x7E\n\r\t]'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+        
+        if (ultraSafeText.isEmpty) {
+          ultraSafeText = '[Content unavailable - special characters]';
+        }
+        
+        try {
+          graphics.drawString(ultraSafeText, font, brush: brush, bounds: bounds, format: format);
+        } catch (ultraError) {
+          print('Even ultra-safe text failed, using absolute fallback: $ultraError');
+          // Absolute last resort
+          graphics.drawString('[Error: Text rendering failed]', font, brush: brush, bounds: bounds, format: format);
+        }
+      }
+    } catch (e) {
+      print('Complete text drawing failure: $e');
+      // Emergency rectangle to show something was attempted
+      try {
+        graphics.drawRectangle(
+          pen: PdfPen(PdfColor(200, 200, 200)),
+          bounds: bounds,
+        );
+      } catch (_) {
+        // If even drawing a rectangle fails, just continue
+      }
+    }
+  }
+
   // Comprehensive character replacement mapping
   static String _getCharacterReplacement(int charCode) {
     // Use a map for better performance and maintainability
@@ -2598,5 +3747,36 @@ Topic: $topic''',
     
     // For ASCII control characters, return empty string
     return "";
+  }
+
+  // Helper function to draw SWOT quadrants in PDF
+  static void _drawSWOTQuadrantPDF(PdfGraphics graphics, String title, List<dynamic> items, double x, double y, double width, double height, PdfColor headerColor, PdfColor textColor) {
+    try {
+      // Draw border
+      graphics.drawRectangle(
+        pen: PdfPen(headerColor),
+        bounds: Rect.fromLTWH(x, y, width, height),
+      );
+      
+      // Draw header
+      _drawTextSafely(graphics, title,
+        PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+        PdfSolidBrush(headerColor),
+        Rect.fromLTWH(x + 5, y + 5, width - 10, 20));
+      
+      // Draw items
+      double itemY = y + 25;
+      for (final item in items) {
+        if (itemY + 15 < y + height) {
+          _drawTextSafely(graphics, '• ${_cleanTextForPDF(item.toString())}',
+            PdfStandardFont(PdfFontFamily.helvetica, 10),
+            PdfSolidBrush(textColor),
+            Rect.fromLTWH(x + 5, itemY, width - 10, 15));
+          itemY += 17;
+        }
+      }
+    } catch (e) {
+      print('Error drawing SWOT quadrant: $e');
+    }
   }
 }
