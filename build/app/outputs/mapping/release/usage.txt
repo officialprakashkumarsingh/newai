@@ -12880,54 +12880,6 @@ com.aham.app.BackgroundProcessingService:
     private final java.lang.String getApiKey()
     static synthetic java.lang.Object processRequest$default(com.aham.app.BackgroundProcessingService,java.lang.String,java.lang.String,int,kotlin.coroutines.Continuation,int,java.lang.Object)
     static synthetic void startForegroundProcessing$default(com.aham.app.BackgroundProcessingService,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,long,int,java.lang.Object)
-com.aham.app.LatexRenderer$LatexExpression:
-    public final java.lang.String component1()
-    public final java.lang.String component2()
-    public final boolean component3()
-    public final int component4()
-    public final int component5()
-    public final com.aham.app.LatexRenderer$LatexExpression copy(java.lang.String,java.lang.String,boolean,int,int)
-    public static synthetic com.aham.app.LatexRenderer$LatexExpression copy$default(com.aham.app.LatexRenderer$LatexExpression,java.lang.String,java.lang.String,boolean,int,int,int,java.lang.Object)
-com.aham.app.LatexRenderer$LatexRenderResult:
-    public final boolean component1()
-    public final android.graphics.Bitmap component2()
-    public final java.lang.String component3()
-    public final int component4()
-    public final int component5()
-    public final com.aham.app.LatexRenderer$LatexRenderResult copy(boolean,android.graphics.Bitmap,java.lang.String,int,int)
-    public static synthetic com.aham.app.LatexRenderer$LatexRenderResult copy$default(com.aham.app.LatexRenderer$LatexRenderResult,boolean,android.graphics.Bitmap,java.lang.String,int,int,int,java.lang.Object)
-    public final java.lang.String getError()
-    public final int getHeight()
-    public final int getWidth()
-com.aham.app.LatexRenderer:
-    private static final java.lang.String MATHJAX_HTML_TEMPLATE
-    public static synthetic java.lang.Object renderLatexToBase64$default(com.aham.app.LatexRenderer,java.lang.String,boolean,boolean,kotlin.coroutines.Continuation,int,java.lang.Object)
-com.aham.app.MarkdownRenderer$MarkdownRenderResult:
-    public final boolean component1()
-    public final android.graphics.Bitmap component2()
-    public final java.lang.String component3()
-    public final int component4()
-    public final int component5()
-    public final com.aham.app.MarkdownRenderer$MarkdownRenderResult copy(boolean,android.graphics.Bitmap,java.lang.String,int,int)
-    public static synthetic com.aham.app.MarkdownRenderer$MarkdownRenderResult copy$default(com.aham.app.MarkdownRenderer$MarkdownRenderResult,boolean,android.graphics.Bitmap,java.lang.String,int,int,int,java.lang.Object)
-    public final java.lang.String getError()
-    public final int getHeight()
-    public final int getWidth()
-com.aham.app.MarkdownRenderer$ProcessedMarkdown:
-    public final java.lang.String component1()
-    public final boolean component2()
-    public final boolean component3()
-    public final boolean component4()
-    public final boolean component5()
-    public final boolean component6()
-    public final int component7()
-    public final int component8()
-    public final com.aham.app.MarkdownRenderer$ProcessedMarkdown copy(java.lang.String,boolean,boolean,boolean,boolean,boolean,int,int)
-    public static synthetic com.aham.app.MarkdownRenderer$ProcessedMarkdown copy$default(com.aham.app.MarkdownRenderer$ProcessedMarkdown,java.lang.String,boolean,boolean,boolean,boolean,boolean,int,int,int,java.lang.Object)
-com.aham.app.MarkdownRenderer:
-    private static final java.lang.String MARKDOWN_HTML_TEMPLATE
-    public static synthetic java.lang.Object renderMarkdownToBase64$default(com.aham.app.MarkdownRenderer,java.lang.String,boolean,float,kotlin.coroutines.Continuation,int,java.lang.Object)
-    public static synthetic java.lang.Object renderMarkdownToBitmap$default(com.aham.app.MarkdownRenderer,java.lang.String,boolean,float,kotlin.coroutines.Continuation,int,java.lang.Object)
 com.aham.app.R$color
 com.aham.app.R$drawable
 com.aham.app.R$id:
@@ -16455,6 +16407,7 @@ kotlin.collections.CollectionsKt__CollectionsKt:
     public static final java.lang.Object[] collectionToArrayCommonImpl(java.util.Collection)
     public static final java.lang.Object[] collectionToArrayCommonImpl(java.util.Collection,java.lang.Object[])
     private static final boolean containsAll(java.util.Collection,java.util.Collection)
+    public static final kotlin.ranges.IntRange getIndices(java.util.Collection)
     private static final java.lang.Object ifEmpty(java.util.Collection,kotlin.jvm.functions.Function0)
     private static final boolean isNotEmpty(java.util.Collection)
     private static final boolean isNullOrEmpty(java.util.Collection)
@@ -16553,6 +16506,7 @@ kotlin.collections.CollectionsKt___CollectionsJvmKt:
     private static final java.math.BigInteger sumOfBigInteger(java.lang.Iterable,kotlin.jvm.functions.Function1)
     public static final java.util.SortedSet toSortedSet(java.lang.Iterable)
     public static final java.util.SortedSet toSortedSet(java.lang.Iterable,java.util.Comparator)
+kotlin.collections.CollectionsKt___CollectionsKt$asSequence$$inlined$Sequence$1
 kotlin.collections.CollectionsKt___CollectionsKt$groupingBy$1
 kotlin.collections.CollectionsKt___CollectionsKt$withIndex$1
 kotlin.collections.CollectionsKt___CollectionsKt:
@@ -16561,6 +16515,7 @@ kotlin.collections.CollectionsKt___CollectionsKt:
     public static final boolean any(java.lang.Iterable)
     public static final boolean any(java.lang.Iterable,kotlin.jvm.functions.Function1)
     private static final java.lang.Iterable asIterable(java.lang.Iterable)
+    public static final kotlin.sequences.Sequence asSequence(java.lang.Iterable)
     public static final java.util.Map associate(java.lang.Iterable,kotlin.jvm.functions.Function1)
     public static final java.util.Map associateBy(java.lang.Iterable,kotlin.jvm.functions.Function1)
     public static final java.util.Map associateBy(java.lang.Iterable,kotlin.jvm.functions.Function1,kotlin.jvm.functions.Function1)
@@ -18194,11 +18149,8 @@ kotlin.sequences.FilteringSequence$iterator$1
 kotlin.sequences.FilteringSequence
 kotlin.sequences.FlatteningSequence$iterator$1
 kotlin.sequences.FlatteningSequence
-kotlin.sequences.GeneratorSequence$iterator$1:
-    public final java.lang.Object getNextItem()
-    public final int getNextState()
-    public final void setNextItem(java.lang.Object)
-    public final void setNextState(int)
+kotlin.sequences.GeneratorSequence$iterator$1
+kotlin.sequences.GeneratorSequence
 kotlin.sequences.IndexingSequence$iterator$1
 kotlin.sequences.IndexingSequence
 kotlin.sequences.MergingSequence$iterator$1
@@ -18240,6 +18192,7 @@ kotlin.sequences.SequencesKt__SequencesKt:
     public static final kotlin.sequences.Sequence flattenSequenceOfIterable(kotlin.sequences.Sequence)
     public static final kotlin.sequences.Sequence generateSequence(java.lang.Object,kotlin.jvm.functions.Function1)
     public static final kotlin.sequences.Sequence generateSequence(kotlin.jvm.functions.Function0)
+    public static final kotlin.sequences.Sequence generateSequence(kotlin.jvm.functions.Function0,kotlin.jvm.functions.Function1)
     public static final kotlin.sequences.Sequence ifEmpty(kotlin.sequences.Sequence,kotlin.jvm.functions.Function0)
     private static final kotlin.sequences.Sequence orEmpty(kotlin.sequences.Sequence)
     public static final varargs kotlin.sequences.Sequence sequenceOf(java.lang.Object[])
@@ -18265,6 +18218,7 @@ kotlin.sequences.SequencesKt___SequencesJvmKt:
     private static final java.math.BigInteger sumOfBigInteger(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
     public static final java.util.SortedSet toSortedSet(kotlin.sequences.Sequence)
     public static final java.util.SortedSet toSortedSet(kotlin.sequences.Sequence,java.util.Comparator)
+kotlin.sequences.SequencesKt___SequencesKt$asIterable$$inlined$Iterable$1
 kotlin.sequences.SequencesKt___SequencesKt$distinct$1
 kotlin.sequences.SequencesKt___SequencesKt$elementAt$1
 kotlin.sequences.SequencesKt___SequencesKt$filterIndexed$1
@@ -18301,6 +18255,7 @@ kotlin.sequences.SequencesKt___SequencesKt:
     public static final boolean all(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
     public static final boolean any(kotlin.sequences.Sequence)
     public static final boolean any(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
+    public static final java.lang.Iterable asIterable(kotlin.sequences.Sequence)
     private static final kotlin.sequences.Sequence asSequence(kotlin.sequences.Sequence)
     public static final java.util.Map associate(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
     public static final java.util.Map associateBy(kotlin.sequences.Sequence,kotlin.jvm.functions.Function1)
@@ -18581,64 +18536,27 @@ kotlin.text.HexFormat$NumberHexFormat$Companion
 kotlin.text.HexFormat$NumberHexFormat
 kotlin.text.HexFormat
 kotlin.text.HexFormatKt
-kotlin.text.MatchGroup:
-    public final java.lang.String component1()
-    public final kotlin.ranges.IntRange component2()
-    public final kotlin.text.MatchGroup copy(java.lang.String,kotlin.ranges.IntRange)
-    public static synthetic kotlin.text.MatchGroup copy$default(kotlin.text.MatchGroup,java.lang.String,kotlin.ranges.IntRange,int,java.lang.Object)
-    public final kotlin.ranges.IntRange getRange()
-    public final java.lang.String getValue()
-kotlin.text.MatchGroupCollection:
-    public abstract kotlin.text.MatchGroup get(int)
+kotlin.text.MatchGroup
+kotlin.text.MatchGroupCollection
 kotlin.text.MatchNamedGroupCollection
 kotlin.text.MatchResult$DefaultImpls
 kotlin.text.MatchResult$Destructured
-kotlin.text.MatchResult:
-    public abstract kotlin.text.MatchResult$Destructured getDestructured()
-    public abstract kotlin.text.MatchGroupCollection getGroups()
-kotlin.text.MatcherMatchResult$groups$1:
-    public kotlin.text.MatchGroup get(java.lang.String)
-kotlin.text.MatcherMatchResult:
-    public kotlin.text.MatchResult$Destructured getDestructured()
-    public kotlin.text.MatchGroupCollection getGroups()
-kotlin.text.Regex$Companion:
-    public final java.lang.String escape(java.lang.String)
-    public final java.lang.String escapeReplacement(java.lang.String)
-    public final kotlin.text.Regex fromLiteral(java.lang.String)
+kotlin.text.MatchResult
+kotlin.text.MatcherMatchResult$groupValues$1
+kotlin.text.MatcherMatchResult$groups$1$iterator$1
+kotlin.text.MatcherMatchResult$groups$1
+kotlin.text.MatcherMatchResult
+kotlin.text.Regex$Companion
 kotlin.text.Regex$Serialized$Companion
 kotlin.text.Regex$Serialized
+kotlin.text.Regex$findAll$1
+kotlin.text.Regex$findAll$2
 kotlin.text.Regex$special$$inlined$fromInt$1
 kotlin.text.Regex$splitToSequence$1
-kotlin.text.Regex:
-    private java.util.Set _options
-    public void <init>(java.lang.String,java.util.Set)
-    public static final synthetic java.util.regex.Pattern access$getNativePattern$p(kotlin.text.Regex)
-    public final boolean containsMatchIn(java.lang.CharSequence)
-    public static synthetic kotlin.text.MatchResult find$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final java.util.Set getOptions()
-    public final java.lang.String getPattern()
-    public final kotlin.text.MatchResult matchAt(java.lang.CharSequence,int)
-    public final kotlin.text.MatchResult matchEntire(java.lang.CharSequence)
-    public final boolean matches(java.lang.CharSequence)
-    public final boolean matchesAt(java.lang.CharSequence,int)
-    public final java.lang.String replace(java.lang.CharSequence,java.lang.String)
-    public final java.lang.String replace(java.lang.CharSequence,kotlin.jvm.functions.Function1)
-    public final java.lang.String replaceFirst(java.lang.CharSequence,java.lang.String)
-    public static synthetic java.util.List split$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final kotlin.sequences.Sequence splitToSequence(java.lang.CharSequence,int)
-    public static synthetic kotlin.sequences.Sequence splitToSequence$default(kotlin.text.Regex,java.lang.CharSequence,int,int,java.lang.Object)
-    public final java.util.regex.Pattern toPattern()
-    private final java.lang.Object writeReplace()
+kotlin.text.Regex
 kotlin.text.RegexKt$fromInt$1$1
-kotlin.text.RegexKt:
-    public static final synthetic kotlin.text.MatchResult access$matchEntire(java.util.regex.Matcher,java.lang.CharSequence)
-    public static final synthetic int access$toInt(java.lang.Iterable)
-    private static final synthetic java.util.Set fromInt(int)
-    private static final kotlin.text.MatchResult matchEntire(java.util.regex.Matcher,java.lang.CharSequence)
-    private static final int toInt(java.lang.Iterable)
-kotlin.text.RegexOption:
-    public static kotlin.enums.EnumEntries getEntries()
-    public int getMask()
+kotlin.text.RegexKt
+kotlin.text.RegexOption
 kotlin.text.ScreenFloatValueRegEx
 kotlin.text.StringsKt:
     private void <init>()
@@ -18834,6 +18752,7 @@ kotlin.text.StringsKt__StringsJVMKt:
     private static final java.lang.String uppercase(java.lang.String)
     private static final java.lang.String uppercase(java.lang.String,java.util.Locale)
 kotlin.text.StringsKt__StringsKt$iterator$1
+kotlin.text.StringsKt__StringsKt$rangesDelimitedBy$1
 kotlin.text.StringsKt__StringsKt$splitToSequence$2
 kotlin.text.StringsKt__StringsKt:
     public void <init>()
@@ -18877,6 +18796,8 @@ kotlin.text.StringsKt__StringsKt:
     public static final java.lang.String padStart(java.lang.String,int,char)
     public static synthetic java.lang.CharSequence padStart$default(java.lang.CharSequence,int,char,int,java.lang.Object)
     public static synthetic java.lang.String padStart$default(java.lang.String,int,char,int,java.lang.Object)
+    private static final kotlin.sequences.Sequence rangesDelimitedBy$StringsKt__StringsKt(java.lang.CharSequence,char[],int,boolean,int)
+    static synthetic kotlin.sequences.Sequence rangesDelimitedBy$StringsKt__StringsKt$default(java.lang.CharSequence,char[],int,boolean,int,int,java.lang.Object)
     public static final java.lang.CharSequence removePrefix(java.lang.CharSequence,java.lang.CharSequence)
     public static final java.lang.String removePrefix(java.lang.String,java.lang.CharSequence)
     public static final java.lang.CharSequence removeRange(java.lang.CharSequence,int,int)
@@ -18915,8 +18836,11 @@ kotlin.text.StringsKt__StringsKt:
     private static final java.lang.String replaceRange(java.lang.String,int,int,java.lang.CharSequence)
     private static final java.lang.String replaceRange(java.lang.String,kotlin.ranges.IntRange,java.lang.CharSequence)
     private static final java.util.List split(java.lang.CharSequence,kotlin.text.Regex,int)
+    public static final java.util.List split(java.lang.CharSequence,char[],boolean,int)
     public static final java.util.List split(java.lang.CharSequence,java.lang.String[],boolean,int)
+    private static final java.util.List split$StringsKt__StringsKt(java.lang.CharSequence,java.lang.String,boolean,int)
     static synthetic java.util.List split$default(java.lang.CharSequence,kotlin.text.Regex,int,int,java.lang.Object)
+    public static synthetic java.util.List split$default(java.lang.CharSequence,char[],boolean,int,int,java.lang.Object)
     public static synthetic java.util.List split$default(java.lang.CharSequence,java.lang.String[],boolean,int,int,java.lang.Object)
     private static final kotlin.sequences.Sequence splitToSequence(java.lang.CharSequence,kotlin.text.Regex,int)
     public static final kotlin.sequences.Sequence splitToSequence(java.lang.CharSequence,char[],boolean,int)

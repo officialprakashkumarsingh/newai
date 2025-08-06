@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'html_markdown_widget.dart';
 import 'theme.dart';
 
 class ThinkingPanel extends StatefulWidget {
@@ -94,36 +94,18 @@ class _ThinkingPanelState extends State<ThinkingPanel> {
                   ),
                 ] : null,
               ),
-                              child: MarkdownBody(
+                              child: HtmlMarkdownWidget(
                 data: widget.thinkingContent,
-                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                  p: TextStyle(
-                    fontSize: 14,
-                    color: isLightTheme(context) 
-                        ? const Color(0xFF374151) // Darker for better readability
-                        : Colors.grey.shade300,
-                    height: 1.5,
-                  ),
-                  code: TextStyle(
-                    fontSize: 13,
-                    fontFamily: 'monospace',
-                    backgroundColor: isLightTheme(context) 
-                        ? const Color(0xFFF3F4F6)
-                        : Colors.grey.shade800,
-                    color: isLightTheme(context) 
-                        ? const Color(0xFF1F2937)
-                        : Colors.grey.shade200,
-                  ),
-                ),
+                selectable: false,
               ),
             ),
         ],
         
         // Final content (if any)
         if (hasFinalContent)
-          MarkdownBody(
+          HtmlMarkdownWidget(
             data: widget.finalContent,
-            styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+            selectable: true,
           ),
       ],
     );

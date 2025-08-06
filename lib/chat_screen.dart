@@ -6,7 +6,7 @@ import 'package:ahamai/web_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'html_markdown_widget.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -26,7 +26,6 @@ import 'presentation_generator.dart';
 import 'thinking_panel.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
-import 'custom_markdown_widget.dart';
 
 // Removed duplicate imports - already exists above
 
@@ -620,20 +619,6 @@ Based on the context above, answer the following prompt: $input""";
         }
         
         final isDark = !isLightTheme(context);
-                  final userMessageStyle = MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-            p: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: isLightTheme(context) 
-                  ? Colors.white  // Light mode: white text on dark bubble
-                  : Colors.white // Dark mode: white text on dark bubble
-            ),
-                      code: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontFamily: 'monospace',
-              backgroundColor: isLightTheme(context) 
-                  ? Colors.white.withOpacity(0.2)
-                  : Colors.white.withOpacity(0.2),
-              color: Colors.white // White text for code in both modes
-            ),
-        );
 
         return GestureDetector(
           onLongPress: () => _showUserMessageOptions(context, message, index),
@@ -712,7 +697,10 @@ Based on the context above, answer the following prompt: $input""";
                     _FileAttachmentInMessage(message: message, isDark: isDark),
                   
                   if (message.text.isNotEmpty)
-                    MarkdownBody(data: message.text, selectable: false, styleSheet: userMessageStyle),
+                    SelectableText(
+                      message.text,
+                      style: TextStyle(color: Colors.white),
+                    ),
                 ],
               ),
             ),
@@ -933,109 +921,9 @@ Based on the context above, answer the following prompt: $input""";
      // Agent feature removed as requested
 
   Widget _buildMessageContent(String text) {
-    // Use simple text for short messages or when streaming
-    if (text.length < 100 || _isStreaming) {
-      return SelectableText(
-        text,
-        style: Theme.of(context).textTheme.bodyLarge,
-      );
-    }
-
-    // Check if content has complex markdown features
-    final hasComplexMarkdown = text.contains('```') ||  // Code blocks
-                              text.contains('\$') ||   // LaTeX
-                              text.contains('|') ||    // Tables
-                              text.contains('![') ||   // Images
-                              text.contains('#') ||    // Headers
-                              text.contains('*') ||    // Bold/italic
-                              text.contains('_') ||    // Underscore formatting
-                              text.contains('[') ||    // Links
-                              text.split('\n').length > 5; // Multi-line
-
-    if (hasComplexMarkdown) {
-      // Use custom renderer with timeout fallback
-      return FutureBuilder<Widget>(
-        future: _renderWithTimeout(text),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    SizedBox(width: 8),
-                    Text('Rendering...', style: TextStyle(fontSize: 12)),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                // Show text preview while loading
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    text.length > 200 ? '${text.substring(0, 200)}...' : text,
-                    style: const TextStyle(fontSize: 12, fontFamily: 'monospace'),
-                  ),
-                ),
-              ],
-            );
-          } else if (snapshot.hasError || !snapshot.hasData) {
-            // Fallback to simple text if rendering fails
-            return Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: Colors.orange.withOpacity(0.3)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.warning, size: 16, color: Colors.orange[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Rendering failed - showing plain text',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.orange[700],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  SelectableText(
-                    text,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return snapshot.data!;
-          }
-        },
-      );
-    } else {
-      // Use simple text for basic content
-      return SelectableText(
-        text,
-        style: Theme.of(context).textTheme.bodyLarge,
-      );
-    }
-  }
-
-  Future<Widget> _renderWithTimeout(String text) async {
-    // Simply return the widget - timeout is handled in CustomMarkdownWidget
-    return CustomMarkdownWidget(data: text, selectable: true);
+    return HtmlMarkdownWidget(
+      data: text,
+      selectable: true,
+    );
   }
 }

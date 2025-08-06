@@ -828,32 +828,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-                         // Profile Section
-             Card(
-               child: Padding(
-                 padding: const EdgeInsets.all(16),
-                 child: Column(
-                   children: [
-                     CircleAvatar(
-                       radius: 40,
-                       backgroundColor: Theme.of(context).cardColor,
-                       child: Icon(
-                         Icons.account_circle,
-                         size: 60,
-                         color: Theme.of(context).iconTheme.color,
-                       ),
-                     ),
-                     const SizedBox(height: 16),
-                     Text(
-                       'User Profile',
-                       style: Theme.of(context).textTheme.titleLarge,
-                     ),
-                   ],
-                 ),
-               ),
-             ),
-
-            const SizedBox(height: 24),
 
             // AI Model Section
             Text(
@@ -886,7 +860,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
                         padding: const EdgeInsets.all(24),
                         child: Text(
                           'No models available. Please check your connection.',
-                          style: TextStyle(color: Colors.grey.shade600),
+                          style: TextStyle(color: getSecondaryTextColor(context)),
                           textAlign: TextAlign.center,
                         ),
                       )
@@ -913,8 +887,8 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
             const SizedBox(height: 16),
                          Card(
                child: ListTile(
-                 leading: Icon(Icons.delete_sweep_outlined, color: Theme.of(context).colorScheme.error),
-                 title: Text('Clear All Chats', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                 leading: Icon(Icons.delete_sweep_outlined, color: Theme.of(context).iconTheme.color),
+                 title: const Text('Clear All Chats'),
                  subtitle: const Text('Delete all chat history permanently'),
                  onTap: () {
                    Navigator.of(context).pop();

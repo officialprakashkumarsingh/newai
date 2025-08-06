@@ -18,7 +18,6 @@ setBase
 pigeonVar_list
 generatedAdapters
 GeneratedPluginsRegister
-$
 java.lang.CharSequence
 BCE
 DIAGNOSTIC_CURRENT_PROFILE_DOES_NOT_E...
@@ -110,7 +109,6 @@ synth.onStart
 kotlin.collections.List
 org.chromium.support_lib_glue.Support...
 resizeUpLeft
-getNextValue
 ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE
 GPSDifferential
 allowedMimeTypes
@@ -131,7 +129,6 @@ byte
 ON_DOWNGRADE
 DISTINCT
 CAMERA
-isDisplay
 XResolution
 resizeUp
 creditCardNumber
@@ -162,7 +159,6 @@ invisible_actions
 colorized
 comparator
 android.media.metadata.DISPLAY_SUBTITLE
-https://example.com
 autoCloser
 CONNECTED
 ExifVersion
@@ -178,7 +174,6 @@ setEpicenterBounds
 HapticFeedback.vibrate
 repeatCount
 flutter/restoration
-Android
 android.car.EXTENSIONS
 condition
 PROXY_OVERRIDE:3
@@ -219,7 +214,6 @@ endColor
 FRONT
 dev.flutter.pigeon.webview_flutter_an...
 UINT32
-MarkdownRenderer
 android.provider.action.PICK_IMAGES
 centerColor
 requiresCharging
@@ -266,7 +260,6 @@ klass.interfaces
 defaultObj
 dev.flutter.pigeon.path_provider_andr...
 source
-DOT_MATCHES_ALL
 android.intent.action.BATTERY_CHANGED
 removeListenerMethod
 Aug
@@ -373,7 +366,6 @@ flutter_image_picker_max_height
 DIAGNOSTIC_CURRENT_PROFILE_EXISTS
 .immediate
 TextInputAction.unspecified
-renderLatex
 dev.flutter.pigeon.webview_flutter_an...
 TAG
 None
@@ -390,7 +382,6 @@ klass
 inputType
 day
 CLOSE_HANDLER_INVOKED
-wordCount
 GPSLongitudeRef
 KEEP
 android.speech.extra.RESULTS_PENDINGI...
@@ -419,7 +410,6 @@ speak.onCancel
 INT32_LIST_PACKED
 backgroundChannelInitialized
 _removedRef
-isDisplayMode
 SINT64_LIST_PACKED
 ARGUMENT_ERROR
 temp
@@ -485,7 +475,6 @@ flutter_workmanager_plugin
 toString
 TIP
 getNotificationAppLaunchDetails
-$$
 activityManager
 feature.rect
 missingDelimiterValue
@@ -494,7 +483,6 @@ NotificationManagerCompat
 soundSource
 error_audio_error
 dir
-latex
 AwaitContinuation
 error_permission
 error_server_disconnected
@@ -749,7 +737,6 @@ _next
 enableVibration
 Time
 ZoneOffset
-isDarkTheme
 downloads
 textservices
 invalid_sound
@@ -799,7 +786,6 @@ kotlin.collections.MutableMap
 gender
 INITIALIZE
 android.support.BIND_NOTIFICATION_SID...
-COMMENTS
 resizeRow
 android.webkit.WebViewFactory
 lockDir
@@ -874,7 +860,6 @@ command
 GPSDestLongitudeRef
 LensMake
 android.largeIcon.big
-$future
 MICRO_OF_SECOND
 awaitSpeakCompletion
 java.util.Arrays$ArrayList
@@ -1114,7 +1099,6 @@ repeatTime
 EveryMinute
 KEY_NETWORK_STATE_PROXY_ENABLED
 android.speech.RecognitionService
-$this_apply
 newValue
 cache
 creditCardExpirationMonth
@@ -1184,7 +1168,6 @@ unreachable
 Years
 WrkDbPathHelper
 dev.flutter.pigeon.webview_flutter_an...
-CANON_EQ
 android.intent.action.CALL
 $call
 UINT64_LIST
@@ -1195,7 +1178,6 @@ com.dexterous.flutterlocalnotificatio...
 $this_enqueueUniquelyNamedPeriodic
 fields
 SceneCaptureType
-next
 getDescriptor
 keymap
 string
@@ -1303,11 +1285,9 @@ last_result_success
 android.permission.REQUEST_INSTALL_PA...
 _consensus
 locale.variant
-option
 context.filesDir
 wm.defaultDisplay
 SET_TEXT
-nextFunction
 SystemChrome.restoreSystemUIOverlays
 unexpected
 tint_list
@@ -1399,7 +1379,6 @@ VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIGxpc3Qu
 USAGE_ASSISTANCE_NAVIGATION_GUIDANCE
 db
 font
-renderMarkdown
 MEDIUM_IMPACT
 WorkTag
 dev.flutter.pigeon.webview_flutter_an...
@@ -1412,11 +1391,9 @@ configurationId
 DOWNLOADS
 image
 android.speech.extra.MAX_RESULTS
-nativePattern
 en
 NonDisposableHandle
 PODCASTS
-hasCodeBlocks
 WorkName
 dev.flutter.pigeon.webview_flutter_an...
 actionId
@@ -1693,7 +1670,6 @@ PLATFORM_ENCODED
 location
 getInstance
 xx
-getInitialValue
 noBluetooth
 GPSProcessingMethod
 isLanguageInstalled
@@ -1899,7 +1875,6 @@ timeZoneName
 flutter/keyevent
 success
 AppLifecycleState.
-IGNORE_CASE
 child
 SystemChrome.setSystemUIOverlayStyle
 mDelegate
@@ -2004,7 +1979,6 @@ backoffPolicyType
 table_id
 shortcutId
 be.tramckrijte.workmanager.DART_TASK
-seedFunction
 scheduled_notifications
 android.widget.CheckBox
 android.intent.extras.CAMERA_FACING
@@ -2018,7 +1992,6 @@ _cur
 mStableInsets
 mOverlapAnchor
 dev.flutter.pigeon.webview_flutter_an...
-processMarkdown
 REAL
 SensitivityType
 _id
@@ -2045,12 +2018,10 @@ GMT0
 SubjectLocation
 BITMAP
 STREAM
-com.ahamai.markdown
 DigitalZoomRatio
 intrface
 android.settings.MANAGE_APP_USE_FULL_...
 com.dexterous.flutterlocalnotificatio...
-hasTables
 /proc/self/fd/
 fileName
 getByte
@@ -2089,7 +2060,6 @@ android.support.customtabs.extra.SESS...
 intentLookup
 QUARTER_YEARS
 WorkConstraintsTracker
-markdown
 cached_engine_id
 STANDARD
 setRemoveOnCancelPolicy
@@ -2425,7 +2395,6 @@ PLAIN_TEXT
 applicationContext
 getResId
 tts.javaClass.declaredFields
-fontSize
 MOVE_CURSOR_FORWARD_BY_WORD
 androidx.datastore.preferences.protob...
 arch_disk_io_
@@ -2499,7 +2468,6 @@ unknown_activity
 vm_snapshot_data
 BrdcstRcvrCnstrntTrckr
 Clipboard.getData
-markdownRenderer
 ResourceManagerInternal
 dev.flutter.pigeon.shared_preferences...
 android.speech.extra.PARTIAL_RESULTS
@@ -2611,8 +2579,8 @@ binding
 android.showBigPictureWhenCollapsed
 getViewRootImpl
 permissions
-superclass
 delimiter
+superclass
 Centuries
 getPath
 SATURDAY
@@ -2631,7 +2599,6 @@ newDeviceState
 DELETE_SKIP_FILE
 DAY_OF_MONTH
 createFromFamiliesWithDefault
-hasLatex
 mutex
 usesVirtualDisplay
 OffsetSeconds
@@ -2728,7 +2695,6 @@ raw
 triggers
 handlerArg
 America/Chicago
-text/html
 kotlin.jvm.functions.
 WorkmanagerDebugChannelId
 android.permission.READ_CONTACTS
@@ -2838,8 +2804,6 @@ createSegment
 SMART
 UINT64_LIST_PACKED
 TextInputAction.none
-LITERAL
-extractLatex
 FileSource
 FocalLengthIn35mmFilm
 binding.applicationContext
@@ -2967,7 +2931,6 @@ MINUTE_OF_DAY
 INCREASE
 androidx.datastore.preferences.protob...
 ERROR
-lineCount
 dev.flutter.pigeon.webview_flutter_an...
 android.media.metadata.DISC_NUMBER
 deltaText
@@ -2999,11 +2962,9 @@ AMPM_OF_DAY
 deviceDefault
 viewportWidth
 blockingTasksInBuffer
-hasLinks
 call
 androidx.core.app.NotificationCompat$...
 kotlin.Char
-validateLatex
 LOWER_CASE_WITH_UNDERSCORES
 RecyclerView
 flutter/isolate
@@ -3092,7 +3053,6 @@ generation
 item
 dart_entrypoint
 newPassword
-matcher
 audioAttributesUsage
 smsOTPCode
 flutter_deeplinking_enabled
@@ -3113,7 +3073,6 @@ consumeMessage
 BOOL_LIST_PACKED
 BOLD_TEXT
 Dispatchers.Unconfined
-pattern
 SystemUiOverlay.bottom
 ViewConfigCompat
 android.permission.ACCESS_FINE_LOCATION
@@ -3129,7 +3088,6 @@ be.tramckrijte.workmanager/foreground...
 LensModel
 SpellCheck.initiateSpellCheck
 composingExtent
-UNIX_LINES
 birthDateDay
 libflutter.so
 largeIcon
@@ -3183,7 +3141,6 @@ Flash
 uniqueIdentifier
 ACTION_PREVIOUS_HTML_ELEMENT
 move
-original
 CLOB
 http://schemas.android.com/apk/res/an...
 suggest_text_2_url
@@ -3193,7 +3150,6 @@ WindowInsetsCompat
 America/Los_Angeles
 PopupWindowCompatApi21
 INT32_LIST
-hasImages
 mIsChildViewEnabled
 setQueueMode
 dev.flutter.pigeon.webview_flutter_an...
@@ -3212,7 +3168,6 @@ SHOULD_BUFFER
 traceCounter
 onClose
 kotlin.Unit
-com.ahamai.latex
 DAY_OF_WEEK
 WEB_MESSAGE_PORT_POST_MESSAGE
 android.speech.extra.LANGUAGE_MODEL
@@ -3395,7 +3350,6 @@ ViewUtils
 sql
 SupportSQLiteLock
 android.intent.action.DEVICE_STORAGE_OK
-latexRenderer
 receivers
 ACTION_SCROLL_LEFT
 android.support.v4.media.description....
