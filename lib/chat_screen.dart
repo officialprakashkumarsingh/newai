@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:ahamai/web_search.dart';
 import 'package:ahamai/diagram_service.dart';
-import 'package:ahamai/fullscreen_diagram_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -1504,7 +1503,7 @@ Generate realistic data relevant to: $prompt''',
                     GeneratingIndicator(size: 16)
                   ]
                 ) 
-              : DiagramService.buildDiagramWidget(message.diagramData!, context, _showFullscreenDiagram)
+              : DiagramService.buildDiagramWidget(message.diagramData!, context, (data) {})
           )
         );
       case MessageType.text:

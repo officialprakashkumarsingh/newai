@@ -190,34 +190,56 @@ Generate realistic data relevant to: $prompt''',
     final String title = diagramData['title'] ?? 'Chart';
     final GlobalKey chartKey = GlobalKey();
 
-    // Calculate flexible height based on chart type and data
-    double getFlexibleHeight() {
+    // Calculate flexible dimensions based on chart type and data
+    Size getFlexibleSize() {
       final data = diagramData['data'];
+      double width = 400; // Default width
+      double height = 300; // Default height
+      
       switch (type.toLowerCase()) {
         case 'mindmap':
           final branches = data is Map ? (data['branches'] as List?) ?? [] : [];
-          return math.max(300, math.min(600, branches.length * 80.0 + 200));
+          width = math.max(500, branches.length * 120.0 + 300);
+          height = math.max(400, branches.length * 100.0 + 300);
+          break;
         case 'flowchart':
           final steps = diagramData['steps'] ?? [];
-          return math.max(200, math.min(500, steps.length * 70.0 + 100));
+          width = math.max(600, steps.length * 150.0 + 200);
+          height = math.max(250, 350);
+          break;
         case 'gantt':
           final tasks = data is List ? data : [];
-          return math.max(200, math.min(400, tasks.length * 50.0 + 100));
+          width = math.max(800, 1000); // Wide for timeline
+          height = math.max(300, tasks.length * 50.0 + 150);
+          break;
         case 'orgchart':
-          return 400; // Fixed for org charts
+          width = 600;
+          height = 500;
+          break;
         case 'network':
           final nodes = data is Map ? (data['nodes'] as List?) ?? [] : [];
-          return math.max(300, math.min(500, nodes.length * 40.0 + 200));
+          width = math.max(500, nodes.length * 80.0 + 300);
+          height = math.max(400, nodes.length * 60.0 + 300);
+          break;
         case 'radar':
-          return 300;
+          width = 400;
+          height = 400;
+          break;
         case 'pie':
         case 'doughnut':
-          return 280;
+          width = 350;
+          height = 350;
+          break;
         default:
           final dataList = data is List ? data : [];
-          return math.max(200, math.min(450, dataList.length * 40.0 + 100));
+          width = math.max(400, dataList.length * 60.0 + 200);
+          height = math.max(300, dataList.length * 30.0 + 200);
       }
+      
+      return Size(width, height);
     }
+
+    final size = getFlexibleSize();
 
     return Card(
       color: Theme.of(context).cardColor,
@@ -238,58 +260,32 @@ Generate realistic data relevant to: $prompt''',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.more_vert),
-                  onSelected: (value) async {
-                    switch (value) {
-                      case 'download':
-                        await downloadDiagram(chartKey, title, type, diagramData, context);
-                        break;
-                      case 'fullscreen':
-                        onFullscreen(diagramData);
-                        break;
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'download',
-                      child: Row(
-                        children: [
-                          Icon(Icons.download),
-                          SizedBox(width: 8),
-                          Text('Download as Image'),
-                        ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'fullscreen',
-                      child: Row(
-                        children: [
-                          Icon(Icons.fullscreen),
-                          SizedBox(width: 8),
-                          Text('View Fullscreen'),
-                        ],
-                      ),
-                    ),
-                  ],
+                IconButton(
+                  icon: const Icon(Icons.download, size: 20),
+                  onPressed: () => downloadDiagram(chartKey, title, type, diagramData, context),
+                  tooltip: 'Save Diagram',
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            RepaintBoundary(
-              key: chartKey,
-              child: Container(
-                height: getFlexibleHeight(),
-                width: double.infinity,
-                child: _buildOptimizedChart(type, diagramData, context),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Tap menu for download & fullscreen options',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
+            const SizedBox(height: 12),
+            // Scrollable diagram area without background
+            Container(
+              height: math.min(size.height, 400), // Max height in chat
+              width: double.infinity,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: RepaintBoundary(
+                    key: chartKey,
+                    child: Container(
+                      width: size.width,
+                      height: size.height,
+                      // No background decoration - clean diagram export
+                      child: _buildOptimizedChart(type, diagramData, context),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -832,85 +828,124 @@ Generate realistic data relevant to: $prompt''',
 
   static Widget _buildGanttChart(Map<String, dynamic> diagramData) {
     final List<dynamic> data = diagramData['data'] ?? [];
+    final int maxWeeks = 12; // Timeline weeks
+    final double weekWidth = 80.0; // Width per week
+    final double taskHeight = 45.0;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Timeline header
         Container(
-          height: 30,
+          height: 35,
           child: Row(
-            children: List.generate(10, (index) => 
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Text('W${index + 1}', style: const TextStyle(fontSize: 10)),
+            children: [
+              // Task name header
+              Container(
+                width: 150,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: const Text(
+                  'Task',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
+              // Week headers
+              ...List.generate(maxWeeks, (index) => 
+                Container(
+                  width: weekWidth,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Text(
+                    'W${index + 1}',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         // Tasks
-        Expanded(
-          child: ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              final task = data[index];
-              final taskName = task['task'] ?? 'Task ${index + 1}';
-              final start = (task['start'] as num?)?.toDouble() ?? 0;
-              final duration = (task['duration'] as num?)?.toDouble() ?? 1;
-              final color = _getColorFromString(task['color'] ?? 'blue');
+        ...data.asMap().entries.map((entry) {
+          final task = entry.value;
+          final taskName = task['task'] ?? 'Task ${entry.key + 1}';
+          final start = (task['start'] as num?)?.toDouble() ?? 0;
+          final duration = (task['duration'] as num?)?.toDouble() ?? 1;
+          final color = _getColorFromString(task['color'] ?? 'blue');
 
-              return Container(
-                height: 40,
-                child: Row(
-                  children: [
-                    // Task name
-                    SizedBox(
-                      width: 100,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          taskName,
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
+          return Container(
+            height: taskHeight,
+            child: Row(
+              children: [
+                // Task name
+                Container(
+                  width: 150,
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Text(
+                    taskName,
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                // Timeline area
+                Container(
+                  width: maxWeeks * weekWidth,
+                  height: taskHeight,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Stack(
+                    children: [
+                      // Grid lines
+                      ...List.generate(maxWeeks, (index) => 
+                        Positioned(
+                          left: index * weekWidth,
+                          child: Container(
+                            width: 1,
+                            height: taskHeight,
+                            color: Colors.grey.shade300,
+                          ),
                         ),
                       ),
-                    ),
-                    // Timeline bar
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
+                      // Task bar
+                      Positioned(
+                        left: start * weekWidth,
+                        child: Container(
+                          height: 25,
+                          width: duration * weekWidth,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(4),
                           ),
-                          Positioned(
-                            left: (start / 10) * MediaQuery.of(context).size.width * 0.6,
-                            child: Container(
-                              height: 30,
-                              width: (duration / 10) * MediaQuery.of(context).size.width * 0.6,
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              decoration: BoxDecoration(
-                                color: color,
-                                borderRadius: BorderRadius.circular(4),
+                          child: Center(
+                            child: Text(
+                              '${duration.toInt()}w',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              );
-            },
-          ),
-        ),
+              ],
+            ),
+          );
+        }).toList(),
       ],
     );
   }
@@ -964,24 +999,35 @@ Generate realistic data relevant to: $prompt''',
   static Future<void> downloadDiagram(GlobalKey chartKey, String title, String type, Map<String, dynamic> diagramData, BuildContext context) async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preparing diagram for download...')),
+        const SnackBar(content: Text('Saving diagram...'), duration: Duration(seconds: 1)),
       );
 
       final RenderRepaintBoundary boundary = 
           chartKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       
-      final image = await boundary.toImage(pixelRatio: 3.0);
+      // Get the actual size of the diagram
+      final size = boundary.size;
+      print('Diagram size: ${size.width} x ${size.height}');
+      
+      // Capture at high resolution to ensure full diagram is saved
+      final image = await boundary.toImage(pixelRatio: 4.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
+
+      print('Image size: ${image.width} x ${image.height} pixels');
 
       final fileName = '${title.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}_${type}_${DateTime.now().millisecondsSinceEpoch}.png';
       
       await _saveImageToAhamAIFolder(pngBytes, fileName);
       
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Diagram saved to Downloads/AhamAI/$fileName')),
+        SnackBar(
+          content: Text('Diagram saved to Downloads/AhamAI/$fileName'),
+          duration: const Duration(seconds: 2),
+        ),
       );
     } catch (error) {
+      print('Error saving diagram: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error saving diagram: $error')),
       );
