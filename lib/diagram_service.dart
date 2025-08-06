@@ -246,20 +246,24 @@ Generate realistic data relevant to: $prompt''',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Simple title row
+          // Simple title row with fixed save button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600, 
-                    fontSize: 15,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600, 
+                      fontSize: 15,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 IconButton(
                   icon: Icon(
                     Icons.download_rounded,
@@ -1161,19 +1165,24 @@ class MindMapPainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.fill;
 
-    // Draw center node
-    paint.color = Colors.blue;
-    canvas.drawCircle(center, 40, paint);
+    // Draw center node with better text handling
+    paint.color = Colors.blue.shade700;
+    final centerRadius = 50.0;
+    canvas.drawCircle(center, centerRadius, paint);
 
-    // Draw center text
+    // Draw center text with proper wrapping
+    final centerWords = centerText.split(' ');
+    final centerDisplayText = centerWords.length > 3 ? '${centerWords.take(3).join(' ')}...' : centerText;
+    
     final centerTextPainter = TextPainter(
       text: TextSpan(
-        text: centerText,
-        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+        text: centerDisplayText,
+        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
       ),
       textDirection: TextDirection.ltr,
+      textAlign: TextAlign.center,
     );
-    centerTextPainter.layout();
+    centerTextPainter.layout(maxWidth: centerRadius * 1.6);
     centerTextPainter.paint(
       canvas,
       Offset(center.dx - centerTextPainter.width / 2, center.dy - centerTextPainter.height / 2),
@@ -1186,76 +1195,125 @@ class MindMapPainter extends CustomPainter {
     for (int i = 0; i < branches.length; i++) {
       final branch = branches[i];
       final angle = i * angleStep;
+      
+      // Calculate text and radius first
+      final branchText = branch['title'] ?? 'Branch';
+      final textBasedRadius = (branchText.length.toDouble() * 3.5).clamp(35.0, 55.0);
+      final branchRadius = math.max<double>(40.0, textBasedRadius);
+      
       final branchCenter = Offset(
         center.dx + branchRadius * math.cos(angle),
         center.dy + branchRadius * math.sin(angle),
       );
 
-      // Draw connection line
+      // Draw connection line with proper clipping
       final linePaint = Paint()
         ..color = Colors.grey.shade600
-        ..strokeWidth = 3;
-      canvas.drawLine(center, branchCenter, linePaint);
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke;
+      
+      // Calculate line endpoints to avoid cutting through nodes
+      final centerEdge = Offset(
+        center.dx + (centerRadius + 5) * math.cos(angle),
+        center.dy + (centerRadius + 5) * math.sin(angle),
+      );
+      final branchEdge = Offset(
+        branchCenter.dx - branchRadius * math.cos(angle),
+        branchCenter.dy - branchRadius * math.sin(angle),
+      );
+      canvas.drawLine(centerEdge, branchEdge, linePaint);
 
-      // Draw branch node with better sizing
+      // Draw branch node with dynamic sizing based on text
       final color = DiagramService._getColorFromString(branch['color'] ?? 'green');
+      
       paint.color = color;
-      canvas.drawCircle(branchCenter, 35, paint);
+      canvas.drawCircle(branchCenter, branchRadius, paint);
 
-      // Draw branch text with word wrapping
-      final branchText = branch['title'] ?? 'Branch';
+      // Draw branch text with better wrapping
       final words = branchText.split(' ');
-      final displayText = words.length > 2 ? '${words.take(2).join(' ')}...' : branchText;
+      String displayText;
+      if (branchText.length <= 15) {
+        displayText = branchText;
+      } else if (words.length > 1) {
+        displayText = '${words.first}\n${words.skip(1).join(' ')}';
+        if (displayText.length > 20) {
+          displayText = '${words.first}\n${words.skip(1).take(2).join(' ')}...';
+        }
+      } else {
+        displayText = '${branchText.substring(0, 12)}...';
+      }
       
       final branchTextPainter = TextPainter(
         text: TextSpan(
           text: displayText,
-          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
         ),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.center,
       );
-      branchTextPainter.layout(maxWidth: 60);
+      branchTextPainter.layout(maxWidth: branchRadius * 1.6);
       branchTextPainter.paint(
         canvas,
         Offset(branchCenter.dx - branchTextPainter.width / 2, branchCenter.dy - branchTextPainter.height / 2),
       );
 
-      // Draw sub-branches with improved positioning
+      // Draw sub-branches with improved positioning and clipping
       final subbranches = branch['subbranches'] as List<dynamic>? ?? [];
       if (subbranches.isNotEmpty) {
-        final subRadius = 80; // Fixed sub-branch radius
+        final subRadius = 90; // Increased sub-branch radius
         final subAngleRange = math.pi / 2; // 90 degree spread for sub-branches
         final subAngleStep = subAngleRange / math.max(subbranches.length - 1, 1);
         final startSubAngle = angle - subAngleRange / 2;
         
         for (int j = 0; j < subbranches.length; j++) {
           final subAngle = startSubAngle + (j * subAngleStep);
+          
+          // Calculate sub-node size first
+          final subText = subbranches[j].toString();
+          final subTextBasedRadius = (subText.length.toDouble() * 2.5).clamp(20.0, 35.0);
+          final subNodeRadius = math.max<double>(25.0, subTextBasedRadius);
+          
           final subCenter = Offset(
             branchCenter.dx + subRadius * math.cos(subAngle),
             branchCenter.dy + subRadius * math.sin(subAngle),
           );
 
-          // Draw sub-connection
-          canvas.drawLine(branchCenter, subCenter, linePaint);
+          // Draw sub-connection with proper edge calculation
+          final branchSubEdge = Offset(
+            branchCenter.dx + branchRadius * math.cos(subAngle),
+            branchCenter.dy + branchRadius * math.sin(subAngle),
+          );
+          final subEdge = Offset(
+            subCenter.dx - subNodeRadius * math.cos(subAngle),
+            subCenter.dy - subNodeRadius * math.sin(subAngle),
+          );
+          canvas.drawLine(branchSubEdge, subEdge, linePaint);
 
-          // Draw sub-node
-          paint.color = color.withOpacity(0.8);
-          canvas.drawCircle(subCenter, 20, paint);
+          // Draw sub-node with dynamic sizing
+          
+          paint.color = color.withOpacity(0.85);
+          canvas.drawCircle(subCenter, subNodeRadius, paint);
 
-          // Draw sub-text with truncation
-          final subText = subbranches[j].toString();
-          final truncatedSubText = subText.length > 12 ? '${subText.substring(0, 12)}...' : subText;
+          // Draw sub-text with better handling
+          String displaySubText;
+          if (subText.length <= 10) {
+            displaySubText = subText;
+          } else if (subText.contains(' ')) {
+            final subWords = subText.split(' ');
+            displaySubText = subWords.length > 1 ? '${subWords.first}\n${subWords.skip(1).first}' : subText.substring(0, 8) + '...';
+          } else {
+            displaySubText = '${subText.substring(0, 8)}...';
+          }
           
           final subTextPainter = TextPainter(
             text: TextSpan(
-              text: truncatedSubText,
-              style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w500),
+              text: displaySubText,
+              style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w600),
             ),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
           );
-          subTextPainter.layout(maxWidth: 35);
+          subTextPainter.layout(maxWidth: subNodeRadius * 1.6);
           subTextPainter.paint(
             canvas,
             Offset(subCenter.dx - subTextPainter.width / 2, subCenter.dy - subTextPainter.height / 2),

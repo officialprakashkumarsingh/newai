@@ -280,20 +280,24 @@ Topic: $topic''',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Simple title row
+          // Simple title row with fixed save button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600, 
-                    fontSize: 15,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600, 
+                      fontSize: 15,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(width: 8),
                 IconButton(
                   icon: Icon(
                     Icons.picture_as_pdf_rounded,
@@ -1908,29 +1912,130 @@ Topic: $topic''',
   static String _cleanTextForPDF(String text) {
     return text
         .replaceAll('•', '-') // Replace bullets
+        .replaceAll('◦', '-')
+        .replaceAll('▪', '-')
+        .replaceAll('▫', '-')
         .replaceAll('"', '"') // Replace smart quotes
         .replaceAll('"', '"')
+        .replaceAll('„', '"')
+        .replaceAll('‚', ',')
         .replaceAll(''', "'") // Replace smart apostrophes
         .replaceAll(''', "'")
+        .replaceAll('`', "'")
+        .replaceAll('´', "'")
         .replaceAll('–', '-') // Replace en-dash
         .replaceAll('—', '--') // Replace em-dash
+        .replaceAll('―', '--')
+        .replaceAll('…', '...') // Replace ellipsis
         .replaceAll('°', ' degrees') // Replace degree symbol
-        .replaceAll('²', '2') // Replace superscript
+        .replaceAll('¹', '1') // Replace superscripts
+        .replaceAll('²', '2')
         .replaceAll('³', '3')
+        .replaceAll('⁴', '4')
+        .replaceAll('⁵', '5')
+        .replaceAll('⁶', '6')
+        .replaceAll('⁷', '7')
+        .replaceAll('⁸', '8')
+        .replaceAll('⁹', '9')
+        .replaceAll('⁰', '0')
+        .replaceAll('₁', '1') // Replace subscripts
+        .replaceAll('₂', '2')
+        .replaceAll('₃', '3')
+        .replaceAll('₄', '4')
+        .replaceAll('₅', '5')
         .replaceAll('α', 'alpha') // Replace Greek letters
         .replaceAll('β', 'beta')
         .replaceAll('γ', 'gamma')
         .replaceAll('δ', 'delta')
+        .replaceAll('ε', 'epsilon')
+        .replaceAll('ζ', 'zeta')
+        .replaceAll('η', 'eta')
+        .replaceAll('θ', 'theta')
+        .replaceAll('ι', 'iota')
+        .replaceAll('κ', 'kappa')
+        .replaceAll('λ', 'lambda')
+        .replaceAll('μ', 'mu')
+        .replaceAll('ν', 'nu')
+        .replaceAll('ξ', 'xi')
         .replaceAll('π', 'pi')
+        .replaceAll('ρ', 'rho')
+        .replaceAll('σ', 'sigma')
+        .replaceAll('τ', 'tau')
+        .replaceAll('υ', 'upsilon')
+        .replaceAll('φ', 'phi')
+        .replaceAll('χ', 'chi')
+        .replaceAll('ψ', 'psi')
+        .replaceAll('ω', 'omega')
+        .replaceAll('Α', 'Alpha') // Uppercase Greek
+        .replaceAll('Β', 'Beta')
+        .replaceAll('Γ', 'Gamma')
+        .replaceAll('Δ', 'Delta')
+        .replaceAll('Ε', 'Epsilon')
+        .replaceAll('Ζ', 'Zeta')
+        .replaceAll('Η', 'Eta')
+        .replaceAll('Θ', 'Theta')
+        .replaceAll('Ι', 'Iota')
+        .replaceAll('Κ', 'Kappa')
+        .replaceAll('Λ', 'Lambda')
+        .replaceAll('Μ', 'Mu')
+        .replaceAll('Ν', 'Nu')
+        .replaceAll('Ξ', 'Xi')
+        .replaceAll('Π', 'Pi')
+        .replaceAll('Ρ', 'Rho')
         .replaceAll('Σ', 'Sigma')
-        .replaceAll('∞', 'infinity')
+        .replaceAll('Τ', 'Tau')
+        .replaceAll('Υ', 'Upsilon')
+        .replaceAll('Φ', 'Phi')
+        .replaceAll('Χ', 'Chi')
+        .replaceAll('Ψ', 'Psi')
+        .replaceAll('Ω', 'Omega')
+        .replaceAll('∞', 'infinity') // Math symbols
         .replaceAll('≈', 'approx')
+        .replaceAll('≠', '!=')
         .replaceAll('≤', '<=')
         .replaceAll('≥', '>=')
         .replaceAll('±', '+/-')
+        .replaceAll('∓', '-/+')
         .replaceAll('×', 'x')
         .replaceAll('÷', '/')
         .replaceAll('√', 'sqrt')
-        .replaceAll('∆', 'Delta');
+        .replaceAll('∛', 'cbrt')
+        .replaceAll('∜', '4thrt')
+        .replaceAll('∑', 'sum')
+        .replaceAll('∏', 'product')
+        .replaceAll('∫', 'integral')
+        .replaceAll('∮', 'contour_integral')
+        .replaceAll('∂', 'partial')
+        .replaceAll('∇', 'nabla')
+        .replaceAll('∆', 'Delta')
+        .replaceAll('∅', 'empty_set')
+        .replaceAll('∈', 'in')
+        .replaceAll('∉', 'not_in')
+        .replaceAll('∩', 'intersection')
+        .replaceAll('∪', 'union')
+        .replaceAll('⊂', 'subset')
+        .replaceAll('⊃', 'superset')
+        .replaceAll('⊆', 'subset_eq')
+        .replaceAll('⊇', 'superset_eq')
+        .replaceAll('€', 'EUR') // Currency symbols
+        .replaceAll('£', 'GBP')
+        .replaceAll('¥', 'JPY')
+        .replaceAll('¢', 'cents')
+        .replaceAll('©', '(C)') // Special symbols
+        .replaceAll('®', '(R)')
+        .replaceAll('™', '(TM)')
+        .replaceAll('§', 'section')
+        .replaceAll('¶', 'paragraph')
+        .replaceAll('†', 'dagger')
+        .replaceAll('‡', 'double_dagger')
+        .replaceAll('←', '<-') // Arrows
+        .replaceAll('→', '->')
+        .replaceAll('↑', '^')
+        .replaceAll('↓', 'v')
+        .replaceAll('↔', '<->')
+        .replaceAll('↕', '<->')
+        .replaceAll('⇐', '<=')
+        .replaceAll('⇒', '=>')
+        .replaceAll('⇔', '<=>');
   }
 }
