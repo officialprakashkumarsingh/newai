@@ -260,20 +260,14 @@ Generate realistic data relevant to: $prompt''',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                IconButton(
+                  icon: Icon(
+                    Icons.download_rounded,
+                    size: 24,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.save_alt_rounded,
-                      size: 22,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    onPressed: () => downloadDiagram(chartKey, title, type, diagramData, context),
-                    tooltip: 'Save Diagram',
-                  ),
+                  onPressed: () => downloadDiagram(chartKey, title, type, diagramData, context),
+                  tooltip: 'Save Diagram',
                 ),
               ],
             ),
