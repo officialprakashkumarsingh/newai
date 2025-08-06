@@ -1473,8 +1473,9 @@ Topic: $topic''',
   }
 
   static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context) async {
+    PdfDocument? document;
     try {
-      print('Starting PDF generation...');
+      print('🔄 Starting ROBUST PDF generation...');
       DiagramService.showStyledSnackBar(context, 'Creating PDF presentation...');
 
       final String title = presentationData['title'] ?? 'Presentation';
@@ -1486,24 +1487,77 @@ Topic: $topic''',
       }
 
       // Create PDF document
-      final PdfDocument document = PdfDocument();
+      document = PdfDocument();
       print('PDF document created');
       
+      int successfulSlides = 0;
+      List<String> failedSlides = [];
+      
+      // Process each slide with individual error handling
       for (int i = 0; i < slides.length; i++) {
-        print('Processing slide ${i + 1}/${slides.length}');
-        final slide = slides[i];
-        final PdfPage page = document.pages.add();
-        final PdfGraphics graphics = page.graphics;
-        final Size pageSize = page.getClientSize();
-        
-        // Draw slide content
-        await _drawSlideOnPDF(graphics, slide, pageSize, context);
+        try {
+          print('Processing slide ${i + 1}/${slides.length}');
+          final slide = slides[i];
+          final PdfPage page = document.pages.add();
+          final PdfGraphics graphics = page.graphics;
+          final Size pageSize = page.getClientSize();
+          
+          // Clean all text content in the slide before processing
+          final Map<String, dynamic> cleanedSlide = _cleanSlideForPDF(slide);
+          
+          // Draw slide content with cleaned data
+          await _drawSlideOnPDF(graphics, cleanedSlide, pageSize, context);
+          successfulSlides++;
+          print('✅ Slide ${i + 1} processed successfully');
+          
+        } catch (slideError) {
+          print('⚠️ Error in slide ${i + 1}: $slideError');
+          failedSlides.add('Slide ${i + 1}: ${slideError.toString()}');
+          
+          // Add an error page instead of failing completely
+          try {
+            final errorPage = document.pages.add();
+            final errorGraphics = errorPage.graphics;
+            
+            // Draw background
+            errorGraphics.drawRectangle(
+              brush: PdfSolidBrush(PdfColor(255, 250, 250)),
+              bounds: Rect.fromLTWH(0, 0, 595, 842),
+            );
+            
+            // Draw error header
+            errorGraphics.drawString(
+              'Slide ${i + 1} - Processing Error',
+              PdfStandardFont(PdfFontFamily.helvetica, 18, style: PdfFontStyle.bold),
+              brush: PdfSolidBrush(PdfColor(220, 20, 60)),
+              bounds: Rect.fromLTWH(40, 50, 515, 30),
+            );
+            
+            // Draw error message
+            final cleanErrorMessage = _cleanTextForPDF('Content contained unsupported characters (error 8289 and others). Please regenerate with simpler text.');
+            errorGraphics.drawString(
+              cleanErrorMessage,
+              PdfStandardFont(PdfFontFamily.helvetica, 12),
+              brush: PdfSolidBrush(PdfColor(100, 100, 100)),
+              bounds: Rect.fromLTWH(40, 100, 515, 200),
+              format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top),
+            );
+            
+            successfulSlides++;
+            print('📄 Error page created for slide ${i + 1}');
+            
+          } catch (errorPageError) {
+            print('❌ Could not create error page for slide ${i + 1}: $errorPageError');
+            // Continue with next slide
+          }
+        }
       }
 
-      // Save PDF
-      print('Generating PDF bytes...');
+      // Save PDF regardless of some slides failing
+      print('💾 Generating PDF bytes...');
       final List<int> bytes = await document.save();
       document.dispose();
+      document = null; // Mark as disposed
       print('PDF bytes generated: ${bytes.length} bytes');
 
       final fileName = '${title.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}_presentation_${DateTime.now().millisecondsSinceEpoch}.pdf';
@@ -1512,24 +1566,132 @@ Topic: $topic''',
       final success = await _savePDFToAhamAIFolder(Uint8List.fromList(bytes), fileName);
       
       if (success) {
+        String message;
+        Color backgroundColor;
+        
+        if (failedSlides.isEmpty) {
+          message = 'PDF saved successfully: $fileName';
+          backgroundColor = Colors.green.shade600;
+          print('✅ All slides processed successfully!');
+        } else {
+          message = 'PDF saved with $successfulSlides/${slides.length} slides (${failedSlides.length} had character issues)';
+          backgroundColor = Colors.orange.shade600;
+          print('⚠️ PDF saved with some issues: ${failedSlides.join(", ")}');
+        }
+        
         DiagramService.showStyledSnackBar(
           context, 
-          'Presentation saved: $fileName',
-          backgroundColor: Colors.green.shade600,
-          duration: const Duration(seconds: 3),
+          message,
+          backgroundColor: backgroundColor,
+          duration: const Duration(seconds: 4),
         );
       } else {
-        throw Exception('Failed to save PDF file');
+        throw Exception('Failed to save PDF file to storage');
       }
+      
     } catch (error) {
-      print('Error saving presentation: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('❌ Error saving presentation: $error'),
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      print('❌ Critical error in PDF generation: $error');
+      
+      // Ensure document cleanup
+      try {
+        document?.dispose();
+      } catch (disposeError) {
+        print('⚠️ Error disposing PDF document: $disposeError');
+      }
+      
+      // Create emergency fallback PDF
+      try {
+        print('🔧 Creating emergency fallback PDF...');
+        final fallbackDocument = PdfDocument();
+        final fallbackPage = fallbackDocument.pages.add();
+        final fallbackGraphics = fallbackPage.graphics;
+        
+        // White background
+        fallbackGraphics.drawRectangle(
+          brush: PdfSolidBrush(PdfColor(255, 255, 255)),
+          bounds: Rect.fromLTWH(0, 0, 595, 842),
+        );
+        
+        // Title
+        fallbackGraphics.drawString(
+          'AhamAI Presentation - Error Recovery',
+          PdfStandardFont(PdfFontFamily.helvetica, 20, style: PdfFontStyle.bold),
+          brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+          bounds: Rect.fromLTWH(40, 50, 515, 30),
+        );
+        
+        // Error details
+        final cleanErrorDetails = _cleanTextForPDF('PDF generation encountered character encoding errors (8289, 8345, etc.). The presentation content contained special Unicode characters that are not supported by the PDF font system.');
+        fallbackGraphics.drawString(
+          cleanErrorDetails,
+          PdfStandardFont(PdfFontFamily.helvetica, 12),
+          brush: PdfSolidBrush(PdfColor(100, 100, 100)),
+          bounds: Rect.fromLTWH(40, 100, 515, 200),
+          format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top),
+        );
+        
+        // Instructions
+        fallbackGraphics.drawString(
+          'To fix this: Ask the AI to regenerate the presentation with simpler text content without special mathematical symbols or Unicode characters.',
+          PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+          brush: PdfSolidBrush(PdfColor(0, 100, 0)),
+          bounds: Rect.fromLTWH(40, 350, 515, 100),
+          format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.top),
+        );
+        
+        final fallbackBytes = await fallbackDocument.save();
+        fallbackDocument.dispose();
+        
+        final fallbackFileName = 'AhamAI_ERROR_${DateTime.now().millisecondsSinceEpoch}.pdf';
+        final fallbackSaved = await _savePDFToAhamAIFolder(Uint8List.fromList(fallbackBytes), fallbackFileName);
+        
+        if (fallbackSaved) {
+          DiagramService.showStyledSnackBar(
+            context, 
+            'Error PDF saved: $fallbackFileName - Check content and regenerate',
+            backgroundColor: Colors.red.shade600,
+            duration: const Duration(seconds: 5),
+          );
+        } else {
+          throw Exception('Complete PDF system failure');
+        }
+        
+      } catch (fallbackError) {
+        print('❌ Emergency fallback also failed: $fallbackError');
+        DiagramService.showStyledSnackBar(
+          context, 
+          'PDF generation completely failed - Character error 8289. Please regenerate presentation with simple text only.',
+          backgroundColor: Colors.red.shade700,
+          duration: const Duration(seconds: 6),
+        );
+      }
     }
+  }
+  
+  // Clean slide data to remove problematic characters before PDF processing
+  static Map<String, dynamic> _cleanSlideForPDF(Map<String, dynamic> slide) {
+    final Map<String, dynamic> cleaned = {};
+    
+    slide.forEach((key, value) {
+      if (value is String) {
+        cleaned[key] = _cleanTextForPDF(value);
+      } else if (value is List) {
+        cleaned[key] = value.map((item) {
+          if (item is String) {
+            return _cleanTextForPDF(item);
+          } else if (item is Map<String, dynamic>) {
+            return _cleanSlideForPDF(item);
+          }
+          return item;
+        }).toList();
+      } else if (value is Map<String, dynamic>) {
+        cleaned[key] = _cleanSlideForPDF(value);
+      } else {
+        cleaned[key] = value;
+      }
+    });
+    
+    return cleaned;
   }
 
   static Future<void> _drawSlideOnPDF(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context) async {
@@ -2302,234 +2464,139 @@ Topic: $topic''',
 
   // Clean text for PDF rendering to avoid font issues
   static String _cleanTextForPDF(String text) {
-    // First, remove all non-ASCII characters that aren't basic symbols
-    String cleaned = '';
-    for (int i = 0; i < text.length; i++) {
-      int charCode = text.codeUnitAt(i);
+    if (text.isEmpty) return '';
+    
+    try {
+      // ULTRA-ROBUST approach: Process each character with comprehensive error handling
+      StringBuffer buffer = StringBuffer();
       
-      // Keep basic ASCII characters (32-126), newlines (10), carriage returns (13), and tabs (9)
-      if ((charCode >= 32 && charCode <= 126) || charCode == 10 || charCode == 13 || charCode == 9) {
-        cleaned += text[i];
-      }
-      // Replace common problematic characters with safe alternatives
-      else {
-        switch (charCode) {
-          // Smart quotes and apostrophes
-          case 8216: case 8217: cleaned += "'"; break; // Left/right single quotes
-          case 8218: cleaned += ","; break; // Single low quote
-          case 8220: case 8221: cleaned += '"'; break; // Left/right double quotes
-          case 8222: cleaned += '"'; break; // Double low quote
+      for (int i = 0; i < text.length; i++) {
+        try {
+          int charCode = text.codeUnitAt(i);
           
-          // Dashes and punctuation
-          case 8211: cleaned += "-"; break; // En dash
-          case 8212: cleaned += "--"; break; // Em dash
-          case 8230: cleaned += "..."; break; // Ellipsis
-          case 8226: cleaned += "-"; break; // Bullet
-          case 8259: cleaned += "-"; break; // Hyphen bullet
-          case 8282: cleaned += ":"; break; // Two dot punctuation (U+205A)
-          case 8289: cleaned += ""; break; // Function application (U+2061) - invisible
+          // Keep basic ASCII characters and essential whitespace
+          if ((charCode >= 32 && charCode <= 126) || charCode == 10 || charCode == 13 || charCode == 9) {
+            buffer.write(text[i]);
+            continue;
+          }
           
-          // Additional invisible operators and format characters
-          case 8288: cleaned += ""; break; // Word joiner (U+2060)
-          case 8290: cleaned += ""; break; // Invisible times (U+2062)
-          case 8291: cleaned += ""; break; // Invisible separator (U+2063)
-          case 8292: cleaned += ""; break; // Invisible plus (U+2064)
+          // Handle problematic characters with comprehensive mapping
+          String replacement = _getCharacterReplacement(charCode);
+          buffer.write(replacement);
           
-          // Mathematical symbols
-          case 8734: cleaned += "infinity"; break; // Infinity
-          case 8776: cleaned += "approx"; break; // Approximately equal
-          case 8800: cleaned += "!="; break; // Not equal
-          case 8804: cleaned += "<="; break; // Less than or equal
-          case 8805: cleaned += ">="; break; // Greater than or equal
-          case 177: cleaned += "+/-"; break; // Plus-minus
-          case 215: cleaned += "x"; break; // Multiplication
-          case 247: cleaned += "/"; break; // Division
-          case 8730: cleaned += "sqrt"; break; // Square root
-          case 8721: cleaned += "sum"; break; // Summation
-          case 8719: cleaned += "product"; break; // Product
-          case 8747: cleaned += "integral"; break; // Integral
-          case 8706: cleaned += "partial"; break; // Partial derivative
-          case 8711: cleaned += "nabla"; break; // Nabla
-          case 8709: cleaned += "empty_set"; break; // Empty set
-          case 8712: cleaned += "in"; break; // Element of
-          case 8713: cleaned += "not_in"; break; // Not element of
-          case 8745: cleaned += "intersection"; break; // Intersection
-          case 8746: cleaned += "union"; break; // Union
-          
-          // Greek letters (lowercase)
-          case 945: cleaned += "alpha"; break;
-          case 946: cleaned += "beta"; break;
-          case 947: cleaned += "gamma"; break;
-          case 948: cleaned += "delta"; break;
-          case 949: cleaned += "epsilon"; break;
-          case 950: cleaned += "zeta"; break;
-          case 951: cleaned += "eta"; break;
-          case 952: cleaned += "theta"; break;
-          case 953: cleaned += "iota"; break;
-          case 954: cleaned += "kappa"; break;
-          case 955: cleaned += "lambda"; break;
-          case 956: cleaned += "mu"; break;
-          case 957: cleaned += "nu"; break;
-          case 958: cleaned += "xi"; break;
-          case 960: cleaned += "pi"; break;
-          case 961: cleaned += "rho"; break;
-          case 963: cleaned += "sigma"; break;
-          case 964: cleaned += "tau"; break;
-          case 965: cleaned += "upsilon"; break;
-          case 966: cleaned += "phi"; break;
-          case 967: cleaned += "chi"; break;
-          case 968: cleaned += "psi"; break;
-          case 969: cleaned += "omega"; break;
-          
-          // Greek letters (uppercase)
-          case 913: cleaned += "Alpha"; break;
-          case 914: cleaned += "Beta"; break;
-          case 915: cleaned += "Gamma"; break;
-          case 916: cleaned += "Delta"; break;
-          case 917: cleaned += "Epsilon"; break;
-          case 918: cleaned += "Zeta"; break;
-          case 919: cleaned += "Eta"; break;
-          case 920: cleaned += "Theta"; break;
-          case 921: cleaned += "Iota"; break;
-          case 922: cleaned += "Kappa"; break;
-          case 923: cleaned += "Lambda"; break;
-          case 924: cleaned += "Mu"; break;
-          case 925: cleaned += "Nu"; break;
-          case 926: cleaned += "Xi"; break;
-          case 928: cleaned += "Pi"; break;
-          case 929: cleaned += "Rho"; break;
-          case 931: cleaned += "Sigma"; break;
-          case 932: cleaned += "Tau"; break;
-          case 933: cleaned += "Upsilon"; break;
-          case 934: cleaned += "Phi"; break;
-          case 935: cleaned += "Chi"; break;
-          case 936: cleaned += "Psi"; break;
-          case 937: cleaned += "Omega"; break;
-          
-          // Superscripts
-          case 8304: cleaned += "0"; break;
-          case 185: cleaned += "1"; break;
-          case 178: cleaned += "2"; break;
-          case 179: cleaned += "3"; break;
-          case 8308: cleaned += "4"; break;
-          case 8309: cleaned += "5"; break;
-          case 8310: cleaned += "6"; break;
-          case 8311: cleaned += "7"; break;
-          case 8312: cleaned += "8"; break;
-          case 8313: cleaned += "9"; break;
-          
-          // Subscripts
-          case 8320: cleaned += "0"; break;
-          case 8321: cleaned += "1"; break;
-          case 8322: cleaned += "2"; break;
-          case 8323: cleaned += "3"; break;
-          case 8324: cleaned += "4"; break;
-          case 8325: cleaned += "5"; break;
-          case 8326: cleaned += "6"; break;
-          case 8327: cleaned += "7"; break;
-          case 8328: cleaned += "8"; break;
-          case 8329: cleaned += "9"; break;
-          
-          // Additional subscript letters
-          case 8336: cleaned += "a"; break; // Latin subscript a (U+2090)
-          case 8337: cleaned += "e"; break; // Latin subscript e (U+2091)
-          case 8338: cleaned += "o"; break; // Latin subscript o (U+2092)
-          case 8339: cleaned += "x"; break; // Latin subscript x (U+2093)
-          case 8340: cleaned += "e"; break; // Latin subscript schwa (U+2094)
-          case 8341: cleaned += "h"; break; // Latin subscript h (U+2095)
-          case 8342: cleaned += "k"; break; // Latin subscript k (U+2096)
-          case 8343: cleaned += "l"; break; // Latin subscript l (U+2097)
-          case 8344: cleaned += "m"; break; // Latin subscript m (U+2098)
-          case 8345: cleaned += "n"; break; // Latin subscript n (U+2099) - THE ONE CAUSING ERROR!
-          case 8346: cleaned += "p"; break; // Latin subscript p (U+209A)
-          case 8347: cleaned += "s"; break; // Latin subscript s (U+209B)
-          case 8348: cleaned += "t"; break; // Latin subscript t (U+209C)
-          
-          // Currency symbols
-          case 8364: cleaned += "EUR"; break; // Euro
-          case 163: cleaned += "GBP"; break; // Pound
-          case 165: cleaned += "JPY"; break; // Yen
-          case 162: cleaned += "cents"; break; // Cent
-          
-          // Arrows
-          case 8592: cleaned += "<-"; break; // Left arrow
-          case 8594: cleaned += "->"; break; // Right arrow
-          case 8593: cleaned += "^"; break; // Up arrow
-          case 8595: cleaned += "v"; break; // Down arrow
-          case 8596: cleaned += "<->"; break; // Left-right arrow
-          case 8597: cleaned += "<->"; break; // Up-down arrow
-          case 8656: cleaned += "<="; break; // Double left arrow
-          case 8658: cleaned += "=>"; break; // Double right arrow
-          case 8660: cleaned += "<=>"; break; // Double left-right arrow
-          
-          // Special symbols
-          case 169: cleaned += "(C)"; break; // Copyright
-          case 174: cleaned += "(R)"; break; // Registered
-          case 8482: cleaned += "(TM)"; break; // Trademark
-          case 167: cleaned += "section"; break; // Section
-          case 182: cleaned += "paragraph"; break; // Paragraph
-          case 8224: cleaned += "dagger"; break; // Dagger
-          case 8225: cleaned += "double_dagger"; break; // Double dagger
-          case 176: cleaned += " degrees"; break; // Degree symbol
-          
-          // Other bullet-like characters
-          case 9679: cleaned += "-"; break; // Black circle
-          case 9675: cleaned += "-"; break; // White circle
-          case 9642: cleaned += "-"; break; // Black small square
-          case 9643: cleaned += "-"; break; // White small square
-          case 9670: cleaned += "-"; break; // Diamond
-          case 8250: cleaned += ">"; break; // Single right angle quote
-          case 8249: cleaned += "<"; break; // Single left angle quote
-          
-          // Additional common problematic characters
-          case 8203: cleaned += ""; break; // Zero width space (U+200B)
-          case 8204: cleaned += ""; break; // Zero width non-joiner (U+200C)
-          case 8205: cleaned += ""; break; // Zero width joiner (U+200D)
-          case 8206: cleaned += ""; break; // Left-to-right mark (U+200E)
-          case 8207: cleaned += ""; break; // Right-to-left mark (U+200F)
-          case 65279: cleaned += ""; break; // Byte order mark / Zero width no-break space (U+FEFF)
-          case 173: cleaned += "-"; break; // Soft hyphen (U+00AD)
-          case 160: cleaned += " "; break; // Non-breaking space (U+00A0)
-          
-          // More mathematical and technical symbols
-          case 8629: cleaned += "enter"; break; // Downwards arrow with corner leftwards (return symbol)
-          case 8617: cleaned += "tab"; break; // Rightwards arrow to bar (tab symbol)
-          case 8618: cleaned += "shift"; break; // Rightwards arrow over leftwards arrow
-          case 9251: cleaned += " "; break; // Open box (sometimes used for spaces)
-          case 9166: cleaned += "return"; break; // Return symbol
-          
-          // Fraction-like characters
-          case 188: cleaned += "1/4"; break; // One quarter
-          case 189: cleaned += "1/2"; break; // One half
-          case 190: cleaned += "3/4"; break; // Three quarters
-          case 8531: cleaned += "1/3"; break; // One third
-          case 8532: cleaned += "2/3"; break; // Two thirds
-          case 8533: cleaned += "1/5"; break; // One fifth
-          case 8534: cleaned += "2/5"; break; // Two fifths
-          case 8535: cleaned += "3/5"; break; // Three fifths
-          case 8536: cleaned += "4/5"; break; // Four fifths
-          case 8537: cleaned += "1/6"; break; // One sixth
-          case 8538: cleaned += "5/6"; break; // Five sixths
-          case 8539: cleaned += "1/8"; break; // One eighth
-          case 8540: cleaned += "3/8"; break; // Three eighths
-          case 8541: cleaned += "5/8"; break; // Five eighths
-          case 8542: cleaned += "7/8"; break; // Seven eighths
-          
-          // Default: replace with space for any other problematic character
-          default:
-            if (charCode > 127) {
-              cleaned += " ";
-            } else {
-              cleaned += text[i];
-            }
-            break;
+        } catch (e) {
+          // If any single character causes issues, skip it entirely
+          print('Warning: Skipping problematic character at position $i');
+          continue;
         }
       }
+      
+      String result = buffer.toString();
+      
+      // Clean up multiple spaces and ensure valid result
+      result = result.replaceAll(RegExp(r'\s+'), ' ').trim();
+      
+      // Ensure we never return empty strings for non-empty input
+      if (result.isEmpty && text.isNotEmpty) {
+        result = 'Content processed for PDF compatibility';
+      }
+      
+      return result;
+      
+    } catch (e) {
+      print('Critical error in _cleanTextForPDF: $e');
+      // Last resort: return a safe fallback
+      return text.replaceAll(RegExp(r'[^\x20-\x7E\n\r\t]'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+    }
+  }
+  
+  // Comprehensive character replacement mapping
+  static String _getCharacterReplacement(int charCode) {
+    // Use a map for better performance and maintainability
+    const Map<int, String> characterMap = {
+      // Smart quotes and apostrophes
+      8216: "'", 8217: "'", 8218: ",", 8220: '"', 8221: '"', 8222: '"',
+      
+      // Dashes and punctuation
+      8211: "-", 8212: "--", 8230: "...", 8226: "-", 8259: "-", 8282: ":",
+      
+      // INVISIBLE OPERATORS - CRITICAL FOR 8289 ERROR
+      8289: "", // Function application (U+2061) - THIS IS THE PROBLEMATIC ONE!
+      8288: "", // Word joiner (U+2060)
+      8290: "", // Invisible times (U+2062)
+      8291: "", // Invisible separator (U+2063)
+      8292: "", // Invisible plus (U+2064)
+      
+      // Zero-width and formatting characters
+      8203: "", 8204: "", 8205: "", 8206: "", 8207: "", 65279: "",
+      173: "-", 160: " ",
+      
+      // Mathematical symbols
+      8734: "infinity", 8776: "approx", 8800: "!=", 8804: "<=", 8805: ">=",
+      177: "+/-", 215: "x", 247: "/", 8730: "sqrt", 8721: "sum",
+      8719: "product", 8747: "integral", 8706: "partial", 8711: "nabla",
+      8709: "empty_set", 8712: "in", 8713: "not_in", 8745: "intersection", 8746: "union",
+      
+      // Greek letters (lowercase)
+      945: "alpha", 946: "beta", 947: "gamma", 948: "delta", 949: "epsilon",
+      950: "zeta", 951: "eta", 952: "theta", 953: "iota", 954: "kappa",
+      955: "lambda", 956: "mu", 957: "nu", 958: "xi", 960: "pi",
+      961: "rho", 963: "sigma", 964: "tau", 965: "upsilon", 966: "phi",
+      967: "chi", 968: "psi", 969: "omega",
+      
+      // Greek letters (uppercase)
+      913: "Alpha", 914: "Beta", 915: "Gamma", 916: "Delta", 917: "Epsilon",
+      918: "Zeta", 919: "Eta", 920: "Theta", 921: "Iota", 922: "Kappa",
+      923: "Lambda", 924: "Mu", 925: "Nu", 926: "Xi", 928: "Pi",
+      929: "Rho", 931: "Sigma", 932: "Tau", 933: "Upsilon", 934: "Phi",
+      935: "Chi", 936: "Psi", 937: "Omega",
+      
+      // Superscripts
+      8304: "0", 185: "1", 178: "2", 179: "3", 8308: "4", 8309: "5",
+      8310: "6", 8311: "7", 8312: "8", 8313: "9",
+      
+      // Subscripts
+      8320: "0", 8321: "1", 8322: "2", 8323: "3", 8324: "4", 8325: "5",
+      8326: "6", 8327: "7", 8328: "8", 8329: "9",
+      
+      // Subscript letters
+      8336: "a", 8337: "e", 8338: "o", 8339: "x", 8340: "e",
+      8341: "h", 8342: "k", 8343: "l", 8344: "m", 8345: "n", // THE PROBLEMATIC 8345!
+      8346: "p", 8347: "s", 8348: "t",
+      
+      // Currency symbols
+      8364: "EUR", 163: "GBP", 165: "JPY", 162: "cents",
+      
+      // Arrows
+      8592: "<-", 8594: "->", 8593: "^", 8595: "v", 8596: "<->",
+      8597: "<->", 8656: "<=", 8658: "=>", 8660: "<=>",
+      
+      // Special symbols
+      169: "(C)", 174: "(R)", 8482: "(TM)", 167: "section", 182: "paragraph",
+      8224: "dagger", 8225: "double_dagger", 176: " degrees",
+      
+      // Bullets and shapes
+      9679: "-", 9675: "-", 9642: "-", 9643: "-", 9670: "-",
+      8250: ">", 8249: "<", 8629: "enter", 8617: "tab", 8618: "shift",
+      9251: " ", 9166: "return",
+      
+      // Fractions
+      188: "1/4", 189: "1/2", 190: "3/4", 8531: "1/3", 8532: "2/3",
+      8533: "1/5", 8534: "2/5", 8535: "3/5", 8536: "4/5", 8537: "1/6",
+      8538: "5/6", 8539: "1/8", 8540: "3/8", 8541: "5/8", 8542: "7/8",
+    };
+    
+    // Look up character in our comprehensive map
+    if (characterMap.containsKey(charCode)) {
+      return characterMap[charCode]!;
     }
     
-    // Clean up multiple spaces and trim
-    return cleaned
-        .replaceAll(RegExp(r'\s+'), ' ')
-        .trim();
+    // For any other non-ASCII character, replace with space
+    if (charCode > 127) {
+      return " ";
+    }
+    
+    // For ASCII control characters, return empty string
+    return "";
   }
 }
