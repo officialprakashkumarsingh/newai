@@ -7,7 +7,7 @@ import 'dart:ui' as ui;
 import 'package:ahamai/web_search.dart';
 import 'package:ahamai/diagram_service.dart';
 import 'package:ahamai/presentation_service.dart';
-import 'package:ahamai/queue_panel.dart';
+// import 'package:ahamai/queue_panel.dart'; // File not found, removed
 import 'package:ahamai/research_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1864,9 +1864,28 @@ Generate realistic data relevant to: $prompt''',
           if (_messageQueue.isNotEmpty || _isProcessingQueue)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: QueuePanel(
-                queuedMessages: _messageQueue,
-                isProcessing: _isProcessingQueue,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                margin: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.queue, color: Colors.orange),
+                    const SizedBox(width: 8),
+                    Text('${_messageQueue.length} messages queued', 
+                         style: const TextStyle(color: Colors.orange)),
+                    if (_isProcessingQueue) ...[
+                      const SizedBox(width: 8),
+                      const SizedBox(
+                        width: 16, height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           if (_attachment != null)
