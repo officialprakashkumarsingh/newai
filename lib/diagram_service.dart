@@ -260,30 +260,40 @@ Generate realistic data relevant to: $prompt''',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.download, size: 20),
-                  onPressed: () => downloadDiagram(chartKey, title, type, diagramData, context),
-                  tooltip: 'Save Diagram',
+                Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.save_alt_rounded,
+                      size: 22,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    onPressed: () => downloadDiagram(chartKey, title, type, diagramData, context),
+                    tooltip: 'Save Diagram',
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            // Scrollable diagram area without background
+            // Interactive diagram area with pinch-to-zoom
             Container(
               height: math.min(size.height, 400), // Max height in chat
               width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: RepaintBoundary(
-                    key: chartKey,
-                    child: Container(
-                      width: size.width,
-                      height: size.height,
-                      // No background decoration - clean diagram export
-                      child: _buildOptimizedChart(type, diagramData, context),
-                    ),
+              child: InteractiveViewer(
+                boundaryMargin: const EdgeInsets.all(20),
+                minScale: 0.1,
+                maxScale: 5.0,
+                constrained: false,
+                child: RepaintBoundary(
+                  key: chartKey,
+                  child: Container(
+                    width: size.width,
+                    height: size.height,
+                    // Clean export area - no background decoration
+                    child: _buildOptimizedChart(type, diagramData, context),
                   ),
                 ),
               ),
