@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:ahamai/web_search.dart';
 import 'package:ahamai/diagram_service.dart';
+import 'package:ahamai/presentation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -549,14 +550,33 @@ Based on the context above, answer the following prompt: $input""";
     setState(() {});
     _scrollToBottom();
 
-          final slides = await PresentationGenerator.generateSlides(topic, selectedModel: _selectedChatModel);
-    if (!mounted) return;
-    if (slides.isNotEmpty) {
-      setState(() => _messages[placeholderIndex] = ChatMessage(role: 'model', text: 'Presentation ready: $topic', type: MessageType.presentation, slides: slides));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PresentationViewScreen(slides: slides, topic: topic)));
-    } else {
-      setState(() => _messages[placeholderIndex] = ChatMessage(role: 'model', text: 'Could not generate presentation for "$topic". Please try again.', type: MessageType.text));
+    try {
+      final presentationData = await PresentationService.generatePresentationData(topic, _selectedChatModel);
+      if (!mounted) return;
+      
+      if (presentationData != null) {
+        setState(() => _messages[placeholderIndex] = ChatMessage(
+          role: 'model', 
+          text: 'Presentation ready: $topic', 
+          type: MessageType.presentation, 
+          presentationData: presentationData
+        ));
+      } else {
+        setState(() => _messages[placeholderIndex] = ChatMessage(
+          role: 'model', 
+          text: 'Could not generate presentation for "$topic". Please try again.', 
+          type: MessageType.text
+        ));
+      }
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _messages[placeholderIndex] = ChatMessage(
+        role: 'model', 
+        text: 'Error generating presentation: $error', 
+        type: MessageType.text
+      ));
     }
+    
     _updateChatInfo(false, false);
   }
 
@@ -1483,7 +1503,29 @@ Generate realistic data relevant to: $prompt''',
           );
         }
       case MessageType.presentation:
-        return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: message.slides == null ? Row(mainAxisSize: MainAxisSize.min, children: [const Text('Generating presentation...'), const SizedBox(width: 12), GeneratingIndicator(size: 16)]) : InkWell(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PresentationViewScreen(slides: message.slides!, topic: message.text.replaceFirst('Presentation ready: ', '')))), child: Row(mainAxisSize: MainAxisSize.min, children: [const Icon(Icons.slideshow, size: 20), const SizedBox(width: 12), Flexible(child: Text(message.text, style: const TextStyle(fontWeight: FontWeight.bold)))]))));
+        return Align(
+          alignment: Alignment.centerLeft, 
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), 
+            child: message.presentationData == null 
+              ? Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), 
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor, 
+                    borderRadius: BorderRadius.circular(16)
+                  ), 
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, 
+                    children: [
+                      const Text('Generating presentation...'), 
+                      const SizedBox(width: 12), 
+                      GeneratingIndicator(size: 16)
+                    ]
+                  )
+                )
+              : PresentationService.buildPresentationWidget(message.presentationData!, context)
+          )
+        );
       case MessageType.diagram:
         return Align(
           alignment: Alignment.centerLeft, 

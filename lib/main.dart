@@ -234,6 +234,7 @@ class ChatMessage {
   final List<String>? attachedContainedFiles;
   final String? thinkingContent; // Added for thinking/reasoning content
   final Map<String, dynamic>? diagramData; // Added for diagram data
+  final Map<String, dynamic>? presentationData; // Added for presentation data
 
   ChatMessage({
     required this.role,
@@ -247,6 +248,7 @@ class ChatMessage {
     this.attachedContainedFiles,
     this.thinkingContent, // Added thinking content parameter
     this.diagramData, // Added diagram data parameter
+    this.presentationData, // Added presentation data parameter
   });
 
   Map<String, dynamic> toJson() => {
