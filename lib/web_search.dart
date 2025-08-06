@@ -5,19 +5,22 @@ import 'api.dart';
 class SearchResult {
   final String title;
   final String url;
+  final String snippet; // Added snippet field to store description
   final String? faviconUrl;
 
-  SearchResult({required this.title, required this.url, this.faviconUrl});
+  SearchResult({required this.title, required this.url, required this.snippet, this.faviconUrl});
 
   Map<String, dynamic> toJson() => {
     'title': title,
     'url': url,
+    'snippet': snippet,
     'faviconUrl': faviconUrl,
   };
 
   factory SearchResult.fromJson(Map<String, dynamic> json) => SearchResult(
     title: json['title'],
     url: json['url'],
+    snippet: json['snippet'] ?? '',
     faviconUrl: json['faviconUrl'],
   );
 }
@@ -54,6 +57,7 @@ class WebSearchService {
           return SearchResult(
             title: r['title'] ?? 'Untitled',
             url: r['url'] ?? '',
+            snippet: r['description'] ?? 'No description available.', // Store actual description
             faviconUrl: r['profile']?['img'],
           );
         }).toList();
@@ -63,10 +67,9 @@ class WebSearchService {
         
         for (var i = 0; i < searchResults.length; i++) {
           final result = searchResults[i];
-          final snippet = resultsJson[i]['description'] ?? 'No snippet available.';
           formattedResults.writeln('\n${i + 1}. Title: ${result.title}');
           formattedResults.writeln('   URL: ${result.url}');
-          formattedResults.writeln('   Snippet: $snippet');
+          formattedResults.writeln('   Snippet: ${result.snippet}');
         }
         
         return WebSearchResponse(

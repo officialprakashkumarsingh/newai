@@ -7,6 +7,8 @@ import 'dart:ui' as ui;
 import 'package:ahamai/web_search.dart';
 import 'package:ahamai/diagram_service.dart';
 import 'package:ahamai/presentation_service.dart';
+import 'package:ahamai/queue_panel.dart';
+import 'package:ahamai/research_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -29,7 +31,7 @@ import 'api_service.dart';
 import 'chat_ui_helpers.dart';
 import 'file_processing.dart';
 import 'main.dart';
-import 'presentation_generator.dart';
+// import 'presentation_generator.dart'; // Removed unused import
 import 'thinking_panel.dart';
 // import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
@@ -63,6 +65,17 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isStreaming = false;
   bool _isStoppedByUser = false;
   
+  // Message queue system
+  final List<String> _messageQueue = [];
+  bool _isProcessingQueue = false;
+  
+  // Scroll to bottom functionality
+  bool _showScrollToBottom = false;
+  
+  // Streaming optimization
+  Timer? _streamingUpdateTimer;
+  String _pendingStreamingContent = '';
+  
   // GenerativeModel removed - now using ApiService
 
   String _selectedChatModel = ''; // Will be set from API
@@ -78,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
   // Category system removed
   bool _isWebSearchEnabled = false;
   bool _isThinkingModeEnabled = false;
+  bool _isResearchModeEnabled = false;
 
   List<SearchResult>? _lastSearchResults;
 
@@ -104,11 +118,15 @@ class _ChatScreenState extends State<ChatScreen> {
     _isStreaming = widget.isGenerating;
     _isStoppedByUser = widget.isStopped;
 
+    // Set up scroll listener for scroll to bottom button
+    _scrollController.addListener(_onScroll);
+
     _initialize();
   }
 
   Future<void> _initialize() async {
     await _setupChatModel();
+    await _loadMessages(); // Load persisted messages
     _isModelSetupComplete = true;
 
     if (widget.initialMessage != null && mounted) {
@@ -141,6 +159,55 @@ class _ChatScreenState extends State<ChatScreen> {
     if (mounted) setState(() {});
   }
 
+  // Message persistence methods
+  Future<void> _loadMessages() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final messagesJson = prefs.getString('chat_messages_$_chatId');
+      
+      if (messagesJson != null) {
+        final List<dynamic> messagesList = jsonDecode(messagesJson);
+        final loadedMessages = messagesList.map((json) => ChatMessage.fromJson(json)).toList();
+        
+        if (mounted) {
+          setState(() {
+            _messages = loadedMessages;
+          });
+        }
+        print('Loaded ${loadedMessages.length} messages from storage');
+      }
+    } catch (e) {
+      print('Error loading messages: $e');
+    }
+  }
+
+  Future<void> _saveMessages() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final messagesJson = jsonEncode(_messages.map((msg) => msg.toJson()).toList());
+      await prefs.setString('chat_messages_$_chatId', messagesJson);
+      print('Saved ${_messages.length} messages to storage');
+    } catch (e) {
+      print('Error saving messages: $e');
+    }
+  }
+
+  // Helper method to add message and save automatically
+  void _addMessageAndSave(ChatMessage message) {
+    setState(() {
+      _messages.add(message);
+    });
+    _saveMessages(); // Auto-save when messages are added
+  }
+
+  // Helper method to update message and save automatically
+  void _updateMessageAndSave(int index, ChatMessage message) {
+    setState(() {
+      _messages[index] = message;
+    });
+    _saveMessages(); // Auto-save when messages are updated
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -148,13 +215,29 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollController.dispose();
     _streamSubscription?.cancel();
     _httpClient?.close();
+    _streamingUpdateTimer?.cancel(); // Clean up streaming timer
     _codeStreamNotifier.dispose();
     super.dispose();
   }
 
   Future<void> _sendMessage(String input) async {
-    if (!_isModelSetupComplete || _isStreaming) return;
+    if (!_isModelSetupComplete) return;
     if (input.trim().isEmpty && _attachment == null && _attachedImage == null) return;
+    
+    // If streaming, add to queue instead of blocking
+    if (_isStreaming && _attachedImage == null) {
+      setState(() {
+        _messageQueue.add(input.trim());
+      });
+      _controller.clear();
+      // Show queue status using styled snackbar
+      DiagramService.showStyledSnackBar(
+        context,
+        'Message added to queue (${_messageQueue.length} pending)',
+        duration: const Duration(seconds: 1),
+      );
+      return;
+    }
     
     // REMOVED: The call to _handleSocialShare was here, removing it significantly improves performance.
 
@@ -191,9 +274,7 @@ class _ChatScreenState extends State<ChatScreen> {
       )) {
         if (_isStoppedByUser) break;
         
-        _currentModelResponse += chunk;
-        setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: _currentModelResponse));
-        _scrollToBottom();
+        _optimizedStreamingUpdate(chunk);
       }
     } catch(e) {
       _onStreamingError(e);
@@ -245,6 +326,33 @@ Based on the context above, answer the following prompt: $input""";
     print('💾 Processing message: $input');
 
     String? webContext;
+    
+    // Research mode - comprehensive research with multiple sources
+    if (_isResearchModeEnabled) {
+      // Create research terminal widget directly in message
+      final researchWidget = InlineResearchTerminal(
+        query: input,
+        selectedModel: _selectedChatModel,
+        onResult: (result) {
+          setState(() {
+            _messages[_messages.length - 1] = ChatMessage(role: 'model', text: result);
+          });
+          _scrollToBottom();
+          _saveMessages();
+          _onStreamingDone();
+        },
+      );
+      
+      setState(() => _messages[_messages.length - 1] = ChatMessage(
+        role: 'model', 
+        text: 'Research in progress...',
+        researchWidget: researchWidget,
+      ));
+      _scrollToBottom();
+      return; // Exit early as research mode provides complete response
+    }
+    
+    // Regular web search (if research mode is not enabled)
     if (_isWebSearchEnabled) {
       setState(() => _messages[_messages.length - 1] = ChatMessage(role: 'model', text: 'Searching the web...'));
       _scrollToBottom();
@@ -301,19 +409,7 @@ Based on the context above, answer the following prompt: $input""";
       )) {
         if (_isStoppedByUser) break;
         
-        _currentModelResponse += chunk;
-        
-        // Parse content to separate thinking and final content
-        final parsedContent = ThinkingContentParser.parseContent(_currentModelResponse);
-        final thinkingContent = parsedContent['thinking'];
-        final finalContent = parsedContent['final'];
-        
-        setState(() => _messages[_messages.length - 1] = ChatMessage(
-          role: 'model', 
-          text: finalContent ?? _currentModelResponse,
-          thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
-        ));
-        _scrollToBottom();
+        _optimizedStreamingUpdate(chunk);
        }
     } catch (e) {
       _onStreamingError(e);
@@ -327,6 +423,20 @@ Based on the context above, answer the following prompt: $input""";
 
   
   void _onStreamingDone() {
+    // Cancel any pending streaming updates and apply final content
+    _streamingUpdateTimer?.cancel();
+    if (_pendingStreamingContent.isNotEmpty) {
+      final parsedContent = ThinkingContentParser.parseContent(_pendingStreamingContent);
+      final thinkingContent = parsedContent['thinking'];
+      final finalContent = parsedContent['final'];
+      
+      setState(() => _messages[_messages.length - 1] = ChatMessage(
+        role: 'model', 
+        text: finalContent ?? _pendingStreamingContent,
+        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+      ));
+    }
+    
     if (_lastSearchResults != null && _messages.isNotEmpty) {
       final lastMessage = _messages.last;
       _messages[_messages.length - 1] = ChatMessage(
@@ -344,9 +454,13 @@ Based on the context above, answer the following prompt: $input""";
     setState(() => _isStreaming = false);
     _updateChatInfo(false, false);
     _scrollToBottom();
+    _saveMessages(); // Save messages after streaming is complete
 
     // Stream completed
     print('✅ Stream completed successfully');
+    
+    // Process any queued messages
+    Future.microtask(() => _processMessageQueue());
   }
 
   void _onStreamingError(dynamic error) {
@@ -355,7 +469,10 @@ Based on the context above, answer the following prompt: $input""";
       _isStreaming = false;
     });
     _updateChatInfo(false, false);
-    _scrollToBottom();
+    _saveMessages(); // Save messages after error
+    
+    // Process any queued messages even after error
+    Future.microtask(() => _processMessageQueue());
   }
   
   void _updateChatInfo(bool isGenerating, bool isStopped) {
@@ -376,7 +493,9 @@ Based on the context above, answer the following prompt: $input""";
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) _scrollController.animateTo(_scrollController.position.maxScrollExtent, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
     });
   }
 
@@ -467,6 +586,7 @@ Based on the context above, answer the following prompt: $input""";
               const Divider(height: 32),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.public), title: const Text('Search the web'), trailing: Switch(value: _isWebSearchEnabled, onChanged: (bool value) { setSheetState(() => _isWebSearchEnabled = value); setState(() => _isWebSearchEnabled = value); })),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.auto_awesome_outlined), title: const Text('Think for longer'), trailing: Switch(value: _isThinkingModeEnabled, onChanged: (bool value) { setSheetState(() => _isThinkingModeEnabled = value); setState(() => _isThinkingModeEnabled = value); })),
+              ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.search), title: const Text('Research mode'), subtitle: const Text('Deep research with multiple sources'), trailing: Switch(value: _isResearchModeEnabled, onChanged: (bool value) { setSheetState(() => _isResearchModeEnabled = value); setState(() => _isResearchModeEnabled = value); })),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.image_outlined), title: const Text('Create an image'), onTap: () { Navigator.pop(context); _showImagePromptBottomSheet(); }),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.slideshow_outlined), title: const Text('Make a presentation'), onTap: () { Navigator.pop(context); _showPresentationPromptDialog(); }),
               ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.bar_chart_outlined), title: const Text('Generate diagram'), onTap: () { Navigator.pop(context); _showDiagramPromptDialog(); }),
@@ -515,7 +635,10 @@ Based on the context above, answer the following prompt: $input""";
       
       // Precache the image
       await precacheImage(NetworkImage(imageUrl), context);
-      if (mounted) setState(() => _messages[placeholderIndex] = imageMessage);
+      if (mounted) {
+        setState(() => _messages[placeholderIndex] = imageMessage);
+        _saveMessages(); // Save messages after image generation
+      }
     } catch(e) {
       if (mounted) {
         setState(() => _messages[placeholderIndex] = ChatMessage(
@@ -523,6 +646,7 @@ Based on the context above, answer the following prompt: $input""";
           text: '❌ Failed to generate image: ${e.toString()}', 
           type: MessageType.text
         ));
+        _saveMessages(); // Save messages even on error
       }
     } finally {
       _updateChatInfo(false, false);
@@ -561,12 +685,14 @@ Based on the context above, answer the following prompt: $input""";
           type: MessageType.presentation, 
           presentationData: presentationData
         ));
+        _saveMessages(); // Save after successful presentation generation
       } else {
         setState(() => _messages[placeholderIndex] = ChatMessage(
           role: 'model', 
           text: 'Could not generate presentation for "$topic". Please try again.', 
           type: MessageType.text
         ));
+        _saveMessages(); // Save even if presentation generation failed
       }
     } catch (error) {
       if (!mounted) return;
@@ -575,6 +701,7 @@ Based on the context above, answer the following prompt: $input""";
         text: 'Error generating presentation: $error', 
         type: MessageType.text
       ));
+      _saveMessages(); // Save even if there was an error
     }
     
     _updateChatInfo(false, false);
@@ -647,12 +774,14 @@ Based on the context above, answer the following prompt: $input""";
           type: MessageType.diagram, 
           diagramData: diagramData
         ));
+        _saveMessages(); // Save after successful diagram generation
       } else {
         setState(() => _messages[placeholderIndex] = ChatMessage(
           role: 'model', 
           text: 'Could not generate diagram for "$prompt". Please try again.', 
           type: MessageType.text
         ));
+        _saveMessages(); // Save even if diagram generation failed
       }
     } catch (error) {
       if (!mounted) return;
@@ -661,6 +790,7 @@ Based on the context above, answer the following prompt: $input""";
         text: 'Error generating diagram: $error', 
         type: MessageType.text
       ));
+      _saveMessages(); // Save even if there was an error
     }
     
     _updateChatInfo(false, false);
@@ -1397,9 +1527,7 @@ Generate realistic data relevant to: $prompt''',
 
   Future<void> _downloadDiagram(GlobalKey chartKey, String title, String type) async {
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preparing diagram for download...')),
-      );
+      DiagramService.showStyledSnackBar(context, 'Preparing diagram for download...');
 
       // Get the render object
       final RenderRepaintBoundary boundary = 
@@ -1416,12 +1544,16 @@ Generate realistic data relevant to: $prompt''',
       // Save to downloads
       await _saveImageToDownloads(pngBytes, fileName);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Diagram saved as $fileName')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Diagram saved as $fileName',
+        backgroundColor: Colors.green.shade600,
       );
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving diagram: $error')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Error saving diagram: $error',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }
@@ -1555,7 +1687,7 @@ Generate realistic data relevant to: $prompt''',
           if (message.text.isEmpty && _isStreaming && index == _messages.length - 1) return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: const GeneratingIndicator()));
           if (message.text == 'Searching the web...' || message.text == 'Thinking deeply...') return Align(alignment: Alignment.centerLeft, child: Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16)), child: Row(mainAxisSize: MainAxisSize.min, children: [Text(message.text), const SizedBox(width: 12), GeneratingIndicator(size: 16)])));
           final bool showActionButtons = (!_isStreaming || index != _messages.length - 1) && !_isStoppedByUser;
-          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : _buildMessageContent(message.text)), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
+          return Align(alignment: Alignment.centerLeft, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Container(margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10), child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty ? ThinkingPanel(thinkingContent: message.thinkingContent!, finalContent: message.text) : _buildMessageContent(message.text)), if (message.researchWidget != null) Container(margin: const EdgeInsets.symmetric(horizontal: 8), child: message.researchWidget!), if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty) _buildSearchResultsWidget(message.searchResults!), if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:')) AiMessageActions(key: ValueKey('actions_${_chatId}_$index'), messageText: message.text, onCopy: () => _copyToClipboard(message.text), onRegenerate: () => _regenerateResponse(index - 1))]));
         }
         
         final isDark = !isLightTheme(context);
@@ -1581,8 +1713,9 @@ Generate realistic data relevant to: $prompt''',
                   if (message.imageBytes != null)
                     Builder(
                       builder: (context) {
-                        final showSaveButton = message.type == MessageType.image && message.role == 'model';
-                        print('💾 Image detected: type=${message.type}, role=${message.role}, showSave=$showSaveButton');
+                        // Show save button for any model message with imageBytes (regardless of type)
+                        final showSaveButton = message.role == 'model' && message.imageBytes != null;
+                        print('💾 Image detected: type=${message.type}, role=${message.role}, hasBytes=${message.imageBytes != null}, showSave=$showSaveButton');
                         return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0), 
                       child: Container(
@@ -1707,6 +1840,8 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1715,8 +1850,25 @@ Generate realistic data relevant to: $prompt''',
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(controller: _scrollController, padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8), itemCount: _messages.length, itemBuilder: (context, index) => _buildMessage(_messages[index], index)),
+            child: ListView.builder(
+              controller: _scrollController, 
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8), 
+              itemCount: _messages.length, 
+              itemBuilder: (context, index) => _buildMessage(_messages[index], index),
+              cacheExtent: 1000.0, // Cache more items for smoother scrolling
+              addAutomaticKeepAlives: false, // Don't keep alive off-screen items
+              addRepaintBoundaries: false, // Reduce repaint boundaries for better performance
+            ),
           ),
+          // Queue panel for showing queued messages
+          if (_messageQueue.isNotEmpty || _isProcessingQueue)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: QueuePanel(
+                queuedMessages: _messageQueue,
+                isProcessing: _isProcessingQueue,
+              ),
+            ),
           if (_attachment != null)
             AttachmentPreview(attachment: _attachment!, onClear: () => setState(() => _attachment = null)),
           if (_attachedImage != null)
@@ -1727,6 +1879,37 @@ Generate realistic data relevant to: $prompt''',
                   ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.file(File(_attachedImage!.path), height: 100, width: 100, fit: BoxFit.cover)),
                   Positioned(top: 4, right: 4, child: GestureDetector(onTap: () => setState(() => _attachedImage = null), child: Container(decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), shape: BoxShape.circle), child: const Icon(Icons.close, color: Colors.white, size: 20)))),
                 ],
+              ),
+            ),
+          // Scroll to bottom button - only show when scrolled up and not streaming
+          if (_showScrollToBottom && !_isStreaming)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8, right: 16),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: _scrollToBottomAnimated,
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
               ),
             ),
           Container(
@@ -1754,12 +1937,12 @@ Generate realistic data relevant to: $prompt''',
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                IconButton(icon: const Icon(Icons.apps_outlined), onPressed: _isStreaming ? null : _showToolsBottomSheet, tooltip: 'Tools', color: _isStreaming ? Theme.of(context).disabledColor : Theme.of(context).iconTheme.color),
+                IconButton(icon: const Icon(Icons.apps_outlined), onPressed: _showToolsBottomSheet, tooltip: 'Tools', color: Theme.of(context).iconTheme.color),
                 Expanded(
                   child: TextField(
                     controller: _controller, 
-                    enabled: !_isStreaming, 
-                    onSubmitted: _isStreaming ? null : (val) => _sendMessage(val), 
+                    enabled: true, // Always enabled - queue messages during streaming
+                    onSubmitted: (val) => _sendMessage(val), // Always allow input
                     textInputAction: TextInputAction.send, 
                     maxLines: 5, 
                     minLines: 1, 
@@ -1767,7 +1950,11 @@ Generate realistic data relevant to: $prompt''',
                       color: isLightTheme(context) ? const Color(0xFF0F0F10) : Colors.white,
                     ),
                     decoration: InputDecoration(
-                      hintText: _isStreaming ? 'AhamAI is responding...' : 'Ask AhamAI anything...', 
+                      hintText: _isStreaming 
+                        ? (_messageQueue.isEmpty 
+                            ? 'AhamAI is responding... (type to queue)' 
+                            : 'Queued: ${_messageQueue.length} messages')
+                        : 'Ask AhamAI anything...', 
                       hintStyle: TextStyle(
                         color: isLightTheme(context) ? const Color(0xFF5F6368) : const Color(0xFFB0B0B0), // Google secondary text
                         fontSize: 16,
@@ -1782,7 +1969,31 @@ Generate realistic data relevant to: $prompt''',
                   ),
                 ),
                 const SizedBox(width: 8),
-                CircleAvatar(backgroundColor: _isStreaming ? Colors.red : Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}), radius: 24, child: IconButton(icon: Icon(_isStreaming ? Icons.stop : Icons.arrow_upward, color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})), onPressed: _isStreaming ? _stopStreaming : () => _sendMessage(_controller.text))),
+                // Always show send button, with stop functionality on a separate small button during streaming
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}), 
+                  radius: 24, 
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_upward, 
+                      color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})
+                    ), 
+                    onPressed: () => _sendMessage(_controller.text),
+                  ),
+                ),
+                // Add a small stop button next to send button during streaming
+                if (_isStreaming) ...[
+                  const SizedBox(width: 4),
+                  CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 16,
+                    child: IconButton(
+                      icon: const Icon(Icons.stop, size: 16, color: Colors.white),
+                      onPressed: _stopStreaming,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -1797,62 +2008,59 @@ Generate realistic data relevant to: $prompt''',
 
   Future<void> _saveImage(Uint8List imageBytes) async {
     try {
-      // Request storage permission
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage permission required to save images')),
-        );
-        return;
-      }
-
-      // Get Downloads directory
-      Directory? downloadsDir;
-      if (Platform.isAndroid) {
-        downloadsDir = Directory('/storage/emulated/0/Download');
-        if (!await downloadsDir.exists()) {
-          downloadsDir = await getExternalStorageDirectory();
-        }
-      } else {
-        downloadsDir = await getDownloadsDirectory();
-      }
-
-      if (downloadsDir == null) {
-        throw Exception('Could not access downloads directory');
-      }
-
-      // Create AhamAI folder
-      final ahamAIDir = Directory('${downloadsDir.path}/AhamAI');
-      if (!await ahamAIDir.exists()) {
-        await ahamAIDir.create(recursive: true);
-      }
-
       // Generate filename with timestamp
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final fileName = 'AhamAI_image_$timestamp.png';
-      final filePath = '${ahamAIDir.path}/$fileName';
-
-      // Save the image
-      final file = File(filePath);
+      
+      // Use the same working approach as diagram saving
+      final directory = await getExternalStorageDirectory();
+      final downloadsPath = '${directory!.parent.parent.parent.parent.path}/Download';
+      final ahamAIPath = '$downloadsPath/AhamAI';
+      
+      // Create AhamAI folder if it doesn't exist
+      final ahamAIDirectory = Directory(ahamAIPath);
+      if (!await ahamAIDirectory.exists()) {
+        await ahamAIDirectory.create(recursive: true);
+      }
+      
+      final file = File('$ahamAIPath/$fileName');
       await file.writeAsBytes(imageBytes);
 
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Image saved to Downloads/AhamAI/$fileName'),
-          action: SnackBarAction(
-            label: 'Open Folder',
-            onPressed: () {
-              // Note: Opening folder programmatically requires additional permissions
-              // For now, just show the path
-            },
-          ),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save image: $e')),
-      );
+              // Show success message using styled snackbar
+        DiagramService.showStyledSnackBar(
+          context,
+          'Image saved to Downloads/AhamAI/$fileName',
+          backgroundColor: Colors.green.shade600,
+        );
+    } catch (error) {
+      // Fallback to app directory
+      try {
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName = 'AhamAI_image_$timestamp.png';
+        
+        final directory = await getApplicationDocumentsDirectory();
+        final ahamAIPath = '${directory.path}/AhamAI';
+        
+        final ahamAIDirectory = Directory(ahamAIPath);
+        if (!await ahamAIDirectory.exists()) {
+          await ahamAIDirectory.create(recursive: true);
+        }
+        
+        final file = File('$ahamAIPath/$fileName');
+        await file.writeAsBytes(imageBytes);
+        
+        DiagramService.showStyledSnackBar(
+          context,
+          'Image saved to app documents: $fileName',
+          backgroundColor: Colors.green.shade600,
+        );
+      } catch (appError) {
+        DiagramService.showStyledSnackBar(
+          context,
+          'Failed to save image: $appError',
+          backgroundColor: Colors.red.shade600,
+        );
+      }
     }
   }
 
@@ -1866,6 +2074,79 @@ Generate realistic data relevant to: $prompt''',
       selectable: true,
       styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
     );
+  }
+
+  Future<void> _processMessageQueue() async {
+    if (_messageQueue.isEmpty || _isProcessingQueue || _isStreaming) return;
+    
+    _isProcessingQueue = true;
+    
+    while (_messageQueue.isNotEmpty && !_isStreaming) {
+      final nextMessage = _messageQueue.removeAt(0);
+      setState(() {}); // Update UI to show queue count change
+      
+      // Send the queued message
+      await _sendTextMessage(nextMessage);
+      
+      // Wait for streaming to complete before processing next message
+      while (_isStreaming) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+    }
+    
+    _isProcessingQueue = false;
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    
+    // Show scroll to bottom button if user has scrolled up more than 100 pixels from bottom
+    final isAtBottom = _scrollController.offset >= (_scrollController.position.maxScrollExtent - 100);
+    
+    if (_showScrollToBottom != !isAtBottom) {
+      setState(() {
+        _showScrollToBottom = !isAtBottom;
+      });
+    }
+  }
+
+  void _scrollToBottomAnimated() {
+    if (!_scrollController.hasClients) return;
+    
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _optimizedStreamingUpdate(String chunk) {
+    _currentModelResponse += chunk;
+    _pendingStreamingContent = _currentModelResponse;
+    
+    // Cancel previous timer if exists
+    _streamingUpdateTimer?.cancel();
+    
+    // Instant updates with micro-batching for ultra-smooth experience
+    _streamingUpdateTimer = Timer(const Duration(milliseconds: 16), () { // 60fps update rate
+      if (!mounted) return;
+      
+      // Parse content to separate thinking and final content
+      final parsedContent = ThinkingContentParser.parseContent(_pendingStreamingContent);
+      final thinkingContent = parsedContent['thinking'];
+      final finalContent = parsedContent['final'];
+      
+      setState(() => _messages[_messages.length - 1] = ChatMessage(
+        role: 'model', 
+        text: finalContent ?? _pendingStreamingContent,
+        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+      ));
+      
+      // Only auto-scroll if user is near bottom
+      if (!_showScrollToBottom) {
+        _scrollToBottom();
+      }
+    });
   }
 }
 
@@ -2116,9 +2397,7 @@ class FullscreenDiagramScreen extends StatelessWidget {
 
   Future<void> _downloadFullscreenDiagram(BuildContext context, GlobalKey chartKey, String title, String type) async {
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Downloading fullscreen diagram...')),
-      );
+      DiagramService.showStyledSnackBar(context, 'Downloading fullscreen diagram...');
 
       final RenderRepaintBoundary boundary = 
           chartKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -2134,12 +2413,16 @@ class FullscreenDiagramScreen extends StatelessWidget {
       final file = File('$downloadsPath/$fileName');
       await file.writeAsBytes(pngBytes);
       
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fullscreen diagram saved as $fileName')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Fullscreen diagram saved as $fileName',
+        backgroundColor: Colors.green.shade600,
       );
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving diagram: $error')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Error saving diagram: $error',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }

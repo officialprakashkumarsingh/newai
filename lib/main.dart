@@ -235,6 +235,7 @@ class ChatMessage {
   final String? thinkingContent; // Added for thinking/reasoning content
   final Map<String, dynamic>? diagramData; // Added for diagram data
   final Map<String, dynamic>? presentationData; // Added for presentation data
+  final Widget? researchWidget; // Added for inline research terminal
 
   ChatMessage({
     required this.role,
@@ -249,6 +250,7 @@ class ChatMessage {
     this.thinkingContent, // Added thinking content parameter
     this.diagramData, // Added diagram data parameter
     this.presentationData, // Added presentation data parameter
+    this.researchWidget, // Added research widget parameter
   });
 
   Map<String, dynamic> toJson() => {
@@ -261,8 +263,10 @@ class ChatMessage {
         'attachedFileName': attachedFileName,
         'thinkingContent': thinkingContent,
         'attachedContainedFiles': attachedContainedFiles,
-        // Note: For simplicity, user-uploaded image bytes are not serialized.
-        // They will only exist for the current session.
+        'diagramData': diagramData, // Added diagram data serialization
+        'presentationData': presentationData, // Added presentation data serialization
+        'imageBytes': imageBytes != null ? base64Encode(imageBytes!) : null, // Added imageBytes serialization for generated images
+        // Note: researchWidget is not serialized as it's a runtime widget
       };
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
@@ -273,8 +277,12 @@ class ChatMessage {
         slides: json['slides'] != null ? List<String>.from(json['slides']) : null,
         searchResults: json['searchResults'] != null ? (json['searchResults'] as List).map((r) => SearchResult.fromJson(r)).toList() : null,
         attachedFileName: json['attachedFileName'],
+        thinkingContent: json['thinkingContent'], // Added thinking content deserialization
         attachedContainedFiles: json['attachedContainedFiles'] != null ? List<String>.from(json['attachedContainedFiles']) : null,
-        // User image bytes are not loaded from JSON.
+        diagramData: json['diagramData'] != null ? Map<String, dynamic>.from(json['diagramData']) : null, // Added diagram data deserialization
+        presentationData: json['presentationData'] != null ? Map<String, dynamic>.from(json['presentationData']) : null, // Added presentation data deserialization
+        imageBytes: json['imageBytes'] != null ? base64Decode(json['imageBytes']) : null, // Added imageBytes deserialization for generated images
+        // Note: researchWidget is not deserialized as it's a runtime widget
       );
 }
 
@@ -320,11 +328,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   StreamSubscription<ChatInfo>? _chatInfoSubscription;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  String _selectedChatModel = ''; // Add model selection state
 
   @override
   void initState() {
     super.initState();
     _loadChats();
+    _loadSelectedModel(); // Load selected model
     _animationController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this)..repeat(reverse: true);
     _arrowAnimation = Tween<double>(begin: 0, end: 8).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
     _searchController.addListener(() => setState(() {}));
@@ -478,6 +488,144 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
+  // Load selected model from preferences
+  Future<void> _loadSelectedModel() async {
+    final prefs = await SharedPreferences.getInstance();
+    _selectedChatModel = prefs.getString('chat_model') ?? '';
+    
+    if (_selectedChatModel.isEmpty) {
+      try {
+        final models = await ApiService.getAvailableModels();
+        if (models.isNotEmpty) {
+          _selectedChatModel = models.first;
+          await prefs.setString('chat_model', _selectedChatModel);
+        }
+      } catch (e) {
+        print('Error loading default model: $e');
+      }
+    }
+  }
+
+  // Show model selection modal - simple and clean
+  void _showModelSelectionModal() async {
+    try {
+      final models = await ApiService.getAvailableModels();
+      if (!mounted) return;
+
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'AI Model Selection',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Choose your preferred AI model',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 400),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: models.length,
+                        itemBuilder: (context, index) {
+                          final model = models[index];
+                          final isSelected = model == _selectedChatModel;
+                          return ListTile(
+                            leading: Icon(
+                              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                              color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+                            ),
+                            title: Text(
+                              model,
+                              style: TextStyle(
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                color: isSelected ? Theme.of(context).primaryColor : null,
+                              ),
+                            ),
+                            subtitle: Text(
+                              isSelected ? 'Currently selected' : 'Tap to select',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isSelected 
+                                  ? Theme.of(context).primaryColor.withOpacity(0.7)
+                                  : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                              ),
+                            ),
+                            onTap: () async {
+                              if (model != _selectedChatModel) {
+                                setState(() => _selectedChatModel = model);
+                                final prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('chat_model', model);
+                                
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('✨ AI Model changed to $model'),
+                                      backgroundColor: Theme.of(context).primaryColor,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load models: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   AppBar _buildAppBar(BuildContext context) {
     if (_isSearching) {
       return AppBar(
@@ -488,7 +636,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     } else {
       return AppBar(
         leading: IconButton(icon: const Icon(Icons.account_circle), onPressed: () => _showProfileSheet(context), tooltip: 'Profile & Settings'),
-        title: const Text('AhamAI'),
+        title: GestureDetector(
+          onTap: _showModelSelectionModal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('AhamAI'),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 18,
+                color: Theme.of(context).textTheme.titleLarge?.color,
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
         actions: [if (_chats.isNotEmpty) IconButton(icon: const Icon(Icons.search), onPressed: () => setState(() => _isSearching = true)), const SizedBox(width: 4)],
       );
@@ -773,58 +935,19 @@ class ProfileSettingsScreen extends StatefulWidget {
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
-  String _selectedChatModel = '';
-  List<String> _availableModels = [];
-  bool _isLoadingModels = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-    _loadAvailableModels();
   }
 
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _selectedChatModel = prefs.getString('chat_model') ?? '';
-    });
-  }
 
-  Future<void> _loadAvailableModels() async {
-    try {
-      final models = await ApiService.getAvailableModels();
-      setState(() {
-        _availableModels = models;
-        _isLoadingModels = false;
-        
-        // If no model is selected, use the first available model
-        if (_selectedChatModel.isEmpty && models.isNotEmpty) {
-          _selectedChatModel = models.first;
-          _saveChatModel(_selectedChatModel);
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _availableModels = [];
-        _isLoadingModels = false;
-      });
-    }
-  }
-
-  Future<void> _saveChatModel(String model) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('chat_model', model);
-    setState(() {
-      _selectedChatModel = model;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile & Settings'),
+        title: const Text('Profile'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -833,56 +956,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // AI Model Section
-            Text(
-              'Chat AI Model',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            Card(
-              color: Theme.of(context).cardColor,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Select AI Model',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    // Dynamic model list from API
-                    if (_isLoadingModels)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    else if (_availableModels.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Text(
-                          'No models available. Please check your connection.',
-                          style: TextStyle(color: getSecondaryTextColor(context)),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    else
-                      ..._availableModels.map((model) => RadioListTile<String>(
-                        title: Text(_getModelDisplayName(model)),
-                        subtitle: Text(_getModelDescription(model)),
-                        value: model,
-                        groupValue: _selectedChatModel,
-                        onChanged: (val) => _saveChatModel(val!),
-                      )).toList(),
-                  ],
-                ),
-              ),
-            ),
 
-            const SizedBox(height: 24),
 
             // Data Control Section
             Text(
@@ -936,49 +1010,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     );
   }
 
-  String _getModelDisplayName(String model) {
-    // Clean up model names for better display
-    switch (model.toLowerCase()) {
-      case 'gpt-4o':
-        return 'GPT-4o';
-      case 'gpt-4o-mini':
-        return 'GPT-4o Mini';
-      case 'gpt-3.5-turbo':
-        return 'GPT-3.5 Turbo';
-      case 'deepseek-r1':
-        return 'DeepSeek R1';
-      case 'claude-3-5-sonnet-20241022':
-        return 'Claude 3.5 Sonnet';
-      case 'o1-preview':
-        return 'OpenAI o1 Preview';
-      case 'grok-beta':
-        return 'Grok Beta';
-      default:
-        return model;
-    }
-  }
 
-  String _getModelDescription(String model) {
-    // Provide descriptions for models
-    switch (model.toLowerCase()) {
-      case 'gpt-4o':
-        return 'Advanced multimodal model';
-      case 'gpt-4o-mini':
-        return 'Fast and efficient model';
-      case 'gpt-3.5-turbo':
-        return 'Balanced performance model';
-      case 'deepseek-r1':
-        return 'Advanced reasoning model';
-      case 'claude-3-5-sonnet-20241022':
-        return 'Best for coding tasks';
-      case 'o1-preview':
-        return 'Advanced reasoning model';
-      case 'grok-beta':
-        return 'Experimental model';
-      default:
-        return 'AI language model';
-    }
-  }
 }
 
 // <-- REMOVED isLightTheme from here, moved to theme.dart
