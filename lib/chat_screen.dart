@@ -5,6 +5,8 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:ahamai/web_search.dart';
+import 'package:ahamai/diagram_service.dart';
+import 'package:ahamai/fullscreen_diagram_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -615,8 +617,8 @@ Based on the context above, answer the following prompt: $input""";
     _scrollToBottom();
 
     try {
-      // Generate diagram data using AI
-      final diagramData = await _generateDiagramData(prompt);
+      // Generate diagram data using DiagramService
+      final diagramData = await DiagramService.generateDiagramData(prompt, _selectedChatModel);
       if (!mounted) return;
       
       if (diagramData != null) {
@@ -793,7 +795,7 @@ Generate realistic data relevant to: $prompt''',
                   onSelected: (value) async {
                     switch (value) {
                       case 'download':
-                        await _downloadDiagram(chartKey, title, type, diagramData);
+                        await DiagramService.downloadDiagram(chartKey, title, type, diagramData, context);
                         break;
                       case 'fullscreen':
                         _showFullscreenDiagram(diagramData);
@@ -1502,7 +1504,7 @@ Generate realistic data relevant to: $prompt''',
                     GeneratingIndicator(size: 16)
                   ]
                 ) 
-              : _buildDiagramWidget(message.diagramData!)
+              : DiagramService.buildDiagramWidget(message.diagramData!, context, _showFullscreenDiagram)
           )
         );
       case MessageType.text:
