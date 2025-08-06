@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart'; // Removed
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Color Palette
@@ -66,7 +66,7 @@ class ThemeNotifier extends ChangeNotifier {
       // systemOverlayStyle managed dynamically in main.dart based on theme
     ),
     iconTheme: const IconThemeData(color: Color(0xFF202124)), // Primary text color for icons
-    textTheme: GoogleFonts.interTextTheme().apply(
+    textTheme: ThemeData.light().textTheme.apply(
       bodyColor: const Color(0xFF202124), // Primary headline text
       displayColor: const Color(0xFF202124), // Primary headline text
     ),
@@ -104,7 +104,7 @@ class ThemeNotifier extends ChangeNotifier {
       iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)), // Primary Text - Pure white
       titleTextStyle: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'monospace'), // AhamAI logo font
     ),
-    textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
+    textTheme: ThemeData.dark().textTheme.apply(
       bodyColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
       displayColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
     ),

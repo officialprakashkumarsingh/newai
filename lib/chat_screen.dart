@@ -2,30 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:ahamai/web_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'html_markdown_widget.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-// import 'background_service.dart'; // Temporarily disabled
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 
 import 'ai_message_actions.dart';
-import 'api.dart';
 import 'api_service.dart';
-import 'chat_ui_helpers.dart';
-import 'file_processing.dart';
-import 'main.dart';
-import 'presentation_generator.dart';
+import 'image_api.dart';
+import 'models.dart';
 import 'thinking_panel.dart';
-// import 'social_sharing_service.dart'; // REMOVED: This service was slowing down the app.
 import 'theme.dart';
+import 'generating_indicator.dart';
 
 // Removed duplicate imports - already exists above
 
@@ -921,9 +912,9 @@ Based on the context above, answer the following prompt: $input""";
      // Agent feature removed as requested
 
   Widget _buildMessageContent(String text) {
-    return HtmlMarkdownWidget(
-      data: text,
-      selectable: true,
+    return GptMarkdown(
+      text,
+      style: Theme.of(context).textTheme.bodyLarge,
     );
   }
 }
