@@ -261,6 +261,8 @@ class ChatMessage {
         'attachedFileName': attachedFileName,
         'thinkingContent': thinkingContent,
         'attachedContainedFiles': attachedContainedFiles,
+        'diagramData': diagramData, // Added diagram data serialization
+        'presentationData': presentationData, // Added presentation data serialization
         // Note: For simplicity, user-uploaded image bytes are not serialized.
         // They will only exist for the current session.
       };
@@ -273,7 +275,10 @@ class ChatMessage {
         slides: json['slides'] != null ? List<String>.from(json['slides']) : null,
         searchResults: json['searchResults'] != null ? (json['searchResults'] as List).map((r) => SearchResult.fromJson(r)).toList() : null,
         attachedFileName: json['attachedFileName'],
+        thinkingContent: json['thinkingContent'], // Added thinking content deserialization
         attachedContainedFiles: json['attachedContainedFiles'] != null ? List<String>.from(json['attachedContainedFiles']) : null,
+        diagramData: json['diagramData'] != null ? Map<String, dynamic>.from(json['diagramData']) : null, // Added diagram data deserialization
+        presentationData: json['presentationData'] != null ? Map<String, dynamic>.from(json['presentationData']) : null, // Added presentation data deserialization
         // User image bytes are not loaded from JSON.
       );
 }

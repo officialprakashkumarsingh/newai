@@ -109,6 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _initialize() async {
     await _setupChatModel();
+    await _loadMessages(); // Load persisted messages
     _isModelSetupComplete = true;
 
     if (widget.initialMessage != null && mounted) {
@@ -139,6 +140,55 @@ class _ChatScreenState extends State<ChatScreen> {
     // Note: Vision now uses ApiService with user's selected model
 
     if (mounted) setState(() {});
+  }
+
+  // Message persistence methods
+  Future<void> _loadMessages() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final messagesJson = prefs.getString('chat_messages_$_chatId');
+      
+      if (messagesJson != null) {
+        final List<dynamic> messagesList = jsonDecode(messagesJson);
+        final loadedMessages = messagesList.map((json) => ChatMessage.fromJson(json)).toList();
+        
+        if (mounted) {
+          setState(() {
+            _messages = loadedMessages;
+          });
+        }
+        print('Loaded ${loadedMessages.length} messages from storage');
+      }
+    } catch (e) {
+      print('Error loading messages: $e');
+    }
+  }
+
+  Future<void> _saveMessages() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final messagesJson = jsonEncode(_messages.map((msg) => msg.toJson()).toList());
+      await prefs.setString('chat_messages_$_chatId', messagesJson);
+      print('Saved ${_messages.length} messages to storage');
+    } catch (e) {
+      print('Error saving messages: $e');
+    }
+  }
+
+  // Helper method to add message and save automatically
+  void _addMessageAndSave(ChatMessage message) {
+    setState(() {
+      _messages.add(message);
+    });
+    _saveMessages(); // Auto-save when messages are added
+  }
+
+  // Helper method to update message and save automatically
+  void _updateMessageAndSave(int index, ChatMessage message) {
+    setState(() {
+      _messages[index] = message;
+    });
+    _saveMessages(); // Auto-save when messages are updated
   }
 
   @override
@@ -344,6 +394,7 @@ Based on the context above, answer the following prompt: $input""";
     setState(() => _isStreaming = false);
     _updateChatInfo(false, false);
     _scrollToBottom();
+    _saveMessages(); // Save messages after streaming is complete
 
     // Stream completed
     print('✅ Stream completed successfully');
@@ -356,6 +407,7 @@ Based on the context above, answer the following prompt: $input""";
     });
     _updateChatInfo(false, false);
     _scrollToBottom();
+    _saveMessages(); // Save messages after error
   }
   
   void _updateChatInfo(bool isGenerating, bool isStopped) {
@@ -1707,10 +1759,218 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
+  // Show model selection modal
+  void _showModelSelectionModal() async {
+    try {
+      final models = await ApiService.getAvailableModels();
+      if (!mounted) return;
+
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.smart_toy,
+                            color: Theme.of(context).primaryColor,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'AI Model Selection',
+                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Choose your preferred AI model',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 400),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: models.length,
+                        itemBuilder: (context, index) {
+                          final model = models[index];
+                          final isSelected = model == _selectedChatModel;
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            elevation: isSelected ? 4 : 1,
+                            color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+                            child: ListTile(
+                              leading: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: isSelected 
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).primaryColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Icon(
+                                  isSelected ? Icons.check_circle : Icons.psychology,
+                                  color: isSelected ? Colors.white : Theme.of(context).primaryColor,
+                                  size: 20,
+                                ),
+                              ),
+                              title: Text(
+                                model,
+                                style: TextStyle(
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected ? Theme.of(context).primaryColor : null,
+                                ),
+                              ),
+                              subtitle: Text(
+                                isSelected ? 'Currently selected' : 'Tap to select',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: isSelected 
+                                    ? Theme.of(context).primaryColor.withOpacity(0.7)
+                                    : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                                ),
+                              ),
+                              trailing: isSelected 
+                                ? Icon(Icons.radio_button_checked, color: Theme.of(context).primaryColor)
+                                : Icon(Icons.radio_button_unchecked, color: Colors.grey),
+                              onTap: () async {
+                                if (model != _selectedChatModel) {
+                                  setState(() => _selectedChatModel = model);
+                                  final prefs = await SharedPreferences.getInstance();
+                                  await prefs.setString('chat_model', model);
+                                  
+                                  if (mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('✨ AI Model changed to $model'),
+                                        backgroundColor: Theme.of(context).primaryColor,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load models: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_chatTitle), centerTitle: true),
+      appBar: AppBar(
+        title: GestureDetector(
+          onTap: _showModelSelectionModal,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Theme.of(context).primaryColor.withOpacity(0.3),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'AhamAI',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Theme.of(context).primaryColor,
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+        ),
+        centerTitle: true,
+      ),
       extendBody: true, // Extend body behind system navigation bar
       body: Column(
         children: [
