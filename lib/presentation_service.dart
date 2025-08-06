@@ -397,7 +397,14 @@ SLIDE TYPES AVAILABLE:
 - "methodology": Research methodologies with phases and tools
 - "experiment": Scientific experiments with procedures and variables
 
-Generate AS MANY SLIDES AS NEEDED to thoroughly cover the topic. For complex topics, create 10-15+ slides. For simple topics, 5-8 slides are fine. Make content detailed and professional.
+GENERATE COMPREHENSIVE, DETAILED PRESENTATIONS with as many slides as needed. Create EXTENSIVE presentations with:
+- Complex topics: 15-25+ slides minimum with deep coverage
+- Medium topics: 10-15 slides with good detail  
+- Simple topics: 8-12 slides with thorough explanation
+- Use diverse slide types from the extensive list available
+- Include diagrams, formulas, statistics, and analysis where relevant
+- Make content highly detailed, professional, and educational
+- Cover all aspects of the topic comprehensively
 Topic: $topic''',
         model: selectedModel,
       )) {
@@ -2488,13 +2495,10 @@ Topic: $topic''',
     
     // Title (with font fallback for special characters)
     if (slideTitle.isNotEmpty) {
-      final cleanTitle = _cleanTextForPDF(slideTitle);
-      graphics.drawString(
-        cleanTitle,
+      _drawTextSafely(graphics, slideTitle,
         PdfStandardFont(PdfFontFamily.helvetica, 24, style: PdfFontStyle.bold),
-        brush: PdfSolidBrush(pdfTextColor),
-        bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
-      );
+        PdfSolidBrush(pdfTextColor),
+        Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40));
       yPosition += 60;
     }
 
@@ -2503,13 +2507,11 @@ Topic: $topic''',
       case 'title':
         final String subtitle = slide['subtitle'] ?? '';
         if (subtitle.isNotEmpty) {
-          graphics.drawString(
-            subtitle,
+          _drawTextSafely(graphics, subtitle,
             PdfStandardFont(PdfFontFamily.helvetica, 16),
-            brush: PdfSolidBrush(pdfTextColor),
-            bounds: Rect.fromLTWH(40, yPosition + 20, pageSize.width - 80, 200),
-            format: PdfStringFormat(alignment: PdfTextAlignment.center),
-          );
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, yPosition + 20, pageSize.width - 80, 200),
+            format: PdfStringFormat(alignment: PdfTextAlignment.center));
         }
         break;
         
@@ -2520,40 +2522,32 @@ Topic: $topic''',
         final List<dynamic> rightContent = slide['right_content'] ?? [];
         
         // Left column
-        graphics.drawString(
-          leftTitle,
+        _drawTextSafely(graphics, leftTitle,
           PdfStandardFont(PdfFontFamily.helvetica, 16, style: PdfFontStyle.bold),
-          brush: PdfSolidBrush(PdfColor(200, 0, 0)),
-          bounds: Rect.fromLTWH(40, yPosition, (pageSize.width / 2) - 60, 30),
-        );
+          PdfSolidBrush(PdfColor(200, 0, 0)),
+          Rect.fromLTWH(40, yPosition, (pageSize.width / 2) - 60, 30));
         
         double leftY = yPosition + 40;
         for (final item in leftContent) {
-          graphics.drawString(
-            item.toString(),
+          _drawTextSafely(graphics, item.toString(),
             PdfStandardFont(PdfFontFamily.helvetica, 12),
-            brush: PdfSolidBrush(pdfTextColor),
-            bounds: Rect.fromLTWH(40, leftY, (pageSize.width / 2) - 60, 20),
-          );
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH(40, leftY, (pageSize.width / 2) - 60, 20));
           leftY += 25;
         }
         
         // Right column
-        graphics.drawString(
-          rightTitle,
+        _drawTextSafely(graphics, rightTitle,
           PdfStandardFont(PdfFontFamily.helvetica, 16, style: PdfFontStyle.bold),
-          brush: PdfSolidBrush(PdfColor(0, 150, 0)),
-          bounds: Rect.fromLTWH((pageSize.width / 2) + 20, yPosition, (pageSize.width / 2) - 60, 30),
-        );
+          PdfSolidBrush(PdfColor(0, 150, 0)),
+          Rect.fromLTWH((pageSize.width / 2) + 20, yPosition, (pageSize.width / 2) - 60, 30));
         
         double rightY = yPosition + 40;
         for (final item in rightContent) {
-          graphics.drawString(
-            item.toString(),
+          _drawTextSafely(graphics, item.toString(),
             PdfStandardFont(PdfFontFamily.helvetica, 12),
-            brush: PdfSolidBrush(pdfTextColor),
-            bounds: Rect.fromLTWH((pageSize.width / 2) + 20, rightY, (pageSize.width / 2) - 60, 20),
-          );
+            PdfSolidBrush(pdfTextColor),
+            Rect.fromLTWH((pageSize.width / 2) + 20, rightY, (pageSize.width / 2) - 60, 20));
           rightY += 25;
         }
         break;

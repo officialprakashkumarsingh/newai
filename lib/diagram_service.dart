@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 import 'api_service.dart';
 
@@ -920,10 +922,31 @@ Generate realistic data relevant to: $prompt''',
 
   static Future<void> downloadDiagram(GlobalKey chartKey, String title, String type, Map<String, dynamic> diagramData, BuildContext context) async {
     try {
+      showStyledSnackBar(context, 'Preparing to save diagram...');
+
+      // Request storage permission first
+      final hasPermission = await _requestStoragePermission();
+      if (!hasPermission) {
+        showStyledSnackBar(
+          context, 
+          'Storage permission required to save diagrams. Please grant permission in app settings.',
+          backgroundColor: Colors.orange.shade600,
+          duration: const Duration(seconds: 4),
+        );
+        return;
+      }
+
       showStyledSnackBar(context, 'Saving diagram...');
 
       final boundary = chartKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null) return;
+      if (boundary == null) {
+        showStyledSnackBar(
+          context, 
+          'Error: Could not capture diagram. Please try again.',
+          backgroundColor: Colors.red.shade600,
+        );
+        return;
+      }
 
       final image = await boundary.toImage(pixelRatio: 4.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -937,56 +960,116 @@ Generate realistic data relevant to: $prompt''',
         if (success) {
           showStyledSnackBar(
             context, 
-            'Diagram saved as $fileName',
+            'Diagram saved as $fileName in AhamAI folder',
             backgroundColor: Colors.green.shade600,
+            duration: const Duration(seconds: 3),
           );
         } else {
           showStyledSnackBar(
             context, 
-            'Error saving diagram',
+            'Error saving diagram. Check storage permissions.',
             backgroundColor: Colors.red.shade600,
+            duration: const Duration(seconds: 3),
           );
         }
+      } else {
+        showStyledSnackBar(
+          context, 
+          'Error capturing diagram image',
+          backgroundColor: Colors.red.shade600,
+        );
       }
     } catch (error) {
+      print('Error in downloadDiagram: $error');
       showStyledSnackBar(
         context, 
-        'Error saving diagram: $error',
+        'Error saving diagram: ${error.toString()}',
         backgroundColor: Colors.red.shade600,
+        duration: const Duration(seconds: 4),
       );
+    }
+  }
+
+  // Request storage permission
+  static Future<bool> _requestStoragePermission() async {
+    try {
+      // Check if permission is already granted
+      var status = await Permission.storage.status;
+      
+      if (status.isGranted) {
+        return true;
+      }
+      
+      // For Android 13+ (API 33+), use different permissions
+      if (Platform.isAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        if (androidInfo.version.sdkInt >= 33) {
+          // Use media permissions for Android 13+
+          status = await Permission.photos.status;
+          if (!status.isGranted) {
+            status = await Permission.photos.request();
+          }
+        } else {
+          // Use storage permission for older Android versions
+          if (!status.isGranted) {
+            status = await Permission.storage.request();
+          }
+        }
+      }
+      
+      return status.isGranted;
+    } catch (e) {
+      print('Error requesting storage permission: $e');
+      return false;
     }
   }
 
   static Future<bool> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
     try {
+      print('Attempting to save to external storage...');
       final directory = await getExternalStorageDirectory();
-      final downloadsPath = '${directory!.parent.parent.parent.parent.path}/Download';
+      if (directory == null) {
+        print('External storage directory is null');
+        throw Exception('External storage not available');
+      }
+      
+      final downloadsPath = '${directory.parent.parent.parent.parent.path}/Download';
       final ahamAIPath = '$downloadsPath/AhamAI';
       
+      print('Creating directory: $ahamAIPath');
       // Create AhamAI folder if it doesn't exist
       final ahamAIDirectory = Directory(ahamAIPath);
       if (!await ahamAIDirectory.exists()) {
         await ahamAIDirectory.create(recursive: true);
       }
       
-      final file = File('$ahamAIPath/$fileName');
+      final filePath = '$ahamAIPath/$fileName';
+      print('Saving file to: $filePath');
+      final file = File(filePath);
       await file.writeAsBytes(bytes);
+      print('File saved successfully');
       return true; // Indicate success
     } catch (error) {
+      print('External storage failed: $error, trying app documents...');
       // Fallback to app directory
       try {
         final directory = await getApplicationDocumentsDirectory();
         final ahamAIPath = '${directory.path}/AhamAI';
         
+        print('Creating app directory: $ahamAIPath');
         final ahamAIDirectory = Directory(ahamAIPath);
         if (!await ahamAIDirectory.exists()) {
           await ahamAIDirectory.create(recursive: true);
         }
         
-        final file = File('$ahamAIPath/$fileName');
+        final filePath = '$ahamAIPath/$fileName';
+        print('Saving to app directory: $filePath');
+        final file = File(filePath);
         await file.writeAsBytes(bytes);
+        print('File saved to app directory successfully');
         return true; // Indicate success
       } catch (appError) {
+        print('App directory also failed: $appError');
         return false; // Both methods failed
       }
     }

@@ -50,6 +50,14 @@ dbus
 2.17
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/dbus-0.7.11/
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/dbus-0.7.11/lib/
+device_info_plus
+3.3
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/device_info_plus-10.1.2/
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/device_info_plus-10.1.2/lib/
+device_info_plus_platform_interface
+2.18
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.2/
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.2/lib/
 equatable
 2.12
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/equatable-2.0.7/
@@ -474,6 +482,10 @@ win32
 3.5
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/win32-5.10.1/
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/win32-5.10.1/lib/
+win32_registry
+3.4
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/win32_registry-1.1.5/
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/win32_registry-1.1.5/lib/
 window_manager
 3.0
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/window_manager-0.4.3/

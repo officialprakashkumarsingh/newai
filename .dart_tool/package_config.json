@@ -80,6 +80,18 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "device_info_plus",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/device_info_plus-10.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "device_info_plus_platform_interface",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "equatable",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/equatable-2.0.7",
       "packageUri": "lib/",
@@ -740,6 +752,12 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "win32_registry",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/win32_registry-1.1.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "window_manager",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/window_manager-0.4.3",
       "packageUri": "lib/",
@@ -770,7 +788,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-06T09:28:31.516117Z",
+  "generated": "2025-08-06T09:51:49.421408Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///opt/flutter",
