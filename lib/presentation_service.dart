@@ -1853,6 +1853,311 @@ Topic: $topic''',
         }
         break;
         
+      case 'formula':
+        final String formula = slide['formula'] ?? '';
+        final String explanation = slide['explanation'] ?? '';
+        final List<dynamic> variables = slide['variables'] ?? [];
+        
+        // Formula box
+        graphics.drawRectangle(
+          pen: PdfPen(PdfColor(0, 100, 200)),
+          brush: PdfSolidBrush(PdfColor(230, 240, 255)),
+          bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 80),
+        );
+        
+        // Formula text
+        graphics.drawString(
+          _cleanTextForPDF(formula),
+          PdfStandardFont(PdfFontFamily.courier, 20, style: PdfFontStyle.bold),
+          brush: PdfSolidBrush(PdfColor(0, 100, 200)),
+          bounds: Rect.fromLTWH(40, yPosition + 20, pageSize.width - 80, 40),
+          format: PdfStringFormat(alignment: PdfTextAlignment.center),
+        );
+        
+        yPosition += 100;
+        
+        // Explanation
+        if (explanation.isNotEmpty) {
+          graphics.drawString(
+            _cleanTextForPDF(explanation),
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.italic),
+            brush: PdfSolidBrush(pdfTextColor),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 30),
+          );
+          yPosition += 40;
+        }
+        
+        // Variables
+        for (final variable in variables) {
+          final symbol = variable['symbol'] ?? '';
+          final meaning = variable['meaning'] ?? '';
+          graphics.drawString(
+            '$symbol = ${_cleanTextForPDF(meaning)}',
+            PdfStandardFont(PdfFontFamily.helvetica, 12),
+            brush: PdfSolidBrush(pdfTextColor),
+            bounds: Rect.fromLTWH(60, yPosition, pageSize.width - 100, 20),
+          );
+          yPosition += 25;
+        }
+        break;
+        
+      case 'financial':
+        final List<dynamic> metrics = slide['metrics'] ?? [];
+        int columnCount = 0;
+        for (final metric in metrics) {
+          double xPos = 40 + (columnCount % 2) * (pageSize.width / 2);
+          double yPos = yPosition + (columnCount ~/ 2) * 120;
+          
+          final trend = metric['trend'] ?? 'neutral';
+          final trendSymbol = trend == 'up' ? '↑' : trend == 'down' ? '↓' : '→';
+          
+          // Metric box
+          final boxColor = trend == 'up' ? PdfColor(0, 150, 0) : trend == 'down' ? PdfColor(200, 0, 0) : PdfColor(100, 100, 100);
+          final lightBoxColor = trend == 'up' ? PdfColor(200, 255, 200) : trend == 'down' ? PdfColor(255, 200, 200) : PdfColor(230, 230, 230);
+          graphics.drawRectangle(
+            pen: PdfPen(boxColor),
+            brush: PdfSolidBrush(lightBoxColor),
+            bounds: Rect.fromLTWH(xPos, yPos, (pageSize.width / 2) - 60, 100),
+          );
+          
+          // Value with trend
+          graphics.drawString(
+            '${_cleanTextForPDF(metric['value'] ?? '0')} $trendSymbol',
+            PdfStandardFont(PdfFontFamily.helvetica, 24, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(boxColor),
+            bounds: Rect.fromLTWH(xPos + 10, yPos + 10, (pageSize.width / 2) - 80, 30),
+            format: PdfStringFormat(alignment: PdfTextAlignment.center),
+          );
+          
+          // Label
+          graphics.drawString(
+            _cleanTextForPDF(metric['label'] ?? ''),
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(pdfTextColor),
+            bounds: Rect.fromLTWH(xPos + 10, yPos + 45, (pageSize.width / 2) - 80, 20),
+            format: PdfStringFormat(alignment: PdfTextAlignment.center),
+          );
+          
+          // Change
+          graphics.drawString(
+            _cleanTextForPDF(metric['change'] ?? ''),
+            PdfStandardFont(PdfFontFamily.helvetica, 12),
+            brush: PdfSolidBrush(boxColor),
+            bounds: Rect.fromLTWH(xPos + 10, yPos + 70, (pageSize.width / 2) - 80, 20),
+            format: PdfStringFormat(alignment: PdfTextAlignment.center),
+          );
+          
+          columnCount++;
+        }
+        break;
+        
+      case 'scientific':
+        final String hypothesis = slide['hypothesis'] ?? '';
+        final String methodology = slide['methodology'] ?? '';
+        final List<dynamic> results = slide['results'] ?? [];
+        final String conclusion = slide['conclusion'] ?? '';
+        
+        // Hypothesis
+        if (hypothesis.isNotEmpty) {
+          graphics.drawString(
+            'Hypothesis:',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(PdfColor(0, 100, 200)),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 20),
+          );
+          yPosition += 25;
+          
+          graphics.drawString(
+            _cleanTextForPDF(hypothesis),
+            PdfStandardFont(PdfFontFamily.helvetica, 12),
+            brush: PdfSolidBrush(pdfTextColor),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
+          );
+          yPosition += 50;
+        }
+        
+        // Methodology
+        if (methodology.isNotEmpty) {
+          graphics.drawString(
+            'Methodology:',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(PdfColor(200, 100, 0)),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 20),
+          );
+          yPosition += 25;
+          
+          graphics.drawString(
+            _cleanTextForPDF(methodology),
+            PdfStandardFont(PdfFontFamily.helvetica, 12),
+            brush: PdfSolidBrush(pdfTextColor),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
+          );
+          yPosition += 50;
+        }
+        
+        // Results
+        if (results.isNotEmpty) {
+          graphics.drawString(
+            'Results:',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(PdfColor(0, 150, 0)),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 20),
+          );
+          yPosition += 25;
+          
+          for (final result in results) {
+            graphics.drawString(
+              '• ${_cleanTextForPDF(result.toString())}',
+              PdfStandardFont(PdfFontFamily.helvetica, 12),
+              brush: PdfSolidBrush(pdfTextColor),
+              bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 20),
+            );
+            yPosition += 25;
+          }
+          yPosition += 10;
+        }
+        
+        // Conclusion
+        if (conclusion.isNotEmpty) {
+          graphics.drawString(
+            'Conclusion:',
+            PdfStandardFont(PdfFontFamily.helvetica, 14, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(PdfColor(150, 0, 150)),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 20),
+          );
+          yPosition += 25;
+          
+          graphics.drawString(
+            _cleanTextForPDF(conclusion),
+            PdfStandardFont(PdfFontFamily.helvetica, 12),
+            brush: PdfSolidBrush(pdfTextColor),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
+          );
+        }
+        break;
+        
+      case 'data_table':
+        final List<dynamic> headers = slide['headers'] ?? [];
+        final List<dynamic> rows = slide['rows'] ?? [];
+        
+        if (headers.isNotEmpty && rows.isNotEmpty) {
+          final double columnWidth = (pageSize.width - 80) / headers.length;
+          final double rowHeight = 30;
+          
+          // Draw table headers
+          for (int i = 0; i < headers.length; i++) {
+            final headerRect = Rect.fromLTWH(40 + (i * columnWidth), yPosition, columnWidth, rowHeight);
+            graphics.drawRectangle(
+              pen: PdfPen(PdfColor(0, 0, 0)),
+              brush: PdfSolidBrush(PdfColor(200, 200, 255)),
+              bounds: headerRect,
+            );
+            
+            graphics.drawString(
+              _cleanTextForPDF(headers[i].toString()),
+              PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+              brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+              bounds: headerRect,
+              format: PdfStringFormat(alignment: PdfTextAlignment.center, lineAlignment: PdfVerticalAlignment.middle),
+            );
+          }
+          yPosition += rowHeight;
+          
+          // Draw table rows
+          for (int rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+            final row = rows[rowIndex] as List;
+            for (int colIndex = 0; colIndex < row.length && colIndex < headers.length; colIndex++) {
+              final cellRect = Rect.fromLTWH(40 + (colIndex * columnWidth), yPosition, columnWidth, rowHeight);
+              graphics.drawRectangle(
+                pen: PdfPen(PdfColor(0, 0, 0)),
+                brush: PdfSolidBrush(rowIndex % 2 == 0 ? PdfColor(245, 245, 245) : PdfColor(255, 255, 255)),
+                bounds: cellRect,
+              );
+              
+              graphics.drawString(
+                _cleanTextForPDF(row[colIndex].toString()),
+                PdfStandardFont(PdfFontFamily.helvetica, 10),
+                brush: PdfSolidBrush(pdfTextColor),
+                bounds: cellRect,
+                format: PdfStringFormat(alignment: PdfTextAlignment.center, lineAlignment: PdfVerticalAlignment.middle),
+              );
+            }
+            yPosition += rowHeight;
+          }
+        }
+        break;
+        
+      case 'flowchart':
+        final List<dynamic> steps = slide['steps'] ?? [];
+        
+        double flowY = yPosition;
+        for (int i = 0; i < steps.length; i++) {
+          final step = steps[i];
+          final stepType = step['type'] ?? 'process';
+          final stepText = _cleanTextForPDF(step['text'] ?? '');
+          
+          // Choose color based on step type
+          PdfColor stepColor;
+          switch (stepType) {
+            case 'start':
+              stepColor = PdfColor(0, 150, 0);
+              break;
+            case 'end':
+              stepColor = PdfColor(200, 0, 0);
+              break;
+            case 'decision':
+              stepColor = PdfColor(200, 150, 0);
+              break;
+            default:
+              stepColor = PdfColor(0, 100, 200);
+          }
+          
+          // Draw step box
+          final lightStepColor = PdfColor(
+            (stepColor.r * 0.3 + 255 * 0.7).round(),
+            (stepColor.g * 0.3 + 255 * 0.7).round(),
+            (stepColor.b * 0.3 + 255 * 0.7).round(),
+          );
+          graphics.drawRectangle(
+            pen: PdfPen(stepColor),
+            brush: PdfSolidBrush(lightStepColor),
+            bounds: Rect.fromLTWH(40, flowY, pageSize.width - 80, 40),
+          );
+          
+          // Draw step text
+          graphics.drawString(
+            stepText,
+            PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+            brush: PdfSolidBrush(stepColor),
+            bounds: Rect.fromLTWH(50, flowY + 10, pageSize.width - 100, 20),
+            format: PdfStringFormat(alignment: PdfTextAlignment.center),
+          );
+          
+          flowY += 50;
+          
+          // Draw arrow to next step (except for last step)
+          if (i < steps.length - 1) {
+            graphics.drawLine(
+              PdfPen(PdfColor(100, 100, 100), width: 2),
+              Offset(pageSize.width / 2, flowY - 10),
+              Offset(pageSize.width / 2, flowY),
+            );
+            
+            // Draw arrow head
+            graphics.drawLine(
+              PdfPen(PdfColor(100, 100, 100), width: 2),
+              Offset(pageSize.width / 2 - 5, flowY - 5),
+              Offset(pageSize.width / 2, flowY),
+            );
+            graphics.drawLine(
+              PdfPen(PdfColor(100, 100, 100), width: 2),
+              Offset(pageSize.width / 2 + 5, flowY - 5),
+              Offset(pageSize.width / 2, flowY),
+            );
+          }
+        }
+        break;
+        
       default: // content, image, conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
         for (final item in contentList) {

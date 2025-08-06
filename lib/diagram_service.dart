@@ -1188,22 +1188,22 @@ class MindMapPainter extends CustomPainter {
       Offset(center.dx - centerTextPainter.width / 2, center.dy - centerTextPainter.height / 2),
     );
 
-    // Draw branches with improved spacing
-    final branchRadius = math.max(150, branches.length * 25.0); // Dynamic radius based on branch count
+    // Draw branches with improved spacing to prevent collisions
+    final distanceFromCenter = math.max(200.0, branches.length * 35.0); // Distance from center to branch centers
     final angleStep = 2 * math.pi / math.max(branches.length, 4); // Ensure minimum spacing
     
     for (int i = 0; i < branches.length; i++) {
       final branch = branches[i];
       final angle = i * angleStep;
       
-      // Calculate text and radius first
+      // Calculate node size based on text
       final branchText = branch['title'] ?? 'Branch';
-      final textBasedRadius = (branchText.length.toDouble() * 3.5).clamp(35.0, 55.0);
-      final branchRadius = math.max<double>(40.0, textBasedRadius);
+      final textBasedSize = (branchText.length.toDouble() * 3.5).clamp(35.0, 55.0);
+      final branchNodeRadius = math.max<double>(40.0, textBasedSize);
       
       final branchCenter = Offset(
-        center.dx + branchRadius * math.cos(angle),
-        center.dy + branchRadius * math.sin(angle),
+        center.dx + distanceFromCenter * math.cos(angle),
+        center.dy + distanceFromCenter * math.sin(angle),
       );
 
       // Draw connection line with proper clipping
@@ -1218,8 +1218,8 @@ class MindMapPainter extends CustomPainter {
         center.dy + (centerRadius + 5) * math.sin(angle),
       );
       final branchEdge = Offset(
-        branchCenter.dx - branchRadius * math.cos(angle),
-        branchCenter.dy - branchRadius * math.sin(angle),
+        branchCenter.dx - branchNodeRadius * math.cos(angle),
+        branchCenter.dy - branchNodeRadius * math.sin(angle),
       );
       canvas.drawLine(centerEdge, branchEdge, linePaint);
 
@@ -1227,7 +1227,7 @@ class MindMapPainter extends CustomPainter {
       final color = DiagramService._getColorFromString(branch['color'] ?? 'green');
       
       paint.color = color;
-      canvas.drawCircle(branchCenter, branchRadius, paint);
+      canvas.drawCircle(branchCenter, branchNodeRadius, paint);
 
       // Draw branch text with better wrapping
       final words = branchText.split(' ');
@@ -1251,7 +1251,7 @@ class MindMapPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.center,
       );
-      branchTextPainter.layout(maxWidth: branchRadius * 1.6);
+      branchTextPainter.layout(maxWidth: branchNodeRadius * 1.6);
       branchTextPainter.paint(
         canvas,
         Offset(branchCenter.dx - branchTextPainter.width / 2, branchCenter.dy - branchTextPainter.height / 2),
@@ -1260,7 +1260,7 @@ class MindMapPainter extends CustomPainter {
       // Draw sub-branches with improved positioning and clipping
       final subbranches = branch['subbranches'] as List<dynamic>? ?? [];
       if (subbranches.isNotEmpty) {
-        final subRadius = 90; // Increased sub-branch radius
+        final subDistanceFromBranch = 100.0; // Distance from branch center to sub-nodes
         final subAngleRange = math.pi / 2; // 90 degree spread for sub-branches
         final subAngleStep = subAngleRange / math.max(subbranches.length - 1, 1);
         final startSubAngle = angle - subAngleRange / 2;
@@ -1270,18 +1270,18 @@ class MindMapPainter extends CustomPainter {
           
           // Calculate sub-node size first
           final subText = subbranches[j].toString();
-          final subTextBasedRadius = (subText.length.toDouble() * 2.5).clamp(20.0, 35.0);
-          final subNodeRadius = math.max<double>(25.0, subTextBasedRadius);
+          final subTextBasedSize = (subText.length.toDouble() * 2.5).clamp(20.0, 35.0);
+          final subNodeRadius = math.max<double>(25.0, subTextBasedSize);
           
           final subCenter = Offset(
-            branchCenter.dx + subRadius * math.cos(subAngle),
-            branchCenter.dy + subRadius * math.sin(subAngle),
+            branchCenter.dx + subDistanceFromBranch * math.cos(subAngle),
+            branchCenter.dy + subDistanceFromBranch * math.sin(subAngle),
           );
 
           // Draw sub-connection with proper edge calculation
           final branchSubEdge = Offset(
-            branchCenter.dx + branchRadius * math.cos(subAngle),
-            branchCenter.dy + branchRadius * math.sin(subAngle),
+            branchCenter.dx + branchNodeRadius * math.cos(subAngle),
+            branchCenter.dy + branchNodeRadius * math.sin(subAngle),
           );
           final subEdge = Offset(
             subCenter.dx - subNodeRadius * math.cos(subAngle),
