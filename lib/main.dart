@@ -325,11 +325,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   StreamSubscription<ChatInfo>? _chatInfoSubscription;
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
+  String _selectedChatModel = ''; // Add model selection state
 
   @override
   void initState() {
     super.initState();
     _loadChats();
+    _loadSelectedModel(); // Load selected model
     _animationController = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this)..repeat(reverse: true);
     _arrowAnimation = Tween<double>(begin: 0, end: 8).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
     _searchController.addListener(() => setState(() {}));
@@ -483,6 +485,144 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
+  // Load selected model from preferences
+  Future<void> _loadSelectedModel() async {
+    final prefs = await SharedPreferences.getInstance();
+    _selectedChatModel = prefs.getString('chat_model') ?? '';
+    
+    if (_selectedChatModel.isEmpty) {
+      try {
+        final models = await ApiService.getAvailableModels();
+        if (models.isNotEmpty) {
+          _selectedChatModel = models.first;
+          await prefs.setString('chat_model', _selectedChatModel);
+        }
+      } catch (e) {
+        print('Error loading default model: $e');
+      }
+    }
+  }
+
+  // Show model selection modal - simple and clean
+  void _showModelSelectionModal() async {
+    try {
+      final models = await ApiService.getAvailableModels();
+      if (!mounted) return;
+
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) => Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'AI Model Selection',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Choose your preferred AI model',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 400),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: models.length,
+                        itemBuilder: (context, index) {
+                          final model = models[index];
+                          final isSelected = model == _selectedChatModel;
+                          return ListTile(
+                            leading: Icon(
+                              isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                              color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+                            ),
+                            title: Text(
+                              model,
+                              style: TextStyle(
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                color: isSelected ? Theme.of(context).primaryColor : null,
+                              ),
+                            ),
+                            subtitle: Text(
+                              isSelected ? 'Currently selected' : 'Tap to select',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isSelected 
+                                  ? Theme.of(context).primaryColor.withOpacity(0.7)
+                                  : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                              ),
+                            ),
+                            onTap: () async {
+                              if (model != _selectedChatModel) {
+                                setState(() => _selectedChatModel = model);
+                                final prefs = await SharedPreferences.getInstance();
+                                await prefs.setString('chat_model', model);
+                                
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('✨ AI Model changed to $model'),
+                                      backgroundColor: Theme.of(context).primaryColor,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load models: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   AppBar _buildAppBar(BuildContext context) {
     if (_isSearching) {
       return AppBar(
@@ -493,7 +633,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     } else {
       return AppBar(
         leading: IconButton(icon: const Icon(Icons.account_circle), onPressed: () => _showProfileSheet(context), tooltip: 'Profile & Settings'),
-        title: const Text('AhamAI'),
+        title: GestureDetector(
+          onTap: _showModelSelectionModal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('AhamAI'),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 18,
+                color: Theme.of(context).textTheme.titleLarge?.color,
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
         actions: [if (_chats.isNotEmpty) IconButton(icon: const Icon(Icons.search), onPressed: () => setState(() => _isSearching = true)), const SizedBox(width: 4)],
       );

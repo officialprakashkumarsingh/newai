@@ -976,141 +976,67 @@ Generate realistic data relevant to: $prompt''',
     }
   }
 
-  // Request storage permission
-  static Future<bool> _requestStoragePermission() async {
-    try {
-      if (Platform.isAndroid) {
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
-        print('Android SDK version: ${androidInfo.version.sdkInt}');
-        
-        if (androidInfo.version.sdkInt >= 33) {
-          // Android 13+ (API 33+) - Use scoped storage permissions
-          print('Using Android 13+ media permissions');
-          
-          // Request media permissions for Android 13+
-          var photosStatus = await Permission.photos.status;
-          print('Photos permission status: $photosStatus');
-          
-          if (!photosStatus.isGranted) {
-            photosStatus = await Permission.photos.request();
-            print('Photos permission after request: $photosStatus');
-          }
-          
-          // Also try manageExternalStorage for broader access
-          var manageStorageStatus = await Permission.manageExternalStorage.status;
-          print('Manage external storage status: $manageStorageStatus');
-          
-          if (!manageStorageStatus.isGranted) {
-            manageStorageStatus = await Permission.manageExternalStorage.request();
-            print('Manage external storage after request: $manageStorageStatus');
-          }
-          
-          // Return true if either permission is granted
-          return photosStatus.isGranted || manageStorageStatus.isGranted;
-          
-        } else {
-          // Android 12 and below - Use legacy storage permissions
-          print('Using legacy storage permissions');
-          
-          var storageStatus = await Permission.storage.status;
-          print('Storage permission status: $storageStatus');
-          
-          if (!storageStatus.isGranted) {
-            storageStatus = await Permission.storage.request();
-            print('Storage permission after request: $storageStatus');
-          }
-          
-          return storageStatus.isGranted;
-        }
-      }
-      
-      // For non-Android platforms, assume permission is granted
-      return true;
-    } catch (e) {
-      print('Error requesting storage permission: $e');
-      // If permission handling fails, try to proceed anyway
-      return true;
-    }
-  }
 
-  static Future<bool> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
+
+  static Future<Map<String, dynamic>> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
+    // Simple, reliable approach - just use app external directory (no permissions needed)
     try {
-      if (Platform.isAndroid) {
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
+      print('Saving image with simplified approach...');
+      
+      // Get app-specific external directory (no permission required)
+      final directory = await getExternalStorageDirectory();
+      if (directory != null) {
+        final ahamAIPath = '${directory.path}/AhamAI';
         
-        if (androidInfo.version.sdkInt >= 30) {
-          // Android 11+ (API 30+) - Use app-specific directory first (no permission needed)
-          print('Using app-specific external directory for Android 11+');
-          try {
-            final directory = await getExternalStorageDirectory();
-            if (directory != null) {
-              final ahamAIPath = '${directory.path}/AhamAI';
-              
-              print('Creating app-specific directory: $ahamAIPath');
-              final ahamAIDirectory = Directory(ahamAIPath);
-              if (!await ahamAIDirectory.exists()) {
-                await ahamAIDirectory.create(recursive: true);
-              }
-              
-              final filePath = '$ahamAIPath/$fileName';
-              print('Saving to app-specific external: $filePath');
-              final file = File(filePath);
-              await file.writeAsBytes(bytes);
-              print('File saved to app-specific external storage successfully');
-              return true;
-            }
-          } catch (e) {
-            print('App-specific external storage failed: $e');
-          }
-        } else {
-          // Android 10 and below - Try Downloads folder
-          print('Attempting to save to Downloads folder...');
-          try {
-            final directory = await getExternalStorageDirectory();
-            if (directory != null) {
-              final downloadsPath = '${directory.parent.parent.parent.parent.path}/Download';
-              final ahamAIPath = '$downloadsPath/AhamAI';
-              
-              print('Creating Downloads directory: $ahamAIPath');
-              final ahamAIDirectory = Directory(ahamAIPath);
-              if (!await ahamAIDirectory.exists()) {
-                await ahamAIDirectory.create(recursive: true);
-              }
-              
-              final filePath = '$ahamAIPath/$fileName';
-              print('Saving file to Downloads: $filePath');
-              final file = File(filePath);
-              await file.writeAsBytes(bytes);
-              print('File saved to Downloads successfully');
-              return true;
-            }
-          } catch (e) {
-            print('Downloads folder failed: $e');
-          }
+        // Create AhamAI folder
+        final ahamAIDirectory = Directory(ahamAIPath);
+        if (!await ahamAIDirectory.exists()) {
+          await ahamAIDirectory.create(recursive: true);
         }
+        
+        // Save file
+        final filePath = '$ahamAIPath/$fileName';
+        final file = File(filePath);
+        await file.writeAsBytes(bytes);
+        
+        print('✅ File saved successfully to: $filePath');
+        return {
+          'success': true,
+          'path': 'App Storage/AhamAI/$fileName',
+          'fullPath': filePath,
+        };
+      } else {
+        throw Exception('External storage not available');
       }
-      
-      // Fallback to app documents directory (always works, no permission needed)
-      print('Using app documents directory as fallback...');
-      final directory = await getApplicationDocumentsDirectory();
-      final ahamAIPath = '${directory.path}/AhamAI';
-      
-      print('Creating app documents directory: $ahamAIPath');
-      final ahamAIDirectory = Directory(ahamAIPath);
-      if (!await ahamAIDirectory.exists()) {
-        await ahamAIDirectory.create(recursive: true);
+    } catch (e) {
+      print('❌ Save failed: $e');
+      // Try app documents as absolute fallback
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        final ahamAIPath = '${directory.path}/AhamAI';
+        
+        final ahamAIDirectory = Directory(ahamAIPath);
+        if (!await ahamAIDirectory.exists()) {
+          await ahamAIDirectory.create(recursive: true);
+        }
+        
+        final filePath = '$ahamAIPath/$fileName';
+        final file = File(filePath);
+        await file.writeAsBytes(bytes);
+        
+        print('✅ File saved to app documents: $filePath');
+        return {
+          'success': true,
+          'path': 'Documents/AhamAI/$fileName',
+          'fullPath': filePath,
+        };
+      } catch (finalError) {
+        print('❌ Final save attempt failed: $finalError');
+        return {
+          'success': false,
+          'error': 'Unable to save file: $finalError',
+        };
       }
-      
-      final filePath = '$ahamAIPath/$fileName';
-      print('Saving to app documents: $filePath');
-      final file = File(filePath);
-      await file.writeAsBytes(bytes);
-      print('File saved to app documents successfully');
-      return true;
-      
-    } catch (appError) {
-      print('All save methods failed: $appError');
-      return false;
     }
   }
 }
