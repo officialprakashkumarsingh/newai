@@ -307,7 +307,7 @@ Generate realistic data relevant to: $prompt''',
       case 'radar': return const Icon(Icons.radar, size: 20);
       case 'area': return const Icon(Icons.area_chart, size: 20);
       case 'flowchart': return const Icon(Icons.account_tree, size: 20);
-      case 'mindmap': return const Icon(Icons.psychology, size: 20);
+      case 'mindmap': return const Icon(Icons.account_tree, size: 20);
       case 'gantt': return const Icon(Icons.timeline, size: 20);
       case 'orgchart': return const Icon(Icons.corporate_fare, size: 20);
       case 'network': return const Icon(Icons.hub, size: 20);
@@ -1178,71 +1178,88 @@ class MindMapPainter extends CustomPainter {
       Offset(center.dx - centerTextPainter.width / 2, center.dy - centerTextPainter.height / 2),
     );
 
-    // Draw branches
-    final angleStep = 2 * math.pi / branches.length;
+    // Draw branches with improved spacing
+    final branchRadius = math.max(150, branches.length * 25.0); // Dynamic radius based on branch count
+    final angleStep = 2 * math.pi / math.max(branches.length, 4); // Ensure minimum spacing
+    
     for (int i = 0; i < branches.length; i++) {
       final branch = branches[i];
       final angle = i * angleStep;
       final branchCenter = Offset(
-        center.dx + 120 * math.cos(angle),
-        center.dy + 120 * math.sin(angle),
+        center.dx + branchRadius * math.cos(angle),
+        center.dy + branchRadius * math.sin(angle),
       );
 
       // Draw connection line
       final linePaint = Paint()
-        ..color = Colors.grey
-        ..strokeWidth = 2;
+        ..color = Colors.grey.shade600
+        ..strokeWidth = 3;
       canvas.drawLine(center, branchCenter, linePaint);
 
-      // Draw branch node
+      // Draw branch node with better sizing
       final color = DiagramService._getColorFromString(branch['color'] ?? 'green');
       paint.color = color;
-      canvas.drawCircle(branchCenter, 30, paint);
+      canvas.drawCircle(branchCenter, 35, paint);
 
-      // Draw branch text
+      // Draw branch text with word wrapping
+      final branchText = branch['title'] ?? 'Branch';
+      final words = branchText.split(' ');
+      final displayText = words.length > 2 ? '${words.take(2).join(' ')}...' : branchText;
+      
       final branchTextPainter = TextPainter(
         text: TextSpan(
-          text: branch['title'] ?? 'Branch',
-          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+          text: displayText,
+          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
         ),
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
       );
-      branchTextPainter.layout();
+      branchTextPainter.layout(maxWidth: 60);
       branchTextPainter.paint(
         canvas,
         Offset(branchCenter.dx - branchTextPainter.width / 2, branchCenter.dy - branchTextPainter.height / 2),
       );
 
-      // Draw sub-branches
+      // Draw sub-branches with improved positioning
       final subbranches = branch['subbranches'] as List<dynamic>? ?? [];
-      final subAngleStep = math.pi / 3 / subbranches.length;
-      for (int j = 0; j < subbranches.length; j++) {
-        final subAngle = angle + (j - subbranches.length / 2) * subAngleStep;
-        final subCenter = Offset(
-          branchCenter.dx + 60 * math.cos(subAngle),
-          branchCenter.dy + 60 * math.sin(subAngle),
-        );
+      if (subbranches.isNotEmpty) {
+        final subRadius = 80; // Fixed sub-branch radius
+        final subAngleRange = math.pi / 2; // 90 degree spread for sub-branches
+        final subAngleStep = subAngleRange / math.max(subbranches.length - 1, 1);
+        final startSubAngle = angle - subAngleRange / 2;
+        
+        for (int j = 0; j < subbranches.length; j++) {
+          final subAngle = startSubAngle + (j * subAngleStep);
+          final subCenter = Offset(
+            branchCenter.dx + subRadius * math.cos(subAngle),
+            branchCenter.dy + subRadius * math.sin(subAngle),
+          );
 
-        // Draw sub-connection
-        canvas.drawLine(branchCenter, subCenter, linePaint);
+          // Draw sub-connection
+          canvas.drawLine(branchCenter, subCenter, linePaint);
 
-        // Draw sub-node
-        paint.color = color.withOpacity(0.7);
-        canvas.drawCircle(subCenter, 15, paint);
+          // Draw sub-node
+          paint.color = color.withOpacity(0.8);
+          canvas.drawCircle(subCenter, 20, paint);
 
-        // Draw sub-text
-        final subTextPainter = TextPainter(
-          text: TextSpan(
-            text: subbranches[j].toString(),
-            style: const TextStyle(color: Colors.white, fontSize: 8),
-          ),
-          textDirection: TextDirection.ltr,
-        );
-        subTextPainter.layout();
-        subTextPainter.paint(
-          canvas,
-          Offset(subCenter.dx - subTextPainter.width / 2, subCenter.dy - subTextPainter.height / 2),
-        );
+          // Draw sub-text with truncation
+          final subText = subbranches[j].toString();
+          final truncatedSubText = subText.length > 12 ? '${subText.substring(0, 12)}...' : subText;
+          
+          final subTextPainter = TextPainter(
+            text: TextSpan(
+              text: truncatedSubText,
+              style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w500),
+            ),
+            textDirection: TextDirection.ltr,
+            textAlign: TextAlign.center,
+          );
+          subTextPainter.layout(maxWidth: 35);
+          subTextPainter.paint(
+            canvas,
+            Offset(subCenter.dx - subTextPainter.width / 2, subCenter.dy - subTextPainter.height / 2),
+          );
+        }
       }
     }
   }
