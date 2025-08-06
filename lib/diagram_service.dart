@@ -925,14 +925,7 @@ Generate realistic data relevant to: $prompt''',
       showStyledSnackBar(context, 'Saving diagram...');
 
       final boundary = chartKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null) {
-        showStyledSnackBar(
-          context, 
-          'Error: Could not capture diagram. Please try again.',
-          backgroundColor: Colors.red.shade600,
-        );
-        return;
-      }
+      if (boundary == null) return;
 
       final image = await boundary.toImage(pixelRatio: 4.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -942,75 +935,49 @@ Generate realistic data relevant to: $prompt''',
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         final fileName = '${title.replaceAll(' ', '_')}_${type}_$timestamp.png';
         
-        final result = await _saveImageToAhamAIFolder(uint8List, fileName);
-        if (result['success']) {
+        final success = await _saveImageToAhamAIFolder(uint8List, fileName);
+        if (success) {
           showStyledSnackBar(
             context, 
-            'Diagram saved as $fileName\nLocation: ${result['path']}',
+            'Diagram saved as $fileName',
             backgroundColor: Colors.green.shade600,
-            duration: const Duration(seconds: 4),
           );
         } else {
           showStyledSnackBar(
             context, 
-            'Error saving diagram: ${result['error']}',
+            'Error saving diagram',
             backgroundColor: Colors.red.shade600,
-            duration: const Duration(seconds: 3),
           );
         }
-      } else {
-        showStyledSnackBar(
-          context, 
-          'Error capturing diagram image',
-          backgroundColor: Colors.red.shade600,
-        );
       }
     } catch (error) {
-      print('Error in downloadDiagram: $error');
       showStyledSnackBar(
         context, 
-        'Error saving diagram: ${error.toString()}',
+        'Error saving diagram: $error',
         backgroundColor: Colors.red.shade600,
-        duration: const Duration(seconds: 4),
       );
     }
   }
 
 
 
-  static Future<Map<String, dynamic>> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
-    // Simple, reliable approach - just use app external directory (no permissions needed)
+  static Future<bool> _saveImageToAhamAIFolder(Uint8List bytes, String fileName) async {
     try {
-      print('Saving image with simplified approach...');
-      
-      // Get app-specific external directory (no permission required)
       final directory = await getExternalStorageDirectory();
-      if (directory != null) {
-        final ahamAIPath = '${directory.path}/AhamAI';
-        
-        // Create AhamAI folder
-        final ahamAIDirectory = Directory(ahamAIPath);
-        if (!await ahamAIDirectory.exists()) {
-          await ahamAIDirectory.create(recursive: true);
-        }
-        
-        // Save file
-        final filePath = '$ahamAIPath/$fileName';
-        final file = File(filePath);
-        await file.writeAsBytes(bytes);
-        
-        print('✅ File saved successfully to: $filePath');
-        return {
-          'success': true,
-          'path': 'App Storage/AhamAI/$fileName',
-          'fullPath': filePath,
-        };
-      } else {
-        throw Exception('External storage not available');
+      final downloadsPath = '${directory!.parent.parent.parent.parent.path}/Download';
+      final ahamAIPath = '$downloadsPath/AhamAI';
+      
+      // Create AhamAI folder if it doesn't exist
+      final ahamAIDirectory = Directory(ahamAIPath);
+      if (!await ahamAIDirectory.exists()) {
+        await ahamAIDirectory.create(recursive: true);
       }
-    } catch (e) {
-      print('❌ Save failed: $e');
-      // Try app documents as absolute fallback
+      
+      final file = File('$ahamAIPath/$fileName');
+      await file.writeAsBytes(bytes);
+      return true; // Indicate success
+    } catch (error) {
+      // Fallback to app directory
       try {
         final directory = await getApplicationDocumentsDirectory();
         final ahamAIPath = '${directory.path}/AhamAI';
@@ -1020,22 +987,11 @@ Generate realistic data relevant to: $prompt''',
           await ahamAIDirectory.create(recursive: true);
         }
         
-        final filePath = '$ahamAIPath/$fileName';
-        final file = File(filePath);
+        final file = File('$ahamAIPath/$fileName');
         await file.writeAsBytes(bytes);
-        
-        print('✅ File saved to app documents: $filePath');
-        return {
-          'success': true,
-          'path': 'Documents/AhamAI/$fileName',
-          'fullPath': filePath,
-        };
-      } catch (finalError) {
-        print('❌ Final save attempt failed: $finalError');
-        return {
-          'success': false,
-          'error': 'Unable to save file: $finalError',
-        };
+        return true; // Indicate success
+      } catch (appError) {
+        return false; // Both methods failed
       }
     }
   }
