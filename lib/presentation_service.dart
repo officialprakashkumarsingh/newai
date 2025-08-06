@@ -45,14 +45,16 @@ Use this exact format with ANY NUMBER OF SLIDES based on topic complexity:
       "background": "white"
     },
     {
-      "type": "image",
-      "title": "Visual Slide",
-      "content": [
-        "Description of what would be shown",
-        "Key visual elements"
+      "type": "formula",
+      "title": "Mathematical Formula",
+      "formula": "E = mc²",
+      "explanation": "Einstein's mass-energy equivalence equation",
+      "variables": [
+        {"symbol": "E", "meaning": "Energy"},
+        {"symbol": "m", "meaning": "Mass"},
+        {"symbol": "c", "meaning": "Speed of light"}
       ],
-      "image_description": "A diagram showing the process flow",
-      "background": "light"
+      "background": "white"
     },
     {
       "type": "comparison",
@@ -133,17 +135,70 @@ Use this exact format with ANY NUMBER OF SLIDES based on topic complexity:
       ],
       "background": "light"
     },
-    {
-      "type": "agenda",
-      "title": "Today's Agenda",
-      "items": [
-        {"time": "9:00 AM", "topic": "Welcome & Introductions"},
-        {"time": "9:30 AM", "topic": "Project Overview"},
-        {"time": "10:15 AM", "topic": "Technical Deep Dive"},
-        {"time": "11:00 AM", "topic": "Q&A Session"}
-      ],
-      "background": "blue"
-    },
+         {
+       "type": "agenda",
+       "title": "Today's Agenda",
+       "items": [
+         {"time": "9:00 AM", "topic": "Welcome & Introductions"},
+         {"time": "9:30 AM", "topic": "Project Overview"},
+         {"time": "10:15 AM", "topic": "Technical Deep Dive"},
+         {"time": "11:00 AM", "topic": "Q&A Session"}
+       ],
+       "background": "blue"
+     },
+     {
+       "type": "financial",
+       "title": "Financial Analysis",
+       "metrics": [
+         {"label": "Revenue", "value": "\$2.5M", "change": "+15%", "trend": "up"},
+         {"label": "Profit Margin", "value": "23%", "change": "+3%", "trend": "up"},
+         {"label": "Expenses", "value": "\$1.9M", "change": "-5%", "trend": "down"}
+       ],
+       "background": "light"
+     },
+     {
+       "type": "scientific",
+       "title": "Research Results",
+       "hypothesis": "Increased temperature affects reaction rate",
+       "methodology": "Controlled experiment with 3 temperature conditions",
+       "results": [
+         "25°C: 2.3 mol/L reaction rate",
+         "50°C: 4.8 mol/L reaction rate", 
+         "75°C: 8.1 mol/L reaction rate"
+       ],
+       "conclusion": "Reaction rate doubles approximately every 25°C increase",
+       "background": "white"
+     },
+     {
+       "type": "data_table",
+       "title": "Performance Metrics",
+       "headers": ["Quarter", "Sales", "Growth", "Target"],
+       "rows": [
+         ["Q1 2024", "\$1.2M", "8%", "\$1.1M"],
+         ["Q2 2024", "\$1.5M", "12%", "\$1.3M"],
+         ["Q3 2024", "\$1.8M", "15%", "\$1.6M"]
+       ],
+       "background": "light"
+     },
+     {
+       "type": "flowchart",
+       "title": "Process Flow",
+       "steps": [
+         {"id": "start", "text": "Start Process", "type": "start"},
+         {"id": "step1", "text": "Collect Data", "type": "process"},
+         {"id": "decision", "text": "Valid Data?", "type": "decision"},
+         {"id": "step2", "text": "Process Data", "type": "process"},
+         {"id": "end", "text": "Generate Report", "type": "end"}
+       ],
+       "connections": [
+         {"from": "start", "to": "step1"},
+         {"from": "step1", "to": "decision"},
+         {"from": "decision", "to": "step2", "label": "Yes"},
+         {"from": "decision", "to": "step1", "label": "No"},
+         {"from": "step2", "to": "end"}
+       ],
+       "background": "white"
+     },
     {
       "type": "conclusion",
       "title": "Key Takeaways",
@@ -160,7 +215,7 @@ Use this exact format with ANY NUMBER OF SLIDES based on topic complexity:
 SLIDE TYPES AVAILABLE:
 - "title": Opening slide with main title and subtitle
 - "content": Standard bullet points and text content
-- "image": Visual content with descriptions
+- "formula": Mathematical formulas with variable explanations
 - "comparison": Side-by-side comparison (before/after, options)
 - "statistics": Key numbers and metrics with descriptions
 - "timeline": Chronological events or milestones
@@ -169,6 +224,10 @@ SLIDE TYPES AVAILABLE:
 - "pros_cons": Advantages and disadvantages analysis
 - "team": Team member introductions
 - "agenda": Meeting or presentation schedule
+- "financial": Financial metrics with trends and changes
+- "scientific": Research results with hypothesis and methodology
+- "data_table": Tabular data with headers and rows
+- "flowchart": Process flowcharts with decision points
 - "conclusion": Final takeaways and next steps
 
 Generate AS MANY SLIDES AS NEEDED to thoroughly cover the topic. For complex topics, create 10-15+ slides. For simple topics, 5-8 slides are fine. Make content detailed and professional.
@@ -413,9 +472,10 @@ Topic: $topic''',
         );
         break;
         
-      case 'image':
-        final List<dynamic> contentList = slide['content'] ?? [];
-        final String imageDesc = slide['image_description'] ?? 'Visual content';
+      case 'formula':
+        final String formula = slide['formula'] ?? '';
+        final String explanation = slide['explanation'] ?? '';
+        final List<dynamic> variables = slide['variables'] ?? [];
         
         content = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,56 +489,80 @@ Topic: $topic''',
               ),
             ),
             SizedBox(height: padding),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.image_rounded,
-                              size: isPreview ? 24 : 48,
-                              color: Colors.grey.shade600,
-                            ),
-                            SizedBox(height: padding / 2),
-                            Text(
-                              imageDesc,
-                              style: TextStyle(
-                                fontSize: fontSize * 0.9,
-                                color: Colors.grey.shade600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: padding),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: contentList.map((item) => Padding(
-                        padding: EdgeInsets.only(bottom: padding / 2),
-                        child: Text(
-                          item.toString(),
-                          style: TextStyle(fontSize: fontSize, color: textColor),
-                        ),
-                      )).toList(),
-                    ),
-                  ),
-                ],
+            // Formula display
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(padding),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.blue.withOpacity(0.3)),
+              ),
+              child: Text(
+                formula,
+                style: TextStyle(
+                  fontSize: titleSize * 1.5,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
+                  fontFamily: 'Courier',
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
+            SizedBox(height: padding),
+            // Explanation
+            Text(
+              explanation,
+              style: TextStyle(
+                fontSize: fontSize * 1.1,
+                color: textColor,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            SizedBox(height: padding),
+            // Variables
+            if (variables.isNotEmpty) ...[
+              Text(
+                'Variables:',
+                style: TextStyle(
+                  fontSize: fontSize * 1.1,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+              ),
+              SizedBox(height: padding / 2),
+              ...variables.map((variable) => Padding(
+                padding: EdgeInsets.only(bottom: padding / 4),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade600,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: Text(
+                          variable['symbol'] ?? '',
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Courier',
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: padding / 2),
+                    Text(
+                      '= ${variable['meaning'] ?? ''}',
+                      style: TextStyle(fontSize: fontSize, color: textColor),
+                    ),
+                  ],
+                ),
+              )).toList(),
+            ],
           ],
         );
         break;
@@ -983,6 +1067,260 @@ Topic: $topic''',
         );
         break;
         
+      case 'financial':
+        final List<dynamic> metrics = slide['metrics'] ?? [];
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: isPreview ? 1 : 2,
+                childAspectRatio: isPreview ? 4 : 2,
+                children: metrics.map((metric) {
+                  final trend = metric['trend'] ?? 'neutral';
+                  final trendColor = trend == 'up' ? Colors.green : trend == 'down' ? Colors.red : Colors.grey;
+                  final trendIcon = trend == 'up' ? Icons.trending_up : trend == 'down' ? Icons.trending_down : Icons.trending_flat;
+                  
+                  return Container(
+                    margin: EdgeInsets.all(padding / 4),
+                    padding: EdgeInsets.all(padding / 2),
+                    decoration: BoxDecoration(
+                      color: trendColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: trendColor.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              metric['value'] ?? '0',
+                              style: TextStyle(
+                                fontSize: titleSize * 0.8,
+                                fontWeight: FontWeight.bold,
+                                color: trendColor,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Icon(trendIcon, color: trendColor, size: fontSize * 1.2),
+                          ],
+                        ),
+                        Text(
+                          metric['label'] ?? '',
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.w600,
+                            color: textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          metric['change'] ?? '',
+                          style: TextStyle(
+                            fontSize: fontSize * 0.9,
+                            color: trendColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        );
+        break;
+        
+      case 'scientific':
+        final String hypothesis = slide['hypothesis'] ?? '';
+        final String methodology = slide['methodology'] ?? '';
+        final List<dynamic> results = slide['results'] ?? [];
+        final String conclusion = slide['conclusion'] ?? '';
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildScienceSection('Hypothesis:', hypothesis, Colors.blue, fontSize, textColor, padding),
+                    _buildScienceSection('Methodology:', methodology, Colors.orange, fontSize, textColor, padding),
+                    if (results.isNotEmpty) ...[
+                      Text(
+                        'Results:',
+                        style: TextStyle(
+                          fontSize: fontSize * 1.1,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade700,
+                        ),
+                      ),
+                      SizedBox(height: padding / 4),
+                      ...results.map((result) => Padding(
+                        padding: EdgeInsets.only(bottom: padding / 4, left: padding / 2),
+                        child: Text(
+                          '• $result',
+                          style: TextStyle(fontSize: fontSize * 0.9, color: textColor),
+                        ),
+                      )).toList(),
+                      SizedBox(height: padding / 2),
+                    ],
+                    _buildScienceSection('Conclusion:', conclusion, Colors.purple, fontSize, textColor, padding),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+        
+      case 'data_table':
+        final List<dynamic> headers = slide['headers'] ?? [];
+        final List<dynamic> rows = slide['rows'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(Colors.blue.withOpacity(0.1)),
+                    border: TableBorder.all(color: Colors.grey.shade300),
+                    columns: headers.map((header) => DataColumn(
+                      label: Text(
+                        header.toString(),
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade700,
+                        ),
+                      ),
+                    )).toList(),
+                    rows: rows.map((row) => DataRow(
+                      cells: (row as List).map((cell) => DataCell(
+                        Text(
+                          cell.toString(),
+                          style: TextStyle(fontSize: fontSize * 0.9, color: textColor),
+                        ),
+                      )).toList(),
+                    )).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+        
+      case 'flowchart':
+        final List<dynamic> steps = slide['steps'] ?? [];
+        final List<dynamic> connections = slide['connections'] ?? [];
+        
+        content = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              slideTitle,
+              style: TextStyle(
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(height: padding),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: padding,
+                  runSpacing: padding,
+                  children: steps.map((step) {
+                    final stepType = step['type'] ?? 'process';
+                    Color stepColor = Colors.blue;
+                    IconData stepIcon = Icons.circle;
+                    
+                    switch (stepType) {
+                      case 'start':
+                        stepColor = Colors.green;
+                        stepIcon = Icons.play_circle;
+                        break;
+                      case 'end':
+                        stepColor = Colors.red;
+                        stepIcon = Icons.stop_circle;
+                        break;
+                      case 'decision':
+                        stepColor = Colors.orange;
+                        stepIcon = Icons.help_outline;
+                        break;
+                      default:
+                        stepColor = Colors.blue;
+                        stepIcon = Icons.circle;
+                    }
+                    
+                    return Container(
+                      width: isPreview ? 80 : 120,
+                      padding: EdgeInsets.all(padding / 2),
+                      decoration: BoxDecoration(
+                        color: stepColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: stepColor),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(stepIcon, color: stepColor, size: fontSize * 1.5),
+                          SizedBox(height: padding / 4),
+                          Text(
+                            step['text'] ?? '',
+                            style: TextStyle(
+                              fontSize: fontSize * 0.8,
+                              color: textColor,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+        break;
+        
       default: // content and conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
         content = Column(
@@ -1019,6 +1357,37 @@ Topic: $topic''',
     );
   }
 
+  static Widget _buildScienceSection(String title, String content, Color color, double fontSize, Color textColor, double padding) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: fontSize * 1.1,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        SizedBox(height: padding / 4),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(padding / 2),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: color.withOpacity(0.3)),
+          ),
+          child: Text(
+            content,
+            style: TextStyle(fontSize: fontSize * 0.9, color: textColor),
+          ),
+        ),
+        SizedBox(height: padding / 2),
+      ],
+    );
+  }
+
   static Color _getBackgroundColor(String background, BuildContext context) {
     switch (background) {
       case 'blue': return Colors.blue.shade600;
@@ -1035,6 +1404,9 @@ Topic: $topic''',
       case 'dark':
       case 'gradient':
         return Colors.white;
+      case 'light':
+      case 'white':
+        return Colors.black87;
       default:
         return Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
     }
@@ -1106,10 +1478,11 @@ Topic: $topic''',
 
     double yPosition = 60;
     
-    // Title
+    // Title (with font fallback for special characters)
     if (slideTitle.isNotEmpty) {
+      final cleanTitle = _cleanTextForPDF(slideTitle);
       graphics.drawString(
-        slideTitle,
+        cleanTitle,
         PdfStandardFont(PdfFontFamily.helvetica, 24, style: PdfFontStyle.bold),
         brush: PdfSolidBrush(pdfTextColor),
         bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
@@ -1455,8 +1828,9 @@ Topic: $topic''',
       default: // content, image, conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
         for (final item in contentList) {
+          final cleanText = _cleanTextForPDF(item.toString());
           graphics.drawString(
-            item.toString(),
+            cleanText,
             PdfStandardFont(PdfFontFamily.helvetica, 14),
             brush: PdfSolidBrush(pdfTextColor),
             bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 25),
@@ -1493,4 +1867,33 @@ Topic: $topic''',
     }
   }
 
+  // Clean text for PDF rendering to avoid font issues
+  static String _cleanTextForPDF(String text) {
+    return text
+        .replaceAll('•', '-') // Replace bullets
+        .replaceAll('"', '"') // Replace smart quotes
+        .replaceAll('"', '"')
+        .replaceAll(''', "'") // Replace smart apostrophes
+        .replaceAll(''', "'")
+        .replaceAll('–', '-') // Replace en-dash
+        .replaceAll('—', '--') // Replace em-dash
+        .replaceAll('°', ' degrees') // Replace degree symbol
+        .replaceAll('²', '2') // Replace superscript
+        .replaceAll('³', '3')
+        .replaceAll('α', 'alpha') // Replace Greek letters
+        .replaceAll('β', 'beta')
+        .replaceAll('γ', 'gamma')
+        .replaceAll('δ', 'delta')
+        .replaceAll('π', 'pi')
+        .replaceAll('Σ', 'Sigma')
+        .replaceAll('∞', 'infinity')
+        .replaceAll('≈', 'approx')
+        .replaceAll('≤', '<=')
+        .replaceAll('≥', '>=')
+        .replaceAll('±', '+/-')
+        .replaceAll('×', 'x')
+        .replaceAll('÷', '/')
+        .replaceAll('√', 'sqrt')
+        .replaceAll('∆', 'Delta');
+  }
 }
