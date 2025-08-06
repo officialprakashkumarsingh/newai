@@ -643,14 +643,19 @@ Based on the context above, answer the following prompt: $input""";
 
   Future<Map<String, dynamic>?> _generateDiagramData(String prompt) async {
     try {
-      // Use AI to generate structured data for the diagram
-      final response = await ApiService.sendChatMessage(
+      print('Starting diagram generation for: $prompt');
+      
+      // Collect the complete AI response from the stream
+      String fullResponse = '';
+      await for (final chunk in ApiService.sendChatMessage(
         message: '''Create structured data for this diagram request: "$prompt"
 
-Please respond with ONLY a JSON object in this exact format (no markdown, no explanation):
+IMPORTANT: Respond with ONLY a valid JSON object (no markdown, no explanation, no extra text).
+
+For bar/line/pie charts, use this exact format:
 {
-  "type": "bar|line|pie|flowchart",
-  "title": "Chart Title",
+  "type": "bar",
+  "title": "Your Chart Title",
   "data": [
     {"label": "Category 1", "value": 25},
     {"label": "Category 2", "value": 35},
@@ -658,7 +663,7 @@ Please respond with ONLY a JSON object in this exact format (no markdown, no exp
   ]
 }
 
-For flowcharts, use this format:
+For flowcharts, use this exact format:
 {
   "type": "flowchart",
   "title": "Process Title",
@@ -671,26 +676,49 @@ For flowcharts, use this format:
     {"from": "start", "to": "step1"},
     {"from": "step1", "to": "end"}
   ]
-}''',
+}
+
+Valid types: "bar", "line", "pie", "flowchart"
+Generate realistic data relevant to: $prompt''',
         model: _selectedChatModel,
-      ).first;
+      )) {
+        fullResponse += chunk;
+      }
+
+      print('AI Response: $fullResponse');
+      
+      // Clean the response - remove markdown formatting if present
+      String cleanResponse = fullResponse.trim();
+      if (cleanResponse.startsWith('```json')) {
+        cleanResponse = cleanResponse.substring(7);
+      }
+      if (cleanResponse.startsWith('```')) {
+        cleanResponse = cleanResponse.substring(3);
+      }
+      if (cleanResponse.endsWith('```')) {
+        cleanResponse = cleanResponse.substring(0, cleanResponse.length - 3);
+      }
+      
+      cleanResponse = cleanResponse.trim();
+      print('Cleaned Response: $cleanResponse');
 
       // Parse the JSON response
-      final jsonStr = response.trim();
-      final jsonData = json.decode(jsonStr);
-      return jsonData;
+      final jsonData = json.decode(cleanResponse);
+      print('Parsed JSON: $jsonData');
+      
+      // Validate the response structure
+      if (jsonData is Map<String, dynamic> && 
+          jsonData.containsKey('type') && 
+          jsonData.containsKey('title')) {
+        return jsonData;
+      } else {
+        throw Exception('Invalid response structure from AI');
+      }
+      
     } catch (error) {
       print('Error generating diagram data: $error');
-      // Return sample data as fallback
-      return {
-        "type": "bar",
-        "title": "Sample Chart",
-        "data": [
-          {"label": "A", "value": 30},
-          {"label": "B", "value": 50},
-          {"label": "C", "value": 20}
-        ]
-      };
+      // Don't use fallback - return null to show error
+      return null;
     }
   }
 
