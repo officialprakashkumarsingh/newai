@@ -16,157 +16,106 @@ class ThinkingPanel extends StatefulWidget {
   State<ThinkingPanel> createState() => _ThinkingPanelState();
 }
 
-class _ThinkingPanelState extends State<ThinkingPanel>
-    with SingleTickerProviderStateMixin {
+class _ThinkingPanelState extends State<ThinkingPanel> {
   bool _isExpanded = false;
-  late AnimationController _animationController;
-  late Animation<double> _rotationAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.5,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _toggleExpanded() {
-    setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final bool hasFinalContent = widget.finalContent.isNotEmpty;
-    
+    final hasThinking = widget.thinkingContent.trim().isNotEmpty;
+    final hasFinalContent = widget.finalContent.trim().isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Thinking toggle button
-        GestureDetector(
-          onTap: _toggleExpanded,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: isLightTheme(context) 
-                  ? const Color(0xFFF8F9FA)
-                  : Colors.grey.shade800,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
+        // Thinking panel (if there's thinking content)
+        if (hasThinking) ...[
+          GestureDetector(
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFFE1E5E9)
-                    : Colors.grey.shade600,
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.psychology,
-                  size: 16,
-                  color: isLightTheme(context) 
-                      ? const Color(0xFF6B7280)
-                      : Colors.grey.shade400,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Thinking...',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: isLightTheme(context) 
-                        ? const Color(0xFF6B7280)
-                        : Colors.grey.shade400,
+                    ? const Color(0xFFFBFBFC) // Very subtle blue-gray
+                    : const Color(0xFF1A1D21),
+                borderRadius: BorderRadius.circular(8),
+                // Removed border for cleaner look
+                boxShadow: isLightTheme(context) ? [
+                  BoxShadow(
+                    color: const Color(0xFF000000).withOpacity(0.02),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
                   ),
-                ),
-                const SizedBox(width: 4),
-                AnimatedBuilder(
-                  animation: _rotationAnimation,
-                  builder: (context, child) {
-                    return Transform.rotate(
-                      angle: _rotationAnimation.value * 3.14159,
-                      child: Icon(
-                        Icons.expand_more,
-                        size: 16,
+                ] : null,
+              ),
+              child: Row(
+                children: [
+                                      Text(
+                      'Thinking...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         color: isLightTheme(context) 
-                            ? const Color(0xFF6B7280)
+                            ? const Color(0xFF374151) // Darker text for better contrast
                             : Colors.grey.shade400,
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ),
+                  const Spacer(),
+                  Icon(
+                    _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    size: 18,
+                    color: isLightTheme(context) 
+                        ? Colors.grey.shade500 
+                        : Colors.grey.shade500,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        
-        const SizedBox(height: 8),
-        
-        // Thinking content (collapsible)
-        if (_isExpanded)
-          Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isLightTheme(context) 
-                  ? const Color(0xFFFAFBFC)
-                  : Colors.grey[850] ?? Colors.grey.shade800,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
+          
+          // Expanded thinking content
+          if (_isExpanded)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFFE1E5E9)
-                    : Colors.grey.shade700,
-                width: 1,
+                    ? const Color(0xFFF9FAFB) // Very subtle background
+                    : const Color(0xFF0F1419),
+                borderRadius: BorderRadius.circular(8),
+                // Removed border for cleaner look
+                boxShadow: isLightTheme(context) ? [
+                  BoxShadow(
+                    color: const Color(0xFF000000).withOpacity(0.02),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ] : null,
               ),
-              boxShadow: isLightTheme(context) ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ] : null,
-            ),
-            child: MarkdownBody(
-              data: widget.thinkingContent,
-              selectable: false,
-              styleSheet: MarkdownStyleSheet(
-                p: TextStyle(
-                  fontSize: 14,
-                  color: isLightTheme(context) 
-                      ? const Color(0xFF374151)
-                      : Colors.grey.shade300,
-                  height: 1.5,
+                              child: MarkdownBody(
+                data: widget.thinkingContent,
+                selectable: false,
+                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                  p: TextStyle(
+                    fontSize: 14,
+                    color: isLightTheme(context) 
+                        ? const Color(0xFF374151)
+                        : Colors.grey.shade300,
+                    height: 1.5,
+                  ),
                 ),
               ),
             ),
-          ),
+        ],
         
         // Final content (if any)
         if (hasFinalContent)
           MarkdownBody(
             data: widget.finalContent,
             selectable: true,
+            styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
           ),
       ],
     );
