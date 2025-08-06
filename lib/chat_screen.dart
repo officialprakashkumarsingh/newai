@@ -567,7 +567,10 @@ Based on the context above, answer the following prompt: $input""";
       
       // Precache the image
       await precacheImage(NetworkImage(imageUrl), context);
-      if (mounted) setState(() => _messages[placeholderIndex] = imageMessage);
+      if (mounted) {
+        setState(() => _messages[placeholderIndex] = imageMessage);
+        _saveMessages(); // Save messages after image generation
+      }
     } catch(e) {
       if (mounted) {
         setState(() => _messages[placeholderIndex] = ChatMessage(
@@ -575,6 +578,7 @@ Based on the context above, answer the following prompt: $input""";
           text: '❌ Failed to generate image: ${e.toString()}', 
           type: MessageType.text
         ));
+        _saveMessages(); // Save messages even on error
       }
     } finally {
       _updateChatInfo(false, false);
@@ -1851,62 +1855,68 @@ Generate realistic data relevant to: $prompt''',
 
   Future<void> _saveImage(Uint8List imageBytes) async {
     try {
-      // Request storage permission
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage permission required to save images')),
-        );
-        return;
-      }
-
-      // Get Downloads directory
-      Directory? downloadsDir;
-      if (Platform.isAndroid) {
-        downloadsDir = Directory('/storage/emulated/0/Download');
-        if (!await downloadsDir.exists()) {
-          downloadsDir = await getExternalStorageDirectory();
-        }
-      } else {
-        downloadsDir = await getDownloadsDirectory();
-      }
-
-      if (downloadsDir == null) {
-        throw Exception('Could not access downloads directory');
-      }
-
-      // Create AhamAI folder
-      final ahamAIDir = Directory('${downloadsDir.path}/AhamAI');
-      if (!await ahamAIDir.exists()) {
-        await ahamAIDir.create(recursive: true);
-      }
-
       // Generate filename with timestamp
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final fileName = 'AhamAI_image_$timestamp.png';
-      final filePath = '${ahamAIDir.path}/$fileName';
-
-      // Save the image
-      final file = File(filePath);
+      
+      // Use the same working approach as diagram saving
+      final directory = await getExternalStorageDirectory();
+      final downloadsPath = '${directory!.parent.parent.parent.parent.path}/Download';
+      final ahamAIPath = '$downloadsPath/AhamAI';
+      
+      // Create AhamAI folder if it doesn't exist
+      final ahamAIDirectory = Directory(ahamAIPath);
+      if (!await ahamAIDirectory.exists()) {
+        await ahamAIDirectory.create(recursive: true);
+      }
+      
+      final file = File('$ahamAIPath/$fileName');
       await file.writeAsBytes(imageBytes);
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Image saved to Downloads/AhamAI/$fileName'),
-          action: SnackBarAction(
-            label: 'Open Folder',
-            onPressed: () {
-              // Note: Opening folder programmatically requires additional permissions
-              // For now, just show the path
-            },
-          ),
+          backgroundColor: Colors.green.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save image: $e')),
-      );
+    } catch (error) {
+      // Fallback to app directory
+      try {
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName = 'AhamAI_image_$timestamp.png';
+        
+        final directory = await getApplicationDocumentsDirectory();
+        final ahamAIPath = '${directory.path}/AhamAI';
+        
+        final ahamAIDirectory = Directory(ahamAIPath);
+        if (!await ahamAIDirectory.exists()) {
+          await ahamAIDirectory.create(recursive: true);
+        }
+        
+        final file = File('$ahamAIPath/$fileName');
+        await file.writeAsBytes(imageBytes);
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Image saved to app documents: $fileName'),
+            backgroundColor: Colors.green.shade600,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      } catch (appError) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save image: $appError'),
+            backgroundColor: Colors.red.shade600,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
     }
   }
 

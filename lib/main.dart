@@ -932,52 +932,13 @@ class ProfileSettingsScreen extends StatefulWidget {
 }
 
 class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
-  String _selectedChatModel = '';
-  List<String> _availableModels = [];
-  bool _isLoadingModels = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
-    _loadAvailableModels();
   }
 
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _selectedChatModel = prefs.getString('chat_model') ?? '';
-    });
-  }
 
-  Future<void> _loadAvailableModels() async {
-    try {
-      final models = await ApiService.getAvailableModels();
-      setState(() {
-        _availableModels = models;
-        _isLoadingModels = false;
-        
-        // If no model is selected, use the first available model
-        if (_selectedChatModel.isEmpty && models.isNotEmpty) {
-          _selectedChatModel = models.first;
-          _saveChatModel(_selectedChatModel);
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _availableModels = [];
-        _isLoadingModels = false;
-      });
-    }
-  }
-
-  Future<void> _saveChatModel(String model) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('chat_model', model);
-    setState(() {
-      _selectedChatModel = model;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -992,56 +953,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // AI Model Section
-            Text(
-              'Chat AI Model',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            Card(
-              color: Theme.of(context).cardColor,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Select AI Model',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    // Dynamic model list from API
-                    if (_isLoadingModels)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    else if (_availableModels.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Text(
-                          'No models available. Please check your connection.',
-                          style: TextStyle(color: getSecondaryTextColor(context)),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    else
-                      ..._availableModels.map((model) => RadioListTile<String>(
-                        title: Text(_getModelDisplayName(model)),
-                        subtitle: Text(_getModelDescription(model)),
-                        value: model,
-                        groupValue: _selectedChatModel,
-                        onChanged: (val) => _saveChatModel(val!),
-                      )).toList(),
-                  ],
-                ),
-              ),
-            ),
 
-            const SizedBox(height: 24),
 
             // Data Control Section
             Text(
@@ -1095,49 +1007,7 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
     );
   }
 
-  String _getModelDisplayName(String model) {
-    // Clean up model names for better display
-    switch (model.toLowerCase()) {
-      case 'gpt-4o':
-        return 'GPT-4o';
-      case 'gpt-4o-mini':
-        return 'GPT-4o Mini';
-      case 'gpt-3.5-turbo':
-        return 'GPT-3.5 Turbo';
-      case 'deepseek-r1':
-        return 'DeepSeek R1';
-      case 'claude-3-5-sonnet-20241022':
-        return 'Claude 3.5 Sonnet';
-      case 'o1-preview':
-        return 'OpenAI o1 Preview';
-      case 'grok-beta':
-        return 'Grok Beta';
-      default:
-        return model;
-    }
-  }
 
-  String _getModelDescription(String model) {
-    // Provide descriptions for models
-    switch (model.toLowerCase()) {
-      case 'gpt-4o':
-        return 'Advanced multimodal model';
-      case 'gpt-4o-mini':
-        return 'Fast and efficient model';
-      case 'gpt-3.5-turbo':
-        return 'Balanced performance model';
-      case 'deepseek-r1':
-        return 'Advanced reasoning model';
-      case 'claude-3-5-sonnet-20241022':
-        return 'Best for coding tasks';
-      case 'o1-preview':
-        return 'Advanced reasoning model';
-      case 'grok-beta':
-        return 'Experimental model';
-      default:
-        return 'AI language model';
-    }
-  }
 }
 
 // <-- REMOVED isLightTheme from here, moved to theme.dart
