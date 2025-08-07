@@ -224,7 +224,23 @@ class ExternalToolsIntegration {
       buffer.writeln();
     }
 
-    buffer.writeln('Important: When you detect that the user wants to use any of these tools, respond naturally explaining what you will do, and the system will automatically execute the appropriate tool. Do not ask for confirmation or additional details unless absolutely necessary.');
+    buffer.writeln('IMPORTANT GUIDELINES:');
+    buffer.writeln('1. FILE CREATION: Only create files when the user explicitly asks for a file to be created, saved, or downloaded. Do NOT create files for general responses, explanations, or analysis.');
+    buffer.writeln('2. COMMUNICATION: Only use email/WhatsApp/SMS when the user specifically wants to send a message to someone.');
+    buffer.writeln('3. NATURAL RESPONSES: Most of your responses should be regular text without triggering any tools.');
+    buffer.writeln('4. USER INTENT: Pay attention to keywords like "create file", "save as", "download", "send to", "email", "WhatsApp".');
+    buffer.writeln('5. FILE CONTENT: When you do create a file, always show the file content in your response message as well.');
+    buffer.writeln();
+    buffer.writeln('Examples of when NOT to create files:');
+    buffer.writeln('- "Explain SWOT analysis" → Just explain, no file');
+    buffer.writeln('- "What is machine learning?" → Text response only');
+    buffer.writeln('- "Analyze this data" → Provide analysis in text');
+    buffer.writeln();
+    buffer.writeln('Examples of when TO create files:');
+    buffer.writeln('- "Create a SWOT analysis template file"');
+    buffer.writeln('- "Save this analysis as a PDF"');
+    buffer.writeln('- "Generate an HTML report and download it"');
+    buffer.writeln('- "Make a summary.txt file of our conversation"');
     
     return buffer.toString();
   }

@@ -238,30 +238,23 @@ $content
     Map<String, dynamic>? metadata,
   }) async {
     try {
-      String? urlToLaunch;
-      
       switch (operation) {
         case 'send_email':
-          final emailSubject = subject ?? 'Message from AI Assistant';
-          // Use simple mailto URL for best compatibility
-          urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
-          break;
+          return await _handleEmailLaunching(recipient, content, subject);
           
         case 'send_whatsapp':
           // Clean phone number (remove spaces, hyphens, etc.)
           final cleanPhone = recipient.replaceAll(RegExp(r'[^\d+]'), '');
-          urlToLaunch = 'https://wa.me/$cleanPhone?text=${Uri.encodeComponent(content)}';
-          break;
+          final urlToLaunch = 'https://wa.me/$cleanPhone?text=${Uri.encodeComponent(content)}';
+          return await _launchUrl(urlToLaunch, 'WhatsApp');
           
         case 'send_sms':
           // Clean phone number
           final cleanPhone = recipient.replaceAll(RegExp(r'[^\d+]'), '');
-          if (Platform.isIOS) {
-            urlToLaunch = 'sms:$cleanPhone&body=${Uri.encodeComponent(content)}';
-          } else {
-            urlToLaunch = 'sms:$cleanPhone?body=${Uri.encodeComponent(content)}';
-          }
-          break;
+          final urlToLaunch = Platform.isIOS 
+            ? 'sms:$cleanPhone&body=${Uri.encodeComponent(content)}'
+            : 'sms:$cleanPhone?body=${Uri.encodeComponent(content)}';
+          return await _launchUrl(urlToLaunch, 'SMS');
           
         default:
           return {
@@ -270,35 +263,101 @@ $content
           };
       }
       
-      if (urlToLaunch != null) {
-        final uri = Uri.parse(urlToLaunch);
-        final canLaunch = await canLaunchUrl(uri);
-        
-        if (canLaunch) {
-          await launchUrl(uri);
-          return {
-            'success': true,
-            'operation': operation,
-            'message': '${operation.replaceAll('send_', '').toUpperCase()} app opened successfully',
-            'recipient': recipient,
-          };
-        } else {
-          return {
-            'success': false,
-            'error': 'Cannot launch ${operation.replaceAll('send_', '')} app. Make sure you have the app installed.',
-          };
-        }
-      }
-      
-      return {
-        'success': false,
-        'error': 'Failed to prepare $operation',
-      };
-      
     } catch (e) {
       return {
         'success': false,
         'error': 'Communication tool execution failed: $e',
+      };
+    }
+  }
+
+  /// Handle email launching with multiple fallback approaches
+  static Future<Map<String, dynamic>> _handleEmailLaunching(String recipient, String content, String? subject) async {
+    final emailSubject = subject ?? 'Message from AI Assistant';
+    
+    // Try different email URL schemes in order of preference
+    final emailUrls = [
+      // Standard mailto
+      'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}',
+      // Alternative mailto format
+      'mailto:?to=$recipient&subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}',
+      // Simple mailto without parameters (let user fill in)
+      'mailto:$recipient',
+    ];
+
+    for (int i = 0; i < emailUrls.length; i++) {
+      try {
+        final uri = Uri.parse(emailUrls[i]);
+        final canLaunch = await canLaunchUrl(uri);
+        
+        if (canLaunch) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+          return {
+            'success': true,
+            'operation': 'send_email',
+            'message': 'Email app opened successfully',
+            'recipient': recipient,
+            'method': 'mailto_${i + 1}',
+          };
+        }
+      } catch (e) {
+        print('Email attempt ${i + 1} failed: $e');
+        continue;
+      }
+    }
+
+    // If all mailto attempts fail, try generic email intent on Android
+    if (Platform.isAndroid) {
+      try {
+        // Try generic email action
+        final emailIntent = 'intent://send?type=text/plain&android.intent.extra.EMAIL=${Uri.encodeComponent(recipient)}&android.intent.extra.SUBJECT=${Uri.encodeComponent(emailSubject)}&android.intent.extra.TEXT=${Uri.encodeComponent(content)}#Intent;scheme=mailto;package=com.google.android.gm;end';
+        final uri = Uri.parse(emailIntent);
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return {
+          'success': true,
+          'operation': 'send_email',
+          'message': 'Email app opened via intent',
+          'recipient': recipient,
+          'method': 'android_intent',
+        };
+      } catch (e) {
+        print('Android email intent failed: $e');
+      }
+    }
+
+    return {
+      'success': false,
+      'error': 'Could not open email app. Please check if you have an email app installed (Gmail, Outlook, etc.)',
+      'suggestions': [
+        'Install Gmail or another email app',
+        'Try sharing the file instead',
+        'Use WhatsApp or SMS for text messages',
+      ],
+    };
+  }
+
+  /// Generic URL launcher with better error handling
+  static Future<Map<String, dynamic>> _launchUrl(String urlString, String appName) async {
+    try {
+      final uri = Uri.parse(urlString);
+      final canLaunch = await canLaunchUrl(uri);
+      
+      if (canLaunch) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        return {
+          'success': true,
+          'message': '$appName opened successfully',
+        };
+      } else {
+        return {
+          'success': false,
+          'error': 'Cannot open $appName. Make sure you have the app installed.',
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'error': 'Failed to open $appName: $e',
       };
     }
   }

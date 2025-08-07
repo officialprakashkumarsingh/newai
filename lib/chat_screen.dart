@@ -2194,7 +2194,16 @@ Generate realistic data relevant to: $prompt''',
       final filePath = result['file_path'] as String?;
       final fileSize = result['file_size'] as int?;
       final sizeText = fileSize != null ? ' (${(fileSize / 1024).toStringAsFixed(1)} KB)' : '';
+      
+      // Show file creation success
       _addToolStatusMessage('✅ File created successfully!\n📁 $fileName$sizeText\n📂 Saved in app storage (accessible via share)');
+      
+      // Show file content in chat UI
+      final displayContent = content.length > 1000 
+        ? '${content.substring(0, 1000)}...\n\n[Content truncated - full content saved in file]'
+        : content;
+      
+      _addToolStatusMessage('📄 **File Content ($fileName):**\n\n$displayContent');
       
       // Store the file path for potential sharing
       if (filePath != null) {
@@ -2212,11 +2221,9 @@ Generate realistic data relevant to: $prompt''',
     final content = _extractEmailContent(aiResponse) ?? aiResponse;
     
     if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify an email address in your message.');
+      _addToolStatusMessage('⚠️ Please specify an email address.');
       return;
     }
-    
-    _addToolStatusMessage('📧 Opening email app...');
     
     final result = await ExternalToolsService.executeCommunicationTool(
       operation: 'send_email',
@@ -2226,9 +2233,21 @@ Generate realistic data relevant to: $prompt''',
     );
     
     if (result['success'] == true) {
-      _addToolStatusMessage('✅ Email app opened successfully!\n📧 To: $recipient\n📝 Subject: $subject');
+      final method = result['method'] ?? 'email';
+      _addToolStatusMessage('📧 Email app opened successfully for $recipient\n🔧 Method: $method');
     } else {
-      _addToolStatusMessage('❌ Failed to open email app: ${result['error']}\n💡 Make sure you have an email app installed.');
+      String errorMessage = '❌ Failed to open email: ${result['error']}';
+      
+      // Add suggestions if available
+      if (result['suggestions'] != null) {
+        final suggestions = result['suggestions'] as List;
+        errorMessage += '\n\n💡 Suggestions:\n';
+        for (final suggestion in suggestions) {
+          errorMessage += '• $suggestion\n';
+        }
+      }
+      
+      _addToolStatusMessage(errorMessage);
     }
   }
 
