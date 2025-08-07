@@ -33,6 +33,9 @@ import 'chat_ui_components.dart';
 import 'chat_message_handler.dart';
 import 'chat_streaming_handler.dart';
 import 'chat_ui_helpers.dart';
+import 'chat_chart_builder.dart';
+import 'chat_message_ui.dart';
+import 'chat_utilities.dart';
 import 'file_processing.dart';
 import 'main.dart';
 // import 'presentation_generator.dart'; // Removed unused import
@@ -920,6 +923,7 @@ Generate realistic data relevant to: $prompt''',
     }
   }
 
+  // NOTE: This method can be replaced with: ChatChartBuilder.buildDiagramWidget(diagramData, context)
   Widget _buildDiagramWidget(Map<String, dynamic> diagramData) {
     final String type = diagramData['type'] ?? 'bar';
     final String title = diagramData['title'] ?? 'Chart';
@@ -1602,6 +1606,7 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
+  // NOTE: This method can be replaced with: ChatMessageUI.buildMessage(message, index, widget.chatId, context, ...)  
   Widget _buildMessage(ChatMessage message, int index) {
     switch (message.type) {
       case MessageType.image:
