@@ -26,12 +26,14 @@ class ChatScreenCompact extends StatefulWidget {
   final String chatId;
   final String initialMessage;
   final bool isPinned;
+  final StreamController<ChatInfo>? chatInfoStream;
 
   const ChatScreenCompact({
     super.key,
     required this.chatId,
     this.initialMessage = '',
     this.isPinned = false,
+    this.chatInfoStream,
   });
 
   @override
@@ -139,6 +141,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     _chatState.addMessage(message);
     ChatLogic.saveMessages(widget.chatId, _chatState.messages);
     _updateChatTitle();
+    // Update immediately for first message
+    if (_chatState.messages.length == 1) {
+      _updateChatInfo();
+    }
   }
 
   /// Update message and save
@@ -152,6 +158,23 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     if (_chatState.messages.isNotEmpty) {
       final title = ChatLogic.generateChatTitle(_chatState.messages);
       _chatState.setChatTitle(title);
+      _updateChatInfo();
+    }
+  }
+
+  /// Update chat info and send to stream
+  void _updateChatInfo() {
+    if (widget.chatInfoStream != null && _chatState.messages.isNotEmpty) {
+      final chatInfo = ChatInfo(
+        id: widget.chatId,
+        title: _chatState.chatTitle,
+        messages: _chatState.messages,
+        isPinned: widget.isPinned,
+        isGenerating: _chatState.isStreaming,
+        isStopped: false,
+        category: 'General', // Default category
+      );
+      widget.chatInfoStream!.add(chatInfo);
     }
   }
 

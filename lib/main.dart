@@ -345,10 +345,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatScreenCompact(
-              chatId: DateTime.now().millisecondsSinceEpoch.toString(),
-              initialMessage: widget.sharedText!,
-            ),
+                                            builder: (context) => ChatScreenCompact(
+                                  chatId: DateTime.now().millisecondsSinceEpoch.toString(),
+                                  initialMessage: widget.sharedText!,
+                                  chatInfoStream: _chatInfoStream,
+                                ),
           ),
         );
       });
@@ -685,10 +686,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             Navigator.push(
                               context, 
                               MaterialPageRoute(
-                                builder: (context) => ChatScreenCompact(
-                                  chatId: DateTime.now().millisecondsSinceEpoch.toString(),
-                                  initialMessage: text.trim(),
-                                )
+                                            builder: (context) => ChatScreenCompact(
+              chatId: DateTime.now().millisecondsSinceEpoch.toString(),
+              initialMessage: text.trim(),
+              chatInfoStream: _chatInfoStream,
+            )
                               )
                             );
                           }
@@ -712,7 +714,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: chat.id, isPinned: chat.isPinned))),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: chat.id, isPinned: chat.isPinned, chatInfoStream: _chatInfoStream))),
                     onLongPress: () => showModalBottomSheet(
                       context: context,
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -779,7 +781,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
           ),
           child: InkWell(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: DateTime.now().millisecondsSinceEpoch.toString()))),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: DateTime.now().millisecondsSinceEpoch.toString(), chatInfoStream: _chatInfoStream))),
             borderRadius: BorderRadius.circular(28),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
