@@ -84,6 +84,12 @@ class ThemeNotifier extends ChangeNotifier {
       displayColor: const Color(0xFF202124), // Primary headline text
     ),
     dividerColor: const Color(0xFFE8EAED), // Subtle gray-blue shade (Search Bar Background)
+    // Text selection theme - override purple selection with Google blue
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: Color(0xFF4285F4), // Google blue cursor
+      selectionColor: Color(0x404285F4), // Light blue selection highlight
+      selectionHandleColor: Color(0xFF4285F4), // Blue selection handles
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFE8EAED), // Subtle gray-blue shade
@@ -136,6 +142,12 @@ class ThemeNotifier extends ChangeNotifier {
     ),
     iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)), // Primary Text - Pure white
     dividerColor: const Color(0xFF333438), // Secondary Background - Dark gray with bluish tint
+    // Text selection theme - override purple selection with Google blue
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: Color(0xFF1A73E8), // Google blue cursor (darker for dark theme)
+      selectionColor: Color(0x401A73E8), // Light blue selection highlight
+      selectionHandleColor: Color(0xFF1A73E8), // Blue selection handles
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF2C2C2E), // Card Background

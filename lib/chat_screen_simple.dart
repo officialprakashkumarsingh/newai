@@ -174,6 +174,7 @@ class _ChatScreenSimpleState extends State<ChatScreenSimple> {
               : MarkdownBody(
                   data: message.text,
                   selectable: true,
+                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
                 ),
         ),
       );
