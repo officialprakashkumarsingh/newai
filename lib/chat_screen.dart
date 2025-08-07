@@ -28,6 +28,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'ai_message_actions.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'external_tools_service.dart';
+import 'external_tools_integration.dart';
 import 'chat_ui_helpers.dart';
 import 'file_processing.dart';
 import 'main.dart';
@@ -300,6 +302,9 @@ ${_attachment!.content}
 Based on the context above, answer the following prompt: $input""";
     }
 
+    // Add external tools context to AI prompt
+    finalInputForAI = "${ExternalToolsIntegration.getToolDefinitionsForAI()}\n\nUser message: $finalInputForAI";
+
     final userMessage = ChatMessage(
       role: 'user', 
       text: input,
@@ -455,6 +460,14 @@ Based on the context above, answer the following prompt: $input""";
     
     _setupChatModel(); 
     setState(() => _isStreaming = false);
+    
+    // Check if AI response indicates tool usage
+    final aiResponse = _messages.last.text;
+    final toolUsage = ExternalToolsIntegration.detectToolUsage(aiResponse);
+    if (toolUsage != null) {
+      _handleToolUsage(toolUsage);
+    }
+    
     _updateChatTitleFromLastMessage(); // Update title with last user message and AI response
     _updateChatInfo(false, false);
     _scrollToBottom();
@@ -2125,6 +2138,190 @@ Generate realistic data relevant to: $prompt''',
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  void _handleToolUsage(Map<String, dynamic> toolUsage) async {
+    final action = toolUsage['action'] as String;
+    final response = toolUsage['response'] as String;
+    
+    print('🔧 Tool usage detected: $action');
+    
+    try {
+      switch (action) {
+        case 'prepare_file_creation':
+          await _handleFileCreationTool(response);
+          break;
+        case 'prepare_email':
+          await _handleEmailTool(response);
+          break;
+        case 'prepare_whatsapp':
+          await _handleWhatsAppTool(response);
+          break;
+        case 'prepare_sms':
+          await _handleSMSTool(response);
+          break;
+      }
+    } catch (e) {
+      print('❌ Tool execution failed: $e');
+      _addToolStatusMessage('Tool execution failed: $e');
+    }
+  }
+
+  Future<void> _handleFileCreationTool(String aiResponse) async {
+    // Extract file details from AI response
+    final fileName = _extractFileName(aiResponse) ?? 'ai_generated_file.txt';
+    final content = _extractFileContent(aiResponse) ?? aiResponse;
+    final fileType = _extractFileType(fileName);
+    
+    final result = await ExternalToolsService.executeFileTool(
+      operation: 'create',
+      fileName: fileName,
+      content: content,
+      fileType: fileType,
+      metadata: {
+        'created_by': 'AI Assistant',
+        'timestamp': DateTime.now().toIso8601String(),
+        'title': _extractFileTitle(aiResponse) ?? 'AI Generated Document',
+      },
+    );
+    
+    if (result['success'] == true) {
+      _addToolStatusMessage('✅ File created: $fileName\nSaved to Downloads folder');
+    } else {
+      _addToolStatusMessage('❌ Failed to create file: ${result['error']}');
+    }
+  }
+
+  Future<void> _handleEmailTool(String aiResponse) async {
+    final recipient = _extractEmailRecipient(aiResponse) ?? '';
+    final subject = _extractEmailSubject(aiResponse) ?? 'Message from AI Assistant';
+    final content = _extractEmailContent(aiResponse) ?? aiResponse;
+    
+    if (recipient.isEmpty) {
+      _addToolStatusMessage('⚠️ Please specify an email address.');
+      return;
+    }
+    
+    final result = await ExternalToolsService.executeCommunicationTool(
+      operation: 'email',
+      recipient: recipient,
+      content: content,
+      subject: subject,
+    );
+    
+    if (result['success'] == true) {
+      _addToolStatusMessage('📧 Email app opened with pre-filled content for $recipient');
+    } else {
+      _addToolStatusMessage('❌ Failed to open email: ${result['error']}');
+    }
+  }
+
+  Future<void> _handleWhatsAppTool(String aiResponse) async {
+    final recipient = _extractPhoneNumber(aiResponse) ?? '';
+    final content = _extractMessageContent(aiResponse) ?? aiResponse;
+    
+    if (recipient.isEmpty) {
+      _addToolStatusMessage('⚠️ Please specify a phone number.');
+      return;
+    }
+    
+    final result = await ExternalToolsService.executeCommunicationTool(
+      operation: 'whatsapp',
+      recipient: recipient,
+      content: content,
+    );
+    
+    if (result['success'] == true) {
+      _addToolStatusMessage('💬 WhatsApp opened with pre-filled message for $recipient');
+    } else {
+      _addToolStatusMessage('❌ Failed to open WhatsApp: ${result['error']}');
+    }
+  }
+
+  Future<void> _handleSMSTool(String aiResponse) async {
+    final recipient = _extractPhoneNumber(aiResponse) ?? '';
+    final content = _extractMessageContent(aiResponse) ?? aiResponse;
+    
+    if (recipient.isEmpty) {
+      _addToolStatusMessage('⚠️ Please specify a phone number.');
+      return;
+    }
+    
+    final result = await ExternalToolsService.executeCommunicationTool(
+      operation: 'sms',
+      recipient: recipient,
+      content: content,
+    );
+    
+    if (result['success'] == true) {
+      _addToolStatusMessage('📱 SMS app opened with pre-filled message for $recipient');
+    } else {
+      _addToolStatusMessage('❌ Failed to open SMS: ${result['error']}');
+    }
+  }
+
+  void _addToolStatusMessage(String message) {
+    setState(() {
+      _messages.add(ChatMessage(
+        role: 'system',
+        text: message,
+      ));
+    });
+    _scrollToBottom();
+  }
+
+  // Helper methods to extract information from AI response
+  String? _extractFileName(String response) {
+    final fileNameMatch = RegExp(r'file.*named?\s+"([^"]+)"', caseSensitive: false).firstMatch(response);
+    return fileNameMatch?.group(1);
+  }
+
+  String? _extractFileContent(String response) {
+    // Try to find content between code blocks or quotes
+    final codeBlockMatch = RegExp(r'```[\s\S]*?\n([\s\S]*?)\n```').firstMatch(response);
+    if (codeBlockMatch != null) return codeBlockMatch.group(1);
+    
+    final quoteMatch = RegExp(r'"([^"]{20,})"').firstMatch(response);
+    if (quoteMatch != null) return quoteMatch.group(1);
+    
+    return null;
+  }
+
+  String? _extractFileType(String fileName) {
+    final extension = fileName.split('.').last.toLowerCase();
+    return extension;
+  }
+
+  String? _extractFileTitle(String response) {
+    final titleMatch = RegExp(r'title[:\s]+"([^"]+)"', caseSensitive: false).firstMatch(response);
+    return titleMatch?.group(1);
+  }
+
+  String? _extractEmailRecipient(String response) {
+    final emailMatch = RegExp(r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})').firstMatch(response);
+    return emailMatch?.group(1);
+  }
+
+  String? _extractEmailSubject(String response) {
+    final subjectMatch = RegExp(r'subject[:\s]+"([^"]+)"', caseSensitive: false).firstMatch(response);
+    return subjectMatch?.group(1);
+  }
+
+  String? _extractEmailContent(String response) {
+    // Extract content after "send this email" or similar phrases
+    final contentMatch = RegExp(r'send.*email.*:\s*"([^"]+)"', caseSensitive: false).firstMatch(response);
+    return contentMatch?.group(1);
+  }
+
+  String? _extractPhoneNumber(String response) {
+    final phoneMatch = RegExp(r'(\+?\d{1,3}[-.\s]?\d{1,14}[-.\s]?\d{1,14})').firstMatch(response);
+    return phoneMatch?.group(1);
+  }
+
+  String? _extractMessageContent(String response) {
+    // Extract content after "send" or similar phrases
+    final contentMatch = RegExp(r'send.*:\s*"([^"]+)"', caseSensitive: false).firstMatch(response);
+    return contentMatch?.group(1);
   }
 
   void _updateChatTitleFromLastMessage() {

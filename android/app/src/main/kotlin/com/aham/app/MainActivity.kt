@@ -10,12 +10,17 @@ import kotlinx.coroutines.*
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ahamai.text_sharing"
     private val WIDGET_CHANNEL = "com.ahamai.widget"
-    private val BACKGROUND_CHANNEL = "com.ahamai.background"
+    private val EXTERNAL_TOOLS_CHANNEL = "com.ahamai.external_tools"
     private var sharedText: String? = null
     private var widgetAction: String? = null
+    private lateinit var externalToolsHandler: ExternalToolsHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Initialize external tools handler
+        externalToolsHandler = ExternalToolsHandler(this)
+        
         handleSharingIntent(intent)
         handleWidgetIntent(intent)
     }
@@ -75,73 +80,17 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BACKGROUND_CHANNEL).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "startBackgroundProcessing" -> {
-                    val chatId = call.argument<String>("chatId") ?: ""
-                    val message = call.argument<String>("message") ?: ""
-                    val model = call.argument<String>("model") ?: "gpt-4"
-                    val processType = call.argument<String>("processType") ?: "chat"
-                    
-                    startBackgroundService(chatId, message, model, processType)
-                    result.success(true)
-                }
-                "stopBackgroundProcessing" -> {
-                    stopBackgroundService()
-                    result.success(true)
-                }
-                "getBackgroundResult" -> {
-                    val backgroundResult = getStoredBackgroundResult()
-                    result.success(backgroundResult)
-                }
-                else -> {
-                    result.notImplemented()
-                }
-            }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, EXTERNAL_TOOLS_CHANNEL).setMethodCallHandler { call, result ->
+            externalToolsHandler.handleMethodCall(call, result)
         }
 
 
     }
 
-    private fun startBackgroundService(chatId: String, message: String, model: String, processType: String) {
-        val intent = Intent(this, BackgroundProcessingService::class.java).apply {
-            action = BackgroundProcessingService.ACTION_START_PROCESSING
-            putExtra(BackgroundProcessingService.EXTRA_CHAT_ID, chatId)
-            putExtra(BackgroundProcessingService.EXTRA_MESSAGE, message)
-            putExtra(BackgroundProcessingService.EXTRA_MODEL, model)
-            putExtra(BackgroundProcessingService.EXTRA_PROCESS_TYPE, processType)
-        }
-        startForegroundService(intent)
-    }
-
-    private fun stopBackgroundService() {
-        val intent = Intent(this, BackgroundProcessingService::class.java).apply {
-            action = BackgroundProcessingService.ACTION_STOP_PROCESSING
-        }
-        startService(intent)
-    }
-
-    private fun getStoredBackgroundResult(): Map<String, Any?>? {
-        val sharedPref = getSharedPreferences("ahamai_background_results", Context.MODE_PRIVATE)
-        val chatId = sharedPref.getString("last_result_chat_id", null)
-        val processType = sharedPref.getString("last_result_type", null)
-        val content = sharedPref.getString("last_result_content", null)
-        val success = sharedPref.getBoolean("last_result_success", false)
-        val timestamp = sharedPref.getLong("last_result_timestamp", 0)
-
-        return if (chatId != null && content != null) {
-            mapOf(
-                "chatId" to chatId,
-                "processType" to processType,
-                "content" to content,
-                "success" to success,
-                "timestamp" to timestamp
-            ).also {
-                // Clear the stored result after reading
-                sharedPref.edit().clear().apply()
-            }
-        } else {
-            null
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::externalToolsHandler.isInitialized) {
+            externalToolsHandler.cleanup()
         }
     }
 }
