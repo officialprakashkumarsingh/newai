@@ -234,7 +234,7 @@ class ChatUI {
           p: TextStyle(
             fontSize: 16,
             height: 1.4,
-            color: Theme.of(context).textTheme.bodyLarge?.color,
+            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
           ),
           code: TextStyle(
             backgroundColor: Theme.of(context).cardColor,
@@ -258,7 +258,7 @@ class ChatUI {
         style: TextStyle(
           fontSize: 16,
           height: 1.4,
-          color: Theme.of(context).textTheme.bodyLarge?.color,
+          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
         ),
       );
     }
@@ -410,9 +410,9 @@ class ChatUI {
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.keyboard_arrow_down,
-                      color: Colors.white,
+                      color: isLightTheme(context) ? Colors.white : Colors.black,
                       size: 24,
                     ),
                   ),
