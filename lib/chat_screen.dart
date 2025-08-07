@@ -1955,7 +1955,6 @@ Generate realistic data relevant to: $prompt''',
                     textInputAction: TextInputAction.send, 
                     maxLines: 5, 
                     minLines: 1, 
-                    cursorColor: Theme.of(context).colorScheme.primary, // Use theme primary color instead of purple
                     style: TextStyle(
                       color: isLightTheme(context) ? const Color(0xFF202124) : Colors.white,
                     ),
