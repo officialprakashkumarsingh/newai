@@ -37,12 +37,18 @@ class _QueuePanelState extends State<QueuePanel> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFFFBFBFC) // Very subtle blue-gray
-                    : const Color(0xFF1A1D21),
+                    ? Colors.orange.withOpacity(0.1) // More visible orange tint for light mode
+                    : const Color(0xFF2C2C2E), // More visible dark gray for dark mode
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isLightTheme(context) 
+                      ? Colors.orange.withOpacity(0.3)
+                      : Colors.orange.withOpacity(0.5),
+                  width: 1,
+                ),
                 boxShadow: isLightTheme(context) ? [
                   BoxShadow(
-                    color: const Color(0xFF000000).withOpacity(0.02),
+                    color: Colors.orange.withOpacity(0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 1),
                   ),
@@ -95,12 +101,18 @@ class _QueuePanelState extends State<QueuePanel> {
               margin: const EdgeInsets.only(top: 4),
               decoration: BoxDecoration(
                 color: isLightTheme(context) 
-                    ? const Color(0xFFF9FAFB)
-                    : const Color(0xFF0F1419),
+                    ? Colors.orange.withOpacity(0.05) // Lighter orange tint for expanded content
+                    : const Color(0xFF1C1C1E), // Lighter dark gray for expanded content
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isLightTheme(context) 
+                      ? Colors.orange.withOpacity(0.2)
+                      : Colors.orange.withOpacity(0.3),
+                  width: 1,
+                ),
                 boxShadow: isLightTheme(context) ? [
                   BoxShadow(
-                    color: const Color(0xFF000000).withOpacity(0.02),
+                    color: Colors.orange.withOpacity(0.05),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -129,9 +141,15 @@ class _QueuePanelState extends State<QueuePanel> {
                       margin: const EdgeInsets.only(bottom: 4),
                       decoration: BoxDecoration(
                         color: isLightTheme(context) 
-                            ? Colors.white.withOpacity(0.7)
-                            : const Color(0xFF1C1F23),
+                            ? Colors.white.withOpacity(0.9)
+                            : const Color(0xFF2C2C2E),
                         borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: isLightTheme(context) 
+                              ? Colors.orange.withOpacity(0.1)
+                              : Colors.orange.withOpacity(0.2),
+                          width: 0.5,
+                        ),
                       ),
                       child: Row(
                         children: [
