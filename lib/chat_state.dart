@@ -13,7 +13,7 @@ class ChatState extends ChangeNotifier {
   // Core chat data
   List<ChatMessage> _messages = [];
   String _chatTitle = 'New Chat';
-  String _selectedModel = 'gemini-1.5-pro';
+  String _selectedModel = 'gpt-4';
   
   // UI controllers
   final TextEditingController _controller = TextEditingController();
@@ -43,6 +43,7 @@ class ChatState extends ChangeNotifier {
   List<SearchResult>? _lastSearchResults;
   bool _isWebSearchEnabled = false;
   bool _isResearchModeEnabled = false;
+  bool _isThinkingModeEnabled = false;
   
   // Settings
   String _chatId = '';
@@ -66,6 +67,7 @@ class ChatState extends ChangeNotifier {
   List<SearchResult>? get lastSearchResults => _lastSearchResults;
   bool get isWebSearchEnabled => _isWebSearchEnabled;
   bool get isResearchModeEnabled => _isResearchModeEnabled;
+  bool get isThinkingModeEnabled => _isThinkingModeEnabled;
   String get chatId => _chatId;
   
   // Setters
@@ -151,6 +153,11 @@ class ChatState extends ChangeNotifier {
   
   void setIsResearchModeEnabled(bool enabled) {
     _isResearchModeEnabled = enabled;
+    notifyListeners();
+  }
+  
+  void setIsThinkingModeEnabled(bool enabled) {
+    _isThinkingModeEnabled = enabled;
     notifyListeners();
   }
   
@@ -279,7 +286,7 @@ class ChatState extends ChangeNotifier {
     setLastSearchResults(null);
     stopStreaming();
     setChatTitle('New Chat');
-    setSelectedModel('gemini-1.5-pro');
+    setSelectedModel('gpt-4');
     setIsWebSearchEnabled(false);
     setIsResearchModeEnabled(false);
     setShowScrollToBottom(false);

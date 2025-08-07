@@ -262,10 +262,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   }
 
   /// Handle image attachment
-  Future<void> _handleImageAttachment() async {
+  Future<void> _handleImageAttachment([ImageSource source = ImageSource.gallery]) async {
     try {
       final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      final XFile? image = await picker.pickImage(source: source);
       if (image != null) {
         _chatState.setAttachedImage(image);
       }
@@ -290,6 +290,16 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       context: context,
       onImageGeneration: () => _generateImage(),
       onPresentationGeneration: () => _generatePresentation(),
+      onDiagramGeneration: () => _generateDiagram(),
+      onPickCamera: () => _handleImageAttachment(ImageSource.camera),
+      onPickGallery: () => _handleImageAttachment(ImageSource.gallery),
+      onPickFile: () => _handleFileAttachment(),
+      isWebSearchEnabled: _chatState.isWebSearchEnabled,
+      onWebSearchToggle: (value) => _chatState.setIsWebSearchEnabled(value),
+      isThinkingModeEnabled: _chatState.isThinkingModeEnabled,
+      onThinkingModeToggle: (value) => _chatState.setIsThinkingModeEnabled(value),
+      isResearchModeEnabled: _chatState.isResearchModeEnabled,
+      onResearchModeToggle: (value) => _chatState.setIsResearchModeEnabled(value),
     );
   }
 
@@ -324,6 +334,19 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         addMessage: _addMessage,
         updateMessage: _updateMessage,
       );
+    }
+  }
+
+  /// Generate diagram
+  void _generateDiagram() async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => _DiagramDialog(),
+    );
+    
+    if (result != null && result.isNotEmpty) {
+      _addMessage(ChatMessage(role: 'user', text: result));
+      await _diagramHandler.checkAndHandleDiagramRequest(result, _chatState.selectedModel);
     }
   }
 
@@ -423,6 +446,57 @@ class _ImageGenerationDialogState extends State<_ImageGenerationDialog> {
                 'prompt': _controller.text,
                 'model': _selectedModel,
               })
+            : null,
+          child: const Text('Generate'),
+        ),
+      ],
+    );
+  }
+}
+
+/// Diagram Generation Dialog
+class _DiagramDialog extends StatefulWidget {
+  @override
+  _DiagramDialogState createState() => _DiagramDialogState();
+}
+
+class _DiagramDialogState extends State<_DiagramDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Generate Diagram'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Describe the diagram you want to create:', style: TextStyle(fontSize: 14)),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: 'e.g., Bar chart showing sales data for 2024\nFlowchart for user registration process\nPie chart of market share distribution',
+              border: OutlineInputBorder(),
+            ),
+            onSubmitted: (prompt) {
+              if (prompt.trim().isNotEmpty) {
+                Navigator.of(context).pop(prompt);
+              }
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _controller.text.isNotEmpty
+            ? () => Navigator.pop(context, _controller.text)
             : null,
           child: const Text('Generate'),
         ),
