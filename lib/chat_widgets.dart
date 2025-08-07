@@ -308,130 +308,19 @@ class ChatWidgets {
       context: context,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) => StatefulBuilder(
-        builder: (BuildContext context, StateSetter setSheetState) {
-          // Local state for instant updates
-          bool localWebSearch = isWebSearchEnabled;
-          bool localThinking = isThinkingModeEnabled;
-          bool localResearch = isResearchModeEnabled;
-          
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              // File attachment options
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  FileSourceButton(
-                    icon: Icons.camera_alt_outlined, 
-                    label: 'Camera', 
-                    onTap: () {
-                      Navigator.pop(context);
-                      onPickCamera();
-                    }
-                  ),
-                  FileSourceButton(
-                    icon: Icons.photo_library_outlined, 
-                    label: 'Photos', 
-                    onTap: () {
-                      Navigator.pop(context);
-                      onPickGallery();
-                    }
-                  ),
-                  FileSourceButton(
-                    icon: Icons.folder_open_outlined, 
-                    label: 'Files', 
-                    onTap: () {
-                      Navigator.pop(context);
-                      onPickFile();
-                    }
-                  ),
-                ],
-              ),
-              const Divider(height: 32),
-              
-              // AI Mode Toggles
-              ListTile(
-                contentPadding: EdgeInsets.zero, 
-                leading: const Icon(Icons.public), 
-                title: const Text('Search the web'), 
-                trailing: Switch(
-                  value: localWebSearch, 
-                  onChanged: (bool value) { 
-                    setSheetState(() {
-                      localWebSearch = value;
-                    }); 
-                    onWebSearchToggle(value);
-                  }
-                )
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero, 
-                leading: const Icon(Icons.auto_awesome_outlined), 
-                title: const Text('Think for longer'), 
-                trailing: Switch(
-                  value: localThinking, 
-                  onChanged: (bool value) { 
-                    setSheetState(() {
-                      localThinking = value;
-                    }); 
-                    onThinkingModeToggle(value);
-                  }
-                )
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero, 
-                leading: const Icon(Icons.search), 
-                title: const Text('Research mode'), 
-                subtitle: const Text('Deep research with multiple sources'), 
-                trailing: Switch(
-                  value: localResearch, 
-                  onChanged: (bool value) { 
-                    setSheetState(() {
-                      localResearch = value;
-                    }); 
-                    onResearchModeToggle(value);
-                  }
-                )
-              ),
-              
-              // Generation Tools
-              ListTile(
-                contentPadding: EdgeInsets.zero, 
-                leading: const Icon(Icons.image_outlined), 
-                title: const Text('Create an image'), 
-                onTap: () { 
-                  Navigator.pop(context); 
-                  onImageGeneration(); 
-                }
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero, 
-                leading: const Icon(Icons.slideshow_outlined), 
-                title: const Text('Make a presentation'), 
-                onTap: () { 
-                  Navigator.pop(context); 
-                  onPresentationGeneration(); 
-                }
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero, 
-                leading: const Icon(Icons.bar_chart_outlined), 
-                title: const Text('Generate diagram'), 
-                onTap: () { 
-                  Navigator.pop(context); 
-                  onDiagramGeneration(); 
-                }
-              ),
-
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
-          );
-        }
-      ),
+      builder: (context) => _ToolsBottomSheetContent(
+        isWebSearchEnabled: isWebSearchEnabled,
+        isThinkingModeEnabled: isThinkingModeEnabled,
+        isResearchModeEnabled: isResearchModeEnabled,
+        onImageGeneration: onImageGeneration,
+        onPresentationGeneration: onPresentationGeneration,
+        onDiagramGeneration: onDiagramGeneration,
+        onPickCamera: onPickCamera,
+        onPickGallery: onPickGallery,
+        onPickFile: onPickFile,
+        onWebSearchToggle: onWebSearchToggle,
+        onThinkingModeToggle: onThinkingModeToggle,
+        onResearchModeToggle: onResearchModeToggle,
     );
   }
 
