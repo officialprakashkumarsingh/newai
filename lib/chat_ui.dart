@@ -9,6 +9,40 @@ import 'presentation_service.dart';
 import 'diagram_service.dart';
 import 'web_search.dart';
 import 'theme.dart';
+import 'chat_widgets.dart';
+
+// Import for SearchResultCard
+class SearchResultCard extends StatelessWidget {
+  const SearchResultCard({super.key, required this.result});
+  final SearchResult result;
+  
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).dividerColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              result.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// Chat UI Builder - Contains all UI building methods from chat_screen.dart
 /// This handles the visual presentation of messages, charts, and other UI elements
@@ -290,15 +324,15 @@ class ChatUI {
           if (messageQueue.isNotEmpty || isProcessingQueue)
             Container(
               padding: const EdgeInsets.all(8),
-              child: MessageQueueIndicator(
-                queuedMessages: messageQueue,
-                isProcessing: isProcessingQueue,
-              ),
+                          child: ChatWidgets.buildMessageQueueIndicator(
+              queuedMessages: messageQueue,
+              isProcessing: isProcessingQueue,
+            ),
             ),
           
           // Attachment preview
           if (attachment != null)
-            AttachmentPreview(
+            ChatWidgets.buildAttachmentPreview(
               attachment: attachment,
               onClear: () {}, // Will be handled by parent
             ),

@@ -15,7 +15,7 @@ import 'chat_chart_builder.dart';
 import 'main.dart';
 import 'diagram_handler.dart';
 import 'presentation_service.dart';
-import 'image_service.dart';
+// import 'image_service.dart'; // Not needed
 import 'file_processing.dart';
 import 'theme.dart';
 
@@ -48,7 +48,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     
     // Initialize state
     _chatState = ChatState();
-    _diagramHandler = DiagramHandler();
+    _diagramHandler = DiagramHandler(context);
     
     // Setup initial chat
     _setupChat();
@@ -250,7 +250,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   /// Handle file attachment
   Future<void> _handleFileAttachment() async {
     try {
-      final result = await FileProcessor.pickFile();
+      final result = await FileProcessing.pickFile();
       if (result != null) {
         _chatState.setAttachment(result);
       }

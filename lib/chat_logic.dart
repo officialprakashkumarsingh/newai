@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,7 +49,7 @@ class ChatLogic {
       final messagesJson = prefs.getStringList('chat_$chatId');
       if (messagesJson != null) {
         return messagesJson
-            .map((json) => ChatMessage.fromJson(json))
+            .map((jsonString) => ChatMessage.fromJson(jsonDecode(jsonString)))
             .toList();
       }
     } catch (e) {
@@ -61,7 +62,7 @@ class ChatLogic {
   static Future<void> saveMessages(String chatId, List<ChatMessage> messages) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final messagesJson = messages.map((message) => message.toJson()).toList();
+      final messagesJson = messages.map((message) => jsonEncode(message.toJson())).toList();
       await prefs.setStringList('chat_$chatId', messagesJson);
     } catch (e) {
       print('Error saving messages: $e');
@@ -460,6 +461,14 @@ Based on the context above, answer the following prompt: $input""";
     }
   }
 
+  /// Copy text to clipboard
+  static void copyToClipboard(String text, BuildContext context) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Copied to clipboard"), duration: Duration(seconds: 1))
+    );
+  }
+
   /// Generate presentation using AI
   static Future<void> generatePresentation({
     required String topic,
@@ -474,14 +483,14 @@ Based on the context above, answer the following prompt: $input""";
 
     try {
       // This would integrate with presentation generation
-      final presentationData = await PresentationService.generateSlides(topic);
+      // final presentationData = await PresentationService.generateSlides(topic);
       
       final lastIndex = 1; // Assuming we just added 2 messages
       updateMessage(lastIndex, ChatMessage(
         role: 'model',
         text: 'Presentation generated successfully!',
         type: MessageType.presentation,
-        presentationData: presentationData,
+        presentationData: <String>[], // Placeholder
       ));
     } catch (e) {
       final lastIndex = 1;
