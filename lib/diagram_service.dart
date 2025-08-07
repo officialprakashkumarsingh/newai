@@ -545,7 +545,7 @@ Generate realistic data relevant to: $prompt''',
       _getColorFromString('red'),
       _getColorFromString('green'),
       _getColorFromString('orange'),
-      _getColorFromString('purple'),
+      Theme.of(context).primaryColor,
       _getColorFromString('yellow'),
     ];
 
@@ -590,7 +590,7 @@ Generate realistic data relevant to: $prompt''',
       _getColorFromString('red'),
       _getColorFromString('green'),
       _getColorFromString('orange'),
-      _getColorFromString('purple'),
+      Theme.of(context).primaryColor,
       _getColorFromString('yellow'),
     ];
 
@@ -893,7 +893,7 @@ Generate realistic data relevant to: $prompt''',
       case 'green': return Colors.green;
       case 'blue': return Colors.blue;
       case 'orange': return Colors.orange;
-      case 'purple': return Colors.purple;
+      case 'purple': return Colors.deepPurple; // Fallback for legacy use
       case 'teal': return Colors.teal;
       case 'pink': return Colors.pink;
       case 'amber': return Colors.amber;

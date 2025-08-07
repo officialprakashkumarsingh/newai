@@ -1453,7 +1453,7 @@ Topic: $topic''',
       case 'blue': return Colors.blue.shade600;
       case 'dark': return Colors.grey.shade800;
       case 'light': return Colors.grey.shade100;
-      case 'gradient': return Colors.purple.shade400;
+      case 'gradient': return Theme.of(context).primaryColor;
       default: return Theme.of(context).cardColor;
     }
   }

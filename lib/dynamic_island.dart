@@ -293,7 +293,7 @@ class _DynamicIslandState extends State<DynamicIsland>
       case DynamicIslandState.weather:
         return widget.isDarkTheme ? const Color(0xFF34C759) : const Color(0xFF34C759);
       case DynamicIslandState.music:
-        return widget.isDarkTheme ? const Color(0xFFAF52DE) : const Color(0xFFAF52DE);
+        return widget.isDarkTheme ? const Color(0xFF1A73E8) : const Color(0xFF4285F4); // Use blue instead of purple
       default:
         return widget.isDarkTheme ? const Color(0xFF2C2C2E) : const Color(0xFFE8EAED);
     }

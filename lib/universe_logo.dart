@@ -48,7 +48,7 @@ class UniverseLogoPainter extends CustomPainter {
     // Colors based on theme
     final primaryColor = isDarkMode ? Colors.white : const Color(0xFF202124);
     final accentColor = isDarkMode ? const Color(0xFF1A73E8) : const Color(0xFF4285F4);
-    final universeColor = isDarkMode ? const Color(0xFF9966CC) : const Color(0xFF7B4397);
+    final universeColor = isDarkMode ? const Color(0xFF1A73E8) : const Color(0xFF4285F4); // Use accent color instead of purple
 
     // Draw outer universe ring with stars
     _drawUniverseRing(canvas, center, radius, accentColor);
