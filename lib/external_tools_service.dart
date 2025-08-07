@@ -18,18 +18,16 @@ class ExternalToolsService {
       // Determine file type from extension if not provided
       final actualFileType = fileType ?? fileName.split('.').last.toLowerCase();
       
-      // Get the downloads directory (or documents directory on iOS)
-      Directory downloadsDir;
-      if (Platform.isAndroid) {
-        downloadsDir = Directory('/storage/emulated/0/Download');
-        if (!downloadsDir.existsSync()) {
-          downloadsDir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
-        }
-      } else {
-        downloadsDir = await getApplicationDocumentsDirectory();
+      // Use app's documents directory instead of Downloads (no permissions needed)
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      
+      // Create a Files subdirectory for better organization
+      final Directory filesDir = Directory('${appDir.path}/Files');
+      if (!filesDir.existsSync()) {
+        filesDir.createSync(recursive: true);
       }
       
-      final file = File('${downloadsDir.path}/$fileName');
+      final file = File('${filesDir.path}/$fileName');
       
       String finalContent = content;
       
@@ -150,13 +148,16 @@ $content
       
       switch (shareMethod) {
         case 'email':
-          // Use email intent with file attachment
-          if (Platform.isAndroid) {
-            final result = await _shareViaEmailAndroid(file, recipient, subject, message);
-            return result;
-          } else {
-            return await _shareViaGeneric(file, 'email', recipient, subject, message);
-          }
+          // Use system share dialog for email - most reliable
+          await Share.shareXFiles([XFile(filePath)], 
+            text: message ?? 'Please find the attached file.',
+            subject: subject ?? 'File from AhamAI',
+          );
+          return {
+            'success': true,
+            'message': 'File shared via email successfully',
+            'file_name': fileName,
+          };
           
         case 'whatsapp':
           return await _shareViaWhatsApp(file, recipient, message);
@@ -196,37 +197,6 @@ $content
     }
   }
   
-  static Future<Map<String, dynamic>> _shareViaEmailAndroid(File file, String? recipient, String? subject, String? message) async {
-    try {
-      // Try Gmail first, then fallback to generic email
-      const String gmailPackage = 'com.google.android.gm';
-      final String emailSubject = subject ?? 'File from AhamAI';
-      final String emailMessage = message ?? 'Please find the attached file.';
-      
-      // Create Android intent for email with attachment
-      await MethodChannel('flutter/platform').invokeMethod('startActivity', {
-        'action': 'android.intent.action.SEND',
-        'type': 'text/plain',
-        'package': gmailPackage,
-        'extras': {
-          'android.intent.extra.EMAIL': recipient != null ? [recipient] : null,
-          'android.intent.extra.SUBJECT': emailSubject,
-          'android.intent.extra.TEXT': emailMessage,
-          'android.intent.extra.STREAM': file.path,
-        },
-      });
-      
-      return {
-        'success': true,
-        'message': 'Email app opened with file attachment',
-        'recipient': recipient,
-      };
-    } catch (e) {
-      // Fallback to generic share
-      return await _shareViaGeneric(file, 'email', recipient, subject, message);
-    }
-  }
-  
   static Future<Map<String, dynamic>> _shareViaWhatsApp(File file, String? recipient, String? message) async {
     try {
       final fileName = file.path.split('/').last;
@@ -259,28 +229,6 @@ $content
     }
   }
   
-  static Future<Map<String, dynamic>> _shareViaGeneric(File file, String type, String? recipient, String? subject, String? message) async {
-    try {
-      final fileName = file.path.split('/').last;
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text: message ?? 'File shared via AhamAI: $fileName',
-        subject: subject,
-      );
-      
-      return {
-        'success': true,
-        'message': 'File shared successfully via $type',
-        'file_name': fileName,
-      };
-    } catch (e) {
-      return {
-        'success': false,
-        'error': 'Failed to share file: $e',
-      };
-    }
-  }
-  
   /// Execute a communication tool (email, WhatsApp, SMS)
   static Future<Map<String, dynamic>> executeCommunicationTool({
     required String operation,
@@ -295,31 +243,8 @@ $content
       switch (operation) {
         case 'send_email':
           final emailSubject = subject ?? 'Message from AI Assistant';
-          // Try multiple email approaches for better compatibility
-          if (Platform.isAndroid) {
-            // Use intent approach for Android
-            try {
-              await MethodChannel('flutter/platform').invokeMethod('startActivity', {
-                'action': 'android.intent.action.SENDTO',
-                'data': 'mailto:$recipient',
-                'extras': {
-                  'android.intent.extra.SUBJECT': emailSubject,
-                  'android.intent.extra.TEXT': content,
-                },
-              });
-              return {
-                'success': true,
-                'operation': operation,
-                'message': 'EMAIL app opened successfully',
-                'recipient': recipient,
-              };
-            } catch (e) {
-              // Fallback to URL launcher
-              urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
-            }
-          } else {
-            urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
-          }
+          // Use simple mailto URL for best compatibility
+          urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
           break;
           
         case 'send_whatsapp':

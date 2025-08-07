@@ -2194,7 +2194,7 @@ Generate realistic data relevant to: $prompt''',
       final filePath = result['file_path'] as String?;
       final fileSize = result['file_size'] as int?;
       final sizeText = fileSize != null ? ' (${(fileSize / 1024).toStringAsFixed(1)} KB)' : '';
-      _addToolStatusMessage('✅ File created successfully!\n📁 $fileName$sizeText\n📂 Saved to: ${filePath ?? 'Downloads folder'}');
+      _addToolStatusMessage('✅ File created successfully!\n📁 $fileName$sizeText\n📂 Saved in app storage (accessible via share)');
       
       // Store the file path for potential sharing
       if (filePath != null) {
