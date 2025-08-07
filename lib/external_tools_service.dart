@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ExternalToolsService {
   /// Execute a file creation tool
@@ -127,6 +128,159 @@ $content
     }
   }
   
+  /// Share a file via different methods
+  static Future<Map<String, dynamic>> shareFile({
+    required String filePath,
+    required String shareMethod,
+    String? recipient,
+    String? subject,
+    String? message,
+  }) async {
+    try {
+      final file = File(filePath);
+      if (!file.existsSync()) {
+        return {
+          'success': false,
+          'error': 'File does not exist: $filePath',
+        };
+      }
+
+      final fileName = file.path.split('/').last;
+      final fileSize = await file.length();
+      
+      switch (shareMethod) {
+        case 'email':
+          // Use email intent with file attachment
+          if (Platform.isAndroid) {
+            final result = await _shareViaEmailAndroid(file, recipient, subject, message);
+            return result;
+          } else {
+            return await _shareViaGeneric(file, 'email', recipient, subject, message);
+          }
+          
+        case 'whatsapp':
+          return await _shareViaWhatsApp(file, recipient, message);
+          
+        case 'sms':
+          // SMS doesn't support file attachments, so share file content as text
+          if (fileSize < 1000000) { // Less than 1MB
+            final content = await file.readAsString();
+            return await executeCommunicationTool(
+              operation: 'send_sms',
+              recipient: recipient ?? '',
+              content: message ?? 'File: $fileName\n\n$content',
+            );
+          } else {
+            return {
+              'success': false,
+              'error': 'File too large for SMS. Please use email or WhatsApp.',
+            };
+          }
+          
+        case 'share':
+        default:
+          // Generic share (opens system share dialog)
+          await Share.shareXFiles([XFile(filePath)], text: message ?? 'Shared via AhamAI');
+          return {
+            'success': true,
+            'message': 'File shared successfully',
+            'file_name': fileName,
+          };
+      }
+      
+    } catch (e) {
+      return {
+        'success': false,
+        'error': 'Failed to share file: $e',
+      };
+    }
+  }
+  
+  static Future<Map<String, dynamic>> _shareViaEmailAndroid(File file, String? recipient, String? subject, String? message) async {
+    try {
+      // Try Gmail first, then fallback to generic email
+      const String gmailPackage = 'com.google.android.gm';
+      final String emailSubject = subject ?? 'File from AhamAI';
+      final String emailMessage = message ?? 'Please find the attached file.';
+      
+      // Create Android intent for email with attachment
+      await MethodChannel('flutter/platform').invokeMethod('startActivity', {
+        'action': 'android.intent.action.SEND',
+        'type': 'text/plain',
+        'package': gmailPackage,
+        'extras': {
+          'android.intent.extra.EMAIL': recipient != null ? [recipient] : null,
+          'android.intent.extra.SUBJECT': emailSubject,
+          'android.intent.extra.TEXT': emailMessage,
+          'android.intent.extra.STREAM': file.path,
+        },
+      });
+      
+      return {
+        'success': true,
+        'message': 'Email app opened with file attachment',
+        'recipient': recipient,
+      };
+    } catch (e) {
+      // Fallback to generic share
+      return await _shareViaGeneric(file, 'email', recipient, subject, message);
+    }
+  }
+  
+  static Future<Map<String, dynamic>> _shareViaWhatsApp(File file, String? recipient, String? message) async {
+    try {
+      final fileName = file.path.split('/').last;
+      final fileSize = await file.length();
+      
+      if (fileSize > 100 * 1024 * 1024) { // 100MB limit for WhatsApp
+        return {
+          'success': false,
+          'error': 'File too large for WhatsApp (max 100MB)',
+        };
+      }
+      
+      // Use system share with WhatsApp package hint
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: message ?? 'File shared via AhamAI: $fileName',
+      );
+      
+      return {
+        'success': true,
+        'message': 'File shared to WhatsApp successfully',
+        'file_name': fileName,
+      };
+      
+    } catch (e) {
+      return {
+        'success': false,
+        'error': 'Failed to share via WhatsApp: $e',
+      };
+    }
+  }
+  
+  static Future<Map<String, dynamic>> _shareViaGeneric(File file, String type, String? recipient, String? subject, String? message) async {
+    try {
+      final fileName = file.path.split('/').last;
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: message ?? 'File shared via AhamAI: $fileName',
+        subject: subject,
+      );
+      
+      return {
+        'success': true,
+        'message': 'File shared successfully via $type',
+        'file_name': fileName,
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'error': 'Failed to share file: $e',
+      };
+    }
+  }
+  
   /// Execute a communication tool (email, WhatsApp, SMS)
   static Future<Map<String, dynamic>> executeCommunicationTool({
     required String operation,
@@ -141,7 +295,31 @@ $content
       switch (operation) {
         case 'send_email':
           final emailSubject = subject ?? 'Message from AI Assistant';
-          urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
+          // Try multiple email approaches for better compatibility
+          if (Platform.isAndroid) {
+            // Use intent approach for Android
+            try {
+              await MethodChannel('flutter/platform').invokeMethod('startActivity', {
+                'action': 'android.intent.action.SENDTO',
+                'data': 'mailto:$recipient',
+                'extras': {
+                  'android.intent.extra.SUBJECT': emailSubject,
+                  'android.intent.extra.TEXT': content,
+                },
+              });
+              return {
+                'success': true,
+                'operation': operation,
+                'message': 'EMAIL app opened successfully',
+                'recipient': recipient,
+              };
+            } catch (e) {
+              // Fallback to URL launcher
+              urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
+            }
+          } else {
+            urlToLaunch = 'mailto:$recipient?subject=${Uri.encodeComponent(emailSubject)}&body=${Uri.encodeComponent(content)}';
+          }
           break;
           
         case 'send_whatsapp':
@@ -182,7 +360,7 @@ $content
         } else {
           return {
             'success': false,
-            'error': 'Cannot launch ${operation.replaceAll('send_', '')} app',
+            'error': 'Cannot launch ${operation.replaceAll('send_', '')} app. Make sure you have the app installed.',
           };
         }
       }
@@ -207,6 +385,7 @@ $content
       'send_email',
       'send_whatsapp',
       'send_sms',
+      'share_file',
     ];
   }
   
@@ -237,6 +416,12 @@ $content
           'name': 'SMS Tool',
           'description': 'Opens SMS app with pre-filled message',
           'parameters': ['recipient', 'content'],
+        };
+      case 'share_file':
+        return {
+          'name': 'File Sharing Tool',
+          'description': 'Shares files via email, WhatsApp, or system share',
+          'parameters': ['filePath', 'shareMethod', 'recipient', 'subject', 'message'],
         };
       default:
         return {

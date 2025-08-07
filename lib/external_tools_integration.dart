@@ -16,6 +16,7 @@ class ExternalToolsIntegration {
         'Create a report.pdf with the analysis data',
         'Generate index.html with the website code',
         'Save the project files as project.zip',
+        'Make a summary.txt file',
       ],
     },
     'send_email': {
@@ -58,6 +59,22 @@ class ExternalToolsIntegration {
         'Send this alert via SMS',
       ],
     },
+    'share_file': {
+      'name': 'File Sharing Tool',
+      'description': 'Shares created files via email, WhatsApp, SMS, or system share',
+      'parameters': {
+        'filePath': 'Path to the file to share',
+        'shareMethod': 'How to share (email, whatsapp, sms, share)',
+        'recipient': 'Recipient for the file',
+        'subject': 'Subject for email sharing',
+        'message': 'Message to include with the file',
+      },
+      'examples': [
+        'Share this file via email to john@company.com',
+        'Send the created document to +1234567890 via WhatsApp',
+        'Share the generated report',
+      ],
+    },
   };
 
   /// Execute a specific tool with parameters
@@ -71,6 +88,8 @@ class ExternalToolsIntegration {
         return await _executeSendWhatsApp(parameters);
       case 'send_sms':
         return await _executeSendSMS(parameters);
+      case 'share_file':
+        return await _executeShareFile(parameters);
       default:
         return {
           'success': false,
@@ -163,6 +182,30 @@ class ExternalToolsIntegration {
     );
   }
 
+  /// Execute file sharing tool
+  static Future<Map<String, dynamic>> _executeShareFile(Map<String, dynamic> params) async {
+    final filePath = params['filePath'] as String?;
+    final shareMethod = params['shareMethod'] as String?;
+    final recipient = params['recipient'] as String?;
+    final subject = params['subject'] as String?;
+    final message = params['message'] as String?;
+
+    if (filePath == null) {
+      return {
+        'success': false,
+        'error': 'Missing required parameter: filePath',
+      };
+    }
+
+    return await ExternalToolsService.shareFile(
+      filePath: filePath,
+      shareMethod: shareMethod ?? 'share',
+      recipient: recipient,
+      subject: subject,
+      message: message,
+    );
+  }
+
   /// Generate tool definitions for AI context
   static String getToolDefinitionsForAI() {
     final buffer = StringBuffer();
@@ -224,6 +267,15 @@ class ExternalToolsIntegration {
       print('✅ SMS tool detected');
       return {
         'action': 'send_sms',
+        'response': aiResponse,
+      };
+    }
+
+    // File sharing patterns
+    if (_containsShareFileIntent(response)) {
+      print('✅ File sharing tool detected');
+      return {
+        'action': 'share_file',
         'response': aiResponse,
       };
     }
@@ -339,6 +391,36 @@ class ExternalToolsIntegration {
     for (final pattern in patterns) {
       if (RegExp(pattern, caseSensitive: false).hasMatch(response)) {
         print('📱 SMS pattern matched: $pattern');
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// Check if response contains file sharing intent
+  static bool _containsShareFileIntent(String response) {
+    final patterns = [
+      r'share.*file',
+      r'send.*file',
+      r'email.*file',
+      r'whatsapp.*file',
+      r'sms.*file',
+      r'system.*share',
+      r'share.*this.*file',
+      r'send.*this.*file',
+      r'email.*this.*file',
+      r'whatsapp.*this.*file',
+      r'sms.*this.*file',
+      r'share.*document',
+      r'send.*document',
+      r'email.*document',
+      r'whatsapp.*document',
+      r'sms.*document',
+    ];
+
+    for (final pattern in patterns) {
+      if (RegExp(pattern, caseSensitive: false).hasMatch(response)) {
+        print('📁 File sharing pattern matched: $pattern');
         return true;
       }
     }

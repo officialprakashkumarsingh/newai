@@ -1,4 +1,5 @@
-com.aham.app:xml/image_share_filepaths = 0x7f100002
+com.aham.app:xml/image_share_filepaths = 0x7f100003
+com.aham.app:xml/flutter_share_file_paths = 0x7f100002
 com.aham.app:xml/flutter_image_picker_file_paths = 0x7f100001
 com.aham.app:styleable/ViewBackgroundHelper = 0x7f0f0042
 com.aham.app:styleable/Toolbar = 0x7f0f0040

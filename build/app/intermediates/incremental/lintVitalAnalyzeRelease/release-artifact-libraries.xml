@@ -102,6 +102,20 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name=":@@:share_plus::release"
+      jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/a59d55d9f2758d4578c11d74c2a548dd/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/a59d55d9f2758d4578c11d74c2a548dd/transformed/out/jars/libs/R.jar"
+      resolved="dev.fluttercommunity.plus.share:share_plus:1.0-SNAPSHOT"
+      partialResultsDir="/workspace/build/share_plus/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
+      folder="/home/ubuntu/.gradle/caches/8.10.2/transforms/a59d55d9f2758d4578c11d74c2a548dd/transformed/out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
       name=":@@:shared_preferences_android::release"
       jars="/home/ubuntu/.gradle/caches/8.10.2/transforms/3e448a544cecc0d6bb92b539204d2e83/transformed/out/jars/classes.jar:/home/ubuntu/.gradle/caches/8.10.2/transforms/3e448a544cecc0d6bb92b539204d2e83/transformed/out/jars/libs/R.jar"
       resolved="io.flutter.plugins.sharedpreferences:shared_preferences_android:1.0-SNAPSHOT"

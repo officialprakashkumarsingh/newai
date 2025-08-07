@@ -100,7 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ChatAttachment? _attachment;
   XFile? _attachedImage;
 
-
+  String? _lastCreatedFilePath;
 
   @override
   void initState() {
@@ -2160,6 +2160,9 @@ Generate realistic data relevant to: $prompt''',
         case 'send_sms':
           await _handleSMSTool(response);
           break;
+        case 'share_file':
+          await _handleShareFileTool(response);
+          break;
       }
     } catch (e) {
       print('❌ Tool execution failed: $e');
@@ -2192,6 +2195,12 @@ Generate realistic data relevant to: $prompt''',
       final fileSize = result['file_size'] as int?;
       final sizeText = fileSize != null ? ' (${(fileSize / 1024).toStringAsFixed(1)} KB)' : '';
       _addToolStatusMessage('✅ File created successfully!\n📁 $fileName$sizeText\n📂 Saved to: ${filePath ?? 'Downloads folder'}');
+      
+      // Store the file path for potential sharing
+      if (filePath != null) {
+        _lastCreatedFilePath = filePath;
+        _addToolStatusMessage('💡 You can now say "share this file via email" or "send this file to someone" to share it!');
+      }
     } else {
       _addToolStatusMessage('❌ Failed to create file: ${result['error']}');
     }
@@ -2271,6 +2280,34 @@ Generate realistic data relevant to: $prompt''',
     }
   }
 
+  Future<void> _handleShareFileTool(String aiResponse) async {
+    if (_lastCreatedFilePath == null) {
+      _addToolStatusMessage('⚠️ No file to share. Please create a file first.');
+      return;
+    }
+    
+    final recipient = _extractEmailRecipient(aiResponse) ?? _extractPhoneNumber(aiResponse) ?? '';
+    final shareMethod = _extractShareMethod(aiResponse);
+    final subject = _extractEmailSubject(aiResponse) ?? 'File from AhamAI';
+    final message = _extractShareMessage(aiResponse) ?? 'Please find the attached file.';
+    
+    _addToolStatusMessage('📁 Sharing file...');
+    
+    final result = await ExternalToolsService.shareFile(
+      filePath: _lastCreatedFilePath!,
+      shareMethod: shareMethod,
+      recipient: recipient,
+      subject: subject,
+      message: message,
+    );
+    
+    if (result['success'] == true) {
+      _addToolStatusMessage('✅ File shared successfully!\n📁 Method: ${shareMethod.toUpperCase()}\n📤 ${result['message']}');
+    } else {
+      _addToolStatusMessage('❌ Failed to share file: ${result['error']}');
+    }
+  }
+
   void _addToolStatusMessage(String message) {
     setState(() {
       _messages.add(ChatMessage(
@@ -2298,7 +2335,7 @@ Generate realistic data relevant to: $prompt''',
     return null;
   }
 
-  String? _extractFileType(String fileName) {
+  String _extractFileType(String fileName) {
     final extension = fileName.split('.').last.toLowerCase();
     return extension;
   }
@@ -2333,6 +2370,39 @@ Generate realistic data relevant to: $prompt''',
     // Extract content after "send" or similar phrases
     final contentMatch = RegExp(r'send.*:\s*"([^"]+)"', caseSensitive: false).firstMatch(response);
     return contentMatch?.group(1);
+  }
+
+  String _extractShareMethod(String response) {
+    final lowerResponse = response.toLowerCase();
+    
+    if (lowerResponse.contains('email') || lowerResponse.contains('e-mail')) {
+      return 'email';
+    } else if (lowerResponse.contains('whatsapp') || lowerResponse.contains('whats app')) {
+      return 'whatsapp';
+    } else if (lowerResponse.contains('sms') || lowerResponse.contains('text message')) {
+      return 'sms';
+    } else {
+      return 'share'; // Default to system share dialog
+    }
+  }
+
+  String? _extractShareMessage(String response) {
+    // Try to extract message content for sharing
+    final patterns = [
+      RegExp(r'with message[:\s]+"([^"]+)"', caseSensitive: false),
+      RegExp(r'message[:\s]+"([^"]+)"', caseSensitive: false),
+      RegExp(r'saying[:\s]+"([^"]+)"', caseSensitive: false),
+      RegExp(r'text[:\s]+"([^"]+)"', caseSensitive: false),
+    ];
+
+    for (final pattern in patterns) {
+      final match = pattern.firstMatch(response);
+      if (match != null && match.group(1) != null) {
+        return match.group(1)!.trim();
+      }
+    }
+
+    return null;
   }
 
   void _updateChatTitleFromLastMessage() {

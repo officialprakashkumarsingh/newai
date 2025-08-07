@@ -4,6 +4,8 @@ INJECTED from /workspace/android/app/src/main/AndroidManifest.xml:24:5-79:19
 INJECTED from /workspace/android/app/src/main/AndroidManifest.xml:24:5-79:19
 MERGED from [:image_picker_android] /workspace/build/image_picker_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:8:5-32:19
 MERGED from [:image_picker_android] /workspace/build/image_picker_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:8:5-32:19
+MERGED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:7:5-33:19
+MERGED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:7:5-33:19
 MERGED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:7:5-12:19
 MERGED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:7:5-12:19
 MERGED from [androidx.window:window:1.2.0] /home/ubuntu/.gradle/caches/8.10.2/transforms/830a0437fb21e71da6041f6af5ba1ea9/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
@@ -41,6 +43,7 @@ MERGED from [:flutter_plugin_android_lifecycle] /workspace/build/flutter_plugin_
 MERGED from [:flutter_tts] /workspace/build/flutter_tts/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:path_provider_android] /workspace/build/path_provider_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:permission_handler_android] /workspace/build/permission_handler_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
+MERGED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-35:12
 MERGED from [:shared_preferences_android] /workspace/build/shared_preferences_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:speech_to_text] /workspace/build/speech_to_text/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-14:12
@@ -267,6 +270,8 @@ MERGED from [:path_provider_android] /workspace/build/path_provider_android/inte
 MERGED from [:path_provider_android] /workspace/build/path_provider_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler_android] /workspace/build/permission_handler_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler_android] /workspace/build/permission_handler_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
+MERGED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
+MERGED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences_android] /workspace/build/shared_preferences_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:shared_preferences_android] /workspace/build/shared_preferences_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
 MERGED from [:speech_to_text] /workspace/build/speech_to_text/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
@@ -427,6 +432,28 @@ ADDED from [:image_picker_android] /workspace/build/image_picker_android/interme
 		ADDED from [:image_picker_android] /workspace/build/image_picker_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:30:17-33
 	android:name
 		ADDED from [:image_picker_android] /workspace/build/image_picker_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:29:17-63
+provider#dev.fluttercommunity.plus.share.ShareFileProvider
+ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:13:9-21:20
+	android:grantUriPermissions
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:17:13-47
+	android:authorities
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:15:13-74
+	android:exported
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:16:13-37
+	android:name
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:14:13-77
+receiver#dev.fluttercommunity.plus.share.SharePlusPendingIntent
+ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:26:9-32:20
+	android:exported
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:27:13-82
+intent-filter#action:name:EXTRA_CHOSEN_COMPONENT
+ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:29:13-31:29
+action#EXTRA_CHOSEN_COMPONENT
+ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:30:17-65
+	android:name
+		ADDED from [:share_plus] /workspace/build/share_plus/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:30:25-62
 activity#io.flutter.plugins.urllauncher.WebViewActivity
 ADDED from [:url_launcher_android] /workspace/build/url_launcher_android/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:8:9-11:74
 	android:exported
