@@ -2,83 +2,65 @@ import 'dart:convert';
 import 'external_tools_service.dart';
 
 class ExternalToolsIntegration {
-  
-  // Tool definitions for AI understanding
+  /// Definitions of available external tools for AI context
   static const Map<String, Map<String, dynamic>> toolDefinitions = {
     'create_file': {
-      'name': 'create_file',
-      'description': 'Creates files of various types (txt, html, css, pdf, zip) with AI-generated or user-provided content',
+      'name': 'File Creation Tool',
+      'description': 'Creates files with content in various formats (txt, html, css, pdf, zip)',
       'parameters': {
-        'fileName': {
-          'type': 'string',
-          'description': 'Name of the file to create (with extension)',
-        },
-        'content': {
-          'type': 'string', 
-          'description': 'Content to write to the file',
-        },
-        'fileType': {
-          'type': 'string',
-          'description': 'Type of file (txt, html, css, pdf, zip, json, xml, etc.)',
-          'optional': true,
-        },
-        'metadata': {
-          'type': 'object',
-          'description': 'Additional file metadata (author, title, description, etc.)',
-          'optional': true,
-        }
-      }
+        'fileName': 'Name of the file to create',
+        'content': 'Content to write to the file',
+        'fileType': 'File type (txt, html, css, pdf, zip)',
+      },
+      'examples': [
+        'Create a report.pdf with the analysis data',
+        'Generate index.html with the website code',
+        'Save the project files as project.zip',
+      ],
     },
     'send_email': {
-      'name': 'send_email', 
-      'description': 'Sends email with content to specified recipient',
+      'name': 'Email Tool',
+      'description': 'Composes and sends emails with content',
       'parameters': {
-        'recipient': {
-          'type': 'string',
-          'description': 'Email address of the recipient',
-        },
-        'content': {
-          'type': 'string',
-          'description': 'Email content/message',
-        },
-        'subject': {
-          'type': 'string', 
-          'description': 'Email subject line',
-          'optional': true,
-        }
-      }
+        'recipient': 'Email address of the recipient',
+        'subject': 'Email subject line',
+        'content': 'Email body content',
+      },
+      'examples': [
+        'Send this report to john@company.com',
+        'Email the meeting notes to the team',
+        'Send the proposal to client@business.com',
+      ],
     },
     'send_whatsapp': {
-      'name': 'send_whatsapp',
-      'description': 'Sends WhatsApp message to specified contact',
+      'name': 'WhatsApp Tool',
+      'description': 'Sends messages via WhatsApp',
       'parameters': {
-        'recipient': {
-          'type': 'string',
-          'description': 'Phone number or WhatsApp contact',
-        },
-        'content': {
-          'type': 'string',
-          'description': 'Message content',
-        }
-      }
+        'recipient': 'Phone number or contact name',
+        'content': 'Message content to send',
+      },
+      'examples': [
+        'Send this update to +1234567890 on WhatsApp',
+        'WhatsApp the schedule to the team',
+        'Share this information via WhatsApp',
+      ],
     },
     'send_sms': {
-      'name': 'send_sms',
-      'description': 'Sends SMS text message to specified phone number',
+      'name': 'SMS Tool',
+      'description': 'Sends text messages via SMS',
       'parameters': {
-        'recipient': {
-          'type': 'string',
-          'description': 'Phone number to send SMS to',
-        },
-        'content': {
-          'type': 'string',
-          'description': 'SMS message content',
-        }
-      }
-    }
+        'recipient': 'Phone number to send SMS to',
+        'content': 'SMS message content',
+      },
+      'examples': [
+        'Send an SMS reminder to +1234567890',
+        'Text the confirmation code',
+        'Send this alert via SMS',
+      ],
+    },
   };
-  
-  // Execute tool based on AI request
+
+  /// Execute a specific tool with parameters
   static Future<Map<String, dynamic>> executeTool(String toolName, Map<String, dynamic> parameters) async {
     switch (toolName) {
       case 'create_file':
@@ -92,116 +74,213 @@ class ExternalToolsIntegration {
       default:
         return {
           'success': false,
-          'error': 'Unknown tool: $toolName'
+          'error': 'Unknown tool: $toolName',
         };
     }
   }
-  
+
+  /// Execute file creation tool
   static Future<Map<String, dynamic>> _executeFileCreation(Map<String, dynamic> params) async {
-    final fileName = params['fileName'] as String;
-    final content = params['content'] as String;
+    final fileName = params['fileName'] as String?;
+    final content = params['content'] as String?;
     final fileType = params['fileType'] as String?;
-    final metadata = params['metadata'] as Map<String, dynamic>?;
-    
+
+    if (fileName == null || content == null) {
+      return {
+        'success': false,
+        'error': 'Missing required parameters: fileName and content',
+      };
+    }
+
     return await ExternalToolsService.executeFileTool(
-      operation: 'create',
+      operation: 'create_file',
       fileName: fileName,
       content: content,
       fileType: fileType,
-      metadata: metadata,
+      metadata: params['metadata'] as Map<String, dynamic>?,
     );
   }
-  
+
+  /// Execute email sending tool
   static Future<Map<String, dynamic>> _executeSendEmail(Map<String, dynamic> params) async {
-    final recipient = params['recipient'] as String;
-    final content = params['content'] as String;
+    final recipient = params['recipient'] as String?;
+    final content = params['content'] as String?;
     final subject = params['subject'] as String?;
-    
+
+    if (recipient == null || content == null) {
+      return {
+        'success': false,
+        'error': 'Missing required parameters: recipient and content',
+      };
+    }
+
     return await ExternalToolsService.executeCommunicationTool(
-      operation: 'email',
+      operation: 'send_email',
       recipient: recipient,
       content: content,
       subject: subject,
+      metadata: params['metadata'] as Map<String, dynamic>?,
     );
   }
-  
+
+  /// Execute WhatsApp sending tool
   static Future<Map<String, dynamic>> _executeSendWhatsApp(Map<String, dynamic> params) async {
-    final recipient = params['recipient'] as String;
-    final content = params['content'] as String;
-    
+    final recipient = params['recipient'] as String?;
+    final content = params['content'] as String?;
+
+    if (recipient == null || content == null) {
+      return {
+        'success': false,
+        'error': 'Missing required parameters: recipient and content',
+      };
+    }
+
     return await ExternalToolsService.executeCommunicationTool(
-      operation: 'whatsapp',
+      operation: 'send_whatsapp',
       recipient: recipient,
       content: content,
+      metadata: params['metadata'] as Map<String, dynamic>?,
     );
   }
-  
+
+  /// Execute SMS sending tool
   static Future<Map<String, dynamic>> _executeSendSMS(Map<String, dynamic> params) async {
-    final recipient = params['recipient'] as String;
-    final content = params['content'] as String;
-    
+    final recipient = params['recipient'] as String?;
+    final content = params['content'] as String?;
+
+    if (recipient == null || content == null) {
+      return {
+        'success': false,
+        'error': 'Missing required parameters: recipient and content',
+      };
+    }
+
     return await ExternalToolsService.executeCommunicationTool(
-      operation: 'sms',
+      operation: 'send_sms',
       recipient: recipient,
       content: content,
+      metadata: params['metadata'] as Map<String, dynamic>?,
     );
   }
-  
-  // Get tool definitions for AI prompt
+
+  /// Generate tool definitions for AI context
   static String getToolDefinitionsForAI() {
-    return '''
-You have access to the following external tools that you can use when appropriate:
+    final buffer = StringBuffer();
+    buffer.writeln('Available External Tools:');
+    buffer.writeln('You have access to the following external tools that can perform actions outside of our conversation:');
+    buffer.writeln();
 
-${toolDefinitions.entries.map((entry) {
-  final tool = entry.value;
-  final params = tool['parameters'] as Map<String, dynamic>;
-  final paramsList = params.entries.map((param) {
-    final paramInfo = param.value as Map<String, dynamic>;
-    final optional = paramInfo['optional'] == true ? ' (optional)' : '';
-    return '  - ${param.key}: ${paramInfo['type']} - ${paramInfo['description']}$optional';
-  }).join('\n');
-  
-  return '''
-Tool: ${tool['name']}
-Description: ${tool['description']}
-Parameters:
-$paramsList
-''';
-}).join('\n')}
+    for (final entry in toolDefinitions.entries) {
+      final toolName = entry.key;
+      final toolInfo = entry.value;
+      
+      buffer.writeln('🔧 ${toolInfo['name']}');
+      buffer.writeln('   Description: ${toolInfo['description']}');
+      buffer.writeln('   Usage: When the user requests actions that match this tool, respond naturally and I will execute it automatically.');
+      buffer.writeln('   Examples: ${(toolInfo['examples'] as List).join(', ')}');
+      buffer.writeln();
+    }
 
-To use these tools, simply mention in your response that you need to perform an action like:
-- "I'll create a file for you"
-- "Let me send that email"
-- "I'll send this via WhatsApp"
-
-The system will automatically detect when you need to use tools and execute them for you.
-''';
+    buffer.writeln('Important: When you detect that the user wants to use any of these tools, respond naturally explaining what you will do, and the system will automatically execute the appropriate tool. Do not ask for confirmation or additional details unless absolutely necessary.');
+    
+    return buffer.toString();
   }
-  
-  // Detect if AI response indicates tool usage
+
+  /// Detect if AI response indicates tool usage
   static Map<String, dynamic>? detectToolUsage(String aiResponse) {
     final response = aiResponse.toLowerCase();
-    
+
     // File creation patterns
-    if (response.contains(RegExp(r'i.*(ll|will)\s*(create|generate|make)\s*(a|an|the)?\s*(file|document)'))) {
-      return {'action': 'prepare_file_creation', 'response': aiResponse};
+    if (_containsFileCreationIntent(response)) {
+      return {
+        'action': 'create_file',
+        'response': aiResponse,
+      };
     }
-    
-    // Email patterns  
-    if (response.contains(RegExp(r'i.*(ll|will)\s*send\s*(an|the)?\s*email'))) {
-      return {'action': 'prepare_email', 'response': aiResponse};
+
+    // Email patterns
+    if (_containsEmailIntent(response)) {
+      return {
+        'action': 'send_email',
+        'response': aiResponse,
+      };
     }
-    
+
     // WhatsApp patterns
-    if (response.contains(RegExp(r'i.*(ll|will)\s*send\s*(this|that|it)\s*(via|through|on)\s*whatsapp'))) {
-      return {'action': 'prepare_whatsapp', 'response': aiResponse};
+    if (_containsWhatsAppIntent(response)) {
+      return {
+        'action': 'send_whatsapp',
+        'response': aiResponse,
+      };
     }
-    
+
     // SMS patterns
-    if (response.contains(RegExp(r'i.*(ll|will)\s*send\s*(an|a)?\s*(sms|text\s*message)'))) {
-      return {'action': 'prepare_sms', 'response': aiResponse};
+    if (_containsSMSIntent(response)) {
+      return {
+        'action': 'send_sms',
+        'response': aiResponse,
+      };
     }
-    
+
     return null;
+  }
+
+  /// Check if response contains file creation intent
+  static bool _containsFileCreationIntent(String response) {
+    final patterns = [
+      'create a file',
+      'save as',
+      'generate a file',
+      'create.*\\.txt',
+      'create.*\\.html',
+      'create.*\\.css',
+      'create.*\\.pdf',
+      'create.*\\.zip',
+      'save.*file',
+      'download.*file',
+      'export.*file',
+    ];
+
+    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+  }
+
+  /// Check if response contains email intent
+  static bool _containsEmailIntent(String response) {
+    final patterns = [
+      'send.*email',
+      'email.*to',
+      'compose.*email',
+      'mail.*to',
+      'send.*to.*@',
+      'email.*this',
+    ];
+
+    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+  }
+
+  /// Check if response contains WhatsApp intent
+  static bool _containsWhatsAppIntent(String response) {
+    final patterns = [
+      'send.*whatsapp',
+      'whatsapp.*to',
+      'share.*whatsapp',
+      'message.*whatsapp',
+      'send.*via whatsapp',
+    ];
+
+    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+  }
+
+  /// Check if response contains SMS intent
+  static bool _containsSMSIntent(String response) {
+    final patterns = [
+      'send.*sms',
+      'text.*to',
+      'send.*text',
+      'sms.*to',
+      'message.*to.*\\+',
+    ];
+
+    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
   }
 }
