@@ -49,4 +49,3 @@ string widget_description
 style LaunchTheme
 style NormalTheme
 xml ahamai_widget_info
-xml file_paths

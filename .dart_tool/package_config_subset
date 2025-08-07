@@ -282,14 +282,6 @@ provider
 2.12
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/provider-6.1.5/
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/provider-6.1.5/lib/
-share_plus
-2.18
-file:///home/ubuntu/.pub-cache/hosted/pub.dev/share_plus-7.2.2/
-file:///home/ubuntu/.pub-cache/hosted/pub.dev/share_plus-7.2.2/lib/
-share_plus_platform_interface
-2.18
-file:///home/ubuntu/.pub-cache/hosted/pub.dev/share_plus_platform_interface-3.4.0/
-file:///home/ubuntu/.pub-cache/hosted/pub.dev/share_plus_platform_interface-3.4.0/lib/
 shared_preferences
 3.5
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3/

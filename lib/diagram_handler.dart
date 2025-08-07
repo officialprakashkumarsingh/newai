@@ -4,9 +4,8 @@ import 'fullscreen_diagram_screen.dart';
 
 class DiagramHandler {
   final BuildContext context;
-  final Function(String) _addMessage;
 
-  DiagramHandler(this.context, this._addMessage);
+  DiagramHandler(this.context);
 
   /// Check if message contains diagram request and handle it
   Future<void> checkAndHandleDiagramRequest(String message, String selectedModel) async {
@@ -31,14 +30,10 @@ class DiagramHandler {
 
   /// Handle diagram generation
   Future<void> _handleDiagramGeneration(String message, String selectedModel) async {
-    _addMessage('🔄 Generating diagram...');
-    
     try {
       final diagramData = await DiagramService.generateDiagramData(message, selectedModel);
       
       if (diagramData != null) {
-        _addMessage('✅ Diagram generated successfully! Tap to view fullscreen.');
-        
         // Navigate to fullscreen diagram
         if (context.mounted) {
           Navigator.push(
@@ -50,11 +45,9 @@ class DiagramHandler {
             ),
           );
         }
-      } else {
-        _addMessage('❌ Failed to generate diagram. Please try rephrasing your request.');
       }
     } catch (e) {
-      _addMessage('❌ Error generating diagram: $e');
+      print('Error generating diagram: $e');
     }
   }
 

@@ -25,9 +25,6 @@
       name=":@@:permission_handler_android::release"
       project=":permission_handler_android"/>
   <library
-      name=":@@:share_plus::release"
-      project=":share_plus"/>
-  <library
       name=":@@:shared_preferences_android::release"
       project=":shared_preferences_android"/>
   <library

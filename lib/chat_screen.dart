@@ -28,9 +28,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'ai_message_actions.dart';
 import 'api.dart';
 import 'api_service.dart';
-import 'external_tools_service.dart';
-import 'external_tools_integration.dart';
-import 'external_tools_handler.dart';
 import 'diagram_handler.dart';
 import 'chat_ui_helpers.dart';
 import 'file_processing.dart';
@@ -102,10 +99,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ChatAttachment? _attachment;
   XFile? _attachedImage;
 
-  String? _lastCreatedFilePath;
-
-  // Handlers for external tools and diagrams
-  late ExternalToolsHandler _externalToolsHandler;
+  // Handlers for diagrams
   late DiagramHandler _diagramHandler;
 
   @override
@@ -113,8 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     
     // Initialize handlers
-    _externalToolsHandler = ExternalToolsHandler(_addToolStatusMessage);
-    _diagramHandler = DiagramHandler(context, _addToolStatusMessage);
+    _diagramHandler = DiagramHandler(context);
     
     _messages = widget.initialMessages != null ? List.from(widget.initialMessages!) : [];
     _isPinned = widget.isPinned;
@@ -312,8 +305,7 @@ ${_attachment!.content}
 Based on the context above, answer the following prompt: $input""";
     }
 
-    // Add external tools context to AI prompt
-    finalInputForAI = "${ExternalToolsIntegration.getToolDefinitionsForAI()}\n\nUser message: $finalInputForAI";
+    // External tools removed as requested
 
     final userMessage = ChatMessage(
       role: 'user', 
@@ -473,9 +465,6 @@ Based on the context above, answer the following prompt: $input""";
     
     // Check for external tools usage
     final aiResponse = _messages.last.text;
-    await _externalToolsHandler.checkAndHandleToolUsage(aiResponse);
-    
-    // Check for diagram requests
     await _diagramHandler.checkAndHandleDiagramRequest(aiResponse, _selectedChatModel);
     
     _updateChatTitleFromLastMessage(); // Update title with last user message and AI response
@@ -2182,16 +2171,7 @@ Generate realistic data relevant to: $prompt''',
     }
   }
 
-  void _addToolStatusMessage(String message) {
-    setState(() {
-      _messages.add(ChatMessage(
-        role: 'system',
-        text: message,
-        type: MessageType.text,
-      ));
-    });
-    _scrollToBottom();
-  }
+
 
   void _optimizedStreamingUpdate(String chunk) {
     _currentModelResponse += chunk;
