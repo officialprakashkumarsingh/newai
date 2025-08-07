@@ -2148,16 +2148,16 @@ Generate realistic data relevant to: $prompt''',
     
     try {
       switch (action) {
-        case 'prepare_file_creation':
+        case 'create_file':
           await _handleFileCreationTool(response);
           break;
-        case 'prepare_email':
+        case 'send_email':
           await _handleEmailTool(response);
           break;
-        case 'prepare_whatsapp':
+        case 'send_whatsapp':
           await _handleWhatsAppTool(response);
           break;
-        case 'prepare_sms':
+        case 'send_sms':
           await _handleSMSTool(response);
           break;
       }
@@ -2203,7 +2203,7 @@ Generate realistic data relevant to: $prompt''',
     }
     
     final result = await ExternalToolsService.executeCommunicationTool(
-      operation: 'email',
+      operation: 'send_email',
       recipient: recipient,
       content: content,
       subject: subject,
@@ -2226,7 +2226,7 @@ Generate realistic data relevant to: $prompt''',
     }
     
     final result = await ExternalToolsService.executeCommunicationTool(
-      operation: 'whatsapp',
+      operation: 'send_whatsapp',
       recipient: recipient,
       content: content,
     );
@@ -2248,7 +2248,7 @@ Generate realistic data relevant to: $prompt''',
     }
     
     final result = await ExternalToolsService.executeCommunicationTool(
-      operation: 'sms',
+      operation: 'send_sms',
       recipient: recipient,
       content: content,
     );
