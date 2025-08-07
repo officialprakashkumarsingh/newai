@@ -500,14 +500,6 @@ class ChatUI {
             ),
             const SizedBox(height: 24),
             Text(
-              'Welcome to AhamAI',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Text(
               'Ask me anything! I can help with:\n• Answering questions\n• Creating diagrams & charts\n• Generating presentations\n• Image generation\n• Web research',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
