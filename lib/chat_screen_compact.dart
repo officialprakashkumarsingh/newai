@@ -82,7 +82,8 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     }
     
     if (widget.initialMessage.isNotEmpty) {
-      _chatState.setInputText(widget.initialMessage);
+      // Auto-send the initial message for new users from welcome screen
+      await _sendMessage(widget.initialMessage);
     }
   }
 
@@ -90,9 +91,11 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _sendMessage(String input) async {
     if (!ChatLogic.isValidInput(input, _chatState.attachment)) return;
 
+    // Clear input immediately when send is pressed
+    _chatState.clearInput();
+
     if (_chatState.isStreaming) {
       _chatState.addToMessageQueue(input);
-      _chatState.clearInput();
       return;
     }
 
@@ -102,7 +105,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       await _sendTextMessage(input);
     }
     
-    _chatState.clearInput();
     _chatState.clearAllAttachments();
   }
 
@@ -114,6 +116,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       selectedModel: _chatState.selectedModel,
       isWebSearchEnabled: _chatState.isWebSearchEnabled,
       isResearchModeEnabled: _chatState.isResearchModeEnabled,
+      isThinkingModeEnabled: _chatState.isThinkingModeEnabled,
       addMessage: _addMessage,
       updateMessage: _updateMessage,
       scrollToBottom: _chatState.scrollToBottom,

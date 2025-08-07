@@ -77,6 +77,7 @@ class ChatLogic {
     required String selectedModel,
     required bool isWebSearchEnabled,
     required bool isResearchModeEnabled,
+    required bool isThinkingModeEnabled,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
     required Function() scrollToBottom,
@@ -123,6 +124,7 @@ class ChatLogic {
         selectedModel: selectedModel,
         webSearchResults: webSearchResults,
         updateMessage: updateMessage,
+        isThinkingMode: isThinkingModeEnabled,
       );
       
       // Stop streaming state
@@ -218,6 +220,7 @@ Based on the context above, answer the following prompt: $input""";
     required String selectedModel,
     required Function(int, ChatMessage) updateMessage,
     String? webSearchResults,
+    bool isThinkingMode = false,
   }) async {
     String finalInputForAI = input;
     
@@ -231,6 +234,7 @@ Based on the context above, answer the following prompt: $input""";
       message: finalInputForAI,
       model: selectedModel,
       conversationHistory: conversationHistory,
+      isThinkingMode: isThinkingMode,
     )) {
       final lastIndex = messages.length - 1;
       final currentText = messages[lastIndex].text + chunk;
