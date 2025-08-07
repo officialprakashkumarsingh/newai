@@ -29,6 +29,9 @@ import 'ai_message_actions.dart';
 import 'api.dart';
 import 'api_service.dart';
 import 'diagram_handler.dart';
+import 'chat_ui_components.dart';
+import 'chat_message_handler.dart';
+import 'chat_streaming_handler.dart';
 import 'chat_ui_helpers.dart';
 import 'file_processing.dart';
 import 'main.dart';
@@ -101,6 +104,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // Handlers for diagrams
   late DiagramHandler _diagramHandler;
+  late ChatMessageHandler _messageHandler;
+  late ChatStreamingHandler _streamingHandler;
 
   @override
   void initState() {
@@ -108,6 +113,23 @@ class _ChatScreenState extends State<ChatScreen> {
     
     // Initialize handlers
     _diagramHandler = DiagramHandler(context);
+    _messageHandler = ChatMessageHandler(
+      updateChatInfo: (String selectedModel, bool isGenerating) => _updateChatInfo(isGenerating, false),
+      addMessage: _addMessageAndSave,
+      updateMessage: _updateMessageAndSave,
+      scrollToBottom: _scrollToBottom,
+      saveMessages: _saveMessages,
+      setSearchResults: (results) => setState(() => _lastSearchResults = results),
+      diagramHandler: _diagramHandler,
+    );
+    _streamingHandler = ChatStreamingHandler(
+      updateMessage: _updateMessageAndSave,
+      scrollToBottom: _scrollToBottom,
+      saveMessages: _saveMessages,
+      updateChatInfo: (String selectedModel, bool isGenerating) => _updateChatInfo(isGenerating, false),
+      setSearchResults: (results) => setState(() => _lastSearchResults = results),
+      diagramHandler: _diagramHandler,
+    );
     
     _messages = widget.initialMessages != null ? List.from(widget.initialMessages!) : [];
     _isPinned = widget.isPinned;
@@ -219,8 +241,8 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollController.dispose();
     _streamSubscription?.cancel();
     _httpClient?.close();
-    _streamingUpdateTimer?.cancel(); // Clean up streaming timer
     _codeStreamNotifier.dispose();
+    _streamingHandler.dispose(); // Dispose streaming handler
     super.dispose();
   }
 
