@@ -221,12 +221,12 @@ class ChatUI {
             thinkingContent: message.thinkingContent!,
             finalContent: message.text,
           )
-        : buildMessageContent(message.text, context),
+        : buildMessageContent(message.text, context, isUserMessage: isUserMessage),
     );
   }
 
   /// Build message content with markdown support
-  static Widget buildMessageContent(String text, BuildContext context) {
+  static Widget buildMessageContent(String text, BuildContext context, {bool isUserMessage = false}) {
     if (text.contains('```') || text.contains('**') || text.contains('*')) {
       return MarkdownBody(
         data: text,
