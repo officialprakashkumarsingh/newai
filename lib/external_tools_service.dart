@@ -283,6 +283,54 @@ $content
     }
   }
   
+  /// Share a file via email using Android intent with attachment
+  static Future<Map<String, dynamic>> shareFileViaEmail({
+    required String filePath,
+    required String recipient,
+    String? subject,
+    String? message,
+  }) async {
+    if (Platform.isAndroid) {
+      try {
+        const emailChannel = MethodChannel('com.ahamai.email_intent');
+        final result = await emailChannel.invokeMethod('sendEmailWithAttachment', {
+          'recipient': recipient,
+          'subject': subject ?? 'File from AhamAI',
+          'body': message ?? 'Please find the attached file.',
+          'filePath': filePath,
+        });
+        
+        if (result['success'] == true) {
+          final fileName = filePath.split('/').last;
+          return {
+            'success': true,
+            'message': 'Email app opened with file attachment: $fileName',
+            'method': 'android_intent_attachment',
+          };
+        } else {
+          return {
+            'success': false,
+            'error': result['error'] ?? 'Failed to open email with attachment',
+          };
+        }
+      } catch (e) {
+        return {
+          'success': false,
+          'error': 'Android email intent failed: $e',
+        };
+      }
+    }
+    
+    // Fallback to regular file sharing for non-Android
+    return await shareFile(
+      filePath: filePath,
+      shareMethod: 'email',
+      recipient: recipient,
+      subject: subject,
+      message: message,
+    );
+  }
+  
   static Future<Map<String, dynamic>> _shareViaWhatsApp(File file, String? recipient, String? message, String mimeType) async {
     try {
       final fileName = file.path.split('/').last;

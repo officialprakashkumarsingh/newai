@@ -1,6 +1,7 @@
 # The proguard configuration file for the following section is /workspace/build/app/intermediates/aapt_proguard_file/release/processReleaseResources/aapt_rules.txt
 -keep class android.app.Application { <init>(); }
 -keep class androidx.core.app.CoreComponentFactory { <init>(); }
+-keep class androidx.core.content.FileProvider { <init>(); }
 -keep class androidx.profileinstaller.ProfileInstallReceiver { <init>(); }
 -keep class androidx.startup.InitializationProvider { <init>(); }
 -keep class com.aham.app.AhamAIWidget { <init>(); }

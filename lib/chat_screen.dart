@@ -2192,18 +2192,15 @@ Generate realistic data relevant to: $prompt''',
     
     if (result['success'] == true) {
       final filePath = result['file_path'] as String?;
+      final fileName = result['file_name'] as String?;
       final fileSize = result['file_size'] as int?;
+      final fileType = result['file_type'] as String?;
+      final isExternal = result['is_external'] as bool? ?? false;
       final sizeText = fileSize != null ? ' (${(fileSize / 1024).toStringAsFixed(1)} KB)' : '';
       
-      // Show file creation success
-      _addToolStatusMessage('✅ File created successfully!\n📁 $fileName$sizeText\n📂 Saved in app storage (accessible via share)');
-      
-      // Show file content in chat UI
-      final displayContent = content.length > 1000 
-        ? '${content.substring(0, 1000)}...\n\n[Content truncated - full content saved in file]'
-        : content;
-      
-      _addToolStatusMessage('📄 **File Content ($fileName):**\n\n$displayContent');
+      // Show file creation success with location
+      final locationText = isExternal ? 'Downloads folder (visible in file manager)' : 'app storage';
+      _addToolStatusMessage('✅ File created successfully!\n📁 ${fileName ?? 'File'}$sizeText\n📂 Saved in: $locationText\n🎯 Format: ${fileType?.toUpperCase() ?? 'TXT'}');
       
       // Store the file path for potential sharing
       if (filePath != null) {
@@ -2312,16 +2309,29 @@ Generate realistic data relevant to: $prompt''',
     
     _addToolStatusMessage('📁 Sharing file...');
     
-    final result = await ExternalToolsService.shareFile(
-      filePath: _lastCreatedFilePath!,
-      shareMethod: shareMethod,
-      recipient: recipient,
-      subject: subject,
-      message: message,
-    );
+    Map<String, dynamic> result;
+    
+    // Use specialized email method for email sharing
+    if (shareMethod == 'email' && recipient.isNotEmpty) {
+      result = await ExternalToolsService.shareFileViaEmail(
+        filePath: _lastCreatedFilePath!,
+        recipient: recipient,
+        subject: subject,
+        message: message,
+      );
+    } else {
+      result = await ExternalToolsService.shareFile(
+        filePath: _lastCreatedFilePath!,
+        shareMethod: shareMethod,
+        recipient: recipient,
+        subject: subject,
+        message: message,
+      );
+    }
     
     if (result['success'] == true) {
-      _addToolStatusMessage('✅ File shared successfully!\n📁 Method: ${shareMethod.toUpperCase()}\n📤 ${result['message']}');
+      final method = result['method'] ?? shareMethod;
+      _addToolStatusMessage('✅ File shared successfully!\n📁 Method: ${method.toUpperCase()}\n📤 ${result['message']}');
     } else {
       _addToolStatusMessage('❌ Failed to share file: ${result['error']}');
     }
