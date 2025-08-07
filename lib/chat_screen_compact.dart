@@ -18,6 +18,7 @@ import 'presentation_service.dart';
 // import 'image_service.dart'; // Not needed
 import 'file_processing.dart';
 import 'theme.dart';
+import 'chat_ui_helpers.dart';
 
 /// Compact Chat Screen - Uses all divided components for clean organization
 /// This is a much smaller, more manageable version of the chat screen
@@ -303,22 +304,23 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     );
   }
 
-  /// Generate image
+  /// Generate image using ImagePromptSheet (original implementation)
   void _generateImage() async {
-    // Show image generation dialog
-    final result = await showDialog<Map<String, String>>(
-      context: context,
-      builder: (context) => _ImageGenerationDialog(),
+    showModalBottomSheet(
+      context: context, 
+      isScrollControlled: true, 
+      backgroundColor: Colors.transparent, 
+      builder: (context) => ImagePromptSheet(
+        onGenerate: (prompt, model) async {
+          await ChatLogic.generateImage(
+            prompt: prompt,
+            selectedModel: model,
+            addMessage: _addMessage,
+            updateMessage: _updateMessage,
+          );
+        }
+      )
     );
-    
-    if (result != null) {
-      await ChatLogic.generateImage(
-        prompt: result['prompt']!,
-        selectedModel: result['model']!,
-        addMessage: _addMessage,
-        updateMessage: _updateMessage,
-      );
-    }
   }
 
   /// Generate presentation

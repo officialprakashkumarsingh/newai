@@ -309,12 +309,18 @@ class ChatWidgets {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => StatefulBuilder(
-        builder: (BuildContext context, StateSetter setSheetState) => Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        builder: (BuildContext context, StateSetter setSheetState) {
+          // Local state for instant updates
+          bool localWebSearch = isWebSearchEnabled;
+          bool localThinking = isThinkingModeEnabled;
+          bool localResearch = isResearchModeEnabled;
+          
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               // File attachment options
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -353,9 +359,11 @@ class ChatWidgets {
                 leading: const Icon(Icons.public), 
                 title: const Text('Search the web'), 
                 trailing: Switch(
-                  value: isWebSearchEnabled, 
+                  value: localWebSearch, 
                   onChanged: (bool value) { 
-                    setSheetState(() {}); 
+                    setSheetState(() {
+                      localWebSearch = value;
+                    }); 
                     onWebSearchToggle(value);
                   }
                 )
@@ -365,9 +373,11 @@ class ChatWidgets {
                 leading: const Icon(Icons.auto_awesome_outlined), 
                 title: const Text('Think for longer'), 
                 trailing: Switch(
-                  value: isThinkingModeEnabled, 
+                  value: localThinking, 
                   onChanged: (bool value) { 
-                    setSheetState(() {}); 
+                    setSheetState(() {
+                      localThinking = value;
+                    }); 
                     onThinkingModeToggle(value);
                   }
                 )
@@ -378,9 +388,11 @@ class ChatWidgets {
                 title: const Text('Research mode'), 
                 subtitle: const Text('Deep research with multiple sources'), 
                 trailing: Switch(
-                  value: isResearchModeEnabled, 
+                  value: localResearch, 
                   onChanged: (bool value) { 
-                    setSheetState(() {}); 
+                    setSheetState(() {
+                      localResearch = value;
+                    }); 
                     onResearchModeToggle(value);
                   }
                 )
@@ -417,8 +429,8 @@ class ChatWidgets {
 
               SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
-          ),
-        ),
+          );
+        }
       ),
     );
   }

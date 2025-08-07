@@ -88,8 +88,10 @@ class ChatState extends ChangeNotifier {
     notifyListeners();
   }
   
-  void setSelectedModel(String model) {
+  void setSelectedModel(String model) async {
     _selectedModel = model;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('chat_model', model);
     notifyListeners();
   }
   
@@ -288,7 +290,8 @@ class ChatState extends ChangeNotifier {
     setLastSearchResults(null);
     stopStreaming();
     setChatTitle('New Chat');
-    setSelectedModel('gpt-4');
+    // Model will be loaded from SharedPreferences in _loadSelectedModel()
+    _loadSelectedModel();
     setIsWebSearchEnabled(false);
     setIsResearchModeEnabled(false);
     setShowScrollToBottom(false);
@@ -309,6 +312,29 @@ class ChatState extends ChangeNotifier {
     
     // Setup scroll listener
     _scrollController.addListener(updateScrollToBottomVisibility);
+    
+    // Load model from SharedPreferences
+    _loadSelectedModel();
+  }
+
+  /// Load selected model from SharedPreferences (like original)
+  Future<void> _loadSelectedModel() async {
+    final prefs = await SharedPreferences.getInstance();
+    _selectedModel = prefs.getString('chat_model') ?? '';
+    
+    if (_selectedModel.isEmpty) {
+      try {
+        final models = await ApiService.getAvailableModels();
+        if (models.isNotEmpty) {
+          _selectedModel = models.first;
+          await prefs.setString('chat_model', _selectedModel);
+        }
+      } catch (e) {
+        print('Error loading default model: $e');
+        _selectedModel = 'gpt-4'; // Fallback
+      }
+    }
+    notifyListeners();
   }
   
   @override
