@@ -190,6 +190,7 @@ class _ImagePromptSheetState extends State<ImagePromptSheet> {
           TextField(
             controller: _promptController,
             autofocus: true,
+            cursorColor: Theme.of(context).colorScheme.primary, // Use theme primary color instead of purple
             decoration: InputDecoration(hintText: 'e.g., A fox in a spacesuit', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
           ),
           const SizedBox(height: 16),

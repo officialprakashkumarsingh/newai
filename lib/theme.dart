@@ -52,6 +52,19 @@ class ThemeNotifier extends ChangeNotifier {
     scaffoldBackgroundColor: const Color(0xFFF1F3F4), // Very light gray with a hint of blue
     primaryColor: const Color(0xFF202124), // Almost black text (Primary Headline Text)
     cardColor: const Color(0xFFFFFFFF), // Pure white for cards and tiles
+    // Override Material purple defaults with Google blue
+    colorScheme: const ColorScheme.light(
+      primary: Color(0xFF4285F4), // Google blue for primary elements
+      secondary: Color(0xFF1A73E8), // Darker blue for accents
+      surface: Color(0xFFFFFFFF), // White surfaces
+      background: Color(0xFFF1F3F4), // Light gray background
+      error: Color(0xFFD93025), // Google red for errors
+      onPrimary: Color(0xFFFFFFFF), // White text on primary
+      onSecondary: Color(0xFFFFFFFF), // White text on secondary
+      onSurface: Color(0xFF202124), // Dark text on surfaces
+      onBackground: Color(0xFF202124), // Dark text on background
+      onError: Color(0xFFFFFFFF), // White text on error
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFFF1F3F4), // Matches the background (Top Bar)
       foregroundColor: Color(0xFF202124), // Primary headline text
@@ -96,6 +109,19 @@ class ThemeNotifier extends ChangeNotifier {
     scaffoldBackgroundColor: const Color(0xFF202124), // Main Background - Very dark gray
     primaryColor: const Color(0xFFFFFFFF), // Primary Text - Pure white
     cardColor: const Color(0xFF2C2C2E), // Card Background - Dark gray with bluish tint
+    // Override Material purple defaults with Google blue
+    colorScheme: const ColorScheme.dark(
+      primary: Color(0xFF1A73E8), // Google blue for primary elements
+      secondary: Color(0xFF4285F4), // Lighter blue for accents
+      surface: Color(0xFF2C2C2E), // Dark surfaces
+      background: Color(0xFF202124), // Dark background
+      error: Color(0xFFEA4335), // Google red for errors
+      onPrimary: Color(0xFFFFFFFF), // White text on primary
+      onSecondary: Color(0xFFFFFFFF), // White text on secondary
+      onSurface: Color(0xFFFFFFFF), // White text on surfaces
+      onBackground: Color(0xFFFFFFFF), // White text on background
+      onError: Color(0xFFFFFFFF), // White text on error
+    ),
     appBarTheme: AppBarTheme(
       color: const Color(0xFF202124), // Main Background to match scaffold
       elevation: 0,

@@ -665,7 +665,7 @@ Based on the context above, answer the following prompt: $input""";
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: const Text('Presentation Topic'),
-      content: TextField(controller: promptController, autofocus: true, decoration: const InputDecoration(hintText: 'e.g., The History of Space Exploration'), onSubmitted: (topic) { if (topic.trim().isNotEmpty) { Navigator.of(context).pop(); _generatePresentation(topic); } }),
+      content: TextField(controller: promptController, autofocus: true, cursorColor: Theme.of(context).colorScheme.primary, decoration: const InputDecoration(hintText: 'e.g., The History of Space Exploration'), onSubmitted: (topic) { if (topic.trim().isNotEmpty) { Navigator.of(context).pop(); _generatePresentation(topic); } }),
       actions: [
         TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
         ElevatedButton(onPressed: () { final topic = promptController.text; if (topic.trim().isNotEmpty) { Navigator.of(context).pop(); _generatePresentation(topic); } }, child: const Text('Generate')),
@@ -731,6 +731,7 @@ Based on the context above, answer the following prompt: $input""";
               controller: promptController, 
               autofocus: true, 
               maxLines: 3,
+              cursorColor: Theme.of(context).colorScheme.primary, // Use theme primary color instead of purple
               decoration: const InputDecoration(
                 hintText: 'e.g., Bar chart showing sales data for 2024\nFlowchart for user registration process\nPie chart of market share distribution',
                 border: OutlineInputBorder(),
@@ -1954,6 +1955,7 @@ Generate realistic data relevant to: $prompt''',
                     textInputAction: TextInputAction.send, 
                     maxLines: 5, 
                     minLines: 1, 
+                    cursorColor: Theme.of(context).colorScheme.primary, // Use theme primary color instead of purple
                     style: TextStyle(
                       color: isLightTheme(context) ? const Color(0xFF202124) : Colors.white,
                     ),
