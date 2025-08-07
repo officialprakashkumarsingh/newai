@@ -213,9 +213,10 @@ class ChatUI {
   }
 
   /// Build text message
-  static Widget _buildTextMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+  static Widget _buildTextMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, Function()? onAIMessageOptions, BuildContext context) {
     return GestureDetector(
       onLongPress: isUserMessage ? onUserMessageOptions : null,
+      onTap: !isUserMessage ? onAIMessageOptions : null,
       child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
         ? ThinkingPanel(
             thinkingContent: message.thinkingContent!,
