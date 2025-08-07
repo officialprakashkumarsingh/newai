@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main.dart';
 import 'api_service.dart';
+import 'api.dart';
 import 'diagram_handler.dart';
 import 'research_mode.dart';
 import 'web_search.dart';
@@ -443,21 +444,24 @@ Based on the context above, answer the following prompt: $input""";
     addMessage(ChatMessage(role: 'user', text: 'Generate image: $prompt'));
     
     // Add placeholder for AI response
+    final placeholderIndex = 1; // Will be the second message (index 1)
     addMessage(ChatMessage(role: 'model', text: 'Generating image...'));
 
     try {
-      // This would integrate with the image generation API
-      // For now, just show a placeholder
-      final lastIndex = 1; // Assuming we just added 2 messages
-      updateMessage(lastIndex, ChatMessage(
+      // Use ImageApi to generate the actual image
+      final imageUrl = await ImageApi.generateImage(prompt, model: selectedModel);
+      
+      updateMessage(placeholderIndex, ChatMessage(
         role: 'model',
-        text: 'Image generation completed!',
+        text: 'Image generated successfully!',
         type: MessageType.image,
-        imageUrl: 'placeholder_url', // This would be the actual generated image URL
+        imageUrl: imageUrl,
       ));
     } catch (e) {
-      final lastIndex = 1;
-      updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error generating image: $e'));
+      updateMessage(placeholderIndex, ChatMessage(
+        role: 'model', 
+        text: '❌ Error generating image: $e'
+      ));
     }
   }
 
@@ -483,15 +487,15 @@ Based on the context above, answer the following prompt: $input""";
     addMessage(ChatMessage(role: 'model', text: 'Generating presentation...'));
 
     try {
-      // This would integrate with presentation generation
-      // final presentationData = await PresentationService.generateSlides(topic);
+      // Use PresentationService to generate actual presentation
+      final presentationData = await PresentationService.generatePresentationData(topic, selectedModel);
       
       final lastIndex = 1; // Assuming we just added 2 messages
       updateMessage(lastIndex, ChatMessage(
         role: 'model',
         text: 'Presentation generated successfully!',
         type: MessageType.presentation,
-        presentationData: <String, dynamic>{}, // Placeholder
+        presentationData: presentationData ?? <String, dynamic>{},
       ));
     } catch (e) {
       final lastIndex = 1;

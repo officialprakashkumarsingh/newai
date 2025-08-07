@@ -10,6 +10,7 @@ import 'diagram_service.dart';
 import 'web_search.dart';
 import 'theme.dart';
 import 'chat_widgets.dart';
+import 'queue_panel.dart';
 
 // Import for SearchResultCard
 class SearchResultCard extends StatelessWidget {
@@ -333,14 +334,14 @@ class ChatUI {
                 ),
           ),
           
-          // Message queue indicator
+          // Message queue panel
           if (messageQueue.isNotEmpty || isProcessingQueue)
-            Container(
-              padding: const EdgeInsets.all(8),
-                          child: ChatWidgets.buildMessageQueueIndicator(
-              queuedMessages: messageQueue,
-              isProcessing: isProcessingQueue,
-            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: QueuePanel(
+                queuedMessages: messageQueue,
+                isProcessing: isProcessingQueue,
+              ),
             ),
           
           // Attachment preview
