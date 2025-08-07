@@ -21,6 +21,7 @@ class ChatWidgets {
     required Function() onVoiceInput,
     required Function() onStopStreaming,
     required Function() onShowTools,
+    List<String> messageQueue = const [],
     String? hintText,
   }) {
     return Container(
@@ -61,7 +62,9 @@ class ChatWidgets {
               ),
               decoration: InputDecoration(
                 hintText: isStreaming 
-                  ? 'AhamAI is responding... (type to queue)' 
+                  ? (messageQueue.isEmpty 
+                      ? 'AhamAI is responding... (type to queue)' 
+                      : 'Queued: ${messageQueue.length} messages')
                   : 'Ask AhamAI anything...', 
                 hintStyle: TextStyle(
                   color: isLightTheme(context) ? const Color(0xFF5F6368) : const Color(0xFFB0B0B0), // Google secondary text

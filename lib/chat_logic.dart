@@ -358,8 +358,8 @@ Based on the context above, answer the following prompt: $input""";
       if (messages.isEmpty) return;
 
       final parsedContent = ThinkingContentParser.parseContent(newResponse);
-      final finalContent = parsedContent['finalContent'] as String?;
-      final thinkingContent = parsedContent['thinkingContent'] as String?;
+      final finalContent = parsedContent['final'] as String?;
+      final thinkingContent = parsedContent['thinking'] as String?;
 
       updateMessage(
         messages.length - 1,

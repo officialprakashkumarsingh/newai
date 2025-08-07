@@ -393,6 +393,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       onVoiceInput: _handleVoiceInput,
       onStopStreaming: () => chatState.stopStreaming(),
       onShowTools: _showToolsBottomSheet,
+      messageQueue: chatState.messageQueue,
       hintText: chatState.inputHintText,
     );
   }
@@ -467,8 +468,22 @@ class _DiagramDialogState extends State<_DiagramDialog> {
   final _controller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: const Text('Generate Diagram'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -480,6 +495,7 @@ class _DiagramDialogState extends State<_DiagramDialog> {
             controller: _controller,
             autofocus: true,
             maxLines: 3,
+            cursorColor: Theme.of(context).colorScheme.primary,
             decoration: const InputDecoration(
               hintText: 'e.g., Bar chart showing sales data for 2024\nFlowchart for user registration process\nPie chart of market share distribution',
               border: OutlineInputBorder(),
@@ -498,7 +514,7 @@ class _DiagramDialogState extends State<_DiagramDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: _controller.text.isNotEmpty
+          onPressed: _controller.text.trim().isNotEmpty
             ? () => Navigator.pop(context, _controller.text)
             : null,
           child: const Text('Generate'),
@@ -518,16 +534,37 @@ class _PresentationDialogState extends State<_PresentationDialog> {
   final _controller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Generate Presentation'),
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: const Text('Presentation Topic'),
       content: TextField(
         controller: _controller,
+        autofocus: true,
+        cursorColor: Theme.of(context).colorScheme.primary,
         decoration: const InputDecoration(
-          hintText: 'Enter presentation topic...',
+          hintText: 'e.g., The History of Space Exploration',
           border: OutlineInputBorder(),
         ),
         maxLines: 2,
+        onSubmitted: (topic) {
+          if (topic.trim().isNotEmpty) {
+            Navigator.of(context).pop(topic);
+          }
+        },
       ),
       actions: [
         TextButton(
@@ -535,7 +572,7 @@ class _PresentationDialogState extends State<_PresentationDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: _controller.text.isNotEmpty
+          onPressed: _controller.text.trim().isNotEmpty
             ? () => Navigator.pop(context, _controller.text)
             : null,
           child: const Text('Generate'),
