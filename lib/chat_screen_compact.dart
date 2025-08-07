@@ -366,6 +366,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       onAttachFile: _handleFileAttachment,
       onVoiceInput: _handleVoiceInput,
       onStopStreaming: () => chatState.stopStreaming(),
+      onShowTools: _showToolsBottomSheet,
       hintText: chatState.inputHintText,
     );
   }

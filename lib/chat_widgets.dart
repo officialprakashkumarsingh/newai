@@ -20,6 +20,7 @@ class ChatWidgets {
     required Function() onAttachFile,
     required Function() onVoiceInput,
     required Function() onStopStreaming,
+    required Function() onShowTools,
     String? hintText,
   }) {
     return Container(
@@ -37,7 +38,7 @@ class ChatWidgets {
           // Tools button
           IconButton(
             icon: const Icon(Icons.apps_outlined),
-            onPressed: () {}, // Will be handled by parent
+            onPressed: onShowTools,
             tooltip: 'Tools',
             color: Theme.of(context).iconTheme.color,
           ),
