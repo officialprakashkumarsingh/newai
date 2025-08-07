@@ -80,6 +80,8 @@ class ChatLogic {
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
     required Function() scrollToBottom,
+    required Function() startStreaming,
+    required Function() stopStreaming,
     dynamic attachment,
   }) async {
     if (input.trim().isEmpty && attachment == null) return;
@@ -111,6 +113,9 @@ class ChatLogic {
         webSearchResults = await handleWebSearch(input);
       }
 
+      // Start streaming state
+      startStreaming();
+
       // Send to AI with streaming
       await sendOpenAICompatibleStream(
         input: finalInputForAI,
@@ -119,7 +124,12 @@ class ChatLogic {
         webSearchResults: webSearchResults,
         updateMessage: updateMessage,
       );
+      
+      // Stop streaming state
+      stopStreaming();
     } catch (e) {
+      // Stop streaming on error
+      stopStreaming();
       final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error: $e'));
     }
@@ -134,6 +144,8 @@ class ChatLogic {
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
     required Function() scrollToBottom,
+    required Function() startStreaming,
+    required Function() stopStreaming,
   }) async {
     final imageBytes = await imageFile.readAsBytes();
     final userMessage = ChatMessage(
@@ -146,6 +158,9 @@ class ChatLogic {
     scrollToBottom();
 
     try {
+      // Start streaming state
+      startStreaming();
+      
       await for (final chunk in ApiService.sendVisionMessage(
         message: input,
         imageBase64: base64.encode(imageBytes),
@@ -155,7 +170,12 @@ class ChatLogic {
         final currentText = messages[lastIndex].text + chunk;
         updateMessage(lastIndex, ChatMessage(role: 'model', text: currentText));
       }
+      
+      // Stop streaming state
+      stopStreaming();
     } catch (e) {
+      // Stop streaming on error
+      stopStreaming();
       final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error: $e'));
     }

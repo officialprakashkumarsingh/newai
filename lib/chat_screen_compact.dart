@@ -117,6 +117,8 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       addMessage: _addMessage,
       updateMessage: _updateMessage,
       scrollToBottom: _chatState.scrollToBottom,
+      startStreaming: () => _chatState.startStreaming(),
+      stopStreaming: () => _chatState.stopStreaming(),
       attachment: _chatState.attachment,
     );
   }
@@ -133,6 +135,8 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       addMessage: _addMessage,
       updateMessage: _updateMessage,
       scrollToBottom: _chatState.scrollToBottom,
+      startStreaming: () => _chatState.startStreaming(),
+      stopStreaming: () => _chatState.stopStreaming(),
     );
   }
 
