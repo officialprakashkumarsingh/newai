@@ -30,6 +30,8 @@ import 'api.dart';
 import 'api_service.dart';
 import 'external_tools_service.dart';
 import 'external_tools_integration.dart';
+import 'external_tools_handler.dart';
+import 'diagram_handler.dart';
 import 'chat_ui_helpers.dart';
 import 'file_processing.dart';
 import 'main.dart';
@@ -102,9 +104,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   String? _lastCreatedFilePath;
 
+  // Handlers for external tools and diagrams
+  late ExternalToolsHandler _externalToolsHandler;
+  late DiagramHandler _diagramHandler;
+
   @override
   void initState() {
     super.initState();
+    
+    // Initialize handlers
+    _externalToolsHandler = ExternalToolsHandler(_addToolStatusMessage);
+    _diagramHandler = DiagramHandler(context, _addToolStatusMessage);
     
     _messages = widget.initialMessages != null ? List.from(widget.initialMessages!) : [];
     _isPinned = widget.isPinned;
@@ -430,7 +440,7 @@ Based on the context above, answer the following prompt: $input""";
 
 
   
-  void _onStreamingDone() {
+  void _onStreamingDone() async {
     // Cancel any pending streaming updates and apply final content
     _streamingUpdateTimer?.cancel();
     if (_pendingStreamingContent.isNotEmpty) {
@@ -461,12 +471,12 @@ Based on the context above, answer the following prompt: $input""";
     _setupChatModel(); 
     setState(() => _isStreaming = false);
     
-    // Check if AI response indicates tool usage
+    // Check for external tools usage
     final aiResponse = _messages.last.text;
-    final toolUsage = ExternalToolsIntegration.detectToolUsage(aiResponse);
-    if (toolUsage != null) {
-      _handleToolUsage(toolUsage);
-    }
+    await _externalToolsHandler.checkAndHandleToolUsage(aiResponse);
+    
+    // Check for diagram requests
+    await _diagramHandler.checkAndHandleDiagramRequest(aiResponse, _selectedChatModel);
     
     _updateChatTitleFromLastMessage(); // Update title with last user message and AI response
     _updateChatInfo(false, false);
@@ -2140,200 +2150,35 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  void _handleToolUsage(Map<String, dynamic> toolUsage) async {
-    final action = toolUsage['action'] as String;
-    final response = toolUsage['response'] as String;
+  void _updateChatTitleFromLastMessage() {
+    if (_messages.isEmpty) return;
     
-    print('🔧 Tool usage detected: $action');
+    final userMessages = _messages.where((m) => m.role == 'user').toList();
+    final aiMessages = _messages.where((m) => m.role == 'model').toList();
     
-    try {
-      switch (action) {
-        case 'create_file':
-          await _handleFileCreationTool(response);
-          break;
-        case 'send_email':
-          await _handleEmailTool(response);
-          break;
-        case 'send_whatsapp':
-          await _handleWhatsAppTool(response);
-          break;
-        case 'send_sms':
-          await _handleSMSTool(response);
-          break;
-        case 'share_file':
-          await _handleShareFileTool(response);
-          break;
-      }
-    } catch (e) {
-      print('❌ Tool execution failed: $e');
-      _addToolStatusMessage('Tool execution failed: $e');
-    }
-  }
-
-  Future<void> _handleFileCreationTool(String aiResponse) async {
-    // Extract file details from AI response
-    final fileName = _extractFileName(aiResponse) ?? 'ai_generated_file.txt';
-    final content = _extractFileContent(aiResponse) ?? aiResponse;
-    final fileType = _extractFileType(fileName);
-    
-    _addToolStatusMessage('🔧 Creating file: $fileName...');
-    
-    final result = await ExternalToolsService.executeFileTool(
-      operation: 'create',
-      fileName: fileName,
-      content: content,
-      fileType: fileType,
-      metadata: {
-        'created_by': 'AI Assistant',
-        'timestamp': DateTime.now().toIso8601String(),
-        'title': _extractFileTitle(aiResponse) ?? 'AI Generated Document',
-      },
-    );
-    
-    if (result['success'] == true) {
-      final filePath = result['file_path'] as String?;
-      final fileName = result['file_name'] as String?;
-      final fileSize = result['file_size'] as int?;
-      final fileType = result['file_type'] as String?;
-      final isExternal = result['is_external'] as bool? ?? false;
-      final sizeText = fileSize != null ? ' (${(fileSize / 1024).toStringAsFixed(1)} KB)' : '';
+    if (userMessages.isNotEmpty && aiMessages.isNotEmpty) {
+      final lastUserMessage = userMessages.last.text;
+      final lastAiMessage = aiMessages.last.text;
       
-      // Show file creation success with location
-      final locationText = isExternal ? 'Downloads folder (visible in file manager)' : 'app storage';
-      _addToolStatusMessage('✅ File created successfully!\n📁 ${fileName ?? 'File'}$sizeText\n📂 Saved in: $locationText\n🎯 Format: ${fileType?.toUpperCase() ?? 'TXT'}');
+      // Combine user message with AI response for title
+      final combinedTitle = '$lastUserMessage → ${_stripMarkdown(lastAiMessage)}';
+      final truncatedTitle = combinedTitle.length > 60 
+        ? '${combinedTitle.substring(0, 57)}...' 
+        : combinedTitle;
       
-      // Store the file path for potential sharing
-      if (filePath != null) {
-        _lastCreatedFilePath = filePath;
-        _addToolStatusMessage('💡 You can now say "share this file via email" or "send this file to someone" to share it!');
-      }
-    } else {
-      _addToolStatusMessage('❌ Failed to create file: ${result['error']}');
-    }
-  }
-
-  Future<void> _handleEmailTool(String aiResponse) async {
-    final recipient = _extractEmailRecipient(aiResponse) ?? '';
-    final subject = _extractEmailSubject(aiResponse) ?? 'Message from AI Assistant';
-    final content = _extractEmailContent(aiResponse) ?? aiResponse;
-    
-    if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify an email address.');
-      return;
-    }
-    
-    final result = await ExternalToolsService.executeCommunicationTool(
-      operation: 'send_email',
-      recipient: recipient,
-      content: content,
-      subject: subject,
-    );
-    
-    if (result['success'] == true) {
-      final method = result['method'] ?? 'email';
-      _addToolStatusMessage('📧 Email app opened successfully for $recipient\n🔧 Method: $method');
-    } else {
-      String errorMessage = '❌ Failed to open email: ${result['error']}';
+      setState(() {
+        _chatTitle = truncatedTitle;
+      });
+    } else if (userMessages.isNotEmpty) {
+      // Fallback to just user message if no AI response
+      final lastUserMessage = _stripMarkdown(userMessages.last.text);
+      final truncatedTitle = lastUserMessage.length > 60 
+        ? '${lastUserMessage.substring(0, 57)}...' 
+        : lastUserMessage;
       
-      // Add suggestions if available
-      if (result['suggestions'] != null) {
-        final suggestions = result['suggestions'] as List;
-        errorMessage += '\n\n💡 Suggestions:\n';
-        for (final suggestion in suggestions) {
-          errorMessage += '• $suggestion\n';
-        }
-      }
-      
-      _addToolStatusMessage(errorMessage);
-    }
-  }
-
-  Future<void> _handleWhatsAppTool(String aiResponse) async {
-    final recipient = _extractPhoneNumber(aiResponse) ?? '';
-    final content = _extractMessageContent(aiResponse) ?? aiResponse;
-    
-    if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify a phone number in your message.');
-      return;
-    }
-    
-    _addToolStatusMessage('💬 Opening WhatsApp...');
-    
-    final result = await ExternalToolsService.executeCommunicationTool(
-      operation: 'send_whatsapp',
-      recipient: recipient,
-      content: content,
-    );
-    
-    if (result['success'] == true) {
-      _addToolStatusMessage('✅ WhatsApp opened successfully!\n💬 To: $recipient\n📱 Message ready to send');
-    } else {
-      _addToolStatusMessage('❌ Failed to open WhatsApp: ${result['error']}\n💡 Make sure WhatsApp is installed.');
-    }
-  }
-
-  Future<void> _handleSMSTool(String aiResponse) async {
-    final recipient = _extractPhoneNumber(aiResponse) ?? '';
-    final content = _extractMessageContent(aiResponse) ?? aiResponse;
-    
-    if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify a phone number in your message.');
-      return;
-    }
-    
-    _addToolStatusMessage('📱 Opening SMS app...');
-    
-    final result = await ExternalToolsService.executeCommunicationTool(
-      operation: 'send_sms',
-      recipient: recipient,
-      content: content,
-    );
-    
-    if (result['success'] == true) {
-      _addToolStatusMessage('✅ SMS app opened successfully!\n📱 To: $recipient\n💬 Message ready to send');
-    } else {
-      _addToolStatusMessage('❌ Failed to open SMS app: ${result['error']}\n💡 Make sure you have an SMS app available.');
-    }
-  }
-
-  Future<void> _handleShareFileTool(String aiResponse) async {
-    if (_lastCreatedFilePath == null) {
-      _addToolStatusMessage('⚠️ No file to share. Please create a file first.');
-      return;
-    }
-    
-    final recipient = _extractEmailRecipient(aiResponse) ?? _extractPhoneNumber(aiResponse) ?? '';
-    final shareMethod = _extractShareMethod(aiResponse);
-    final subject = _extractEmailSubject(aiResponse) ?? 'File from AhamAI';
-    final message = _extractShareMessage(aiResponse) ?? 'Please find the attached file.';
-    
-    _addToolStatusMessage('📁 Sharing file...');
-    
-    Map<String, dynamic> result;
-    
-    // Use specialized email method for email sharing
-    if (shareMethod == 'email' && recipient.isNotEmpty) {
-      result = await ExternalToolsService.shareFileViaEmail(
-        filePath: _lastCreatedFilePath!,
-        recipient: recipient,
-        subject: subject,
-        message: message,
-      );
-    } else {
-      result = await ExternalToolsService.shareFile(
-        filePath: _lastCreatedFilePath!,
-        shareMethod: shareMethod,
-        recipient: recipient,
-        subject: subject,
-        message: message,
-      );
-    }
-    
-    if (result['success'] == true) {
-      final method = result['method'] ?? shareMethod;
-      _addToolStatusMessage('✅ File shared successfully!\n📁 Method: ${method.toUpperCase()}\n📤 ${result['message']}');
-    } else {
-      _addToolStatusMessage('❌ Failed to share file: ${result['error']}');
+      setState(() {
+        _chatTitle = truncatedTitle;
+      });
     }
   }
 
@@ -2342,126 +2187,10 @@ Generate realistic data relevant to: $prompt''',
       _messages.add(ChatMessage(
         role: 'system',
         text: message,
+        type: MessageType.text,
       ));
     });
     _scrollToBottom();
-  }
-
-  // Helper methods to extract information from AI response
-  String? _extractFileName(String response) {
-    final fileNameMatch = RegExp(r'file.*named?\s+"([^"]+)"', caseSensitive: false).firstMatch(response);
-    return fileNameMatch?.group(1);
-  }
-
-  String? _extractFileContent(String response) {
-    // Try to find content between code blocks or quotes
-    final codeBlockMatch = RegExp(r'```[\s\S]*?\n([\s\S]*?)\n```').firstMatch(response);
-    if (codeBlockMatch != null) return codeBlockMatch.group(1);
-    
-    final quoteMatch = RegExp(r'"([^"]{20,})"').firstMatch(response);
-    if (quoteMatch != null) return quoteMatch.group(1);
-    
-    return null;
-  }
-
-  String _extractFileType(String fileName) {
-    final extension = fileName.split('.').last.toLowerCase();
-    return extension;
-  }
-
-  String? _extractFileTitle(String response) {
-    final titleMatch = RegExp(r'title[:\s]+"([^"]+)"', caseSensitive: false).firstMatch(response);
-    return titleMatch?.group(1);
-  }
-
-  String? _extractEmailRecipient(String response) {
-    final emailMatch = RegExp(r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})').firstMatch(response);
-    return emailMatch?.group(1);
-  }
-
-  String? _extractEmailSubject(String response) {
-    final subjectMatch = RegExp(r'subject[:\s]+"([^"]+)"', caseSensitive: false).firstMatch(response);
-    return subjectMatch?.group(1);
-  }
-
-  String? _extractEmailContent(String response) {
-    // Extract content after "send this email" or similar phrases
-    final contentMatch = RegExp(r'send.*email.*:\s*"([^"]+)"', caseSensitive: false).firstMatch(response);
-    return contentMatch?.group(1);
-  }
-
-  String? _extractPhoneNumber(String response) {
-    final phoneMatch = RegExp(r'(\+?\d{1,3}[-.\s]?\d{1,14}[-.\s]?\d{1,14})').firstMatch(response);
-    return phoneMatch?.group(1);
-  }
-
-  String? _extractMessageContent(String response) {
-    // Extract content after "send" or similar phrases
-    final contentMatch = RegExp(r'send.*:\s*"([^"]+)"', caseSensitive: false).firstMatch(response);
-    return contentMatch?.group(1);
-  }
-
-  String _extractShareMethod(String response) {
-    final lowerResponse = response.toLowerCase();
-    
-    if (lowerResponse.contains('email') || lowerResponse.contains('e-mail')) {
-      return 'email';
-    } else if (lowerResponse.contains('whatsapp') || lowerResponse.contains('whats app')) {
-      return 'whatsapp';
-    } else if (lowerResponse.contains('sms') || lowerResponse.contains('text message')) {
-      return 'sms';
-    } else {
-      return 'share'; // Default to system share dialog
-    }
-  }
-
-  String? _extractShareMessage(String response) {
-    // Try to extract message content for sharing
-    final patterns = [
-      RegExp(r'with message[:\s]+"([^"]+)"', caseSensitive: false),
-      RegExp(r'message[:\s]+"([^"]+)"', caseSensitive: false),
-      RegExp(r'saying[:\s]+"([^"]+)"', caseSensitive: false),
-      RegExp(r'text[:\s]+"([^"]+)"', caseSensitive: false),
-    ];
-
-    for (final pattern in patterns) {
-      final match = pattern.firstMatch(response);
-      if (match != null && match.group(1) != null) {
-        return match.group(1)!.trim();
-      }
-    }
-
-    return null;
-  }
-
-  void _updateChatTitleFromLastMessage() {
-    if (_messages.isEmpty) return;
-    
-    // Find the last user message
-    final lastUserMessage = _messages.lastWhere((m) => m.role == 'user', orElse: () => ChatMessage(role: 'user', text: ''));
-    if (lastUserMessage.text.trim().isEmpty) return;
-    
-    // Create title from last user message
-    String title = lastUserMessage.text.length > 30 
-        ? '${lastUserMessage.text.substring(0, 30)}...' 
-        : lastUserMessage.text;
-    
-    // Try to include AI response if it exists and is complete
-    final lastAIMessage = _messages.lastWhere((m) => m.role == 'model', orElse: () => ChatMessage(role: 'model', text: ''));
-    if (lastAIMessage.text.trim().isNotEmpty && !_isStreaming) {
-      // Add a brief AI response to the title if there's space
-      final aiResponse = lastAIMessage.text.length > 20 
-          ? '${lastAIMessage.text.substring(0, 20)}...'
-          : lastAIMessage.text;
-      
-      // Combine user message and AI response (keep under 50 chars total)
-      final combinedTitle = '$title → $aiResponse';
-      if (combinedTitle.length <= 50) {
-        title = combinedTitle;
-      }
-    }
-    
-    _chatTitle = title;
   }
 
   void _optimizedStreamingUpdate(String chunk) {
@@ -2491,6 +2220,19 @@ Generate realistic data relevant to: $prompt''',
         _scrollToBottom();
       }
     });
+  }
+
+  // Helper function to strip markdown formatting for chat preview
+  String _stripMarkdown(String text) {
+    return text
+        .replaceAll(RegExp(r'\*\*(.*?)\*\*'), r'$1') // Bold
+        .replaceAll(RegExp(r'\*(.*?)\*'), r'$1') // Italic
+        .replaceAll(RegExp(r'`(.*?)`'), r'$1') // Inline code
+        .replaceAll(RegExp(r'```[\s\S]*?```'), '[Code]') // Code blocks
+        .replaceAll(RegExp(r'#{1,6}\s*'), '') // Headers
+        .replaceAll(RegExp(r'\[(.*?)\]\(.*?\)'), r'$1') // Links
+        .replaceAll(RegExp(r'\n+'), ' ') // Multiple newlines to space
+        .trim();
   }
 }
 
