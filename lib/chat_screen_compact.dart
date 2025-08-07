@@ -231,7 +231,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     await ChatLogic.processMessageQueue(
       messageQueue: _chatState.messageQueue,
       isProcessingQueue: _chatState.isProcessingQueue,
-      isStreaming: _chatState.isStreaming,
+      getIsStreaming: () => _chatState.isStreaming,
       sendTextMessage: _sendTextMessage,
       setProcessingQueue: _chatState.setIsProcessingQueue,
       updateUI: () => setState(() {}),

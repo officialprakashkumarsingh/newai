@@ -125,7 +125,7 @@ class ChatUI {
         return _buildDiagramMessage(message, context);
       case MessageType.text:
       default:
-        return _buildTextMessage(message, isUserMessage, onUserMessageOptions, context);
+        return _buildTextMessage(message, isUserMessage, onUserMessageOptions, null, context);
     }
   }
 

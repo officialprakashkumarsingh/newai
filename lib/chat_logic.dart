@@ -289,16 +289,16 @@ Based on the context above, answer the following prompt: $input""";
   static Future<void> processMessageQueue({
     required List<String> messageQueue,
     required bool isProcessingQueue,
-    required bool isStreaming,
+    required Function() getIsStreaming,
     required Function(String) sendTextMessage,
     required Function(bool) setProcessingQueue,
     required Function() updateUI,
   }) async {
-    if (messageQueue.isEmpty || isProcessingQueue || isStreaming) return;
+    if (messageQueue.isEmpty || isProcessingQueue || getIsStreaming()) return;
 
     setProcessingQueue(true);
 
-    while (messageQueue.isNotEmpty && !isStreaming) {
+    while (messageQueue.isNotEmpty && !getIsStreaming()) {
       final nextMessage = messageQueue.removeAt(0);
       updateUI(); // Update UI to show queue count change
 
@@ -306,7 +306,7 @@ Based on the context above, answer the following prompt: $input""";
       await sendTextMessage(nextMessage);
 
       // Wait for streaming to complete
-      while (isStreaming) {
+      while (getIsStreaming()) {
         await Future.delayed(const Duration(milliseconds: 100));
       }
     }
