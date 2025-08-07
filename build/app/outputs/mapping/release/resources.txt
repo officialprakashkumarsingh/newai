@@ -18,7 +18,6 @@ PICTURES
 YEAR
 setLayoutDirection
 .mp4
-xml
 TAKEN
 preferences_pb
 android.speech.extra.RESULTS_PENDINGI...
@@ -73,7 +72,6 @@ EXTRA_BENCHMARK_OPERATION
 _
 SERIAL
 a
-externalToolsHandler
 b
 c
 address
@@ -88,7 +86,6 @@ sidecarDeviceState
 BET
 component
 r
-executeFileTool
 s
 SUSPEND
 java.lang.Module
@@ -118,7 +115,6 @@ addMethodName
 ACTION_SCROLL_FORWARD
 bufferEndSegment
 STRICT
-supported_formats
 dev.flutter.pigeon.url_launcher_andro...
 extensionCallback
 preferencesProto.preferencesMap
@@ -131,12 +127,12 @@ FlutterEngine
 $arguments
 DateTimeDigitized
 flutter/keyevent
-success
 AppLifecycleState.
 child
 SystemChrome.setSystemUIOverlayStyle
 androidx.view.accessibility.Accessibi...
 addWindowLayoutInfoListener
+com.aham.app.ACTION_CAMERA
 repeatMode
 enable_state_restoration
 COMPLETING_WAITING_CHILDREN
@@ -144,6 +140,7 @@ RESULT_BASELINE_PROFILE_NOT_FOUND
 _invoked
 SECOND_OF_MINUTE
 locale
+getSharedText
 android.speech.tts.TextToSpeech$Conne...
 JPEG_
 RESULT_DELETE_SKIP_FILE_SUCCESS
@@ -168,7 +165,6 @@ MOVE_CURSOR_FORWARD_BY_CHARACTER
 GPSImgDirection
 args
 resizeUpLeft
-pdf
 SearchView
 TextInputType.emailAddress
 ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE
@@ -297,6 +293,7 @@ GPSTrackRef
 REFERENCE
 process_type
 android.permission.NEARBY_WIFI_DEVICES
+recent_chat
 LANDSCAPE_LEFT
 ClockHourOfDay
 direction
@@ -317,12 +314,10 @@ UNKNOWN
 /proc/self/fd/
 android.permission.CAMERA
 fileName
-css
 Apr
 getByte
 accessibility
 endColor
-getAvailableTools
 JSON_ENCODED
 FRONT
 UINT32
@@ -384,8 +379,6 @@ IS_LIVE_REGION
 windowToken
 onTrimMemory
 getSourceNodeId
-txt
-send_sms
 chars
 rawrResult
 arrayIndexScale
@@ -469,7 +462,6 @@ getWindowExtensions
 DATETIME
 BOOL
 PASTE
-recipient
 short
 startY
 startX
@@ -494,7 +486,6 @@ CODENAME
 put
 ACTION_PAGE_LEFT
 YResolution
-python3
 TextInputType.text
 in_progress
 shouldShowRequestPermissionRationale
@@ -532,7 +523,6 @@ voice.name
 CHANNEL_CLOSED
 primary
 java.lang.Throwable
-getToolCapabilities
 /data/misc/profiles/cur/0/
 PrivateApi
 SystemSound.play
@@ -544,7 +534,6 @@ android.intent.action.RUN
 android.permission.ACCESS_NOTIFICATIO...
 low
 INITIALIZED
-smsto:
 android.permission.REQUEST_IGNORE_BAT...
 KeyEventChannel
 android.support.v13.view.inputmethod....
@@ -596,7 +585,6 @@ CLOSE_HANDLER_INVOKED
 group
 java.lang.Cloneable
 speak.onStart
-python_scripts
 GPSLongitudeRef
 Months
 android.speech.extra.RESULTS_PENDINGI...
@@ -728,7 +716,6 @@ personNamePrefix
 toString
 android.permission.BLUETOOTH
 activityManager
-file_path
 feature.rect
 missingDelimiterValue
 data_store
@@ -802,7 +789,6 @@ ExifInterface
 IconCompat
 BASE_OS
 GET_MEMOIZED_IS_INITIALIZED
-getInitialSharedText
 keydown
 trimPathStart
 activateSystemCursor
@@ -812,6 +798,7 @@ TextEditingDelta
 Fri
 strokeMiterLimit
 DEFAULT
+com.aham.app.ACTION_RECENT_CHAT
 SensingMethod
 DROP_OLDEST
 BOARD
@@ -848,7 +835,6 @@ field
 applicationContext
 tts.javaClass.declaredFields
 getResId
-raw_output
 messages
 MOVE_CURSOR_FORWARD_BY_WORD
 androidx.datastore.preferences.protob...
@@ -905,7 +891,6 @@ RESUMED
 instance
 THURSDAY
 SpellCheckChannel
-subject
 android.permission.READ_CALENDAR
 main
 commitBackGesture
@@ -1068,7 +1053,6 @@ android.widget.EditText
 NO_DECISION
 JPEGInterchangeFormat
 QUARTER_OF_YEAR
-android.intent.extra.SUBJECT
 postalCode
 notifyError
 presentation
@@ -1096,10 +1080,12 @@ profileInstalled
 Gap
 GainControl
 _next
+EXTRA_CHAT_TITLE
 isLanguageAvailable
 MILLI_OF_SECOND
 ZoneOffset
 downloads
+clearWidgetAction
 textservices
 ปีก่อนคริสต์กาลที่
 error_network_timeout
@@ -1142,7 +1128,6 @@ SATURDAY
 tel:123123
 NONE
 TYPE
-zip
 application/json
 kotlinx.coroutines.semaphore.maxSpinC...
 LocalTime
@@ -1225,7 +1210,6 @@ resolverStyle
 zoneId
 DAY_OF_QUARTER
 DETACHED
-html
 android.permission.POST_NOTIFICATIONS
 action_msg
 TextInputType.datetime
@@ -1238,6 +1222,7 @@ DrawableUtils
 SystemChrome.setApplicationSwitcherDe...
 IS_HIDDEN
 isPhysicalDevice
+EXTRA_CHAT_ID
 sequence
 keyCode
 android.permission.SCHEDULE_EXACT_ALARM
@@ -1334,7 +1319,6 @@ VectorDrawableCompat
 libapp.so
 fillColor
 MESSAGE
-create_file
 RestorationChannel
 middleInitial
 PHYSICAL_DISPLAY_PLATFORM_VIEW
@@ -1388,7 +1372,6 @@ trimPathEnd
 flutter_image_picker_image_path
 LIGHT
 HST
-send_email
 WEEK_BASED_YEARS
 DID_LOSE_ACCESSIBILITY_FOCUS
 missingContext
@@ -1469,7 +1452,6 @@ ID
 createSegment
 SMART
 TextInputType.none
-toolName
 UINT64_LIST_PACKED
 TextInputAction.none
 FileSource
@@ -1607,7 +1589,6 @@ WALL
 arrayBaseOffset
 android.permission.RECEIVE_WAP_PUSH
 Tue
-executeCommunicationTool
 windowConfiguration
 setVolume
 dev.flutter.pigeon.image_picker_andro...
@@ -1619,7 +1600,6 @@ error_client
 flutter/lifecycle
 TextInputType.number
 0.5
-send_whatsapp
 layout_inflater
 SLONG
 android.media.action.VIDEO_CAPTURE
@@ -1644,7 +1624,6 @@ NO_CLOSE_CAUSE
 INCREASE
 androidx.datastore.preferences.protob...
 android.speech.RecognitionService
-script_
 newValue
 cache
 creditCardExpirationMonth
@@ -1670,7 +1649,6 @@ PROTO2
 FilePickerUtils
 POSTURE_FLAT
 PROTO3
-android.intent.action.SENDTO
 onDevice
 kotlinx.coroutines.semaphore.segmentSize
 DROP_SHADER_CACHE
@@ -1744,7 +1722,6 @@ startOffset
 GPSDestLongitude
 byteString
 dev.flutter.pigeon.image_picker_andro...
-.py
 DayOfYear
 name
 DIAGNOSTIC_REF_PROFILE_DOES_NOT_EXIST
@@ -1753,7 +1730,6 @@ DartExecutor
 SceneCaptureType
 NestedScrollView
 fields
-parameters
 INCREMENTAL
 getDescriptor
 keymap
@@ -1798,7 +1774,6 @@ window
 personFamilyName
 dev.flutter.pigeon.url_launcher_andro...
 Cancelling
-process.errorStream
 VdcInflateDelegate
 CLIP_RRECT
 getDefaultEngine
@@ -2104,7 +2079,6 @@ vbox86p
 statusBarColor
 SIZED
 VGhpcyBpcyB0aGUgcHJlZml4IGZvciBCaWdJb...
-json
 contentCommitMimeTypes
 recognizedWords
 DISABLE_ANIMATIONS
@@ -2146,7 +2120,6 @@ $newLayoutInfo
 model
 id
 transferIndex
-sms_body
 birthdayYear
 kDirectionalPad
 isolate_snapshot_data
@@ -2187,6 +2160,7 @@ suggest_intent_action
 IS_EXPANDED
 RIGHT
 corruptionHandler
+camera
 พุทธศักราช
 bundle
 fileSystem
@@ -2197,7 +2171,6 @@ GROUP_LIST
 personNameSuffix
 kotlin.jvm.functions.Function
 EST
-com.ahamai.external_tools
 GPSLongitude
 resizeLeftRight
 off
@@ -2218,7 +2191,6 @@ newUsername
 HOST
 suffix
 tintMode
-mailto:
 _size
 high
 personMiddleInitial
@@ -2239,7 +2211,6 @@ NULL
 TOO_LATE_TO_CANCEL
 Asia/Ho_Chi_Minh
 shared_preferences
-process.inputStream
 ms
 PhotographicSensitivity
 ROC
@@ -2309,7 +2280,6 @@ START_PROCESSING
 Artist
 pp
 HAS_TOGGLED_STATE
-metadata
 valueTo
 suggest_icon_1
 suggest_icon_2
@@ -2476,7 +2446,6 @@ PLATFORM_ENCODED
 REMOVED_TASK
 location
 getInstance
-fileType
 ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY
 xx
 PT0S
@@ -2596,7 +2565,6 @@ synth.onError
 tag
 NewSubfileType
 FIXED64_LIST_PACKED
-https://wa.me/
 unknown_path
 tap
 SENSITIVE

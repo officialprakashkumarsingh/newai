@@ -10,16 +10,11 @@ import kotlinx.coroutines.*
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ahamai.text_sharing"
     private val WIDGET_CHANNEL = "com.ahamai.widget"
-    private val EXTERNAL_TOOLS_CHANNEL = "com.ahamai.external_tools"
     private var sharedText: String? = null
     private var widgetAction: String? = null
-    private lateinit var externalToolsHandler: ExternalToolsHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Initialize external tools handler
-        externalToolsHandler = ExternalToolsHandler(this)
         
         handleSharingIntent(intent)
         handleWidgetIntent(intent)
@@ -50,6 +45,14 @@ class MainActivity : FlutterActivity() {
             "com.aham.app.ACTION_VOICE" -> {
                 widgetAction = "voice"
             }
+            "com.aham.app.ACTION_CAMERA" -> {
+                widgetAction = "camera"
+            }
+            "com.aham.app.ACTION_RECENT_CHAT" -> {
+                widgetAction = "recent_chat"
+                val chatId = intent.getStringExtra("EXTRA_CHAT_ID") ?: ""
+                val chatTitle = intent.getStringExtra("EXTRA_CHAT_TITLE") ?: ""
+            }
         }
     }
 
@@ -58,39 +61,20 @@ class MainActivity : FlutterActivity() {
         
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
-                "getInitialSharedText" -> {
-                    result.success(sharedText)
-                    sharedText = null // Clear after sending
-                }
-                else -> {
-                    result.notImplemented()
-                }
+                "getSharedText" -> result.success(sharedText)
+                else -> result.notImplemented()
             }
         }
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, WIDGET_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
-                "getWidgetAction" -> {
-                    result.success(widgetAction)
-                    widgetAction = null // Clear after sending
+                "getWidgetAction" -> result.success(widgetAction)
+                "clearWidgetAction" -> {
+                    widgetAction = null
+                    result.success(null)
                 }
-                else -> {
-                    result.notImplemented()
-                }
+                else -> result.notImplemented()
             }
-        }
-
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, EXTERNAL_TOOLS_CHANNEL).setMethodCallHandler { call, result ->
-            externalToolsHandler.handleMethodCall(call, result)
-        }
-
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (::externalToolsHandler.isInitialized) {
-            externalToolsHandler.cleanup()
         }
     }
 }

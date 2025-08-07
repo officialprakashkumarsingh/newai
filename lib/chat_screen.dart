@@ -2173,6 +2173,8 @@ Generate realistic data relevant to: $prompt''',
     final content = _extractFileContent(aiResponse) ?? aiResponse;
     final fileType = _extractFileType(fileName);
     
+    _addToolStatusMessage('🔧 Creating file: $fileName...');
+    
     final result = await ExternalToolsService.executeFileTool(
       operation: 'create',
       fileName: fileName,
@@ -2186,7 +2188,10 @@ Generate realistic data relevant to: $prompt''',
     );
     
     if (result['success'] == true) {
-      _addToolStatusMessage('✅ File created: $fileName\nSaved to Downloads folder');
+      final filePath = result['file_path'] as String?;
+      final fileSize = result['file_size'] as int?;
+      final sizeText = fileSize != null ? ' (${(fileSize / 1024).toStringAsFixed(1)} KB)' : '';
+      _addToolStatusMessage('✅ File created successfully!\n📁 $fileName$sizeText\n📂 Saved to: ${filePath ?? 'Downloads folder'}');
     } else {
       _addToolStatusMessage('❌ Failed to create file: ${result['error']}');
     }
@@ -2198,9 +2203,11 @@ Generate realistic data relevant to: $prompt''',
     final content = _extractEmailContent(aiResponse) ?? aiResponse;
     
     if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify an email address.');
+      _addToolStatusMessage('⚠️ Please specify an email address in your message.');
       return;
     }
+    
+    _addToolStatusMessage('📧 Opening email app...');
     
     final result = await ExternalToolsService.executeCommunicationTool(
       operation: 'send_email',
@@ -2210,9 +2217,9 @@ Generate realistic data relevant to: $prompt''',
     );
     
     if (result['success'] == true) {
-      _addToolStatusMessage('📧 Email app opened with pre-filled content for $recipient');
+      _addToolStatusMessage('✅ Email app opened successfully!\n📧 To: $recipient\n📝 Subject: $subject');
     } else {
-      _addToolStatusMessage('❌ Failed to open email: ${result['error']}');
+      _addToolStatusMessage('❌ Failed to open email app: ${result['error']}\n💡 Make sure you have an email app installed.');
     }
   }
 
@@ -2221,9 +2228,11 @@ Generate realistic data relevant to: $prompt''',
     final content = _extractMessageContent(aiResponse) ?? aiResponse;
     
     if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify a phone number.');
+      _addToolStatusMessage('⚠️ Please specify a phone number in your message.');
       return;
     }
+    
+    _addToolStatusMessage('💬 Opening WhatsApp...');
     
     final result = await ExternalToolsService.executeCommunicationTool(
       operation: 'send_whatsapp',
@@ -2232,9 +2241,9 @@ Generate realistic data relevant to: $prompt''',
     );
     
     if (result['success'] == true) {
-      _addToolStatusMessage('💬 WhatsApp opened with pre-filled message for $recipient');
+      _addToolStatusMessage('✅ WhatsApp opened successfully!\n💬 To: $recipient\n📱 Message ready to send');
     } else {
-      _addToolStatusMessage('❌ Failed to open WhatsApp: ${result['error']}');
+      _addToolStatusMessage('❌ Failed to open WhatsApp: ${result['error']}\n💡 Make sure WhatsApp is installed.');
     }
   }
 
@@ -2243,9 +2252,11 @@ Generate realistic data relevant to: $prompt''',
     final content = _extractMessageContent(aiResponse) ?? aiResponse;
     
     if (recipient.isEmpty) {
-      _addToolStatusMessage('⚠️ Please specify a phone number.');
+      _addToolStatusMessage('⚠️ Please specify a phone number in your message.');
       return;
     }
+    
+    _addToolStatusMessage('📱 Opening SMS app...');
     
     final result = await ExternalToolsService.executeCommunicationTool(
       operation: 'send_sms',
@@ -2254,9 +2265,9 @@ Generate realistic data relevant to: $prompt''',
     );
     
     if (result['success'] == true) {
-      _addToolStatusMessage('📱 SMS app opened with pre-filled message for $recipient');
+      _addToolStatusMessage('✅ SMS app opened successfully!\n📱 To: $recipient\n💬 Message ready to send');
     } else {
-      _addToolStatusMessage('❌ Failed to open SMS: ${result['error']}');
+      _addToolStatusMessage('❌ Failed to open SMS app: ${result['error']}\n💡 Make sure you have an SMS app available.');
     }
   }
 

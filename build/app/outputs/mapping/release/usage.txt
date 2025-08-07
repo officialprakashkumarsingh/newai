@@ -12486,6 +12486,8 @@ kotlin.collections.ArraysKt___ArraysKt:
     public static final java.util.List filterNot(java.lang.Object[],kotlin.jvm.functions.Function1)
     public static final java.util.List filterNot(short[],kotlin.jvm.functions.Function1)
     public static final java.util.List filterNot(boolean[],kotlin.jvm.functions.Function1)
+    public static final java.util.List filterNotNull(java.lang.Object[])
+    public static final java.util.Collection filterNotNullTo(java.lang.Object[],java.util.Collection)
     public static final java.util.Collection filterNotTo(byte[],java.util.Collection,kotlin.jvm.functions.Function1)
     public static final java.util.Collection filterNotTo(char[],java.util.Collection,kotlin.jvm.functions.Function1)
     public static final java.util.Collection filterNotTo(double[],java.util.Collection,kotlin.jvm.functions.Function1)
@@ -13855,7 +13857,9 @@ kotlin.collections.CollectionsKt__CollectionsKt:
     private static final boolean isNullOrEmpty(java.util.Collection)
     private static final java.util.List listOf()
     public static final java.util.List listOfNotNull(java.lang.Object)
+    public static final varargs java.util.List listOfNotNull(java.lang.Object[])
     private static final java.util.List mutableListOf()
+    public static final varargs java.util.List mutableListOf(java.lang.Object[])
     private static final java.util.Collection orEmpty(java.util.Collection)
     private static final java.util.List orEmpty(java.util.List)
     private static final void rangeCheck$CollectionsKt__CollectionsKt(int,int,int)
@@ -14276,6 +14280,7 @@ kotlin.collections.MapsKt__MapsKt:
     public static final java.util.Map mapKeys(java.util.Map,kotlin.jvm.functions.Function1)
     public static final java.util.Map mapKeysTo(java.util.Map,java.util.Map,kotlin.jvm.functions.Function1)
     private static final java.util.Map mapOf()
+    public static final varargs java.util.Map mapOf(kotlin.Pair[])
     public static final java.util.Map mapValues(java.util.Map,kotlin.jvm.functions.Function1)
     public static final java.util.Map mapValuesTo(java.util.Map,java.util.Map,kotlin.jvm.functions.Function1)
     public static final java.util.Map minus(java.util.Map,java.lang.Iterable)
@@ -14306,6 +14311,7 @@ kotlin.collections.MapsKt__MapsKt:
     public static final java.util.Map toMap(kotlin.sequences.Sequence)
     public static final java.util.Map toMap(kotlin.sequences.Sequence,java.util.Map)
     public static final java.util.Map toMap(kotlin.Pair[])
+    public static final java.util.Map toMap(kotlin.Pair[],java.util.Map)
     private static final kotlin.Pair toPair(java.util.Map$Entry)
 kotlin.collections.MapsKt___MapsJvmKt:
     public void <init>()
@@ -14741,6 +14747,9 @@ kotlin.io.FilesKt__FileReadWriteKt:
     static synthetic java.io.InputStreamReader reader$default(java.io.File,java.nio.charset.Charset,int,java.lang.Object)
     public static final java.lang.Object useLines(java.io.File,java.nio.charset.Charset,kotlin.jvm.functions.Function1)
     public static synthetic java.lang.Object useLines$default(java.io.File,java.nio.charset.Charset,kotlin.jvm.functions.Function1,int,java.lang.Object)
+    public static final void writeBytes(java.io.File,byte[])
+    public static final void writeText(java.io.File,java.lang.String,java.nio.charset.Charset)
+    public static synthetic void writeText$default(java.io.File,java.lang.String,java.nio.charset.Charset,int,java.lang.Object)
     private static final java.io.OutputStreamWriter writer(java.io.File,java.nio.charset.Charset)
     static synthetic java.io.OutputStreamWriter writer$default(java.io.File,java.nio.charset.Charset,int,java.lang.Object)
 kotlin.io.FilesKt__FileTreeWalkKt:
@@ -20629,11 +20638,13 @@ kotlin.reflect.KCallable:
 kotlin.text.StringsKt:
     public static synthetic bridge java.lang.String substringBefore$default(java.lang.String,char,java.lang.String,int,java.lang.Object)
     public static synthetic bridge java.lang.String substringBefore$default(java.lang.String,java.lang.String,java.lang.String,int,java.lang.Object)
+    public static synthetic bridge java.lang.CharSequence trim(java.lang.CharSequence)
 kotlin.text.StringsKt__StringsKt:
     public static final java.lang.String substringBefore(java.lang.String,char,java.lang.String)
     public static final java.lang.String substringBefore(java.lang.String,java.lang.String,java.lang.String)
     public static synthetic java.lang.String substringBefore$default(java.lang.String,char,java.lang.String,int,java.lang.Object)
     public static synthetic java.lang.String substringBefore$default(java.lang.String,java.lang.String,java.lang.String,int,java.lang.Object)
+    public static java.lang.CharSequence trim(java.lang.CharSequence)
 kotlin.time.Duration$Companion
 kotlin.time.Duration
 kotlin.time.DurationJvmKt

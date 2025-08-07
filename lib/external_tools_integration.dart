@@ -190,8 +190,11 @@ class ExternalToolsIntegration {
   static Map<String, dynamic>? detectToolUsage(String aiResponse) {
     final response = aiResponse.toLowerCase();
 
+    print('🔍 Checking tool usage in response: ${response.substring(0, response.length > 100 ? 100 : response.length)}...');
+
     // File creation patterns
     if (_containsFileCreationIntent(response)) {
+      print('✅ File creation tool detected');
       return {
         'action': 'create_file',
         'response': aiResponse,
@@ -200,6 +203,7 @@ class ExternalToolsIntegration {
 
     // Email patterns
     if (_containsEmailIntent(response)) {
+      print('✅ Email tool detected');
       return {
         'action': 'send_email',
         'response': aiResponse,
@@ -208,6 +212,7 @@ class ExternalToolsIntegration {
 
     // WhatsApp patterns
     if (_containsWhatsAppIntent(response)) {
+      print('✅ WhatsApp tool detected');
       return {
         'action': 'send_whatsapp',
         'response': aiResponse,
@@ -216,71 +221,127 @@ class ExternalToolsIntegration {
 
     // SMS patterns
     if (_containsSMSIntent(response)) {
+      print('✅ SMS tool detected');
       return {
         'action': 'send_sms',
         'response': aiResponse,
       };
     }
 
+    print('❌ No tool usage detected');
     return null;
   }
 
   /// Check if response contains file creation intent
   static bool _containsFileCreationIntent(String response) {
     final patterns = [
-      'create a file',
-      'save as',
-      'generate a file',
-      'create.*\\.txt',
-      'create.*\\.html',
-      'create.*\\.css',
-      'create.*\\.pdf',
-      'create.*\\.zip',
-      'save.*file',
-      'download.*file',
-      'export.*file',
+      r'create a file',
+      r'save as',
+      r'generate a file',
+      r'make a file',
+      r'write.*file',
+      r'create.*\.txt',
+      r'create.*\.html',
+      r'create.*\.css',
+      r'create.*\.pdf',
+      r'create.*\.zip',
+      r'create.*\.json',
+      r'save.*file',
+      r'download.*file',
+      r'export.*file',
+      r'generate.*document',
+      r'i will create',
+      r'let me create',
+      r'creating.*file',
+      r"i'll create",
+      r'create.*document',
     ];
 
-    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+    for (final pattern in patterns) {
+      if (RegExp(pattern, caseSensitive: false).hasMatch(response)) {
+        print('📄 File creation pattern matched: $pattern');
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Check if response contains email intent
   static bool _containsEmailIntent(String response) {
     final patterns = [
-      'send.*email',
-      'email.*to',
-      'compose.*email',
-      'mail.*to',
-      'send.*to.*@',
-      'email.*this',
+      r'send.*email',
+      r'email.*to',
+      r'compose.*email',
+      r'mail.*to',
+      r'send.*to.*@',
+      r'email.*this',
+      r'i will email',
+      r'let me email',
+      r'sending.*email',
+      r"i'll email",
+      r'compose.*message.*@',
+      r'draft.*email',
+      r'open.*email',
     ];
 
-    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+    for (final pattern in patterns) {
+      if (RegExp(pattern, caseSensitive: false).hasMatch(response)) {
+        print('📧 Email pattern matched: $pattern');
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Check if response contains WhatsApp intent
   static bool _containsWhatsAppIntent(String response) {
     final patterns = [
-      'send.*whatsapp',
-      'whatsapp.*to',
-      'share.*whatsapp',
-      'message.*whatsapp',
-      'send.*via whatsapp',
+      r'send.*whatsapp',
+      r'whatsapp.*to',
+      r'share.*whatsapp',
+      r'message.*whatsapp',
+      r'send.*via whatsapp',
+      r'i will whatsapp',
+      r'let me whatsapp',
+      r'sending.*whatsapp',
+      r"i'll whatsapp",
+      r'open.*whatsapp',
+      r'whatsapp.*message',
+      r'wa\.me',
     ];
 
-    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+    for (final pattern in patterns) {
+      if (RegExp(pattern, caseSensitive: false).hasMatch(response)) {
+        print('💬 WhatsApp pattern matched: $pattern');
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Check if response contains SMS intent
   static bool _containsSMSIntent(String response) {
     final patterns = [
-      'send.*sms',
-      'text.*to',
-      'send.*text',
-      'sms.*to',
-      'message.*to.*\\+',
+      r'send.*sms',
+      r'text.*to',
+      r'send.*text',
+      r'sms.*to',
+      r'message.*to.*\+',
+      r'i will text',
+      r'let me text',
+      r'sending.*text',
+      r"i'll text",
+      r'send.*text message',
+      r'text message.*to',
+      r'sms.*message',
     ];
 
-    return patterns.any((pattern) => RegExp(pattern).hasMatch(response));
+    for (final pattern in patterns) {
+      if (RegExp(pattern, caseSensitive: false).hasMatch(response)) {
+        print('📱 SMS pattern matched: $pattern');
+        return true;
+      }
+    }
+    return false;
   }
 }
