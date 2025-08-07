@@ -63,20 +63,31 @@ class ChatUI {
       child: Column(
         crossAxisAlignment: isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: isUserMessage 
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                : Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: isUserMessage 
-                ? null 
-                : Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3)),
+          if (isUserMessage) 
+            GestureDetector(
+              onLongPress: () => onUserMessageOptions(),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isLightTheme(context)
+                      ? const Color(0xFF5F6B73) // Greyish blue bubble for light mode
+                      : const Color(0xFF2C2C2E), // Dark mode: Card Background
+                    borderRadius: BorderRadius.circular(16)
+                  ),
+                  child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
+                ),
+              ),
+            )
+          else
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
             ),
-            child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
-          ),
           
           // Research widget if present
           if (message.researchWidget != null)
@@ -301,23 +312,25 @@ class ChatUI {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              itemCount: messages.length,
-              itemBuilder: (context, index) => buildMessage(
-                messages[index],
-                index,
-                chatId,
-                context,
-                onCopy: onCopy,
-                onRegenerate: () => onRegenerate(index - 1),
-                onUserMessageOptions: () => onUserMessageOptions(index),
-              ),
-              cacheExtent: 1000.0,
-              addAutomaticKeepAlives: false,
-              addRepaintBoundaries: false,
-            ),
+            child: messages.isEmpty 
+              ? _buildWelcomeMessage(context)
+              : ListView.builder(
+                  controller: scrollController,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) => buildMessage(
+                    messages[index],
+                    index,
+                    chatId,
+                    context,
+                    onCopy: onCopy,
+                    onRegenerate: () => onRegenerate(index - 1),
+                    onUserMessageOptions: () => onUserMessageOptions(index),
+                  ),
+                  cacheExtent: 1000.0,
+                  addAutomaticKeepAlives: false,
+                  addRepaintBoundaries: false,
+                ),
           ),
           
           // Message queue indicator
@@ -439,6 +452,41 @@ class ChatUI {
                   ),
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build welcome message for empty chat
+  static Widget _buildWelcomeMessage(BuildContext context) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.chat_bubble_outline,
+              size: 80,
+              color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Welcome to AhamAI',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Ask me anything! I can help with:\n• Answering questions\n• Creating diagrams & charts\n• Generating presentations\n• Image generation\n• Web research',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

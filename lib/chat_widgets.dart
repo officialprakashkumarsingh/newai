@@ -24,75 +24,81 @@ class ChatWidgets {
     String? hintText,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).dividerColor.withOpacity(0.3),
+        color: isLightTheme(context) 
+          ? const Color(0xFFF1F3F4) // Light grey background for light mode
+          : const Color(0xFF303134), // Dark background for dark mode
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-        ),
-      ),
+        ],
+      ), // Clean fully rounded input area
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Tools button
           IconButton(
-            icon: const Icon(Icons.apps_outlined),
-            onPressed: onShowTools,
-            tooltip: 'Tools',
-            color: Theme.of(context).iconTheme.color,
+            icon: const Icon(Icons.apps_outlined), 
+            onPressed: onShowTools, 
+            tooltip: 'Tools', 
+            color: Theme.of(context).iconTheme.color
           ),
-          
-          // Text input field
           Expanded(
             child: TextField(
-              controller: controller,
-              enabled: !isStreaming,
-              onSubmitted: (val) => onSendMessage(val),
-              maxLines: null,
-              textInputAction: TextInputAction.send,
-              decoration: InputDecoration(
-                hintText: hintText ?? (isStreaming 
-                  ? 'AI is responding...' 
-                  : 'Type your message...'),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
+              controller: controller, 
+              enabled: true, // Always enabled - queue messages during streaming
+              onSubmitted: (val) => onSendMessage(val), // Always allow input
+              textInputAction: TextInputAction.send, 
+              maxLines: 5, 
+              minLines: 1, 
+              style: TextStyle(
+                color: isLightTheme(context) ? const Color(0xFF202124) : Colors.white,
               ),
+              decoration: InputDecoration(
+                hintText: isStreaming 
+                  ? 'AhamAI is responding... (type to queue)' 
+                  : 'Ask AhamAI anything...', 
+                hintStyle: TextStyle(
+                  color: isLightTheme(context) ? const Color(0xFF5F6368) : const Color(0xFFB0B0B0), // Google secondary text
+                  fontSize: 16,
+                ),
+                filled: true, 
+                fillColor: Colors.transparent, // Transparent to use container's background
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                border: InputBorder.none, // No border - container provides it
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+              )
             ),
           ),
-          
           const SizedBox(width: 8),
-          
-          // Action buttons
-          if (isStreaming) ...[
-            IconButton(
-              icon: const Icon(Icons.stop),
-              onPressed: onStopStreaming,
-              tooltip: 'Stop',
-            ),
-          ] else ...[
-            IconButton(
-              icon: const Icon(Icons.attach_file),
-              onPressed: onAttachFile,
-              tooltip: 'Attach File',
-            ),
-            IconButton(
-              icon: const Icon(Icons.mic),
-              onPressed: onVoiceInput,
-              tooltip: 'Voice Input',
-            ),
-            IconButton(
-              icon: const Icon(Icons.send),
+          // Always show send button, with stop functionality on a separate small button during streaming
+          CircleAvatar(
+            backgroundColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
+            radius: 24, 
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_upward, 
+                color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})
+              ), 
               onPressed: () => onSendMessage(controller.text),
-              tooltip: 'Send',
+            ),
+          ),
+          // Add a small stop button next to send button during streaming
+          if (isStreaming) ...[
+            const SizedBox(width: 4),
+            CircleAvatar(
+              backgroundColor: Colors.red,
+              radius: 16,
+              child: IconButton(
+                icon: const Icon(Icons.stop, size: 16, color: Colors.white),
+                onPressed: onStopStreaming,
+              ),
             ),
           ],
         ],
