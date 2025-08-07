@@ -543,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     leading: chat.isPinned ? Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20) : null,
                     title: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis),
                     subtitle: Text(
-                      chat.messages.isEmpty ? 'No messages yet' : _stripMarkdown(chat.messages.last.text),
+                      _getChatSubtitle(chat),
                       style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -1113,6 +1113,39 @@ class ModernStartButton extends StatelessWidget {
       ),
     );
   }
+}
+
+// Helper function to get chat subtitle without duplication
+String _getChatSubtitle(ChatInfo chat) {
+  if (chat.messages.isEmpty) return 'No messages yet';
+  
+  // If title contains "→" (AI response), show message count and timestamp instead
+  if (chat.title.contains('→')) {
+    final messageCount = chat.messages.length;
+    final isGenerating = chat.isGenerating;
+    if (isGenerating) {
+      return 'AI is responding... ($messageCount messages)';
+    } else {
+      return '$messageCount messages • ${_getTimeAgo(chat.messages.last.timestamp)}';
+    }
+  }
+  
+  // Otherwise show the last message (stripped of markdown)
+  return _stripMarkdown(chat.messages.last.text);
+}
+
+// Helper function to get time ago string
+String _getTimeAgo(DateTime? timestamp) {
+  if (timestamp == null) return 'Recent';
+  
+  final now = DateTime.now();
+  final difference = now.difference(timestamp);
+  
+  if (difference.inMinutes < 1) return 'Just now';
+  if (difference.inMinutes < 60) return '${difference.inMinutes}m ago';
+  if (difference.inHours < 24) return '${difference.inHours}h ago';
+  if (difference.inDays < 7) return '${difference.inDays}d ago';
+  return '${(difference.inDays / 7).floor()}w ago';
 }
 
 // Helper function to strip markdown formatting for chat preview
