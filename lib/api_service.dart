@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static const String _baseUrl = 'https://ahamai-api.officialprakashkrsingh.workers.dev';
   static const String _apiKey = 'ahamaibyprakash25';
-  static const String _thinkingModeModel = 'deepseek-r1';
+  // Remove hardcoded thinking mode model - use user-selected model instead
   
   // Cache for models
   static List<String> _cachedModels = [];
@@ -68,8 +68,8 @@ class ApiService {
     String? systemPrompt,
   }) async* {
     try {
-      // Use thinking mode model if enabled
-      final selectedModel = isThinkingMode ? _thinkingModeModel : model;
+      // Use the provided model (user-selected) for both regular and thinking mode
+      final selectedModel = model;
       
       // Build messages array
       final messages = <Map<String, dynamic>>[];

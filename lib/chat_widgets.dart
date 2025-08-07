@@ -32,6 +32,9 @@ class ChatWidgets {
           ? const Color(0xFFF1F3F4) // Light grey background for light mode
           : const Color(0xFF303134), // Dark background for dark mode
         borderRadius: BorderRadius.circular(24),
+        border: isLightTheme(context) 
+          ? Border.all(color: const Color(0xFFE0E0E0), width: 1.0) // Subtle border in light mode
+          : null, // No border in dark mode
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
