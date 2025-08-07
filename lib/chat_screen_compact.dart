@@ -333,6 +333,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     if (result != null && result.isNotEmpty) {
       await ChatLogic.generatePresentation(
         topic: result,
+        selectedModel: _chatState.selectedModel,
         addMessage: _addMessage,
         updateMessage: _updateMessage,
       );

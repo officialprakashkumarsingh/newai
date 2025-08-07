@@ -472,6 +472,7 @@ Based on the context above, answer the following prompt: $input""";
   /// Generate presentation using AI
   static Future<void> generatePresentation({
     required String topic,
+    required String selectedModel,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
   }) async {

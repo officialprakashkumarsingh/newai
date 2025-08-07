@@ -321,6 +321,7 @@ class ChatWidgets {
         onWebSearchToggle: onWebSearchToggle,
         onThinkingModeToggle: onThinkingModeToggle,
         onResearchModeToggle: onResearchModeToggle,
+      ),
     );
   }
 
@@ -509,6 +510,174 @@ class AttachmentPreview extends StatelessWidget {
     return ChatWidgets.buildAttachmentPreview(
       attachment: attachment,
       onClear: onClear,
+    );
+  }
+}
+
+/// Stateful Tools Bottom Sheet Content for instant toggle updates
+class _ToolsBottomSheetContent extends StatefulWidget {
+  final bool isWebSearchEnabled;
+  final bool isThinkingModeEnabled;
+  final bool isResearchModeEnabled;
+  final Function() onImageGeneration;
+  final Function() onPresentationGeneration;
+  final Function() onDiagramGeneration;
+  final Function() onPickCamera;
+  final Function() onPickGallery;
+  final Function() onPickFile;
+  final Function(bool) onWebSearchToggle;
+  final Function(bool) onThinkingModeToggle;
+  final Function(bool) onResearchModeToggle;
+
+  const _ToolsBottomSheetContent({
+    required this.isWebSearchEnabled,
+    required this.isThinkingModeEnabled,
+    required this.isResearchModeEnabled,
+    required this.onImageGeneration,
+    required this.onPresentationGeneration,
+    required this.onDiagramGeneration,
+    required this.onPickCamera,
+    required this.onPickGallery,
+    required this.onPickFile,
+    required this.onWebSearchToggle,
+    required this.onThinkingModeToggle,
+    required this.onResearchModeToggle,
+  });
+
+  @override
+  State<_ToolsBottomSheetContent> createState() => _ToolsBottomSheetContentState();
+}
+
+class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
+  late bool localWebSearch;
+  late bool localThinking;
+  late bool localResearch;
+
+  @override
+  void initState() {
+    super.initState();
+    localWebSearch = widget.isWebSearchEnabled;
+    localThinking = widget.isThinkingModeEnabled;
+    localResearch = widget.isResearchModeEnabled;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // File attachment options
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FileSourceButton(
+                icon: Icons.camera_alt_outlined, 
+                label: 'Camera', 
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onPickCamera();
+                }
+              ),
+              FileSourceButton(
+                icon: Icons.photo_library_outlined, 
+                label: 'Photos', 
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onPickGallery();
+                }
+              ),
+              FileSourceButton(
+                icon: Icons.folder_open_outlined, 
+                label: 'Files', 
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onPickFile();
+                }
+              ),
+            ],
+          ),
+          const Divider(height: 32),
+          
+          // AI Mode Toggles
+          ListTile(
+            contentPadding: EdgeInsets.zero, 
+            leading: const Icon(Icons.public), 
+            title: const Text('Search the web'), 
+            trailing: Switch(
+              value: localWebSearch, 
+              onChanged: (bool value) { 
+                setState(() {
+                  localWebSearch = value;
+                }); 
+                widget.onWebSearchToggle(value);
+              }
+            )
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero, 
+            leading: const Icon(Icons.auto_awesome_outlined), 
+            title: const Text('Think for longer'), 
+            trailing: Switch(
+              value: localThinking, 
+              onChanged: (bool value) { 
+                setState(() {
+                  localThinking = value;
+                }); 
+                widget.onThinkingModeToggle(value);
+              }
+            )
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero, 
+            leading: const Icon(Icons.search), 
+            title: const Text('Research mode'), 
+            subtitle: const Text('Deep research with multiple sources'), 
+            trailing: Switch(
+              value: localResearch, 
+              onChanged: (bool value) { 
+                setState(() {
+                  localResearch = value;
+                }); 
+                widget.onResearchModeToggle(value);
+              }
+            )
+          ),
+          
+          // Generation Tools
+          ListTile(
+            contentPadding: EdgeInsets.zero, 
+            leading: const Icon(Icons.image_outlined), 
+            title: const Text('Create an image'), 
+            onTap: () { 
+              Navigator.pop(context); 
+              widget.onImageGeneration(); 
+            }
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero, 
+            leading: const Icon(Icons.slideshow_outlined), 
+            title: const Text('Make a presentation'), 
+            onTap: () { 
+              Navigator.pop(context); 
+              widget.onPresentationGeneration(); 
+            }
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero, 
+            leading: const Icon(Icons.bar_chart_outlined), 
+            title: const Text('Generate diagram'), 
+            onTap: () { 
+              Navigator.pop(context); 
+              widget.onDiagramGeneration(); 
+            }
+          ),
+
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
+      ),
     );
   }
 }

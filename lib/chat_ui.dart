@@ -74,7 +74,7 @@ class ChatUI {
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
                     color: isLightTheme(context)
-                      ? const Color(0xFF5F6B73) // Greyish blue bubble for light mode
+                      ? const Color(0xFF6B7481) // Greyish blue bubble for light mode
                       : const Color(0xFF2C2C2E), // Dark mode: Card Background
                     borderRadius: BorderRadius.circular(16)
                   ),
