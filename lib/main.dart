@@ -1138,7 +1138,7 @@ String _getChatSubtitle(ChatInfo chat) {
     if (isGenerating) {
       return 'AI is responding... ($messageCount messages)';
     } else {
-      return '$messageCount messages • ${_getTimeAgo(chat.messages.last.timestamp)}';
+      return '$messageCount messages • Recent';
     }
   }
   

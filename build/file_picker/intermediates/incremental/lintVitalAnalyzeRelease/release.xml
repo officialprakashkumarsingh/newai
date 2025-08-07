@@ -1,0 +1,31 @@
+<variant
+    name="release"
+    package="com.mr.flutter.plugin.filepicker"
+    minSdkVersion="16"
+    targetSdkVersion="16"
+    mergedManifest="/workspace/build/file_picker/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml"
+    proguardFiles="/workspace/build/file_picker/intermediates/default_proguard_files/global/proguard-android.txt-8.7.0"
+    partialResultsDir="/workspace/build/file_picker/intermediates/lint_vital_partial_results/release/lintVitalAnalyzeRelease/out"
+    desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/7cc16f9cc54fd759dec367185e654e2a/transformed/D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src/main/AndroidManifest.xml"
+        javaDirectories="src/main/java:src/release/java:src/main/kotlin:src/release/kotlin"
+        resDirectories="src/main/res:src/release/res"
+        assetsDirectories="src/main/assets:src/release/assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="/workspace/build/file_picker/intermediates/javac/release/compileReleaseJavaWithJavac/classes:/workspace/build/file_picker/intermediates/compile_r_class_jar/release/generateReleaseRFile/R.jar"
+      type="MAIN"
+      applicationId="com.mr.flutter.plugin.filepicker"
+      generatedSourceFolders="/workspace/build/file_picker/generated/ap_generated_sources/release/out"
+      generatedResourceFolders="/workspace/build/file_picker/generated/res/resValues/release"
+      desugaredMethodsFiles="/home/ubuntu/.gradle/caches/8.10.2/transforms/7cc16f9cc54fd759dec367185e654e2a/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

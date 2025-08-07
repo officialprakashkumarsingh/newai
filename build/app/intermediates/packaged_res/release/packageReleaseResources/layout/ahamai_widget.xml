@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp">
+
+    <!-- Stylish Search Area -->
+    <LinearLayout
+        android:id="@+id/widget_search_bar"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@drawable/stylish_widget_background"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginEnd="8dp">
+        
+                <!-- Search Text -->
+        <TextView
+            android:id="@+id/widget_search_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="Ask AhamAI anything..."
+            android:textColor="@color/widget_text_color"
+            android:textSize="16sp"
+            android:gravity="center_vertical" />
+            
+        <!-- Voice Button Inside Input -->
+        <ImageButton
+            android:id="@+id/widget_voice"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_voice_minimal"
+            android:scaleType="centerInside"
+            android:contentDescription="Voice Input"
+            android:layout_marginEnd="4dp" />
+            
+    </LinearLayout>
+
+</LinearLayout>
