@@ -23,7 +23,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-// import 'background_service.dart'; // Temporarily disabled
+
 
 import 'ai_message_actions.dart';
 import 'api.dart';
@@ -98,7 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ChatAttachment? _attachment;
   XFile? _attachedImage;
 
-  // Removed background processing variables
+
 
   @override
   void initState() {
@@ -111,8 +111,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // Category calculation removed
     
     if (_chatTitle == "New Chat" && _messages.isNotEmpty) {
-      final firstUserMessage = _messages.firstWhere((m) => m.role == 'user', orElse: () => ChatMessage(role: 'user', text: ''));
-      _chatTitle = firstUserMessage.text.length > 30 ? '${firstUserMessage.text.substring(0, 30)}...' : firstUserMessage.text.trim().isEmpty ? "New Chat" : firstUserMessage.text;
+      _updateChatTitleFromLastMessage();
     }
     
     _isStreaming = widget.isGenerating;
@@ -312,7 +311,11 @@ Based on the context above, answer the following prompt: $input""";
       _messages.add(userMessage);
       _messages.add(ChatMessage(role: 'model', text: ''));
       _isStreaming = true;
+      // Always update title to reflect the latest conversation
       if (_chatTitle == "New Chat" || _chatTitle.trim().isEmpty) {
+        _chatTitle = userMessage.text.length > 30 ? '${userMessage.text.substring(0, 30)}...' : userMessage.text;
+      } else {
+        // Update title with just the latest user message for now
         _chatTitle = userMessage.text.length > 30 ? '${userMessage.text.substring(0, 30)}...' : userMessage.text;
       }
           // Category system removed
@@ -452,6 +455,7 @@ Based on the context above, answer the following prompt: $input""";
     
     _setupChatModel(); 
     setState(() => _isStreaming = false);
+    _updateChatTitleFromLastMessage(); // Update title with last user message and AI response
     _updateChatInfo(false, false);
     _scrollToBottom();
     _saveMessages(); // Save messages after streaming is complete
@@ -468,6 +472,7 @@ Based on the context above, answer the following prompt: $input""";
       _messages[_messages.length - 1] = ChatMessage(role: 'model', text: '❌ Error: $error');
       _isStreaming = false;
     });
+    _updateChatTitleFromLastMessage(); // Update title even after error
     _updateChatInfo(false, false);
     _saveMessages(); // Save messages after error
     
@@ -487,6 +492,7 @@ Based on the context above, answer the following prompt: $input""";
       _isStreaming = false;
       _isStoppedByUser = true;
     });
+    _updateChatTitleFromLastMessage(); // Update title when stopped
     _updateChatInfo(false, true);
     _scrollToBottom();
   }
@@ -1185,7 +1191,7 @@ Generate realistic data relevant to: $prompt''',
       Colors.red,
       Colors.green,
       Colors.orange,
-      Colors.purple,
+      Theme.of(context).primaryColor,
       Colors.teal,
     ];
 
@@ -1315,7 +1321,7 @@ Generate realistic data relevant to: $prompt''',
       Colors.red,
       Colors.green,
       Colors.orange,
-      Colors.purple,
+      Theme.of(context).primaryColor,
       Colors.teal,
       Colors.pink,
       Colors.amber,
@@ -1700,9 +1706,9 @@ Generate realistic data relevant to: $prompt''',
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                              decoration: BoxDecoration(
-                                  color: isLightTheme(context)
-                    ? const Color(0xFF0F0F10) // Near black bubble for light mode - high contrast
+                                            decoration: BoxDecoration(
+                  color: isLightTheme(context)
+                    ? const Color(0xFF5F6B73) // Greyish blue bubble for light mode
                     : const Color(0xFF2C2C2E), // Dark mode: Card Background
                   borderRadius: BorderRadius.circular(16)
                 ),
@@ -1905,7 +1911,9 @@ Generate realistic data relevant to: $prompt''',
                     ),
                     child: Icon(
                       Icons.keyboard_arrow_down,
-                      color: Colors.white,
+                      color: Theme.of(context).primaryColor.computeLuminance() > 0.5 
+                          ? Colors.black 
+                          : Colors.white,
                       size: 24,
                     ),
                   ),
@@ -1947,7 +1955,7 @@ Generate realistic data relevant to: $prompt''',
                     maxLines: 5, 
                     minLines: 1, 
                     style: TextStyle(
-                      color: isLightTheme(context) ? const Color(0xFF0F0F10) : Colors.white,
+                      color: isLightTheme(context) ? const Color(0xFF202124) : Colors.white,
                     ),
                     decoration: InputDecoration(
                       hintText: _isStreaming 
@@ -2002,9 +2010,7 @@ Generate realistic data relevant to: $prompt''',
     );
   }
 
-  // Removed background processing lifecycle methods
 
-  // Background processing methods removed
 
   Future<void> _saveImage(Uint8List imageBytes) async {
     try {
@@ -2118,6 +2124,36 @@ Generate realistic data relevant to: $prompt''',
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  void _updateChatTitleFromLastMessage() {
+    if (_messages.isEmpty) return;
+    
+    // Find the last user message
+    final lastUserMessage = _messages.lastWhere((m) => m.role == 'user', orElse: () => ChatMessage(role: 'user', text: ''));
+    if (lastUserMessage.text.trim().isEmpty) return;
+    
+    // Create title from last user message
+    String title = lastUserMessage.text.length > 30 
+        ? '${lastUserMessage.text.substring(0, 30)}...' 
+        : lastUserMessage.text;
+    
+    // Try to include AI response if it exists and is complete
+    final lastAIMessage = _messages.lastWhere((m) => m.role == 'model', orElse: () => ChatMessage(role: 'model', text: ''));
+    if (lastAIMessage.text.trim().isNotEmpty && !_isStreaming) {
+      // Add a brief AI response to the title if there's space
+      final aiResponse = lastAIMessage.text.length > 20 
+          ? '${lastAIMessage.text.substring(0, 20)}...'
+          : lastAIMessage.text;
+      
+      // Combine user message and AI response (keep under 50 chars total)
+      final combinedTitle = '$title → $aiResponse';
+      if (combinedTitle.length <= 50) {
+        title = combinedTitle;
+      }
+    }
+    
+    _chatTitle = title;
   }
 
   void _optimizedStreamingUpdate(String chunk) {

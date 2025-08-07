@@ -8,7 +8,7 @@ const Color draculaBackground = Color(0xFF282A36);
 const Color draculaCurrentLine = Color(0xFF44475A);
 const Color draculaForeground = Color(0xFFF8F8F2);
 const Color draculaComment = Color(0xFF6272A4);
-const Color draculaPurple = Color(0xFFBD93F9);
+
 const Color draculaGreen = Color(0xFF50FA7B);
 
 class ThemeNotifier extends ChangeNotifier {
