@@ -250,7 +250,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   /// Handle file attachment
   Future<void> _handleFileAttachment() async {
     try {
-      final result = await FileProcessing.pickFile();
+      final result = await FileProcessingService.pickAndProcessFile();
       if (result != null) {
         _chatState.setAttachment(result);
       }

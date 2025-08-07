@@ -17,6 +17,7 @@ import 'universe_logo.dart';
 
 
 import 'chat_screen_simple.dart';
+import 'chat_screen_compact.dart';
 import 'theme.dart';
 
 void main() async {
@@ -159,11 +160,9 @@ class _AhamAppState extends State<AhamApp> {
   void _navigateToChat({String? initialMessage, bool autoSend = true, bool enableKeyboard = false}) {
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
-        builder: (context) => ChatScreen(
-          chatInfoStream: StreamController<ChatInfo>.broadcast(),
-          initialMessage: initialMessage,
-          autoSend: autoSend,
-          enableKeyboard: enableKeyboard,
+        builder: (context) => ChatScreenCompact(
+          chatId: DateTime.now().millisecondsSinceEpoch.toString(),
+          initialMessage: initialMessage ?? '',
         ),
       ),
     );
@@ -333,8 +332,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatScreen(
-              chatInfoStream: _chatInfoStream,
+            builder: (context) => ChatScreenCompact(
+              chatId: DateTime.now().millisecondsSinceEpoch.toString(),
               initialMessage: widget.sharedText!,
             ),
           ),
@@ -521,8 +520,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             Navigator.push(
                               context, 
                               MaterialPageRoute(
-                                builder: (context) => ChatScreen(
-                                  chatInfoStream: _chatInfoStream,
+                                builder: (context) => ChatScreenCompact(
+                                  chatId: DateTime.now().millisecondsSinceEpoch.toString(),
                                   initialMessage: text.trim(),
                                 )
                               )
@@ -548,7 +547,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatTitle: chat.title, initialMessages: chat.messages, chatId: chat.id, isPinned: chat.isPinned, isGenerating: chat.isGenerating, isStopped: chat.isStopped, chatInfoStream: _chatInfoStream))),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: chat.id, isPinned: chat.isPinned))),
                     onLongPress: () => showModalBottomSheet(
                       context: context,
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -615,7 +614,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
           ),
           child: InkWell(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatInfoStream: _chatInfoStream))),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: DateTime.now().millisecondsSinceEpoch.toString()))),
             borderRadius: BorderRadius.circular(28),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

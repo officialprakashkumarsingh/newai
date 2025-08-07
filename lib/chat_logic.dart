@@ -490,7 +490,7 @@ Based on the context above, answer the following prompt: $input""";
         role: 'model',
         text: 'Presentation generated successfully!',
         type: MessageType.presentation,
-        presentationData: <String>[], // Placeholder
+        presentationData: <String, dynamic>{}, // Placeholder
       ));
     } catch (e) {
       final lastIndex = 1;

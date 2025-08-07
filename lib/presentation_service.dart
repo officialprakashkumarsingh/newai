@@ -1473,6 +1473,8 @@ Topic: $topic''',
   }
 
   static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context) async {
+    PdfDocument? document;
+    
     try {
       print('Starting PDF generation...');
       DiagramService.showStyledSnackBar(context, 'Creating PDF presentation...');
@@ -1485,25 +1487,47 @@ Topic: $topic''',
         throw Exception('No slides to generate PDF');
       }
 
-      // Create PDF document
-      final PdfDocument document = PdfDocument();
+      // Create PDF document with robust error handling
+      document = PdfDocument();
       print('PDF document created');
       
+      // Process slides with individual error handling
+      int successfulSlides = 0;
+      final List<String> skippedSlides = [];
+      
       for (int i = 0; i < slides.length; i++) {
-        print('Processing slide ${i + 1}/${slides.length}');
-        final slide = slides[i];
-        final PdfPage page = document.pages.add();
-        final PdfGraphics graphics = page.graphics;
-        final Size pageSize = page.getClientSize();
-        
-        // Draw slide content
-        await _drawSlideOnPDF(graphics, slide, pageSize, context);
+        try {
+          print('Processing slide ${i + 1}/${slides.length}');
+          final slide = slides[i];
+          final PdfPage page = document.pages.add();
+          final PdfGraphics graphics = page.graphics;
+          final Size pageSize = page.getClientSize();
+          
+          // Draw slide content with font error protection
+          await _drawSlideOnPDFRobust(graphics, slide, pageSize, context, i + 1);
+          successfulSlides++;
+          
+        } catch (slideError) {
+          print('Error processing slide ${i + 1}: $slideError');
+          skippedSlides.add('Slide ${i + 1}: ${slideError.toString()}');
+          
+          // Add error placeholder slide instead of failing completely
+          try {
+            final PdfPage errorPage = document.pages.add();
+            final PdfGraphics errorGraphics = errorPage.graphics;
+            final Size pageSize = errorPage.getClientSize();
+            
+            _drawErrorSlide(errorGraphics, pageSize, i + 1, slideError.toString());
+            successfulSlides++;
+          } catch (placeholderError) {
+            print('Failed to create placeholder for slide ${i + 1}: $placeholderError');
+          }
+        }
       }
 
-      // Save PDF
-      print('Generating PDF bytes...');
+      // Save PDF even if some slides had errors
+      print('Generating PDF bytes for $successfulSlides slides...');
       final List<int> bytes = await document.save();
-      document.dispose();
       print('PDF bytes generated: ${bytes.length} bytes');
 
       final fileName = '${title.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}_presentation_${DateTime.now().millisecondsSinceEpoch}.pdf';
@@ -1512,23 +1536,53 @@ Topic: $topic''',
       final success = await _savePDFToAhamAIFolder(Uint8List.fromList(bytes), fileName);
       
       if (success) {
+        String message = 'Presentation saved: $fileName';
+        if (skippedSlides.isNotEmpty) {
+          message += '\n⚠️ ${skippedSlides.length} slides had issues and were simplified';
+        }
+        
         DiagramService.showStyledSnackBar(
           context, 
-          'Presentation saved: $fileName',
-          backgroundColor: Colors.green.shade600,
-          duration: const Duration(seconds: 3),
+          message,
+          backgroundColor: skippedSlides.isEmpty ? Colors.green.shade600 : Colors.orange.shade600,
+          duration: const Duration(seconds: 4),
         );
       } else {
         throw Exception('Failed to save PDF file');
       }
+      
     } catch (error) {
       print('Error saving presentation: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('❌ Error saving presentation: $error'),
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      
+      // Try to save a basic version with just text
+      final fallbackSuccess = await _createFallbackPDF(presentationData, context);
+      
+      if (!fallbackSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Error saving presentation: $error'),
+            duration: const Duration(seconds: 4),
+            action: SnackBarAction(
+              label: 'Retry',
+              onPressed: () => savePresentationAsPDF(presentationData, context),
+            ),
+          ),
+        );
+      }
+    } finally {
+      // Always dispose of the document to prevent memory leaks
+      document?.dispose();
+    }
+  }
+
+  // Robust version of _drawSlideOnPDF with font error handling
+  static Future<void> _drawSlideOnPDFRobust(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, int slideNumber) async {
+    try {
+      await _drawSlideOnPDF(graphics, slide, pageSize, context);
+    } catch (fontError) {
+      print('Font error on slide $slideNumber: $fontError');
+      // Fall back to basic text-only rendering
+      await _drawBasicSlide(graphics, slide, pageSize, context, slideNumber);
     }
   }
 
@@ -2492,5 +2546,192 @@ Topic: $topic''',
     return cleaned
         .replaceAll(RegExp(r'\s+'), ' ')
         .trim();
+  }
+
+  // Draw a basic error slide when font rendering fails
+  static void _drawErrorSlide(PdfGraphics graphics, Size pageSize, int slideNumber, String errorMessage) {
+    try {
+      // Background
+      graphics.drawRectangle(
+        pen: PdfPen(PdfColor.fromCMYK(0, 0, 0, 0)),
+        brush: PdfSolidBrush(PdfColor(245, 245, 245)),
+        bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
+      );
+      
+      // Error title
+      graphics.drawString(
+        'Slide $slideNumber - Rendering Error',
+        PdfStandardFont(PdfFontFamily.helvetica, 20, style: PdfFontStyle.bold),
+        brush: PdfSolidBrush(PdfColor(200, 0, 0)),
+        bounds: Rect.fromLTWH(40, 60, pageSize.width - 80, 40),
+      );
+      
+      // Error message (simplified)
+      final cleanError = _cleanTextForPDF(errorMessage);
+      final shortError = cleanError.length > 200 ? '${cleanError.substring(0, 200)}...' : cleanError;
+      
+      graphics.drawString(
+        'Error: $shortError',
+        PdfStandardFont(PdfFontFamily.helvetica, 12),
+        brush: PdfSolidBrush(PdfColor(100, 100, 100)),
+        bounds: Rect.fromLTWH(40, 120, pageSize.width - 80, 100),
+      );
+      
+      // Note
+      graphics.drawString(
+        'This slide was simplified due to rendering issues.',
+        PdfStandardFont(PdfFontFamily.helvetica, 10),
+        brush: PdfSolidBrush(PdfColor(150, 150, 150)),
+        bounds: Rect.fromLTWH(40, pageSize.height - 80, pageSize.width - 80, 30),
+      );
+      
+    } catch (e) {
+      print('Failed to draw error slide: $e');
+      // If even this fails, just draw a basic rectangle
+      graphics.drawRectangle(
+        pen: PdfPen(PdfColor(200, 0, 0)),
+        brush: PdfSolidBrush(PdfColor(255, 240, 240)),
+        bounds: Rect.fromLTWH(20, 20, pageSize.width - 40, pageSize.height - 40),
+      );
+    }
+  }
+
+  // Draw a basic text-only slide when complex rendering fails
+  static Future<void> _drawBasicSlide(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, int slideNumber) async {
+    try {
+      // Background
+      graphics.drawRectangle(
+        pen: PdfPen(PdfColor.fromCMYK(0, 0, 0, 0)),
+        brush: PdfSolidBrush(PdfColor(255, 255, 255)),
+        bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
+      );
+      
+      double yPosition = 60;
+      
+      // Title
+      final String slideTitle = slide['title'] ?? 'Slide $slideNumber';
+      graphics.drawString(
+        _cleanTextForPDF(slideTitle),
+        PdfStandardFont(PdfFontFamily.helvetica, 18, style: PdfFontStyle.bold),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 40),
+      );
+      yPosition += 60;
+      
+      // Basic content extraction
+      final List<String> textContent = _extractBasicTextContent(slide);
+      
+      for (final text in textContent) {
+        if (yPosition > pageSize.height - 100) break; // Prevent overflow
+        
+        final cleanText = _cleanTextForPDF(text);
+        if (cleanText.isNotEmpty) {
+          graphics.drawString(
+            cleanText,
+            PdfStandardFont(PdfFontFamily.helvetica, 12),
+            brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+            bounds: Rect.fromLTWH(40, yPosition, pageSize.width - 80, 20),
+          );
+          yPosition += 25;
+        }
+      }
+      
+    } catch (e) {
+      print('Failed to draw basic slide: $e');
+      _drawErrorSlide(graphics, pageSize, slideNumber, e.toString());
+    }
+  }
+
+  // Extract basic text content from any slide type
+  static List<String> _extractBasicTextContent(Map<String, dynamic> slide) {
+    final List<String> content = [];
+    
+    // Add subtitle if exists
+    if (slide['subtitle'] != null) {
+      content.add(slide['subtitle'].toString());
+    }
+    
+    // Extract content based on type
+    final String type = slide['type'] ?? 'content';
+    
+    switch (type) {
+      case 'content':
+        final List<dynamic> items = slide['content'] ?? [];
+        for (final item in items) {
+          content.add('• ${item.toString()}');
+        }
+        break;
+        
+      case 'comparison':
+        content.add('Before: ${slide['left_title'] ?? 'Before'}');
+        final List<dynamic> leftContent = slide['left_content'] ?? [];
+        for (final item in leftContent) {
+          content.add('  • ${item.toString()}');
+        }
+        content.add('After: ${slide['right_title'] ?? 'After'}');
+        final List<dynamic> rightContent = slide['right_content'] ?? [];
+        for (final item in rightContent) {
+          content.add('  • ${item.toString()}');
+        }
+        break;
+        
+      default:
+        // For other types, try to extract any text content
+        slide.forEach((key, value) {
+          if (value is String && value.isNotEmpty && key != 'type' && key != 'title') {
+            content.add('$key: $value');
+          } else if (value is List) {
+            for (final item in value) {
+              if (item is String) {
+                content.add('• $item');
+              }
+            }
+          }
+        });
+    }
+    
+    return content.take(15).toList(); // Limit to prevent overflow
+  }
+
+  // Create a simple fallback PDF with just basic text
+  static Future<bool> _createFallbackPDF(Map<String, dynamic> presentationData, BuildContext context) async {
+    try {
+      print('Creating fallback PDF...');
+      
+      final String title = presentationData['title'] ?? 'Presentation';
+      final List<dynamic> slides = presentationData['slides'] ?? [];
+      
+      final PdfDocument document = PdfDocument();
+      
+      for (int i = 0; i < slides.length; i++) {
+        final slide = slides[i];
+        final PdfPage page = document.pages.add();
+        final PdfGraphics graphics = page.graphics;
+        final Size pageSize = page.getClientSize();
+        
+        await _drawBasicSlide(graphics, slide, pageSize, context, i + 1);
+      }
+      
+      final List<int> bytes = await document.save();
+      document.dispose();
+      
+      final fileName = '${title.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}_BASIC_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final success = await _savePDFToAhamAIFolder(Uint8List.fromList(bytes), fileName);
+      
+      if (success) {
+        DiagramService.showStyledSnackBar(
+          context,
+          '✅ Fallback PDF saved: $fileName\n(Basic text-only version)',
+          backgroundColor: Colors.blue.shade600,
+          duration: const Duration(seconds: 4),
+        );
+        return true;
+      }
+      
+      return false;
+    } catch (e) {
+      print('Fallback PDF creation failed: $e');
+      return false;
+    }
   }
 }
