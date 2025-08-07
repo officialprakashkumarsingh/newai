@@ -1,230 +1,225 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-import 'api.dart';
 import 'main.dart';
+import 'file_processing.dart';
 import 'theme.dart';
-import 'web_search.dart'; // <-- FIX: ADD THIS IMPORT
 
-// WIDGETS MOVED FROM CHAT_SCREEN.DART
-
-class FileSourceButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const FileSourceButton({super.key, required this.icon, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 80,
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Theme.of(context).dividerColor),
+/// Chat Widgets - Reusable widget components for the chat screen
+/// This contains all the small, reusable widgets used throughout the chat interface
+class ChatWidgets {
+  
+  /// Input field widget for typing messages
+  static Widget buildInputField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required bool isStreaming,
+    required Function(String) onSendMessage,
+    required Function() onAttachFile,
+    required Function() onVoiceInput,
+    required Function() onStopStreaming,
+    String? hintText,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).dividerColor.withOpacity(0.3),
+          ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 28),
-            const SizedBox(height: 8),
-            Text(label, style: Theme.of(context).textTheme.bodySmall),
+      ),
+      child: Row(
+        children: [
+          // Tools button
+          IconButton(
+            icon: const Icon(Icons.apps_outlined),
+            onPressed: () {}, // Will be handled by parent
+            tooltip: 'Tools',
+            color: Theme.of(context).iconTheme.color,
+          ),
+          
+          // Text input field
+          Expanded(
+            child: TextField(
+              controller: controller,
+              enabled: !isStreaming,
+              onSubmitted: (val) => onSendMessage(val),
+              maxLines: null,
+              textInputAction: TextInputAction.send,
+              decoration: InputDecoration(
+                hintText: hintText ?? (isStreaming 
+                  ? 'AI is responding...' 
+                  : 'Type your message...'),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.surface,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+              ),
+            ),
+          ),
+          
+          const SizedBox(width: 8),
+          
+          // Action buttons
+          if (isStreaming) ...[
+            IconButton(
+              icon: const Icon(Icons.stop),
+              onPressed: onStopStreaming,
+              tooltip: 'Stop',
+            ),
+          ] else ...[
+            IconButton(
+              icon: const Icon(Icons.attach_file),
+              onPressed: onAttachFile,
+              tooltip: 'Attach File',
+            ),
+            IconButton(
+              icon: const Icon(Icons.mic),
+              onPressed: onVoiceInput,
+              tooltip: 'Voice Input',
+            ),
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () => onSendMessage(controller.text),
+              tooltip: 'Send',
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
-}
 
-class SearchResultCard extends StatelessWidget {
-  const SearchResultCard({super.key, required this.result});
-
-  final SearchResult result;
-
-  Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-       print('Could not launch $uri');
-    }
+  /// Message queue indicator widget
+  static Widget buildMessageQueueIndicator({
+    required List<String> queuedMessages,
+    required bool isProcessing,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.orange.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isProcessing)
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          else
+            Icon(Icons.queue, size: 16, color: Colors.orange[700]),
+          const SizedBox(width: 8),
+          Text(
+            isProcessing
+              ? 'Processing...'
+              : 'Queued: ${queuedMessages.length} messages',
+            style: TextStyle(
+              color: Colors.orange[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _launchUrl(result.url),
-      child: Container(
-        width: 140,
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Theme.of(context).dividerColor),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+  /// Attachment preview widget
+  static Widget buildAttachmentPreview({
+    required ChatAttachment attachment,
+    required Function() onClear,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.attach_file, color: Colors.blue[700], size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (result.faviconUrl != null)
-                  Image.network(
-                    result.faviconUrl!,
-                    height: 16,
-                    width: 16,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.public, size: 16),
-                  )
-                else
-                  const Icon(Icons.public, size: 16),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    Uri.parse(result.url).host,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  attachment.fileName,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue[700],
                   ),
                 ),
+                if (attachment.containedFileNames != null && 
+                    attachment.containedFileNames!.isNotEmpty)
+                  Text(
+                    '${attachment.containedFileNames!.length} files',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue[600],
+                    ),
+                  ),
               ],
             ),
-            const SizedBox(height: 6),
-            Expanded(
-              child: Text(
-                result.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-              ),
-            ),
-          ],
-        ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: onClear,
+            iconSize: 20,
+            color: Colors.blue[700],
+          ),
+        ],
       ),
     );
   }
-}
 
-class ImagePromptSheet extends StatefulWidget {
-  final Function(String prompt, String model) onGenerate;
-  const ImagePromptSheet({super.key, required this.onGenerate});
-
-  @override
-  State<ImagePromptSheet> createState() => _ImagePromptSheetState();
-}
-
-class _ImagePromptSheetState extends State<ImagePromptSheet> {
-  final _promptController = TextEditingController();
-  String? _selectedModel;
-  
-  void _submit() {
-    if (_promptController.text.trim().isNotEmpty && _selectedModel != null) {
-      widget.onGenerate(_promptController.text.trim(), _selectedModel!);
-      Navigator.pop(context);
-    }
-  }
-
-  void _showModelSelection() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Theme.of(context).cardColor,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) {
-        return FutureBuilder<List<String>>(
-          future: ImageApi.fetchModels(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(heightFactor: 4, child: CircularProgressIndicator());
-            }
-            final models = snapshot.data!;
-            return ListView.builder(
-              shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              itemCount: models.length,
-              itemBuilder: (context, index) {
-                final model = models[index];
-                return ListTile(
-                  title: Text(model),
-                  trailing: _selectedModel == model ? Icon(Icons.check_circle, color: Theme.of(context).primaryColor) : null,
-                  onTap: () {
-                    setState(() => _selectedModel = model);
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    ImageApi.fetchModels().then((models) {
-      if (mounted && models.isNotEmpty) {
-        setState(() => _selectedModel = models.first);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  /// Image attachment preview widget
+  static Widget buildImageAttachmentPreview({
+    required XFile imageFile,
+    required Function() onClear,
+  }) {
     return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: EdgeInsets.only(
-        left: 16, right: 16, top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.all(8),
+      child: Stack(
         children: [
-          Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Theme.of(context).dividerColor, borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text('Generate Image', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _promptController,
-            autofocus: true,
-            cursorColor: Theme.of(context).colorScheme.primary, // Use theme primary color instead of purple
-            decoration: InputDecoration(hintText: 'e.g., A fox in a spacesuit', border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))),
-          ),
-          const SizedBox(height: 16),
-          InkWell(
-            onTap: _showModelSelection,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Theme.of(context).dividerColor),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(_selectedModel ?? 'Select a model...'),
-                  const Icon(Icons.arrow_drop_down),
-                ],
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.file(
+              File(imageFile.path),
+              height: 100,
+              width: 100,
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _submit,
-              icon: const Icon(Icons.generating_tokens_outlined),
-              label: const Text('Generate'),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: onClear,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -232,82 +227,260 @@ class _ImagePromptSheetState extends State<ImagePromptSheet> {
       ),
     );
   }
-}
 
-class GeneratingIndicator extends StatefulWidget {
-  final double size;
-  const GeneratingIndicator({super.key, this.size = 12});
-  @override
-  _GeneratingIndicatorState createState() => _GeneratingIndicatorState();
-}
+  /// Scroll to bottom button
+  static Widget buildScrollToBottomButton({
+    required Function() onPressed,
+    required bool visible,
+  }) {
+    return AnimatedOpacity(
+      opacity: visible ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 200),
+      child: FloatingActionButton.small(
+        onPressed: visible ? onPressed : null,
+        child: const Icon(Icons.keyboard_arrow_down),
+      ),
+    );
+  }
 
-class _GeneratingIndicatorState extends State<GeneratingIndicator> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(duration: const Duration(milliseconds: 800), vsync: this)..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.4, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  /// User message options bottom sheet
+  static void showUserMessageOptions({
+    required BuildContext context,
+    required ChatMessage message,
+    required int index,
+    required Function(String) onCopy,
+    required Function() onEditAndResend,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.copy_outlined),
+              title: const Text('Copy Message'),
+              onTap: () {
+                Navigator.pop(context);
+                onCopy(message.text);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: const Text('Edit and Resend'),
+              onTap: () {
+                Navigator.pop(context);
+                onEditAndResend();
+              },
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
+        ),
+      ),
+    );
   }
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+
+  /// Tools bottom sheet
+  static void showToolsBottomSheet({
+    required BuildContext context,
+    required Function() onImageGeneration,
+    required Function() onPresentationGeneration,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'AI Tools',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            
+            // Image Generation
+            ListTile(
+              leading: const Icon(Icons.image, color: Colors.blue),
+              title: const Text('Generate Image'),
+              subtitle: const Text('Create images from text descriptions'),
+              onTap: () {
+                Navigator.pop(context);
+                onImageGeneration();
+              },
+            ),
+            
+            // Presentation Generation
+            ListTile(
+              leading: const Icon(Icons.slideshow, color: Colors.green),
+              title: const Text('Generate Presentation'),
+              subtitle: const Text('Create slide presentations'),
+              onTap: () {
+                Navigator.pop(context);
+                onPresentationGeneration();
+              },
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Cancel button
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
+        ),
+      ),
+    );
   }
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) => Opacity(opacity: _animation.value, child: Icon(Icons.circle, size: widget.size, color: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}))),
+
+  /// Loading indicator for various operations
+  static Widget buildLoadingIndicator({
+    required String message,
+    Color? color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                color ?? Colors.blue,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            message,
+            style: TextStyle(
+              color: color ?? Colors.blue,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Error message widget
+  static Widget buildErrorMessage({
+    required String message,
+    Function()? onRetry,
+  }) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.red.withOpacity(0.3)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.error_outline, color: Colors.red[700]),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.red[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (onRetry != null) ...[
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: onRetry,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[700],
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Retry'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// Custom app bar for chat screen
+  static PreferredSizeWidget buildChatAppBar({
+    required BuildContext context,
+    required String title,
+    List<Widget>? actions,
+    Function()? onBack,
+  }) {
+    return AppBar(
+      title: Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      centerTitle: true,
+      leading: onBack != null
+        ? IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: onBack,
+          )
+        : null,
+      actions: actions,
+      elevation: 0,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      foregroundColor: Theme.of(context).textTheme.titleLarge?.color,
     );
   }
 }
 
-class CodeStreamingSheet extends StatelessWidget {
-  final ValueNotifier<String> notifier;
-  const CodeStreamingSheet({super.key, required this.notifier});
+/// Message Queue Indicator Widget
+class MessageQueueIndicator extends StatelessWidget {
+  final List<String> queuedMessages;
+  final bool isProcessing;
+
+  const MessageQueueIndicator({
+    super.key,
+    required this.queuedMessages,
+    required this.isProcessing,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.5,
-      minChildSize: 0.3,
-      maxChildSize: 0.9,
-      builder: (_, controller) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text('Generated Code', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20)),
-              const SizedBox(height: 12),
-              Expanded(
-                child: ValueListenableBuilder<String>(
-                  valueListenable: notifier,
-                  builder: (context, code, _) => SingleChildScrollView(controller: controller, child: SelectableText(code, style: const TextStyle(fontFamily: 'monospace', fontSize: 14))),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    final code = notifier.value;
-                    if (code.trim().isNotEmpty) {
-                      Clipboard.setData(ClipboardData(text: code));
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Code copied to clipboard!")));
-                    }
-                  },
-                  icon: const Icon(Icons.copy),
-                  label: const Text("Copy Code"),
-                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), padding: const EdgeInsets.symmetric(vertical: 14)),
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        );
-      },
+    return ChatWidgets.buildMessageQueueIndicator(
+      queuedMessages: queuedMessages,
+      isProcessing: isProcessing,
+    );
+  }
+}
+
+/// Attachment Preview Widget
+class AttachmentPreview extends StatelessWidget {
+  final ChatAttachment attachment;
+  final Function() onClear;
+
+  const AttachmentPreview({
+    super.key,
+    required this.attachment,
+    required this.onClear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ChatWidgets.buildAttachmentPreview(
+      attachment: attachment,
+      onClear: onClear,
     );
   }
 }

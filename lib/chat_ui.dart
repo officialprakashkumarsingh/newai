@@ -1,0 +1,413 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'main.dart';
+import 'ai_message_actions.dart';
+import 'thinking_panel.dart';
+import 'presentation_service.dart';
+import 'diagram_service.dart';
+import 'web_search.dart';
+import 'theme.dart';
+
+/// Chat UI Builder - Contains all UI building methods from chat_screen.dart
+/// This handles the visual presentation of messages, charts, and other UI elements
+class ChatUI {
+  
+  /// Build the main message widget
+  static Widget buildMessage(ChatMessage message, int index, String chatId, BuildContext context, {
+    required Function(String) onCopy,
+    required Function() onRegenerate,
+    required Function() onUserMessageOptions,
+  }) {
+    final isUserMessage = message.role == 'user';
+    final isModelMessage = message.role == 'model';
+    final showActionButtons = index > 0 && isModelMessage;
+    
+    return Align(
+      alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isUserMessage 
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                : Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: isUserMessage 
+                ? null 
+                : Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3)),
+            ),
+            child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
+          ),
+          
+          // Research widget if present
+          if (message.researchWidget != null)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              child: message.researchWidget!,
+            ),
+          
+          // Search results if present
+          if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty)
+            buildSearchResultsWidget(message.searchResults!, context),
+          
+          // Action buttons for AI messages
+          if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
+            AiMessageActions(
+              key: ValueKey('actions_${chatId}_$index'),
+              messageText: message.text,
+              onCopy: () => onCopy(message.text),
+              onRegenerate: onRegenerate,
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Build message content based on type
+  static Widget _buildMessageContent(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+    switch (message.type) {
+      case MessageType.image:
+        return _buildImageMessage(message, context);
+      case MessageType.presentation:
+        return _buildPresentationMessage(message, context);
+      case MessageType.diagram:
+        return _buildDiagramMessage(message, context);
+      case MessageType.text:
+      default:
+        return _buildTextMessage(message, isUserMessage, onUserMessageOptions, context);
+    }
+  }
+
+  /// Build image message
+  static Widget _buildImageMessage(ChatMessage message, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (message.text.isNotEmpty)
+          buildMessageContent(message.text, context),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            message.imageUrl!,
+            width: 300,
+            height: 300,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error, size: 48, color: Colors.red),
+                      SizedBox(height: 8),
+                      Text('Failed to load image'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Build presentation message
+  static Widget _buildPresentationMessage(ChatMessage message, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (message.text.isNotEmpty && !message.text.contains('Generating presentation'))
+          buildMessageContent(message.text, context),
+        const SizedBox(height: 8),
+        message.presentationData!.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : PresentationService.buildPresentationWidget(message.presentationData!, context),
+      ],
+    );
+  }
+
+  /// Build diagram message
+  static Widget _buildDiagramMessage(ChatMessage message, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (message.text.isNotEmpty && !message.text.contains('Generating diagram'))
+          buildMessageContent(message.text, context),
+        const SizedBox(height: 8),
+        message.diagramData!.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : DiagramService.buildDiagramWidget(message.diagramData!, context, (data) {}),
+      ],
+    );
+  }
+
+  /// Build text message
+  static Widget _buildTextMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+    return GestureDetector(
+      onLongPress: isUserMessage ? onUserMessageOptions : null,
+      child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
+        ? ThinkingPanel(
+            thinkingContent: message.thinkingContent!,
+            finalContent: message.text,
+          )
+        : buildMessageContent(message.text, context),
+    );
+  }
+
+  /// Build message content with markdown support
+  static Widget buildMessageContent(String text, BuildContext context) {
+    if (text.contains('```') || text.contains('**') || text.contains('*')) {
+      return MarkdownBody(
+        data: text,
+        styleSheet: MarkdownStyleSheet(
+          p: TextStyle(
+            fontSize: 16,
+            height: 1.4,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+          code: TextStyle(
+            backgroundColor: Theme.of(context).cardColor,
+            fontSize: 14,
+            fontFamily: 'Courier',
+          ),
+          codeblockDecoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        onTapLink: (text, href, title) {
+          if (href != null) {
+            launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
+          }
+        },
+      );
+    } else {
+      return SelectableText(
+        text,
+        style: TextStyle(
+          fontSize: 16,
+          height: 1.4,
+          color: Theme.of(context).textTheme.bodyLarge?.color,
+        ),
+      );
+    }
+  }
+
+  /// Build search results widget
+  static Widget buildSearchResultsWidget(List<SearchResult> results, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 22, top: 8, bottom: 8),
+          child: Text("Sources", style: Theme.of(context).textTheme.titleSmall),
+        ),
+        SizedBox(
+          height: 90,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+            itemCount: results.length,
+            itemBuilder: (context, index) => SearchResultCard(result: results[index]),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Build the main chat screen layout
+  static Widget buildChatLayout({
+    required BuildContext context,
+    required String chatTitle,
+    required ScrollController scrollController,
+    required List<ChatMessage> messages,
+    required String chatId,
+    required Function(String) onCopy,
+    required Function(int) onRegenerate,
+    required Function(int) onUserMessageOptions,
+    required List<String> messageQueue,
+    required bool isProcessingQueue,
+    required dynamic attachment,
+    required dynamic attachedImage,
+    required bool showScrollToBottom,
+    required bool isStreaming,
+    required Function() onScrollToBottom,
+    required Widget inputField,
+  }) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(chatTitle),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+              itemCount: messages.length,
+              itemBuilder: (context, index) => buildMessage(
+                messages[index],
+                index,
+                chatId,
+                context,
+                onCopy: onCopy,
+                onRegenerate: () => onRegenerate(index - 1),
+                onUserMessageOptions: () => onUserMessageOptions(index),
+              ),
+              cacheExtent: 1000.0,
+              addAutomaticKeepAlives: false,
+              addRepaintBoundaries: false,
+            ),
+          ),
+          
+          // Message queue indicator
+          if (messageQueue.isNotEmpty || isProcessingQueue)
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: MessageQueueIndicator(
+                queuedMessages: messageQueue,
+                isProcessing: isProcessingQueue,
+              ),
+            ),
+          
+          // Attachment preview
+          if (attachment != null)
+            AttachmentPreview(
+              attachment: attachment,
+              onClear: () {}, // Will be handled by parent
+            ),
+          
+          // Attached image preview
+          if (attachedImage != null)
+            Container(
+              margin: const EdgeInsets.all(8),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(
+                      attachedImage,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: GestureDetector(
+                      onTap: () {}, // Will be handled by parent
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          
+          inputField,
+        ],
+      ),
+      floatingActionButton: showScrollToBottom && !isStreaming
+        ? FloatingActionButton.small(
+            onPressed: onScrollToBottom,
+            child: const Icon(Icons.keyboard_arrow_down),
+          )
+        : null,
+    );
+  }
+
+  /// Build file attachment display in message
+  static Widget buildFileAttachmentInMessage({
+    required ChatMessage message,
+    required bool isDark,
+  }) {
+    if (message.attachedFileName == null) return const SizedBox.shrink();
+    
+    final hasContainedFiles = message.attachedContainedFiles != null && 
+                              message.attachedContainedFiles!.isNotEmpty;
+    final icon = hasContainedFiles ? Icons.folder_zip_outlined : Icons.description_outlined;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.grey[800] : Colors.grey[200],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: textColor),
+            const SizedBox(width: 8),
+            Flexible(
+              child: Text(
+                message.attachedFileName!,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (hasContainedFiles)
+              Container(
+                margin: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.blue[300] : Colors.blue[600],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '${message.attachedContainedFiles!.length}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
