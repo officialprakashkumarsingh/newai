@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main.dart';
 import 'web_search.dart';
 import 'file_processing.dart';
+import 'api_service.dart';
 
 /// Chat State Management - Manages all state variables and controllers for chat
 /// This handles the state that was previously managed in _ChatScreenState
@@ -13,7 +15,7 @@ class ChatState extends ChangeNotifier {
   // Core chat data
   List<ChatMessage> _messages = [];
   String _chatTitle = 'New Chat';
-  String _selectedModel = 'gpt-4';
+  String _selectedModel = ''; // Will be loaded from SharedPreferences
   
   // UI controllers
   final TextEditingController _controller = TextEditingController();
