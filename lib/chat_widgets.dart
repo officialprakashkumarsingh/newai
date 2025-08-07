@@ -288,57 +288,136 @@ class ChatWidgets {
     );
   }
 
-  /// Tools bottom sheet
+  /// Tools bottom sheet - Complete original implementation
   static void showToolsBottomSheet({
     required BuildContext context,
     required Function() onImageGeneration,
     required Function() onPresentationGeneration,
+    required Function() onDiagramGeneration,
+    required Function() onPickCamera,
+    required Function() onPickGallery,
+    required Function() onPickFile,
+    required bool isWebSearchEnabled,
+    required Function(bool) onWebSearchToggle,
+    required bool isThinkingModeEnabled,
+    required Function(bool) onThinkingModeToggle,
+    required bool isResearchModeEnabled,
+    required Function(bool) onResearchModeToggle,
   }) {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'AI Tools',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            
-            // Image Generation
-            ListTile(
-              leading: const Icon(Icons.image, color: Colors.blue),
-              title: const Text('Generate Image'),
-              subtitle: const Text('Create images from text descriptions'),
-              onTap: () {
-                Navigator.pop(context);
-                onImageGeneration();
-              },
-            ),
-            
-            // Presentation Generation
-            ListTile(
-              leading: const Icon(Icons.slideshow, color: Colors.green),
-              title: const Text('Generate Presentation'),
-              subtitle: const Text('Create slide presentations'),
-              onTap: () {
-                Navigator.pop(context);
-                onPresentationGeneration();
-              },
-            ),
-            
-            const SizedBox(height: 20),
-            
-            // Cancel button
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            
-            SizedBox(height: MediaQuery.of(context).padding.bottom),
-          ],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => StatefulBuilder(
+        builder: (BuildContext context, StateSetter setSheetState) => Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // File attachment options
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  FileSourceButton(
+                    icon: Icons.camera_alt_outlined, 
+                    label: 'Camera', 
+                    onTap: () {
+                      Navigator.pop(context);
+                      onPickCamera();
+                    }
+                  ),
+                  FileSourceButton(
+                    icon: Icons.photo_library_outlined, 
+                    label: 'Photos', 
+                    onTap: () {
+                      Navigator.pop(context);
+                      onPickGallery();
+                    }
+                  ),
+                  FileSourceButton(
+                    icon: Icons.folder_open_outlined, 
+                    label: 'Files', 
+                    onTap: () {
+                      Navigator.pop(context);
+                      onPickFile();
+                    }
+                  ),
+                ],
+              ),
+              const Divider(height: 32),
+              
+              // AI Mode Toggles
+              ListTile(
+                contentPadding: EdgeInsets.zero, 
+                leading: const Icon(Icons.public), 
+                title: const Text('Search the web'), 
+                trailing: Switch(
+                  value: isWebSearchEnabled, 
+                  onChanged: (bool value) { 
+                    setSheetState(() {}); 
+                    onWebSearchToggle(value);
+                  }
+                )
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero, 
+                leading: const Icon(Icons.auto_awesome_outlined), 
+                title: const Text('Think for longer'), 
+                trailing: Switch(
+                  value: isThinkingModeEnabled, 
+                  onChanged: (bool value) { 
+                    setSheetState(() {}); 
+                    onThinkingModeToggle(value);
+                  }
+                )
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero, 
+                leading: const Icon(Icons.search), 
+                title: const Text('Research mode'), 
+                subtitle: const Text('Deep research with multiple sources'), 
+                trailing: Switch(
+                  value: isResearchModeEnabled, 
+                  onChanged: (bool value) { 
+                    setSheetState(() {}); 
+                    onResearchModeToggle(value);
+                  }
+                )
+              ),
+              
+              // Generation Tools
+              ListTile(
+                contentPadding: EdgeInsets.zero, 
+                leading: const Icon(Icons.image_outlined), 
+                title: const Text('Create an image'), 
+                onTap: () { 
+                  Navigator.pop(context); 
+                  onImageGeneration(); 
+                }
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero, 
+                leading: const Icon(Icons.slideshow_outlined), 
+                title: const Text('Make a presentation'), 
+                onTap: () { 
+                  Navigator.pop(context); 
+                  onPresentationGeneration(); 
+                }
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero, 
+                leading: const Icon(Icons.bar_chart_outlined), 
+                title: const Text('Generate diagram'), 
+                onTap: () { 
+                  Navigator.pop(context); 
+                  onDiagramGeneration(); 
+                }
+              ),
+
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
         ),
       ),
     );
