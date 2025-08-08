@@ -66,6 +66,32 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Reload messages when app is resumed to prevent message loss
+      _reloadMessages();
+    }
+  }
+
+  /// Reload messages from storage when app is resumed
+  Future<void> _reloadMessages() async {
+    try {
+      final messages = await ChatLogic.loadMessages(widget.chatId);
+      if (messages.isNotEmpty && messages.length != _chatState.messages.length) {
+        // Only update if there's a difference (avoid unnecessary rebuilds)
+        _chatState.setMessages(messages);
+        if (messages.isNotEmpty) {
+          final title = ChatLogic.generateChatTitle(messages);
+          _chatState.setChatTitle(title);
+        }
+      }
+    } catch (e) {
+      print('Error reloading messages: $e');
+    }
+  }
+
   /// Setup initial chat state and load data
   Future<void> _setupChat() async {
     await ChatLogic.initializeChat();
@@ -301,15 +327,21 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _handleFileAttachment() async {
     try {
       final result = await FileProcessingService.pickAndProcessFile();
-      if (result != null) {
+      if (result != null && mounted) {
         _chatState.setAttachment(result);
-        // Auto-send file attachment with filename as message
-        await _sendMessage(result.fileName ?? 'File attachment');
+        // Small delay to ensure picker is fully closed before auto-sending
+        await Future.delayed(const Duration(milliseconds: 100));
+        if (mounted) {
+          // Auto-send file attachment with filename as message
+          await _sendMessage(result.fileName ?? 'File attachment');
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error attaching file: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error attaching file: $e')),
+        );
+      }
     }
   }
 
@@ -318,15 +350,21 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: source);
-      if (image != null) {
+      if (image != null && mounted) {
         _chatState.setAttachedImage(image);
-        // Auto-send image attachment
-        await _sendMessage('Analyze this image');
+        // Small delay to ensure picker is fully closed before auto-sending
+        await Future.delayed(const Duration(milliseconds: 300));
+        if (mounted) {
+          // Auto-send image attachment
+          await _sendMessage('Analyze this image');
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error attaching image: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error attaching image: $e')),
+        );
+      }
     }
   }
 
