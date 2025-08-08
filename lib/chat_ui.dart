@@ -11,6 +11,7 @@ import 'web_search.dart';
 import 'theme.dart';
 import 'chat_widgets.dart';
 import 'queue_panel.dart';
+import 'fullscreen_diagram_screen.dart';
 
 // Import for SearchResultCard
 class SearchResultCard extends StatelessWidget {
@@ -208,7 +209,15 @@ class ChatUI {
         const SizedBox(height: 8),
         message.diagramData!.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : DiagramService.buildDiagramWidget(message.diagramData!, context, (data) {}),
+          : DiagramService.buildDiagramWidget(message.diagramData!, context, (data) {
+              // Navigate to fullscreen diagram on tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FullscreenDiagramScreen(diagramData: data),
+                ),
+              );
+            }),
       ],
     );
   }

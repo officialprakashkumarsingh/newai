@@ -14,6 +14,7 @@ import 'chat_chart_builder.dart';
 // Existing imports
 import 'main.dart';
 import 'diagram_handler.dart';
+import 'diagram_service.dart';
 import 'presentation_service.dart';
 // import 'image_service.dart'; // Not needed
 import 'file_processing.dart';
@@ -399,8 +400,43 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       // Add user message requesting diagram
       _addMessage(ChatMessage(role: 'user', text: result));
       
-      // Generate diagram using the handler (bypasses keyword detection)
-      await _diagramHandler.handleManualDiagramRequest(result, _chatState.selectedModel);
+      // Add placeholder AI message for diagram generation
+      _addMessage(ChatMessage(
+        role: 'model', 
+        text: 'Generating diagram...',
+        type: MessageType.diagram,
+        diagramData: <String, dynamic>{}, // Empty placeholder
+      ));
+      
+      // Generate diagram data
+      try {
+        final diagramData = await DiagramService.generateDiagramData(result, _chatState.selectedModel);
+        
+        if (diagramData != null) {
+          // Update the last message with actual diagram data
+          final lastIndex = _chatState.messages.length - 1;
+          _updateMessage(lastIndex, ChatMessage(
+            role: 'model',
+            text: 'Diagram generated successfully!',
+            type: MessageType.diagram,
+            diagramData: diagramData,
+          ));
+        } else {
+          // Update with error message
+          final lastIndex = _chatState.messages.length - 1;
+          _updateMessage(lastIndex, ChatMessage(
+            role: 'model', 
+            text: '❌ Failed to generate diagram. Please try again.',
+          ));
+        }
+      } catch (e) {
+        // Update with error message
+        final lastIndex = _chatState.messages.length - 1;
+        _updateMessage(lastIndex, ChatMessage(
+          role: 'model', 
+          text: '❌ Error generating diagram: $e',
+        ));
+      }
     }
   }
 

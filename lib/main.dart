@@ -726,50 +726,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 itemCount: currentChatList.length,
                 itemBuilder: (context, index) {
                   final chat = currentChatList[index];
-                  return InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: chat.id, isPinned: chat.isPinned, chatInfoStream: _chatInfoStream))),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Row(
-                        children: [
-                          // Pin icon
-                          if (chat.isPinned) 
-                            Padding(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20),
-                            ),
-                          // Chat content
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Title with proper constraints
-                                Text(
-                                  chat.title, 
-                                  style: TextStyle(
-                                    fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal,
-                                    fontSize: 16,
-                                  ), 
-                                  maxLines: 1, 
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                // Subtitle with proper constraints
-                                Text(
-                                  _getChatSubtitle(chat),
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 14,
-                                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                  return ListTile(
+                    leading: chat.isPinned ? Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20) : null,
+                    title: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    subtitle: Text(
+                      _getChatSubtitle(chat),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: chat.id, isPinned: chat.isPinned, chatInfoStream: _chatInfoStream))),
                     onLongPress: () => showModalBottomSheet(
                       context: context,
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
