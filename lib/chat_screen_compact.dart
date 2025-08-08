@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 
 // Our divided files
@@ -337,13 +338,30 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     }
   }
 
-  /// Handle image attachment
+  /// Handle image attachment  
   Future<void> _handleImageAttachment([ImageSource source = ImageSource.gallery]) async {
     try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: source);
-      if (image != null) {
-        _chatState.setAttachedImage(image);
+      if (source == ImageSource.camera) {
+        // For camera, use ImagePicker
+        final ImagePicker picker = ImagePicker();
+        final XFile? image = await picker.pickImage(
+          source: ImageSource.camera,
+          preferredCameraDevice: CameraDevice.rear,
+        );
+        if (image != null) {
+          _chatState.setAttachedImage(image);
+        }
+      } else {
+        // For gallery, use FilePicker which seems to work better
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          withData: false,
+        );
+        
+        if (result != null && result.files.single.path != null) {
+          final XFile image = XFile(result.files.single.path!);
+          _chatState.setAttachedImage(image);
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
