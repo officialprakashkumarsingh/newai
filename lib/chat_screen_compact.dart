@@ -122,7 +122,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     if (_chatState.attachedImage != null) {
       await _sendVisionMessage(input);
     } else {
-      await _sendTextMessage(input);
+      await _sendTextMessage(input); // This handles both text and file attachments
     }
     
     _chatState.clearAllAttachments();
@@ -230,7 +230,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     
     _chatState.stopStreaming();
     ChatLogic.saveMessages(widget.chatId, _chatState.messages);
-    _updateChatTitle();
+    // Note: Chat title already updated when message was added
     
     // Process next message in queue
     await _processMessageQueue();
@@ -303,6 +303,8 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       final result = await FileProcessingService.pickAndProcessFile();
       if (result != null) {
         _chatState.setAttachment(result);
+        // Auto-send file attachment with filename as message
+        await _sendMessage(result.fileName ?? 'File attachment');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -318,6 +320,8 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       final XFile? image = await picker.pickImage(source: source);
       if (image != null) {
         _chatState.setAttachedImage(image);
+        // Auto-send image attachment
+        await _sendMessage('Analyze this image');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
