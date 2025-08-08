@@ -119,6 +119,11 @@ class ChatUI {
 
   /// Build message content based on type
   static Widget _buildMessageContent(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+    // Check if message has attached image bytes (user uploaded image)
+    if (message.imageBytes != null) {
+      return _buildUserImageMessage(message, isUserMessage, onUserMessageOptions, context);
+    }
+    
     switch (message.type) {
       case MessageType.image:
         return _buildImageMessage(message, context);
@@ -132,7 +137,43 @@ class ChatUI {
     }
   }
 
-  /// Build image message
+  /// Build user image message (user uploaded images with imageBytes)
+  static Widget _buildUserImageMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (message.text.isNotEmpty)
+          _buildTextMessage(message, isUserMessage, onUserMessageOptions, null, context),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.memory(
+            message.imageBytes!,
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 200,
+                height: 200,
+                color: Colors.grey[300],
+                alignment: Alignment.center,
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error, size: 40, color: Colors.red),
+                    Text('Failed to load image', style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Build image message (AI generated images with imageUrl)
   static Widget _buildImageMessage(ChatMessage message, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
