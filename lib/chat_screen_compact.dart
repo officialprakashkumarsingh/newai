@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -135,23 +136,45 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Handle sending messages
   Future<void> _sendMessage(String input) async {
-    if (!ChatLogic.isValidInput(input, _chatState.attachment)) return;
+    print('🔍 _sendMessage called with input: "$input"');
+    print('🔍 Has attachedImage: ${_chatState.attachedImage != null}');
+    print('🔍 Has attachment: ${_chatState.attachment != null}');
+    print('🔍 Is streaming: ${_chatState.isStreaming}');
+    
+    if (!ChatLogic.isValidInput(input, _chatState.attachment)) {
+      print('❌ Invalid input, returning early');
+      return;
+    }
 
     // Clear input immediately when send is pressed
     _chatState.clearInput();
 
     if (_chatState.isStreaming) {
+      print('🔍 Currently streaming, adding to queue');
       _chatState.addToMessageQueue(input);
       return;
     }
 
-    if (_chatState.attachedImage != null) {
-      await _sendVisionMessage(input);
-    } else {
-      await _sendTextMessage(input); // This handles both text and file attachments
+    try {
+      if (_chatState.attachedImage != null) {
+        print('🔍 Sending vision message with image');
+        await _sendVisionMessage(input);
+      } else {
+        print('🔍 Sending text message');
+        await _sendTextMessage(input); // This handles both text and file attachments
+      }
+      
+      print('🔍 Message sent successfully, clearing attachments');
+      _chatState.clearAllAttachments();
+    } catch (e, stackTrace) {
+      print('❌ Error in _sendMessage: $e');
+      print('❌ Stack trace: $stackTrace');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error sending message: $e')),
+        );
+      }
     }
-    
-    _chatState.clearAllAttachments();
   }
 
   /// Send text message
@@ -347,19 +370,59 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Handle image attachment
   Future<void> _handleImageAttachment([ImageSource source = ImageSource.gallery]) async {
+    print('🔍 Image attachment started - source: $source');
     try {
       final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: source);
+      print('🔍 ImagePicker created, calling pickImage...');
+      
+      // Use more robust image picker with specific parameters
+      final XFile? image = await picker.pickImage(
+        source: source,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+      print('🔍 Image picked: ${image?.path}, mounted: $mounted');
+      
       if (image != null && mounted) {
+        print('🔍 Setting attached image in state...');
         _chatState.setAttachedImage(image);
+        print('🔍 Image set, waiting 300ms before auto-send...');
+        
         // Small delay to ensure picker is fully closed before auto-sending
         await Future.delayed(const Duration(milliseconds: 300));
+        
         if (mounted) {
-          // Auto-send image attachment
-          await _sendMessage('Analyze this image');
+          print('🔍 Validating image file...');
+          
+          // Validate image file exists and is readable
+          final imageFile = File(image.path);
+          if (await imageFile.exists()) {
+            print('🔍 Image file validated, auto-sending...');
+            try {
+              await _sendMessage('Analyze this image');
+              print('🔍 Image auto-send completed!');
+            } catch (e) {
+              print('❌ Error in auto-send: $e');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Image attached, but auto-send failed: $e')),
+              );
+            }
+          } else {
+            print('❌ Image file does not exist at path: ${image.path}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error: Selected image file not found')),
+            );
+          }
+        } else {
+          print('❌ Widget not mounted after delay, skipping auto-send');
         }
+      } else {
+        print('❌ Image is null or widget not mounted');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('❌ Error in _handleImageAttachment: $e');
+      print('❌ Stack trace: $stackTrace');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error attaching image: $e')),
