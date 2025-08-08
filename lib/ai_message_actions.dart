@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AiMessageActions extends StatefulWidget {
   final String messageText;
@@ -68,11 +67,11 @@ class _AiMessageActionsState extends State<AiMessageActions> {
       child: Row(
         children: [
           _ActionButton(
-            icon: FontAwesomeIcons.copy,
+            icon: Icons.copy_outlined,
             onTap: widget.onCopy,
           ),
           _ActionButton(
-            icon: FontAwesomeIcons.arrowsRotate,
+            icon: Icons.refresh_outlined,
             onTap: () {
               // Ensure TTS stops before regenerating
               _flutterTts.stop();
@@ -81,8 +80,8 @@ class _AiMessageActionsState extends State<AiMessageActions> {
           ),
           _ActionButton(
             icon: _isSpeaking
-                ? FontAwesomeIcons.stop
-                : FontAwesomeIcons.volumeHigh,
+                ? Icons.stop_circle_outlined
+                : Icons.volume_up_outlined,
             onTap: _toggleSpeak,
           ),
         ],
@@ -107,7 +106,7 @@ class _ActionButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: FaIcon(icon, size: 18, color: Theme.of(context).iconTheme.color),
+          child: Icon(icon, size: 20, color: Theme.of(context).iconTheme.color),
         ),
       ),
     );

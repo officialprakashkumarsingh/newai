@@ -19,6 +19,7 @@ import 'presentation_service.dart';
 import 'file_processing.dart';
 import 'theme.dart';
 import 'chat_ui_helpers.dart';
+import 'api_service.dart';
 
 /// Compact Chat Screen - Uses all divided components for clean organization
 /// This is a much smaller, more manageable version of the chat screen
@@ -82,6 +83,24 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     }
     
     if (widget.initialMessage.isNotEmpty) {
+      // Ensure model is loaded before sending initial message
+      if (_chatState.selectedModel.isEmpty) {
+        // Wait a bit and load model if not loaded
+        await Future.delayed(const Duration(milliseconds: 200));
+        if (_chatState.selectedModel.isEmpty) {
+          // Load first available model as fallback
+          try {
+            final models = await ApiService.getAvailableModels();
+            if (models.isNotEmpty) {
+              _chatState.setSelectedModel(models.first);
+            }
+          } catch (e) {
+            print('Error loading fallback model: $e');
+            return; // Don't send message if no model available
+          }
+        }
+      }
+      
       // Auto-send the initial message for new users from welcome screen
       await _sendMessage(widget.initialMessage);
     }
