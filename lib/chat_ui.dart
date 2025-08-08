@@ -102,10 +102,10 @@ class ChatUI {
           if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty)
             buildSearchResultsWidget(message.searchResults!, context),
           
-          // Action buttons for AI messages - now tap-to-show
-          if (isModelMessage && !isStreaming && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
-            TappableAiMessage(
-              key: ValueKey('tappable_${chatId}_$index'),
+          // Action buttons for AI messages - hidden during streaming
+          if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
+            AiMessageActions(
+              key: ValueKey('actions_${chatId}_$index'),
               messageText: message.text,
               onCopy: () => onCopy(message.text),
               onRegenerate: onRegenerate,

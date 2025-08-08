@@ -95,14 +95,14 @@ class ChatWidgets {
               onPressed: () => onSendMessage(controller.text),
             ),
           ),
-          // Add a small stop button next to send button during streaming
+          // Add stop button next to send button during streaming - matching alignment
           if (isStreaming) ...[
             const SizedBox(width: 4),
             CircleAvatar(
               backgroundColor: Colors.red,
-              radius: 16,
+              radius: 24, // Match send button radius
               child: IconButton(
-                icon: const Icon(Icons.stop, size: 16, color: Colors.white),
+                icon: const Icon(Icons.stop, size: 20, color: Colors.white), // Match icon size
                 onPressed: onStopStreaming,
               ),
             ),
