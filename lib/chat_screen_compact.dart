@@ -14,6 +14,7 @@ import 'chat_chart_builder.dart';
 // Existing imports
 import 'main.dart';
 import 'diagram_handler.dart';
+import 'diagram_service.dart';
 import 'presentation_service.dart';
 // import 'image_service.dart'; // Not needed
 import 'file_processing.dart';
@@ -399,8 +400,37 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     );
     
     if (result != null && result.isNotEmpty) {
+      // Add user message requesting diagram
       _addMessage(ChatMessage(role: 'user', text: result));
-      await _diagramHandler.checkAndHandleDiagramRequest(result, _chatState.selectedModel);
+      
+      // Generate diagram directly (not through auto-detection)
+      try {
+        final diagramData = await DiagramService.generateDiagramData(result, _chatState.selectedModel);
+        
+        if (diagramData != null) {
+          // Navigate to fullscreen diagram
+          if (mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FullscreenDiagramScreen(
+                  diagramData: diagramData,
+                ),
+              ),
+            );
+          }
+        } else {
+          // Show error message if diagram generation failed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to generate diagram. Please try again.')),
+          );
+        }
+      } catch (e) {
+        print('Error generating diagram: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error generating diagram: $e')),
+        );
+      }
     }
   }
 

@@ -357,8 +357,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _chatInfoSubscription = _chatInfoStream.stream.listen((chatInfo) {
       setState(() {
         final index = _chats.indexWhere((c) => c.id == chatInfo.id);
-        if (index != -1) _chats[index] = chatInfo;
-        else _chats.insert(0, chatInfo);
+        if (index != -1) {
+          // Update existing chat
+          _chats[index] = chatInfo;
+        } else {
+          // Check if chat already exists (double-check to prevent duplicates)
+          final duplicateExists = _chats.any((c) => c.id == chatInfo.id);
+          if (!duplicateExists) {
+            _chats.insert(0, chatInfo);
+          }
+        }
+        
+        // Remove any potential duplicates that might have slipped through
+        final uniqueChats = <ChatInfo>[];
+        final seenIds = <String>{};
+        for (final chat in _chats) {
+          if (!seenIds.contains(chat.id)) {
+            seenIds.add(chat.id);
+            uniqueChats.add(chat);
+          }
+        }
+        _chats.clear();
+        _chats.addAll(uniqueChats);
+        
         _chats.sort((a, b) {
           if (a.isPinned && !b.isPinned) return -1;
           if (!a.isPinned && b.isPinned) return 1;

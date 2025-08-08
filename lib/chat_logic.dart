@@ -287,8 +287,7 @@ Based on the context above, answer the following prompt: $input""";
     if (lastMessage.role != 'model') return;
 
     try {
-      // Check for diagram requests after streaming is done
-      await diagramHandler.checkAndHandleDiagramRequest(lastMessage.text, selectedModel);
+      // Automatic diagram detection removed - use bottom sheet instead
 
       // Update search results if available
       if (lastSearchResults != null && lastSearchResults.isNotEmpty) {

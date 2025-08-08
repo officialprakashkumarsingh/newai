@@ -63,9 +63,7 @@ class ChatStreamingHandler {
     
     updateChatInfo('', false);
     
-    // Check for diagram requests
-    final aiResponse = messages.last.text;
-    await diagramHandler.checkAndHandleDiagramRequest(aiResponse, selectedModel);
+    // Automatic diagram detection removed - use bottom sheet instead
     
     scrollToBottom();
     saveMessages(); // Save messages after streaming is complete
