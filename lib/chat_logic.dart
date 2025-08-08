@@ -83,6 +83,7 @@ class ChatLogic {
     required Function() scrollToBottom,
     required Function() startStreaming,
     required Function() stopStreaming,
+    Function()? onStreamingComplete,
     dynamic attachment,
   }) async {
     if (input.trim().isEmpty && attachment == null) return;
@@ -129,11 +130,21 @@ class ChatLogic {
       
       // Stop streaming state
       stopStreaming();
+      
+      // Notify completion
+      if (onStreamingComplete != null) {
+        onStreamingComplete();
+      }
     } catch (e) {
       // Stop streaming on error
       stopStreaming();
       final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error: $e'));
+      
+      // Notify completion even on error
+      if (onStreamingComplete != null) {
+        onStreamingComplete();
+      }
     }
   }
 
@@ -148,6 +159,7 @@ class ChatLogic {
     required Function() scrollToBottom,
     required Function() startStreaming,
     required Function() stopStreaming,
+    Function()? onStreamingComplete,
   }) async {
     final imageBytes = await imageFile.readAsBytes();
     final userMessage = ChatMessage(
@@ -175,11 +187,21 @@ class ChatLogic {
       
       // Stop streaming state
       stopStreaming();
+      
+      // Notify completion
+      if (onStreamingComplete != null) {
+        onStreamingComplete();
+      }
     } catch (e) {
       // Stop streaming on error
       stopStreaming();
       final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error: $e'));
+      
+      // Notify completion even on error
+      if (onStreamingComplete != null) {
+        onStreamingComplete();
+      }
     }
   }
 

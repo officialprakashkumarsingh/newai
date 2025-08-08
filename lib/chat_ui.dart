@@ -54,10 +54,11 @@ class ChatUI {
     required Function(String) onCopy,
     required Function() onRegenerate,
     required Function() onUserMessageOptions,
+    bool isStreaming = false,
   }) {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
-    final showActionButtons = index > 0 && isModelMessage;
+    final showActionButtons = index > 0 && isModelMessage && !isStreaming;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -101,10 +102,10 @@ class ChatUI {
           if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty)
             buildSearchResultsWidget(message.searchResults!, context),
           
-          // Action buttons for AI messages
-          if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
-            AiMessageActions(
-              key: ValueKey('actions_${chatId}_$index'),
+          // Action buttons for AI messages - now tap-to-show
+          if (isModelMessage && !isStreaming && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
+            TappableAiMessage(
+              key: ValueKey('tappable_${chatId}_$index'),
               messageText: message.text,
               onCopy: () => onCopy(message.text),
               onRegenerate: onRegenerate,
@@ -328,6 +329,7 @@ class ChatUI {
                     onCopy: onCopy,
                     onRegenerate: () => onRegenerate(index - 1),
                     onUserMessageOptions: () => onUserMessageOptions(index),
+                    isStreaming: isStreaming,
                   ),
                   cacheExtent: 1000.0,
                   addAutomaticKeepAlives: false,
