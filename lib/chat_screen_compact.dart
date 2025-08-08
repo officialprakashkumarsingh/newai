@@ -140,6 +140,9 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
     // Clear input immediately when send is pressed
     _chatState.clearInput();
+    
+    // Clear attachments immediately when message is sent (not after streaming)
+    _chatState.clearAllAttachments();
 
     if (_chatState.isStreaming) {
       _chatState.addToMessageQueue(input);
@@ -151,8 +154,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     } else {
       await _sendTextMessage(input); // This handles both text and file attachments
     }
-    
-    _chatState.clearAllAttachments();
   }
 
   /// Send text message
@@ -341,27 +342,15 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   /// Handle image attachment  
   Future<void> _handleImageAttachment([ImageSource source = ImageSource.gallery]) async {
     try {
-      if (source == ImageSource.camera) {
-        // For camera, use ImagePicker
-        final ImagePicker picker = ImagePicker();
-        final XFile? image = await picker.pickImage(
-          source: ImageSource.camera,
-          preferredCameraDevice: CameraDevice.rear,
-        );
-        if (image != null) {
-          _chatState.setAttachedImage(image);
-        }
-      } else {
-        // For gallery, use FilePicker which seems to work better
-        final result = await FilePicker.platform.pickFiles(
-          type: FileType.image,
-          withData: false,
-        );
-        
-        if (result != null && result.files.single.path != null) {
-          final XFile image = XFile(result.files.single.path!);
-          _chatState.setAttachedImage(image);
-        }
+      // Use ImagePicker for both camera and gallery
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: source,
+        preferredCameraDevice: source == ImageSource.camera ? CameraDevice.rear : CameraDevice.rear,
+      );
+      
+      if (image != null) {
+        _chatState.setAttachedImage(image);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
