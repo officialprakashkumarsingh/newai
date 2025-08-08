@@ -14,6 +14,11 @@ class DiagramHandler {
     }
   }
 
+  /// Handle diagram generation directly (for manual requests from bottom sheet)
+  Future<void> handleManualDiagramRequest(String message, String selectedModel) async {
+    await _handleDiagramGeneration(message, selectedModel);
+  }
+
   /// Check if message contains diagram-related keywords
   bool _containsDiagramRequest(String message) {
     final lowerMessage = message.toLowerCase();
