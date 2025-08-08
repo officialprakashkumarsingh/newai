@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -372,7 +373,7 @@ class ChatUI {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.file(
-                      attachedImage,
+                      File(attachedImage.path), // Convert XFile to File
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,
