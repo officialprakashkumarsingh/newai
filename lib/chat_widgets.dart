@@ -624,28 +624,18 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
           ),
           // Thinking mode toggle
           buildToggleItem(
-            icon: Icons.psychology,
+            icon: Icons.auto_awesome_outlined,
             title: 'Thinking Mode',
             subtitle: localThinking 
-              ? 'AI will show reasoning process (DeepSeek R1)' 
-              : 'Enable to see AI\'s thought process',
+              ? 'Showing AI reasoning process' 
+              : 'Show AI thought process',
             value: localThinking,
-            activeColor: Colors.purple,
+            activeColor: Theme.of(context).colorScheme.primary,
             onChanged: (value) {
               setState(() {
                 localThinking = value;
               }); 
               widget.onThinkingModeToggle(value);
-              // Show feedback when enabled
-              if (value) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('🧠 Thinking mode enabled - AI will show its reasoning'),
-                    duration: Duration(seconds: 2),
-                    backgroundColor: Colors.purple,
-                  ),
-                );
-              }
             }
           ),
           ListTile(
