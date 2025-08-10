@@ -358,12 +358,7 @@ Topic: $topic''',
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                Icon(
-                  PresentationThemes.getThemeIcon(detectedTheme),
-                  size: 16,
-                  color: theme.primaryColor,
-                ),
-                const SizedBox(width: 8),
+
                 Expanded(
                   child: Text(
                     title,
@@ -425,7 +420,7 @@ Topic: $topic''',
                     'Generating slides with AI...',
                     style: TextStyle(
                       fontSize: 11,
-                      color: theme.primaryColor,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : theme.primaryColor,
                       fontStyle: FontStyle.italic,
                     ),
                   )
