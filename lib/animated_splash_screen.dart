@@ -89,10 +89,6 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
     // Start dots animation (continuous)
     _dotsController.repeat();
     
-    // Start logo animation after a short delay
-    await Future.delayed(const Duration(milliseconds: 300));
-    _logoController.forward();
-    
     // Wait for total duration, then fade out
     await Future.delayed(widget.duration - const Duration(milliseconds: 800));
     await _fadeController.forward();
@@ -149,60 +145,16 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                   ),
                 ),
                 
-                // AhamAI Logo
+                                // AhamAI Logo (Static, No Animation)
                 Center(
-                  child: AnimatedBuilder(
-                    animation: _logoController,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: _logoScaleAnimation.value,
-                        child: Opacity(
-                          opacity: _logoOpacityAnimation.value,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // AhamAI Text Logo
-                              Text(
-                                'AhamAI',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 48,
-                                  fontWeight: FontWeight.w600,
-                                  color: logoColor,
-                                  letterSpacing: 2.0,
-                                ),
-                              ),
-                              
-                              const SizedBox(height: 16),
-                              
-                              // Subtitle
-                              Text(
-                                'Intelligent Conversations',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w300,
-                                  color: logoColor.withOpacity(0.7),
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
-                              
-                              const SizedBox(height: 40),
-                              
-                              // Loading indicator
-                              SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    logoColor.withOpacity(0.5),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                  child: Text(
+                    'AhamAI',
+                    style: GoogleFonts.sourceCodePro(
+                      fontSize: 52,
+                      fontWeight: FontWeight.w700,
+                      color: logoColor,
+                      letterSpacing: 3.0,
+                    ),
                   ),
                 ),
               ],
