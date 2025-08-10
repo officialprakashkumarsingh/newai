@@ -167,7 +167,7 @@ class ImageGenerationSettings extends StatefulWidget {
 }
 
 class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
-  List<String> _availableModels = ['dall-e-3']; // Default fallback
+  List<String> _availableModels = ['flux']; // Default fallback
   bool _isLoading = true;
 
   @override
@@ -182,14 +182,14 @@ class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
       final models = await ImageApi.fetchModels();
       if (mounted) {
         setState(() {
-          _availableModels = models.isNotEmpty ? models : ['dall-e-3'];
+          _availableModels = models.isNotEmpty ? models : ['flux'];
           _isLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _availableModels = ['dall-e-3', 'dall-e-2'];
+          _availableModels = ['flux', 'turbo'];
           _isLoading = false;
         });
       }
@@ -242,10 +242,18 @@ class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
 
   String _getModelDisplayName(String model) {
     switch (model) {
-      case 'dall-e-3':
-        return 'DALL-E 3';
-      case 'dall-e-2':
-        return 'DALL-E 2';
+      case 'flux':
+        return 'Flux - High Quality';
+      case 'turbo':
+        return 'Turbo - Fast Generation';
+      case 'img3':
+        return 'IMG3 - Image Generation';
+      case 'img4':
+        return 'IMG4 - Image Generation';
+      case 'uncen':
+        return 'Uncen - Image Generation';
+      case 'gemini2.0':
+        return 'Gemini 2.0 - Image Generation';
       default:
         return model.toUpperCase();
     }

@@ -129,7 +129,7 @@ You have access to these powerful tools via function calling:
 
 ### 🎨 generate_image
 - Create custom AI-generated images
-- Multiple model support (DALL-E 3, DALL-E 2)
+- Support for available image generation models
 - High-quality image generation for any purpose
 ''';
   }
@@ -272,9 +272,7 @@ You are operating in comprehensive research mode. Follow these guidelines:
               },
               "model": {
                 "type": "string",
-                "description": "Image generation model to use",
-                "enum": ["dall-e-3", "dall-e-2"],
-                "default": "dall-e-3"
+                "description": "Image generation model to use (optional, will use available models)"
               }
             },
             "required": ["prompt"]
