@@ -16,10 +16,14 @@ class ImageApi {
   static Future<List<String>> fetchModels() async {
     try {
       final models = await RealApi.ImageApi.fetchModels();
-      return models.isNotEmpty ? models : ['flux-1-turbo']; // Fallback to known working model
+      // Filter to only include working models based on testing
+      final workingModels = models.where((model) => 
+        ['flux', 'turbo', 'uncen', 'gemini2.0'].contains(model)
+      ).toList();
+      return workingModels.isNotEmpty ? workingModels : ['flux', 'turbo']; // Fallback to working models
     } catch (e) {
       print('ImageApi.fetchModels error: $e');
-      return ['flux-1-turbo']; // Fallback model
+      return ['flux', 'turbo']; // Fallback to known working models
     }
   }
 }
