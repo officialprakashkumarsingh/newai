@@ -669,7 +669,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('AhamAI'),
+              Text(
+                'AhamAI',
+                style: GoogleFonts.sourceCodePro(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.5,
+                ),
+              ),
               const SizedBox(width: 4),
               Icon(
                 Icons.keyboard_arrow_down,
@@ -700,7 +706,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('AhamAI'),
+              Text(
+                'AhamAI',
+                style: GoogleFonts.sourceCodePro(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.5,
+                ),
+              ),
               const SizedBox(width: 4),
               Icon(
                 Icons.keyboard_arrow_down,
