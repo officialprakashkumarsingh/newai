@@ -5,6 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
 import 'ai_message_actions.dart';
+import 'improved_ai_actions.dart';
+import 'app_animations.dart';
 import 'thinking_panel.dart';
 import 'presentation_service.dart';
 import 'diagram_service.dart';
@@ -106,11 +108,14 @@ class ChatUI {
           
           // Action buttons for AI messages - hidden during streaming
           if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
-            AiMessageActions(
-              key: ValueKey('actions_${chatId}_$index'),
-              messageText: message.text,
-              onCopy: () => onCopy(message.text),
-              onRegenerate: onRegenerate,
+            AnimatedSlideIn(
+              delay: Duration(milliseconds: 200),
+              child: ImprovedAiMessageActions(
+                key: ValueKey('actions_${chatId}_$index'),
+                messageText: message.text,
+                onCopy: () => onCopy(message.text),
+                onRegenerate: onRegenerate,
+              ),
             ),
         ],
       ),

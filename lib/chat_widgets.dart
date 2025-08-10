@@ -6,6 +6,8 @@ import 'dart:io';
 import 'main.dart';
 import 'file_processing.dart';
 import 'theme.dart';
+import 'app_animations.dart';
+import 'micro_interactions.dart';
 
 /// Chat Widgets - Reusable widget components for the chat screen
 /// This contains all the small, reusable widgets used throughout the chat interface
@@ -84,26 +86,37 @@ class ChatWidgets {
           ),
           const SizedBox(width: 8),
           // Always show send button, with stop functionality on a separate small button during streaming
-          CircleAvatar(
-            backgroundColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
-            radius: 24, 
-            child: IconButton(
-              icon: Icon(
+          AnimatedScaleButton(
+            onTap: () {
+              MicroInteractions.lightImpact();
+              onSendMessage(controller.text);
+            },
+            child: CircleAvatar(
+              backgroundColor: Theme.of(context).elevatedButtonTheme.style?.backgroundColor?.resolve({}),
+              radius: 24, 
+              child: Icon(
                 Icons.arrow_upward, 
                 color: Theme.of(context).elevatedButtonTheme.style?.foregroundColor?.resolve({})
-              ), 
-              onPressed: () => onSendMessage(controller.text),
+              ),
             ),
           ),
           // Add stop button next to send button during streaming - matching alignment
           if (isStreaming) ...[
             const SizedBox(width: 4),
-            CircleAvatar(
-              backgroundColor: Colors.red,
-              radius: 24, // Match send button radius
-              child: IconButton(
-                icon: const Icon(Icons.stop, size: 20, color: Colors.white), // Match icon size
-                onPressed: onStopStreaming,
+            AnimatedSlideIn(
+              offset: Offset(0.5, 0),
+              child: PulseAnimation(
+                child: AnimatedScaleButton(
+                  onTap: () {
+                    MicroInteractions.mediumImpact();
+                    onStopStreaming();
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 24,
+                    child: const Icon(Icons.stop, size: 20, color: Colors.white),
+                  ),
+                ),
               ),
             ),
           ],
