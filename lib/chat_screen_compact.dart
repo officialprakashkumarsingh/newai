@@ -560,6 +560,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
             selectedModel: model,
             addMessage: _addMessage,
             updateMessage: _updateMessage,
+            messages: _chatState.messages,
           );
         }
       )

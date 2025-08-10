@@ -243,17 +243,17 @@ class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
   String _getModelDisplayName(String model) {
     switch (model) {
       case 'flux':
-        return 'Flux - High Quality';
+        return 'Flux';
       case 'turbo':
-        return 'Turbo - Fast Generation';
+        return 'Turbo';
       case 'img3':
-        return 'IMG3 - Image Generation';
+        return 'IMG3';
       case 'img4':
-        return 'IMG4 - Image Generation';
+        return 'IMG4';
       case 'uncen':
-        return 'Uncen - Image Generation';
+        return 'Uncen';
       case 'gemini2.0':
-        return 'Gemini 2.0 - Image Generation';
+        return 'Gemini 2.0';
       default:
         return model.toUpperCase();
     }
