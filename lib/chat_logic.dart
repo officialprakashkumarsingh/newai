@@ -498,9 +498,9 @@ Based on the context above, answer the following prompt: $input""";
     // Add user message for image generation
     addMessage(ChatMessage(role: 'user', text: 'Generate image: $prompt'));
     
-    // Add placeholder for AI response
+    // Add placeholder for AI response with image type
     final placeholderIndex = 1; // Will be the second message (index 1)
-    addMessage(ChatMessage(role: 'model', text: 'Generating image...'));
+    addMessage(ChatMessage(role: 'model', text: '', type: MessageType.image));
 
     try {
       // Use ImageApi to generate the actual image
@@ -508,7 +508,7 @@ Based on the context above, answer the following prompt: $input""";
       
       updateMessage(placeholderIndex, ChatMessage(
         role: 'model',
-        text: 'Image generated successfully!',
+        text: '',
         type: MessageType.image,
         imageUrl: imageUrl,
       ));

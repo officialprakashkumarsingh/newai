@@ -12,6 +12,7 @@ import 'diagram_service.dart';
 import 'chat_chart_builder.dart';
 import 'web_search.dart';
 import 'theme.dart';
+import 'feature_shimmer.dart';
 
 /// Message UI Builder for Chat Screen - Contains all message building logic
 /// This class contains ALL the message building methods moved from chat_screen.dart
@@ -26,8 +27,8 @@ class ChatMessageUI {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
     final showActionButtons = index > 0 && isModelMessage && 
-                              message.type != MessageType.presentation && message.type != MessageType.diagram &&
-                              message.presentationData == null && message.diagramData == null;
+                              message.type == MessageType.text &&
+                              message.presentationData == null && message.diagramData == null && message.imageUrl == null;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -167,8 +168,13 @@ class ChatMessageUI {
         if (message.text.isNotEmpty && !message.text.contains('Generating diagram'))
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
-        message.diagramData!.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+        (message.diagramData == null || message.diagramData!.isEmpty)
+          ? Column(
+              children: [
+                FeatureShimmer.buildDiagramGenerationShimmer(context),
+                const FeatureStatusShimmer(feature: 'diagram'),
+              ],
+            )
           : ChatChartBuilder.buildDiagramWidget(message.diagramData!, context),
       ],
     );

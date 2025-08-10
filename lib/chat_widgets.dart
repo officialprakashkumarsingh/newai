@@ -618,7 +618,7 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
               ),
             ],
           ),
-          const Divider(height: 32),
+          const SizedBox(height: 24),
           
           // AI Mode Toggles
           ListTile(

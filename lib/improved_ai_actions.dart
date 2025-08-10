@@ -284,14 +284,14 @@ class _ImprovedActionButtonState extends State<_ImprovedActionButton>
 /// Quick Action Icons - Better icon alternatives
 class QuickActionIcons {
   // Better copy icon with document feel
-  static const IconData copy = Icons.content_copy_outlined;
+  static const IconData copy = Icons.file_copy_outlined;
   static const IconData copySuccess = Icons.check_circle_outline;
   
   // Better regenerate icon
-  static const IconData regenerate = Icons.refresh_rounded;
+  static const IconData regenerate = Icons.replay_outlined;
   
   // Better voice icons
-  static const IconData voicePlay = Icons.volume_up_outlined;
+  static const IconData voicePlay = Icons.record_voice_over_outlined;
   static const IconData voiceStop = Icons.stop_circle_outlined;
   
   // Additional useful icons

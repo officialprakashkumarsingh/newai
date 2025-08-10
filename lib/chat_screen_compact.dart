@@ -335,8 +335,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.setAttachment(result);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error attaching file: $e')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Error attaching file: $e',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }
@@ -355,8 +357,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.setAttachedImage(image);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error attaching image: $e')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Error attaching image: $e',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }
@@ -364,8 +368,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   /// Handle voice input
   Future<void> _handleVoiceInput() async {
     // Voice input implementation would go here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Voice input not implemented yet')),
+    DiagramService.showStyledSnackBar(
+      context, 
+      'Voice input not implemented yet',
+      backgroundColor: Colors.orange.shade600,
     );
   }
 
@@ -439,9 +445,9 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       // Add placeholder AI message for diagram generation
       _addMessage(ChatMessage(
         role: 'model', 
-        text: 'Generating diagram...',
+        text: '',
         type: MessageType.diagram,
-        diagramData: <String, dynamic>{}, // Empty placeholder
+        diagramData: null, // Null for loading state
       ));
       
       // Generate diagram data
@@ -453,7 +459,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
           final lastIndex = _chatState.messages.length - 1;
           _updateMessage(lastIndex, ChatMessage(
             role: 'model',
-            text: 'Diagram generated successfully!',
+            text: '',
             type: MessageType.diagram,
             diagramData: diagramData,
           ));
@@ -535,24 +541,51 @@ class _ImageGenerationDialogState extends State<_ImageGenerationDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Generate Image'),
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.image_outlined,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Generate Image'),
+        ],
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _controller,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Describe the image you want...',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
             ),
             maxLines: 3,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _selectedModel,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Model',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
             ),
             items: const [
               DropdownMenuItem(value: 'dall-e-3', child: Text('DALL-E 3')),
@@ -607,7 +640,24 @@ class _DiagramDialogState extends State<_DiagramDialog> {
     return AlertDialog(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Generate Diagram'),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.bar_chart_outlined,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Generate Diagram'),
+        ],
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -618,10 +668,13 @@ class _DiagramDialogState extends State<_DiagramDialog> {
             controller: _controller,
             autofocus: true,
             maxLines: 3,
-            cursorColor: Theme.of(context).colorScheme.primary,
-            decoration: const InputDecoration(
+            cursorColor: Colors.grey.shade600,
+            decoration: InputDecoration(
               hintText: 'e.g., Bar chart showing sales data for 2024\nFlowchart for user registration process\nPie chart of market share distribution',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
             ),
             onSubmitted: (prompt) {
               if (prompt.trim().isNotEmpty) {
@@ -673,14 +726,34 @@ class _PresentationDialogState extends State<_PresentationDialog> {
     return AlertDialog(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Presentation Topic'),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.slideshow_outlined,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Presentation Topic'),
+        ],
+      ),
       content: TextField(
         controller: _controller,
         autofocus: true,
-        cursorColor: Theme.of(context).colorScheme.primary,
-        decoration: const InputDecoration(
+        cursorColor: Colors.grey.shade600,
+        decoration: InputDecoration(
           hintText: 'e.g., The History of Space Exploration',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400),
+          ),
         ),
         maxLines: 2,
         onSubmitted: (topic) {
@@ -744,13 +817,17 @@ class FullscreenDiagramScreen extends StatelessWidget {
   Future<void> _downloadDiagram(BuildContext context, GlobalKey chartKey, String title, String type) async {
     try {
       // This would implement the download functionality
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chart saved successfully!')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Chart saved successfully!',
+        backgroundColor: Colors.green.shade600,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving chart: $e')),
-      );
+              DiagramService.showStyledSnackBar(
+          context, 
+          'Error saving chart: $e',
+          backgroundColor: Colors.red.shade600,
+        );
     }
   }
 }
