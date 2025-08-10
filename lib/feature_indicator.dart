@@ -108,7 +108,7 @@ class FeatureIndicator extends StatelessWidget {
       case 'image':
         return _FeatureInfo(
           title: 'Image Generation',
-          description: 'Generate images with AI',
+          description: 'Create custom images',
           icon: Icons.image_outlined,
           color: Colors.purple,
         );
