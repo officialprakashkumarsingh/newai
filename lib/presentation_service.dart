@@ -377,22 +377,6 @@ Topic: $topic''',
                   ),
                 ),
                 const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    theme.name,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                      color: theme.primaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
                 if (!isGenerating)
                   IconButton(
                     icon: Icon(
@@ -400,7 +384,7 @@ Topic: $topic''',
                       size: 20,
                       color: theme.primaryColor,
                     ),
-                    onPressed: () => savePresentationAsPDF(presentationData, context),
+                    onPressed: () => savePresentationAsPDF(presentationData, context, theme),
                     tooltip: 'Save PDF',
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                     padding: const EdgeInsets.all(4),
@@ -445,13 +429,13 @@ Topic: $topic''',
                       fontStyle: FontStyle.italic,
                     ),
                   )
-                : Text(
-                    '${slides.length} slides • Swipe to preview • ${theme.name} theme',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
+                                 : Text(
+                     '${slides.length} slides • Swipe to preview',
+                     style: TextStyle(
+                       fontSize: 11,
+                       color: Colors.grey.shade600,
+                     ),
+                   ),
           ),
         ],
       ),
@@ -1620,7 +1604,7 @@ Topic: $topic''',
     }
   }
 
-  static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context) async {
+  static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context, PresentationThemeData theme) async {
     PdfDocument? document;
     
     try {
@@ -1652,7 +1636,7 @@ Topic: $topic''',
           final Size pageSize = page.getClientSize();
           
           // Draw slide content with font error protection
-          await _drawSlideOnPDFRobust(graphics, slide, pageSize, context, i + 1);
+          await _drawSlideOnPDFRobust(graphics, slide, pageSize, context, i + 1, theme);
           successfulSlides++;
           
         } catch (slideError) {
@@ -1724,9 +1708,9 @@ Topic: $topic''',
   }
 
   // Robust version of _drawSlideOnPDF with font error handling
-  static Future<void> _drawSlideOnPDFRobust(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, int slideNumber) async {
+  static Future<void> _drawSlideOnPDFRobust(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, int slideNumber, PresentationThemeData theme) async {
     try {
-      await _drawSlideOnPDF(graphics, slide, pageSize, context);
+              await _drawSlideOnPDF(graphics, slide, pageSize, context, theme);
     } catch (fontError) {
       print('Font error on slide $slideNumber: $fontError');
       // Fall back to basic text-only rendering
@@ -1734,13 +1718,13 @@ Topic: $topic''',
     }
   }
 
-  static Future<void> _drawSlideOnPDF(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context) async {
+  static Future<void> _drawSlideOnPDF(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, PresentationThemeData theme) async {
     final String type = slide['type'] ?? 'content';
     final String slideTitle = slide['title'] ?? '';
     final String background = slide['background'] ?? 'white';
     
-    // Background
-    Color backgroundColor = _getBackgroundColor(background, context);
+    // Background using theme colors
+    Color backgroundColor = _getThemedBackgroundColor(background, theme);
     graphics.drawRectangle(
       pen: PdfPen(PdfColor.fromCMYK(0, 0, 0, 0)),
       brush: PdfSolidBrush(PdfColor(
@@ -1751,9 +1735,16 @@ Topic: $topic''',
       bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
     );
 
-    // Text color
-    Color textColor = _getTextColor(background, context);
+    // Text color using theme
+    Color textColor = _getThemedTextColor(background, theme);
     PdfColor pdfTextColor = PdfColor(textColor.red, textColor.green, textColor.blue);
+    
+    // Theme accent color for highlights
+    PdfColor pdfAccentColor = PdfColor(
+      theme.primaryColor.red,
+      theme.primaryColor.green,
+      theme.primaryColor.blue,
+    );
 
     double yPosition = 60;
     
