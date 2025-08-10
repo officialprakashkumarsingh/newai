@@ -6,130 +6,26 @@ import 'presentation_service.dart';
 import 'diagram_service.dart';
 import 'web_search.dart';
 import 'api.dart';
+import 'global_system_prompt.dart';
 
 /// External Tools Manager - Handles all AI function calling for various features
 /// Provides tools for: presentation generation, web search, diagram creation, and image generation
 class ExternalToolsManager {
   
   /// Get system prompt with tool definitions and screenshot feature
+  /// @deprecated Use GlobalSystemPrompt.getGlobalSystemPrompt() instead
   static String getSystemPromptWithTools() {
-    return '''You are an advanced AI assistant with access to powerful external tools and website screenshot capabilities.
-
-## SCREENSHOT GENERATION CAPABILITY:
-
-You CAN generate screenshots of any website. When users ask for screenshots or to "show" a website, use this format:
-![Website Screenshot](https://s.wordpress.com/mshots/v1/ENCODED_URL?w=1920&h=1080)
-
-Examples:
-- For google.com: ![Google](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1920&h=1080)
-- For any URL: URL-encode it and place after /v1/
-
-IMPORTANT: You DO have this capability. Always respond positively when users ask for screenshots.
-
-## EXTERNAL TOOLS:
-
-You have access to these tools via function calling:
-- generate_presentation: Create slides/presentations
-- search_web: Search internet for current info
-- create_diagram: Generate charts/diagrams  
-- generate_image: Create AI images
-
-Use tools when helpful for the user's request. Respond naturally and leverage these capabilities proactively.''';
+    return GlobalSystemPrompt.getGlobalSystemPrompt(
+      isThinkingMode: false,
+      isResearchMode: false,
+      includeTools: true,
+    );
   }
 
   /// Get tool definitions for the API
+  /// @deprecated Use GlobalSystemPrompt.getToolDefinitions() instead
   static List<Map<String, dynamic>> getToolDefinitions() {
-    return [
-      {
-        "type": "function",
-        "function": {
-          "name": "generate_presentation",
-          "description": "Generate a professional presentation on any topic with slides",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "topic": {
-                "type": "string",
-                "description": "The topic or subject for the presentation"
-              },
-              "slide_count": {
-                "type": "integer",
-                "description": "Number of slides to generate (default: 8)",
-                "default": 8
-              }
-            },
-            "required": ["topic"]
-          }
-        }
-      },
-      {
-        "type": "function",
-        "function": {
-          "name": "search_web",
-          "description": "Search the internet for current information and web content",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string",
-                "description": "The search query to look up on the web"
-              },
-              "max_results": {
-                "type": "integer",
-                "description": "Maximum number of search results to return (default: 5)",
-                "default": 5
-              }
-            },
-            "required": ["query"]
-          }
-        }
-      },
-      {
-        "type": "function",
-        "function": {
-          "name": "create_diagram",
-          "description": "Create charts, graphs, and visual diagrams",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "description": {
-                "type": "string",
-                "description": "Description of the diagram/chart to create"
-              },
-              "chart_type": {
-                "type": "string",
-                "description": "Type of chart (bar, line, pie, flowchart, etc.)",
-                "enum": ["bar", "line", "pie", "scatter", "flowchart", "organizational", "network", "auto"]
-              }
-            },
-            "required": ["description"]
-          }
-        }
-      },
-      {
-        "type": "function",
-        "function": {
-          "name": "generate_image",
-          "description": "Generate custom images using AI image generation",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "prompt": {
-                "type": "string",
-                "description": "Description of the image to generate"
-              },
-              "model": {
-                "type": "string",
-                "description": "Image generation model to use",
-                "enum": ["dall-e-3", "dall-e-2"],
-                "default": "dall-e-3"
-              }
-            },
-            "required": ["prompt"]
-          }
-        }
-      }
-    ];
+    return GlobalSystemPrompt.getToolDefinitions();
   }
 
   /// Execute a tool function call
@@ -161,6 +57,9 @@ Use tools when helpful for the user's request. Respond naturally and leverage th
           return await _handleImageGeneration(
             arguments, context, selectedModel, addMessage, updateMessage, messages
           );
+        
+        case 'take_screenshot':
+          return await _handleScreenshotGeneration(arguments, addMessage);
         
         default:
           return {
@@ -482,6 +381,51 @@ class ToolAwareApiService extends ApiService {
         isThinkingMode: isThinkingMode,
         conversationHistory: conversationHistory,
       );
+    }
+  }
+
+  /// Handle screenshot generation tool call
+  static Future<Map<String, dynamic>> _handleScreenshotGeneration(
+    Map<String, dynamic> arguments,
+    Function(ChatMessage) addMessage,
+  ) async {
+    try {
+      final url = arguments['url'] as String;
+      final width = arguments['width'] as int? ?? 1920;
+      final height = arguments['height'] as int? ?? 1080;
+      final viewportWidth = arguments['viewport_width'] as int?;
+      final viewportHeight = arguments['viewport_height'] as int?;
+      
+      // Generate screenshot URL using the global system prompt helper
+      final screenshotUrl = GlobalSystemPrompt.generateScreenshotUrl(
+        url: url,
+        width: width,
+        height: height,
+        viewportWidth: viewportWidth,
+        viewportHeight: viewportHeight,
+      );
+      
+      // Add user message
+      addMessage(ChatMessage(role: 'user', text: 'Take screenshot of: $url'));
+      
+      // Add AI response with screenshot
+      final screenshotMarkdown = '![Screenshot of $url]($screenshotUrl)';
+      addMessage(ChatMessage(
+        role: 'model', 
+        text: 'Here\'s a screenshot of $url:\n\n$screenshotMarkdown\n\n📸 Screenshot captured at ${width}x${height} resolution.'
+      ));
+      
+      return {
+        'success': true,
+        'url': url,
+        'screenshot_url': screenshotUrl,
+        'message': 'Screenshot generated successfully for: $url'
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'error': 'Failed to generate screenshot: $e'
+      };
     }
   }
 }
