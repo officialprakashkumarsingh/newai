@@ -15,6 +15,7 @@ import 'research_mode.dart';
 import 'web_search.dart';
 import 'presentation_service.dart';
 import 'thinking_panel.dart';
+import 'global_system_prompt.dart';
 
 /// Chat Logic - Contains all business logic methods from chat_screen.dart
 /// This handles message processing, API calls, and data management
@@ -255,23 +256,12 @@ Based on the context above, answer the following prompt: $input""";
 
     final conversationHistory = buildConversationHistory(messages);
 
-    // Include system prompt with tool definitions and thinking instructions
-    String systemPrompt = ExternalToolsManager.getSystemPromptWithTools();
-    
-    // Add thinking mode instructions if enabled
-    if (isThinkingMode) {
-      systemPrompt += '''\n\n## THINKING MODE ENABLED:
-
-You should show your reasoning process using thinking tags. When you need to think through a problem, use these tags:
-
-<thinking>
-Your internal reasoning, analysis, and thought process goes here.
-Break down complex problems step by step.
-Consider different approaches and alternatives.
-</thinking>
-
-After your thinking, provide your final response. This helps users understand your reasoning process.''';
-    }
+    // Use the new global system prompt with comprehensive capabilities
+    String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
+      isThinkingMode: isThinkingMode,
+      isResearchMode: isResearchModeEnabled,
+      includeTools: true,
+    );
     
     final tools = ExternalToolsManager.getToolDefinitions();
     
