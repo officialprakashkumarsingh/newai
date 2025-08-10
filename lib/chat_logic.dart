@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'api_service.dart';
 import 'api.dart';
+import 'external_tools.dart';
 import 'diagram_handler.dart';
 import 'research_mode.dart';
 import 'web_search.dart';
@@ -85,6 +86,7 @@ class ChatLogic {
     required Function() stopStreaming,
     Function()? onStreamingComplete,
     dynamic attachment,
+    BuildContext? context,
   }) async {
     if (input.trim().isEmpty && attachment == null) return;
 
@@ -252,11 +254,17 @@ Based on the context above, answer the following prompt: $input""";
 
     final conversationHistory = buildConversationHistory(messages);
 
+    // Always include system prompt with tool definitions for better AI capabilities
+    final systemPrompt = ExternalToolsManager.getSystemPromptWithTools();
+    final tools = ExternalToolsManager.getToolDefinitions();
+    
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
       model: selectedModel,
       conversationHistory: conversationHistory,
       isThinkingMode: isThinkingMode,
+      systemPrompt: systemPrompt,
+      tools: tools,
     )) {
       final lastIndex = messages.length - 1;
       final currentText = messages[lastIndex].text + chunk;
