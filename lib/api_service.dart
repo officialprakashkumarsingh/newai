@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -77,10 +78,16 @@ class ApiService {
       
       // Add system prompt if provided
       if (systemPrompt != null && systemPrompt.isNotEmpty) {
+        print('🔍 API SERVICE: Adding system prompt (length: ${systemPrompt.length})');
+        print('🔍 API SERVICE: System prompt contains "screenshot": ${systemPrompt.toLowerCase().contains('screenshot')}');
+        print('🔍 API SERVICE: System prompt contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
+        print('🔍 API SERVICE: First 200 chars: ${systemPrompt.substring(0, math.min(200, systemPrompt.length))}...');
         messages.add({
           'role': 'system',
           'content': systemPrompt,
         });
+      } else {
+        print('❌ API SERVICE: No system prompt provided! systemPrompt = $systemPrompt');
       }
       
       // Add conversation history

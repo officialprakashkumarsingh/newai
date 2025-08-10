@@ -273,6 +273,12 @@ Based on the context above, answer the following prompt: $input""";
     
     String fullResponse = '';
     
+    print('📡 CHAT LOGIC: About to call ApiService.sendChatMessage');
+    print('📡 CHAT LOGIC: Model: $selectedModel');
+    print('📡 CHAT LOGIC: Message: $finalInputForAI');
+    print('📡 CHAT LOGIC: System prompt length: ${systemPrompt.length}');
+    print('📡 CHAT LOGIC: Thinking mode: $isThinkingMode');
+    
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
       model: selectedModel,
