@@ -245,7 +245,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     try {
       final slides = await PresentationService.generatePresentationData(
         prompt,
-        _chatState.featurePresentationTheme,
+        _chatState.selectedModel,
       );
       
       _chatState.updateMessage(
@@ -285,7 +285,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     try {
       final diagramData = await DiagramService.generateDiagramData(
         prompt,
-        _chatState.featureDiagramType,
+        _chatState.selectedModel,
       );
       
       _chatState.updateMessage(
@@ -703,15 +703,9 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
           onModelChanged: (model) => _chatState.setFeatureImageModel(model),
         );
       case 'presentation':
-        return PresentationGenerationSettings(
-          selectedTheme: _chatState.featurePresentationTheme,
-          onThemeChanged: (theme) => _chatState.setFeaturePresentationTheme(theme),
-        );
       case 'diagram':
-        return DiagramGenerationSettings(
-          selectedType: _chatState.featureDiagramType,
-          onTypeChanged: (type) => _chatState.setFeatureDiagramType(type),
-        );
+        // No settings needed - will use user's selected AI model
+        return null;
       default:
         return null;
     }

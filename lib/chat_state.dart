@@ -51,8 +51,6 @@ class ChatState extends ChangeNotifier {
   // Feature generation modes
   String? _activeFeature; // null, 'image', 'presentation', 'diagram'
   String _featureImageModel = 'dall-e-3';
-  String _featurePresentationTheme = 'tech';
-  String _featureDiagramType = 'flowchart';
   
   // Settings
   String _chatId = '';
@@ -79,8 +77,6 @@ class ChatState extends ChangeNotifier {
   bool get isThinkingModeEnabled => _isThinkingModeEnabled;
   String? get activeFeature => _activeFeature;
   String get featureImageModel => _featureImageModel;
-  String get featurePresentationTheme => _featurePresentationTheme;
-  String get featureDiagramType => _featureDiagramType;
   String get chatId => _chatId;
   
   // Setters
@@ -183,16 +179,6 @@ class ChatState extends ChangeNotifier {
   
   void setFeatureImageModel(String model) {
     _featureImageModel = model;
-    notifyListeners();
-  }
-  
-  void setFeaturePresentationTheme(String theme) {
-    _featurePresentationTheme = theme;
-    notifyListeners();
-  }
-  
-  void setFeatureDiagramType(String type) {
-    _featureDiagramType = type;
     notifyListeners();
   }
   
