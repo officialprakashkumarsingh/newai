@@ -17,7 +17,7 @@ class ThinkingPanel extends StatefulWidget {
 }
 
 class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProviderStateMixin {
-  bool _isExpanded = false;
+  bool _isExpanded = true; // Default open
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
 
