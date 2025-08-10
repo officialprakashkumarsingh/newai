@@ -142,32 +142,54 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
-                color: isDark 
-                    ? Theme.of(context).cardColor.withOpacity(0.3)
-                    : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Theme.of(context).dividerColor.withOpacity(0.3),
                   width: 1,
                 ),
               ),
-              child: MarkdownBody(
-                data: widget.thinkingContent,
-                selectable: true,
-                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                  p: TextStyle(
-                    fontSize: 13,
-                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
-                    height: 1.5,
+              child: Stack(
+                children: [
+                  // Dotted background pattern for content
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(7),
+                      child: CustomPaint(
+                        painter: DottedPatternPainter(
+                          dotSize: 0.8,
+                          spacing: 12.0,
+                          dotColor: isDark 
+                              ? Colors.white.withOpacity(0.08)
+                              : Colors.black.withOpacity(0.04),
+                        ),
+                        child: Container(
+                          color: isDark 
+                              ? Theme.of(context).cardColor.withOpacity(0.3)
+                              : Theme.of(context).cardColor,
+                        ),
+                      ),
+                    ),
                   ),
-                  code: TextStyle(
-                    fontSize: 12,
-                    backgroundColor: isDark
-                        ? Colors.black.withOpacity(0.3)
-                        : Theme.of(context).dividerColor.withOpacity(0.2),
-                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                  // Markdown content
+                  MarkdownBody(
+                    data: widget.thinkingContent,
+                    selectable: true,
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                      p: TextStyle(
+                        fontSize: 13,
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        height: 1.5,
+                      ),
+                      code: TextStyle(
+                        fontSize: 12,
+                        backgroundColor: isDark
+                            ? Colors.black.withOpacity(0.3)
+                            : Theme.of(context).dividerColor.withOpacity(0.2),
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
