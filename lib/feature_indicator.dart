@@ -189,7 +189,7 @@ class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _availableModels = ['flux', 'turbo'];
+          _availableModels = ['flux', 'turbo', 'uncen', 'gemini2.0'];
           _isLoading = false;
         });
       }
