@@ -322,6 +322,7 @@ class ChatWidgets {
     required Function(bool) onThinkingModeToggle,
     required bool isResearchModeEnabled,
     required Function(bool) onResearchModeToggle,
+    required Function() onShowToolsHelp,
   }) {
     showModalBottomSheet(
       context: context,
@@ -340,6 +341,7 @@ class ChatWidgets {
         onWebSearchToggle: onWebSearchToggle,
         onThinkingModeToggle: onThinkingModeToggle,
         onResearchModeToggle: onResearchModeToggle,
+        onShowToolsHelp: onShowToolsHelp,
       ),
     );
   }
@@ -547,6 +549,7 @@ class _ToolsBottomSheetContent extends StatefulWidget {
   final Function(bool) onWebSearchToggle;
   final Function(bool) onThinkingModeToggle;
   final Function(bool) onResearchModeToggle;
+  final Function() onShowToolsHelp;
 
   const _ToolsBottomSheetContent({
     required this.isWebSearchEnabled,
@@ -561,6 +564,7 @@ class _ToolsBottomSheetContent extends StatefulWidget {
     required this.onWebSearchToggle,
     required this.onThinkingModeToggle,
     required this.onResearchModeToggle,
+    required this.onShowToolsHelp,
   });
 
   @override
@@ -614,6 +618,14 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
                 onTap: () {
                   Navigator.pop(context);
                   widget.onPickFile();
+                }
+              ),
+              FileSourceButton(
+                icon: Icons.help_outline, 
+                label: 'AI Tools', 
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onShowToolsHelp();
                 }
               ),
             ],

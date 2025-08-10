@@ -11,6 +11,7 @@ import 'chat_ui.dart';
 import 'chat_widgets.dart';
 import 'chat_logic.dart';
 import 'chat_chart_builder.dart';
+import 'external_tools.dart';
 
 // Existing imports
 import 'main.dart';
@@ -174,6 +175,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       stopStreaming: () => _chatState.stopStreaming(),
       onStreamingComplete: _onStreamingDone,
       attachment: _chatState.attachment,
+      context: context,
     );
   }
 
@@ -375,6 +377,47 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     );
   }
 
+  /// Show external tools help
+  void _showToolsHelp() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).dialogBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Icons.build_outlined,
+                color: Theme.of(context).primaryColor,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text('AI Tools Help'),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Text(
+            ExternalToolsManager.getToolUsageExamples(),
+            style: const TextStyle(fontSize: 14),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it!'),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Show tools bottom sheet
   void _showToolsBottomSheet() {
     ChatWidgets.showToolsBottomSheet(
@@ -391,6 +434,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       onThinkingModeToggle: (value) => _chatState.setIsThinkingModeEnabled(value),
       isResearchModeEnabled: _chatState.isResearchModeEnabled,
       onResearchModeToggle: (value) => _chatState.setIsResearchModeEnabled(value),
+      onShowToolsHelp: () => _showToolsHelp(),
     );
   }
 
