@@ -62,7 +62,8 @@ class ChatUI {
   }) {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
-    final showActionButtons = index > 0 && isModelMessage && !isStreaming;
+    final showActionButtons = index > 0 && isModelMessage && !isStreaming && 
+                              message.presentationData == null && message.diagramData == null;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -240,7 +241,7 @@ class ChatUI {
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
         message.presentationData!.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? PresentationService.buildPresentationWidget({}, context, isGenerating: true)
           : PresentationService.buildPresentationWidget(message.presentationData!, context),
       ],
     );

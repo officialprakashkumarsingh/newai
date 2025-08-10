@@ -95,7 +95,7 @@ class PresentationThemes {
           accentColor: const Color(0xFF4CAF50), // Green accent
           gradientColors: [const Color(0xFF1976D2), const Color(0xFF42A5F5)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.slide,
+          slideTransition: PresentationTransition.slide,
           iconSet: 'tech',
         );
         
@@ -109,7 +109,7 @@ class PresentationThemes {
           accentColor: const Color(0xFFFF9800), // Orange accent
           gradientColors: [const Color(0xFF37474F), const Color(0xFF546E7A)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.fade,
+          slideTransition: PresentationTransition.fade,
           iconSet: 'business',
         );
         
@@ -123,7 +123,7 @@ class PresentationThemes {
           accentColor: const Color(0xFF00BCD4), // Cyan accent
           gradientColors: [const Color(0xFF673AB7), const Color(0xFF9575CD)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.scale,
+          slideTransition: PresentationTransition.scale,
           iconSet: 'science',
         );
         
@@ -137,7 +137,7 @@ class PresentationThemes {
           accentColor: const Color(0xFFFFC107), // Amber accent
           gradientColors: [const Color(0xFF388E3C), const Color(0xFF66BB6A)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.slide,
+          slideTransition: PresentationTransition.slide,
           iconSet: 'education',
         );
         
@@ -151,7 +151,7 @@ class PresentationThemes {
           accentColor: const Color(0xFF2196F3), // Blue accent
           gradientColors: [const Color(0xFFD32F2F), const Color(0xFFEF5350)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.fade,
+          slideTransition: PresentationTransition.fade,
           iconSet: 'medical',
         );
         
@@ -165,7 +165,7 @@ class PresentationThemes {
           accentColor: const Color(0xFF9C27B0), // Purple accent
           gradientColors: [const Color(0xFFE91E63), const Color(0xFFF06292), const Color(0xFF9C27B0)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.rotation,
+          slideTransition: PresentationTransition.rotation,
           iconSet: 'creative',
         );
         
@@ -179,7 +179,7 @@ class PresentationThemes {
           accentColor: const Color(0xFF8BC34A), // Light Green accent
           gradientColors: [const Color(0xFF2E7D32), const Color(0xFF4CAF50)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.slide,
+          slideTransition: PresentationTransition.slide,
           iconSet: 'environment',
         );
         
@@ -193,7 +193,7 @@ class PresentationThemes {
           accentColor: const Color(0xFF4CAF50), // Green accent
           gradientColors: [const Color(0xFF1565C0), const Color(0xFF42A5F5)],
           fontFamily: 'Roboto',
-          slideTransition: SlideTransition.slide,
+          slideTransition: PresentationTransition.slide,
           iconSet: 'finance',
         );
         
@@ -220,7 +220,7 @@ class PresentationThemes {
       case 'creative': return Icons.palette;
       case 'environment': return Icons.eco;
       case 'finance': return Icons.account_balance;
-      default: return Icons.presentation_charts;
+      default: return Icons.slideshow;
     }
   }
 }
@@ -235,7 +235,7 @@ class PresentationThemeData {
   final Color accentColor;
   final List<Color> gradientColors;
   final String fontFamily;
-  final SlideTransition slideTransition;
+  final PresentationTransition slideTransition;
   final String iconSet;
   
   const PresentationThemeData({
@@ -290,7 +290,7 @@ class PresentationThemeData {
 }
 
 /// Slide transition types
-enum SlideTransition {
+enum PresentationTransition {
   slide,
   fade,
   scale,
@@ -308,7 +308,7 @@ class PresentationAnimations {
     Animation<double> animation,
   ) {
     switch (transition) {
-      case SlideTransition.slide:
+      case PresentationTransition.slide:
         return SlideTransition(
           position: Tween<Offset>(
             begin: const Offset(1.0, 0.0),
@@ -320,19 +320,19 @@ class PresentationAnimations {
           child: child,
         );
         
-      case SlideTransition.fade:
+      case PresentationTransition.fade:
         return FadeTransition(
           opacity: animation,
           child: child,
         );
         
-      case SlideTransition.scale:
+      case PresentationTransition.scale:
         return ScaleTransition(
           scale: animation,
           child: child,
         );
         
-      case SlideTransition.rotation:
+      case PresentationTransition.rotation:
         return RotationTransition(
           turns: animation,
           child: FadeTransition(
@@ -341,7 +341,7 @@ class PresentationAnimations {
           ),
         );
         
-      case SlideTransition.none:
+      case PresentationTransition.none:
       default:
         return child;
     }

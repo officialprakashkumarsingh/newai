@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'presentation_themes.dart';
@@ -136,16 +137,41 @@ class EnhancedSlideTypes {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
             ),
-            child: imageUrl.isNotEmpty
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => _buildImagePlaceholder(theme, isPreview),
-                    ),
-                  )
-                : _buildImagePlaceholder(theme, isPreview),
+                         child: imageUrl.isNotEmpty
+                 ? ClipRRect(
+                     borderRadius: BorderRadius.circular(8),
+                     child: Image.network(
+                       imageUrl,
+                       fit: BoxFit.cover,
+                       errorBuilder: (context, error, stackTrace) => Container(
+                         child: Center(
+                           child: Column(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                               Icon(
+                                 Icons.broken_image,
+                                 size: isPreview ? 30 : 60,
+                                 color: theme.primaryColor.withOpacity(0.5),
+                               ),
+                               SizedBox(height: isPreview ? 4 : 8),
+                               Text(
+                                 'Image not available',
+                                 style: theme.createTextStyle(isPreview ? 8 : 14, color: theme.primaryColor.withOpacity(0.7)),
+                               ),
+                             ],
+                           ),
+                         ),
+                       ),
+                     ),
+                   )
+                 : Container(
+                     child: Center(
+                       child: Text(
+                         'No image provided',
+                         style: theme.createTextStyle(isPreview ? 10 : 16, color: theme.primaryColor.withOpacity(0.7)),
+                       ),
+                     ),
+                   ),
           ),
         ),
         
@@ -177,26 +203,7 @@ class EnhancedSlideTypes {
     );
   }
   
-  /// Build image placeholder
-  static Widget _buildImagePlaceholder(PresentationThemeData theme, bool isPreview) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.image,
-            size: isPreview ? 30 : 60,
-            color: theme.primaryColor.withOpacity(0.5),
-          ),
-          SizedBox(height: isPreview ? 4 : 8),
-          Text(
-            'Image Placeholder',
-            style: theme.createTextStyle(isPreview ? 8 : 14, color: theme.primaryColor.withOpacity(0.7)),
-          ),
-        ],
-      ),
-    );
-  }
+
   
   /// Build a split content slide (two columns)
   static Widget buildSplitSlide(Map<String, dynamic> slide, BuildContext context, bool isPreview, PresentationThemeData theme) {
@@ -312,47 +319,49 @@ class EnhancedSlideTypes {
           SizedBox(height: padding),
         ],
         
-        // Video placeholder
-        Expanded(
-          flex: 3,
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.black87,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.play_arrow,
-                    size: isPreview ? 30 : 60,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: padding),
-                Text(
-                  'Video Content',
-                  style: theme.createTextStyle(fontSize * 1.2, color: Colors.white),
-                ),
-                if (duration > 0) ...[
-                  SizedBox(height: padding / 2),
-                  Text(
-                    '${duration ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
-                    style: theme.createTextStyle(fontSize, color: Colors.white70),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
+                 // Video content
+         Expanded(
+           flex: 3,
+           child: Container(
+             width: double.infinity,
+             decoration: BoxDecoration(
+               color: Colors.black87,
+               borderRadius: BorderRadius.circular(8),
+               border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+             ),
+             child: videoUrl.isNotEmpty
+                 ? Column(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       Container(
+                         padding: const EdgeInsets.all(16),
+                         decoration: BoxDecoration(
+                           color: theme.primaryColor,
+                           shape: BoxShape.circle,
+                         ),
+                         child: Icon(
+                           Icons.play_arrow,
+                           size: isPreview ? 30 : 60,
+                           color: Colors.white,
+                         ),
+                       ),
+                       SizedBox(height: padding),
+                       if (duration > 0) ...[
+                         Text(
+                           '${duration ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
+                           style: theme.createTextStyle(fontSize * 1.2, color: Colors.white),
+                         ),
+                       ],
+                     ],
+                   )
+                 : Center(
+                     child: Text(
+                       'No video URL provided',
+                       style: theme.createTextStyle(fontSize, color: Colors.white70),
+                     ),
+                   ),
+           ),
+         ),
         
         // Description
         if (description.isNotEmpty) ...[
