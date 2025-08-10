@@ -38,7 +38,7 @@ class DottedAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       automaticallyImplyLeading: automaticallyImplyLeading,
       centerTitle: centerTitle,
-      backgroundColor: backgroundColor ?? Colors.transparent,
+      backgroundColor: Colors.transparent,
       elevation: elevation,
       iconTheme: iconTheme,
       titleTextStyle: titleTextStyle,
@@ -52,8 +52,8 @@ class DottedAppBar extends StatelessWidget implements PreferredSizeWidget {
             dotSize: 1.5,
             spacing: 18.0,
             dotColor: theme.brightness == Brightness.dark 
-                ? Colors.white.withOpacity(0.05) 
-                : Colors.black.withOpacity(0.03),
+                ? Colors.white.withOpacity(0.08) 
+                : Colors.black.withOpacity(0.05),
           ),
         ),
       ),

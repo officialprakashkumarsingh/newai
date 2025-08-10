@@ -671,9 +671,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             children: [
               Text(
                 'AhamAI',
-                style: GoogleFonts.sourceCodePro(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.5,
+                style: GoogleFonts.jetBrainsMono(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.0,
                 ),
               ),
               const SizedBox(width: 4),
@@ -708,9 +708,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             children: [
               Text(
                 'AhamAI',
-                style: GoogleFonts.sourceCodePro(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.5,
+                style: GoogleFonts.jetBrainsMono(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.0,
                 ),
               ),
               const SizedBox(width: 4),

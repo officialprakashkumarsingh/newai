@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'dotted_background.dart';
 import 'theme.dart';
 
 class ThinkingPanel extends StatefulWidget {
@@ -72,6 +71,9 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
+                color: isDark 
+                    ? Colors.white.withOpacity(0.95) // Pure white panel in dark mode
+                    : Colors.grey.shade900.withOpacity(0.95), // Dark panel in light mode
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isDark
@@ -80,54 +82,29 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                   width: 1,
                 ),
               ),
-              child: Stack(
+              child: Row(
                 children: [
-                  // Dotted background pattern
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(7),
-                      child: CustomPaint(
-                        painter: DottedPatternPainter(
-                          dotSize: 1.0,
-                          spacing: 15.0,
-                          dotColor: isDark 
-                              ? Colors.grey.shade400.withOpacity(0.3)
-                              : Colors.grey.shade300.withOpacity(0.4),
-                        ),
-                        child: Container(
-                          color: isDark 
-                              ? Colors.white.withOpacity(0.95) // Pure white panel in dark mode
-                              : Colors.grey.shade900.withOpacity(0.95), // Dark panel in light mode
-                        ),
-                      ),
+                  Text(
+                    'Thinking...',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: isDark 
+                          ? Colors.grey.shade800 // Dark text in white panel
+                          : Colors.grey.shade100, // Light text in dark panel
                     ),
                   ),
-                  // Panel content
-                  Row(
-                    children: [
-                      Text(
-                        'Thinking...',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: isDark 
-                              ? Colors.grey.shade800 // Dark text in white panel
-                              : Colors.grey.shade100, // Light text in dark panel
-                        ),
-                      ),
-                      const Spacer(),
-                      AnimatedRotation(
-                        turns: _isExpanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          Icons.expand_more,
-                          size: 18,
-                          color: isDark 
-                              ? Colors.grey.shade700 // Dark icon in white panel
-                              : Colors.grey.shade200, // Light icon in dark panel
-                        ),
-                      ),
-                    ],
+                  const Spacer(),
+                  AnimatedRotation(
+                    turns: _isExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.expand_more,
+                      size: 18,
+                      color: isDark 
+                          ? Colors.grey.shade700 // Dark icon in white panel
+                          : Colors.grey.shade200, // Light icon in dark panel
+                    ),
                   ),
                 ],
               ),
@@ -142,54 +119,32 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               padding: const EdgeInsets.all(12),
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
+                color: isDark 
+                    ? Theme.of(context).cardColor.withOpacity(0.3)
+                    : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: Theme.of(context).dividerColor.withOpacity(0.3),
                   width: 1,
                 ),
               ),
-              child: Stack(
-                children: [
-                  // Dotted background pattern for content
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(7),
-                      child: CustomPaint(
-                        painter: DottedPatternPainter(
-                          dotSize: 0.8,
-                          spacing: 12.0,
-                          dotColor: isDark 
-                              ? Colors.white.withOpacity(0.08)
-                              : Colors.black.withOpacity(0.04),
-                        ),
-                        child: Container(
-                          color: isDark 
-                              ? Theme.of(context).cardColor.withOpacity(0.3)
-                              : Theme.of(context).cardColor,
-                        ),
-                      ),
-                    ),
+              child: MarkdownBody(
+                data: widget.thinkingContent,
+                selectable: true,
+                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                  p: TextStyle(
+                    fontSize: 13,
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
+                    height: 1.5,
                   ),
-                  // Markdown content
-                  MarkdownBody(
-                    data: widget.thinkingContent,
-                    selectable: true,
-                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                      p: TextStyle(
-                        fontSize: 13,
-                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
-                        height: 1.5,
-                      ),
-                      code: TextStyle(
-                        fontSize: 12,
-                        backgroundColor: isDark
-                            ? Colors.black.withOpacity(0.3)
-                            : Theme.of(context).dividerColor.withOpacity(0.2),
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                      ),
-                    ),
+                  code: TextStyle(
+                    fontSize: 12,
+                    backgroundColor: isDark
+                        ? Colors.black.withOpacity(0.3)
+                        : Theme.of(context).dividerColor.withOpacity(0.2),
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
-                ],
+                ),
               ),
             ),
           ),
