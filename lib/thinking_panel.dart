@@ -5,11 +5,13 @@ import 'theme.dart';
 class ThinkingPanel extends StatefulWidget {
   final String thinkingContent;
   final String finalContent;
+  final bool isStreaming;
 
   const ThinkingPanel({
     super.key,
     required this.thinkingContent,
     required this.finalContent,
+    this.isStreaming = false,
   });
 
   @override
@@ -20,6 +22,7 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
   bool _isExpanded = true; // Default open
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
+  bool _wasStreaming = false;
 
   @override
   void initState() {
@@ -34,6 +37,23 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
     );
     // Start in expanded state since default is open
     _animationController.value = 1.0;
+    _wasStreaming = widget.isStreaming;
+  }
+
+  @override
+  void didUpdateWidget(ThinkingPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Auto-collapse when streaming stops
+    if (_wasStreaming && !widget.isStreaming) {
+      // Streaming just finished, auto-collapse after a short delay
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (mounted && _isExpanded) {
+          _toggleExpanded();
+        }
+      });
+    }
+    _wasStreaming = widget.isStreaming;
   }
 
   @override

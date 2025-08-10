@@ -187,6 +187,7 @@ class ChatMessageUI {
       child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
         ? ThinkingPanel(
             thinkingContent: message.thinkingContent!,
+            isStreaming: isStreaming,
             finalContent: message.text,
           )
         : buildMessageContent(message.text, context),
