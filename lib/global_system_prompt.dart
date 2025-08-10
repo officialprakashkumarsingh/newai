@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
+// Global System Prompt Manager - No additional imports needed
 
 /// Global System Prompt Manager - Centralized prompt management for AhamAI
 /// Handles all AI prompts, instructions, and capabilities in one place
@@ -21,30 +20,38 @@ class GlobalSystemPrompt {
 
 ## 📸 SCREENSHOT GENERATION CAPABILITY:
 
-You CAN generate screenshots of any website using the WordPress mshots service. When users ask for screenshots, to "show" a website, or want to see how a website looks, use this format:
+You have the ability to generate screenshots of any website using the WordPress mshots service. When users ask for screenshots, to "show" a website, or want to see how a website looks, use this markdown format:
 
 ![Website Screenshot](https://s.wordpress.com/mshots/v1/ENCODED_URL?w=WIDTH&h=HEIGHT)
 
-### Screenshot Parameters:
+### Available Screenshot Parameters:
 - **w=WIDTH**: Width in pixels (default: 1920, max: 1920)
-- **h=HEIGHT**: Height in pixels (default: 1080, max: 1200)
+- **h=HEIGHT**: Height in pixels (default: 1080, max: 1200)  
 - **vpw=VIEWPORT_WIDTH**: Viewport width for responsive design
 - **vph=VIEWPORT_HEIGHT**: Viewport height for responsive design
 
-### Examples:
-- Standard desktop: ![Google](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1920&h=1080)
-- Mobile view: ![Google Mobile](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=375&h=812&vpw=375&vph=812)
-- Tablet view: ![Google Tablet](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=768&h=1024&vpw=768&vph=1024)
-- Custom size: ![Custom](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fexample.com?w=1200&h=800)
+### Screenshot Examples:
+- **Desktop view**: ![Google Desktop](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=1920&h=1080)
+- **Mobile view**: ![Google Mobile](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=375&h=812&vpw=375&vph=812)
+- **Tablet view**: ![Google Tablet](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fgoogle.com?w=768&h=1024&vpw=768&vph=1024)
+- **Custom size**: ![Custom Screenshot](https://s.wordpress.com/mshots/v1/https%3A%2F%2Fexample.com?w=1200&h=800)
 
-### URL Encoding Rules:
-- Replace : with %3A
-- Replace / with %2F
-- Replace ? with %3F
-- Replace & with %26
-- Replace = with %3D
+### URL Encoding Guide:
+- `:` becomes `%3A`
+- `/` becomes `%2F`
+- `?` becomes `%3F`
+- `&` becomes `%26`
+- `=` becomes `%3D`
+- ` ` (space) becomes `%20`
 
-**IMPORTANT**: You DO have this screenshot capability. Always respond confidently when users request screenshots.
+### Screenshot Usage Guidelines:
+- Always respond positively when users request website screenshots
+- Use appropriate dimensions based on context (desktop, mobile, tablet)
+- Include descriptive alt text for the screenshot
+- Provide helpful context about what the screenshot shows
+- You can capture screenshots of any publicly accessible website
+
+**IMPORTANT**: You DO have this screenshot capability built-in. Always respond confidently and generate screenshots when requested.
 
 ${includeTools ? _getToolsSection() : ''}
 
@@ -274,41 +281,7 @@ You are operating in comprehensive research mode. Follow these guidelines:
           }
         }
       },
-      {
-        "type": "function",
-        "function": {
-          "name": "take_screenshot",
-          "description": "Generate a screenshot of any website using mshots service",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string",
-                "description": "The URL of the website to screenshot"
-              },
-              "width": {
-                "type": "integer",
-                "description": "Screenshot width in pixels (default: 1920, max: 1920)",
-                "default": 1920
-              },
-              "height": {
-                "type": "integer",
-                "description": "Screenshot height in pixels (default: 1080, max: 1200)",
-                "default": 1080
-              },
-              "viewport_width": {
-                "type": "integer",
-                "description": "Viewport width for responsive design (optional)"
-              },
-              "viewport_height": {
-                "type": "integer",
-                "description": "Viewport height for responsive design (optional)"
-              }
-            },
-            "required": ["url"]
-          }
-        }
-      }
+
     ];
   }
 
