@@ -17,6 +17,7 @@ import 'queue_panel.dart';
 import 'fullscreen_diagram_screen.dart';
 import 'feature_shimmer.dart';
 import 'dotted_background.dart';
+import 'dotted_appbar.dart';
 
 // Import for SearchResultCard
 class SearchResultCard extends StatelessWidget {
@@ -382,7 +383,7 @@ class ChatUI {
     required Widget inputField,
   }) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: DottedAppBar(
         title: Text(chatTitle),
         centerTitle: true,
       ),
