@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'image_api.dart';
 
 /// Feature indicator widget that shows above input when a generation feature is active
 class FeatureIndicator extends StatelessWidget {
@@ -28,12 +29,6 @@ class FeatureIndicator extends StatelessWidget {
             ? Colors.grey.shade800.withOpacity(0.9)
             : Colors.grey.shade100.withOpacity(0.9),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark 
-              ? Colors.grey.shade600
-              : Colors.grey.shade300,
-          width: 1,
-        ),
       ),
       child: Row(
         children: [
@@ -157,7 +152,7 @@ class _FeatureInfo {
 }
 
 /// Settings widgets for different features
-class ImageGenerationSettings extends StatelessWidget {
+class ImageGenerationSettings extends StatefulWidget {
   final String selectedModel;
   final ValueChanged<String> onModelChanged;
 
@@ -168,90 +163,53 @@ class ImageGenerationSettings extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: DropdownButton<String>(
-        value: selectedModel,
-        isDense: true,
-        underline: const SizedBox(),
-        style: TextStyle(
-          fontSize: 12,
-          color: isDark ? Colors.white : Colors.black87,
-        ),
-        items: const [
-          DropdownMenuItem(value: 'dall-e-3', child: Text('DALL-E 3')),
-          DropdownMenuItem(value: 'dall-e-2', child: Text('DALL-E 2')),
-        ],
-        onChanged: (value) {
-          if (value != null) onModelChanged(value);
-        },
-      ),
-    );
-  }
+  State<ImageGenerationSettings> createState() => _ImageGenerationSettingsState();
 }
 
-class PresentationGenerationSettings extends StatelessWidget {
-  final String selectedTheme;
-  final ValueChanged<String> onThemeChanged;
+class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
+  List<String> _availableModels = ['dall-e-3']; // Default fallback
+  bool _isLoading = true;
 
-  const PresentationGenerationSettings({
-    super.key,
-    required this.selectedTheme,
-    required this.onThemeChanged,
-  });
+  @override
+  void initState() {
+    super.initState();
+    _fetchImageModels();
+  }
+
+  Future<void> _fetchImageModels() async {
+    try {
+      // Import the ImageApi
+      final models = await ImageApi.fetchModels();
+      if (mounted) {
+        setState(() {
+          _availableModels = models.isNotEmpty ? models : ['dall-e-3'];
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _availableModels = ['dall-e-3', 'dall-e-2'];
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: DropdownButton<String>(
-        value: selectedTheme,
-        isDense: true,
-        underline: const SizedBox(),
-        style: TextStyle(
-          fontSize: 12,
-          color: isDark ? Colors.white : Colors.black87,
+    if (_isLoading) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: const SizedBox(
+          width: 16,
+          height: 16,
+          child: CircularProgressIndicator(strokeWidth: 2),
         ),
-        items: const [
-          DropdownMenuItem(value: 'tech', child: Text('Tech')),
-          DropdownMenuItem(value: 'business', child: Text('Business')),
-          DropdownMenuItem(value: 'education', child: Text('Education')),
-          DropdownMenuItem(value: 'creative', child: Text('Creative')),
-        ],
-        onChanged: (value) {
-          if (value != null) onThemeChanged(value);
-        },
-      ),
-    );
-  }
-}
-
-class DiagramGenerationSettings extends StatelessWidget {
-  final String selectedType;
-  final ValueChanged<String> onTypeChanged;
-
-  const DiagramGenerationSettings({
-    super.key,
-    required this.selectedType,
-    required this.onTypeChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+      );
+    }
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -260,23 +218,37 @@ class DiagramGenerationSettings extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: DropdownButton<String>(
-        value: selectedType,
+        value: _availableModels.contains(widget.selectedModel) 
+            ? widget.selectedModel 
+            : _availableModels.first,
         isDense: true,
         underline: const SizedBox(),
         style: TextStyle(
           fontSize: 12,
           color: isDark ? Colors.white : Colors.black87,
         ),
-        items: const [
-          DropdownMenuItem(value: 'flowchart', child: Text('Flowchart')),
-          DropdownMenuItem(value: 'mindmap', child: Text('Mind Map')),
-          DropdownMenuItem(value: 'timeline', child: Text('Timeline')),
-          DropdownMenuItem(value: 'org-chart', child: Text('Org Chart')),
-        ],
+        items: _availableModels.map((model) {
+          return DropdownMenuItem(
+            value: model,
+            child: Text(_getModelDisplayName(model)),
+          );
+        }).toList(),
         onChanged: (value) {
-          if (value != null) onTypeChanged(value);
+          if (value != null) widget.onModelChanged(value);
         },
       ),
     );
   }
+
+  String _getModelDisplayName(String model) {
+    switch (model) {
+      case 'dall-e-3':
+        return 'DALL-E 3';
+      case 'dall-e-2':
+        return 'DALL-E 2';
+      default:
+        return model.toUpperCase();
+    }
+  }
 }
+

@@ -6,7 +6,14 @@ class ImageApi {
   }
 
   static Future<List<String>> fetchModels() async {
-    // Stub implementation - return empty list
-    return [];
+    try {
+      // Try to fetch from API - if fails, return default models
+      // This would call the actual API endpoint for image models
+      // For now, return the known image generation models
+      return ['dall-e-3', 'dall-e-2'];
+    } catch (e) {
+      // Fallback to default models if API fails
+      return ['dall-e-3', 'dall-e-2'];
+    }
   }
 }
