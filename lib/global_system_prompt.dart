@@ -53,40 +53,22 @@ You have the ability to generate screenshots of any website using the WordPress 
 
 **IMPORTANT**: You DO have this screenshot capability built-in. Always respond confidently and generate screenshots when requested.
 
-${includeTools ? _getToolsSection() : ''}
+
 
 ${isThinkingMode ? _getThinkingModeSection() : ''}
 
 ${isResearchMode ? _getResearchModeSection() : ''}
 
-## 🎨 PRESENTATION CREATION:
-When creating presentations, follow these guidelines:
-- Create professional, engaging slide content
-- Use clear, concise language
-- Structure content logically with proper flow
-- Include relevant examples and key points
-- Select themes intelligently based on the topic
+## 🎨 AVAILABLE FEATURES:
+The user has access to various creation tools through the app interface:
+- **Presentations**: Professional slide generation with multiple themes
+- **Images**: AI-powered image generation with multiple models  
+- **Diagrams**: Chart and diagram creation tools
+- **Web Search**: Real-time internet search capabilities
 
-## 🖼️ IMAGE GENERATION:
-When generating images:
-- Create detailed, descriptive prompts
-- Consider artistic style, composition, and quality
-- Provide context-appropriate imagery
-- Use professional standards for business content
-
-## 🔍 WEB SEARCH INTEGRATION:
-When searching the web:
-- Use specific, targeted queries
-- Verify information from multiple sources
-- Provide current, up-to-date information
-- Include relevant context and sources
-
-## 📊 DIAGRAM CREATION:
-When creating diagrams:
-- Choose appropriate chart types for the data
-- Ensure clarity and readability
-- Use professional styling
-- Include proper labels and legends
+For presentations, images, diagrams - guide users to use the app's built-in creation tools.
+For web search - information can be provided directly when web search is enabled.
+For screenshots - use the mshots service as described above.
 
 ## 💬 COMMUNICATION STYLE:
 - Be helpful, informative, and engaging
@@ -102,37 +84,10 @@ When creating diagrams:
 - Consider user experience and accessibility
 - Ensure all generated content meets professional standards
 
-Use all available tools and capabilities proactively to provide the best possible assistance to users.''';
+Provide the best possible assistance while guiding users to the appropriate app features when needed.''';
   }
 
-  /// Get external tools section
-  static String _getToolsSection() {
-    return '''
-## 🛠️ EXTERNAL TOOLS AVAILABLE:
 
-You have access to these powerful tools via function calling:
-
-### 📊 generate_presentation
-- Create professional slides and presentations
-- Specify topic and slide count
-- Intelligent theme selection based on content
-
-### 🌐 search_web  
-- Search internet for current information
-- Get up-to-date data and facts
-- Verify information from multiple sources
-
-### 📈 create_diagram
-- Generate charts, graphs, and visual diagrams
-- Support for: bar, line, pie, scatter, flowchart, organizational, network charts
-- Auto-detect best chart type for data
-
-### 🎨 generate_image
-- Create custom AI-generated images
-- Support for available image generation models
-- High-quality image generation for any purpose
-''';
-  }
 
   /// Get thinking mode section
   static String _getThinkingModeSection() {
@@ -189,99 +144,7 @@ You are operating in comprehensive research mode. Follow these guidelines:
 ''';
   }
 
-  /// Get tool definitions for API integration
-  static List<Map<String, dynamic>> getToolDefinitions() {
-    return [
-      {
-        "type": "function",
-        "function": {
-          "name": "generate_presentation",
-          "description": "Generate a professional presentation on any topic with slides",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "topic": {
-                "type": "string",
-                "description": "The topic or subject for the presentation"
-              },
-              "slide_count": {
-                "type": "integer",
-                "description": "Number of slides to generate (default: 8)",
-                "default": 8
-              }
-            },
-            "required": ["topic"]
-          }
-        }
-      },
-      {
-        "type": "function",
-        "function": {
-          "name": "search_web",
-          "description": "Search the internet for current information and web content",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string",
-                "description": "The search query to look up on the web"
-              },
-              "max_results": {
-                "type": "integer",
-                "description": "Maximum number of search results to return (default: 5)",
-                "default": 5
-              }
-            },
-            "required": ["query"]
-          }
-        }
-      },
-      {
-        "type": "function",
-        "function": {
-          "name": "create_diagram",
-          "description": "Create charts, graphs, and visual diagrams",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "description": {
-                "type": "string",
-                "description": "Description of the diagram/chart to create"
-              },
-              "chart_type": {
-                "type": "string",
-                "description": "Type of chart (bar, line, pie, flowchart, etc.)",
-                "enum": ["bar", "line", "pie", "scatter", "flowchart", "organizational", "network", "auto"]
-              }
-            },
-            "required": ["description"]
-          }
-        }
-      },
-      {
-        "type": "function",
-        "function": {
-          "name": "generate_image",
-          "description": "Generate custom images using AI image generation",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "prompt": {
-                "type": "string",
-                "description": "Description of the image to generate"
-              },
-              "model": {
-                "type": "string",
-                "description": "Image generation model to use (optional, will use available models)"
-              }
-            },
-            "required": ["prompt"]
-          }
-        }
-      },
 
-    ];
-  }
 
   /// Generate screenshot URL with proper encoding
   static String generateScreenshotUrl({
