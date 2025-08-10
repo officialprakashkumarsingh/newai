@@ -13,13 +13,14 @@ import 'chat_logic.dart';
 import 'chat_chart_builder.dart';
 import 'external_tools.dart';
 import 'dotted_background.dart';
+import 'feature_indicator.dart';
 
 // Existing imports
 import 'main.dart';
 import 'diagram_handler.dart';
 import 'diagram_service.dart';
 import 'presentation_service.dart';
-// import 'image_service.dart'; // Not needed
+import 'image_api.dart';
 import 'file_processing.dart';
 import 'theme.dart';
 import 'chat_ui_helpers.dart';
@@ -142,6 +143,12 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _sendMessage(String input) async {
     if (!ChatLogic.isValidInput(input, _chatState.attachment)) return;
 
+    // Handle feature generation
+    if (_chatState.activeFeature != null) {
+      await _handleFeatureGeneration(input, _chatState.activeFeature!);
+      return;
+    }
+
     // Clear input immediately when send is pressed
     _chatState.clearInput();
     
@@ -157,6 +164,147 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       await _sendVisionMessage(input);
     } else {
       await _sendTextMessage(input); // This handles both text and file attachments
+    }
+  }
+
+  /// Handle feature generation (image, presentation, diagram)
+  Future<void> _handleFeatureGeneration(String input, String featureType) async {
+    // Clear input and active feature
+    _chatState.clearInput();
+    _chatState.setActiveFeature(null);
+    
+    switch (featureType) {
+      case 'image':
+        await _generateImageWithPrompt(input);
+        break;
+      case 'presentation':
+        await _generatePresentationWithPrompt(input);
+        break;
+      case 'diagram':
+        await _generateDiagramWithPrompt(input);
+        break;
+    }
+  }
+
+  /// Generate image with prompt from input
+  Future<void> _generateImageWithPrompt(String prompt) async {
+    final tempId = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'user',
+      text: 'Generate image: $prompt',
+    ));
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'model',
+      text: '',
+      type: MessageType.image,
+      imageUrl: null, // Loading state
+    ));
+
+    try {
+      final imageUrl = await ImageApi.generateImage(
+        prompt, 
+        model: _chatState.featureImageModel
+      );
+      
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: prompt,
+          type: MessageType.image,
+          imageUrl: imageUrl,
+        ),
+      );
+    } catch (e) {
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: 'Failed to generate image: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  /// Generate presentation with prompt from input
+  Future<void> _generatePresentationWithPrompt(String prompt) async {
+    _chatState.addMessage(ChatMessage(
+      role: 'user',
+      text: 'Create presentation: $prompt',
+    ));
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'model',
+      text: '',
+      type: MessageType.presentation,
+      presentationData: null, // Loading state
+    ));
+
+    try {
+      final slides = await PresentationService.generatePresentationData(
+        prompt,
+        _chatState.featurePresentationTheme,
+      );
+      
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: prompt,
+          type: MessageType.presentation,
+          presentationData: slides,
+        ),
+      );
+    } catch (e) {
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: 'Failed to generate presentation: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  /// Generate diagram with prompt from input
+  Future<void> _generateDiagramWithPrompt(String prompt) async {
+    _chatState.addMessage(ChatMessage(
+      role: 'user',
+      text: 'Create diagram: $prompt',
+    ));
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'model',
+      text: '',
+      type: MessageType.diagram,
+      diagramData: null, // Loading state
+    ));
+
+    try {
+      final diagramData = await DiagramService.generateDiagramData(
+        prompt,
+        _chatState.featureDiagramType,
+      );
+      
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: prompt,
+          type: MessageType.diagram,
+          diagramData: diagramData,
+        ),
+      );
+    } catch (e) {
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: 'Failed to generate diagram: ${e.toString()}',
+        ),
+      );
     }
   }
 
@@ -518,18 +666,68 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Build input field using ChatWidgets
   Widget _buildInputField(ChatState chatState) {
-    return ChatWidgets.buildInputField(
-      context: context,
-      controller: chatState.controller,
-      isStreaming: chatState.isStreaming,
-      onSendMessage: _sendMessage,
-      onAttachFile: _handleFileAttachment,
-      onVoiceInput: _handleVoiceInput,
-      onStopStreaming: () => chatState.stopStreaming(),
-      onShowTools: _showToolsBottomSheet,
-      messageQueue: chatState.messageQueue,
-      hintText: chatState.inputHintText,
+    return Column(
+      children: [
+        // Feature indicator
+        if (chatState.activeFeature != null)
+          FeatureIndicator(
+            featureType: chatState.activeFeature!,
+            onClose: () => chatState.setActiveFeature(null),
+            settingsWidget: _buildFeatureSettings(chatState.activeFeature!),
+          ),
+        
+        // Input field
+        ChatWidgets.buildInputField(
+          context: context,
+          controller: chatState.controller,
+          isStreaming: chatState.isStreaming,
+          onSendMessage: _sendMessage,
+          onAttachFile: _handleFileAttachment,
+          onVoiceInput: _handleVoiceInput,
+          onStopStreaming: () => chatState.stopStreaming(),
+          onShowTools: _showToolsBottomSheet,
+          messageQueue: chatState.messageQueue,
+          hintText: chatState.activeFeature != null 
+              ? _getFeatureHintText(chatState.activeFeature!)
+              : chatState.inputHintText,
+        ),
+      ],
     );
+  }
+
+  Widget? _buildFeatureSettings(String featureType) {
+    switch (featureType) {
+      case 'image':
+        return ImageGenerationSettings(
+          selectedModel: _chatState.featureImageModel,
+          onModelChanged: (model) => _chatState.setFeatureImageModel(model),
+        );
+      case 'presentation':
+        return PresentationGenerationSettings(
+          selectedTheme: _chatState.featurePresentationTheme,
+          onThemeChanged: (theme) => _chatState.setFeaturePresentationTheme(theme),
+        );
+      case 'diagram':
+        return DiagramGenerationSettings(
+          selectedType: _chatState.featureDiagramType,
+          onTypeChanged: (type) => _chatState.setFeatureDiagramType(type),
+        );
+      default:
+        return null;
+    }
+  }
+
+  String _getFeatureHintText(String featureType) {
+    switch (featureType) {
+      case 'image':
+        return 'Describe the image you want to generate...';
+      case 'presentation':
+        return 'Enter presentation topic or content...';
+      case 'diagram':
+        return 'Describe the diagram or process...';
+      default:
+        return 'Enter your message...';
+    }
   }
 }
 

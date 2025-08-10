@@ -89,7 +89,7 @@ class ChatUI {
                       : const Color(0xFF2C2C2E), // Dark mode: Card Background
                     borderRadius: BorderRadius.circular(16)
                   ),
-                  child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
+                  child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context, isStreaming: isStreaming),
                 ),
               ),
             )
@@ -97,7 +97,7 @@ class ChatUI {
             Container(
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
+              child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context, isStreaming: isStreaming),
             ),
           
           // Research widget if present
@@ -128,10 +128,10 @@ class ChatUI {
   }
 
   /// Build message content based on type
-  static Widget _buildMessageContent(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+  static Widget _buildMessageContent(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context, {bool isStreaming = false}) {
     // Check if message has attached image bytes (user uploaded image)
     if (message.imageBytes != null) {
-      return _buildUserImageMessage(message, isUserMessage, onUserMessageOptions, context);
+      return _buildUserImageMessage(message, isUserMessage, onUserMessageOptions, context, isStreaming: isStreaming);
     }
     
     switch (message.type) {
@@ -143,17 +143,17 @@ class ChatUI {
         return _buildDiagramMessage(message, context);
       case MessageType.text:
       default:
-        return _buildTextMessage(message, isUserMessage, onUserMessageOptions, null, context);
+        return _buildTextMessage(message, isUserMessage, onUserMessageOptions, null, context, isStreaming: isStreaming);
     }
   }
 
   /// Build user image message (user uploaded images with imageBytes)
-  static Widget _buildUserImageMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
+  static Widget _buildUserImageMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context, {bool isStreaming = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (message.text.isNotEmpty)
-          _buildTextMessage(message, isUserMessage, onUserMessageOptions, null, context),
+          _buildTextMessage(message, isUserMessage, onUserMessageOptions, null, context, isStreaming: isStreaming),
         const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
@@ -289,13 +289,14 @@ class ChatUI {
   }
 
   /// Build text message
-  static Widget _buildTextMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, Function()? onAIMessageOptions, BuildContext context) {
+  static Widget _buildTextMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, Function()? onAIMessageOptions, BuildContext context, {bool isStreaming = false}) {
     return GestureDetector(
       onLongPress: isUserMessage ? onUserMessageOptions : null,
       onTap: !isUserMessage ? onAIMessageOptions : null,
       child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
         ? ThinkingPanel(
             thinkingContent: message.thinkingContent!,
+            isStreaming: isStreaming,
             finalContent: message.text,
           )
         : buildMessageContent(message.text, context, isUserMessage: isUserMessage),

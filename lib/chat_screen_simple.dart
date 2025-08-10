@@ -169,6 +169,7 @@ class _ChatScreenSimpleState extends State<ChatScreenSimple> {
           child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
               ? ThinkingPanel(
                   thinkingContent: message.thinkingContent!,
+                  isStreaming: false, // Simple screen doesn't track streaming
                   finalContent: message.text,
                 )
               : MarkdownBody(
