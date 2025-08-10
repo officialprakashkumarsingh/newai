@@ -26,6 +26,7 @@ class ChatMessageUI {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
     final showActionButtons = index > 0 && isModelMessage && 
+                              message.type != MessageType.presentation && message.type != MessageType.diagram &&
                               message.presentationData == null && message.diagramData == null;
     
     return Align(
@@ -151,8 +152,8 @@ class ChatMessageUI {
         if (message.text.isNotEmpty && !message.text.contains('Generating presentation'))
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
-        message.presentationData!.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+        (message.presentationData == null || message.presentationData!.isEmpty)
+          ? PresentationService.buildPresentationWidget({}, context, isGenerating: true)
           : PresentationService.buildPresentationWidget(message.presentationData!, context),
       ],
     );

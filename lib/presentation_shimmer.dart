@@ -125,11 +125,15 @@ class PresentationLoadingShimmer extends StatelessWidget {
   }
 
   Widget _buildShimmerSlide(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color baseColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
+    final Color highlightColor = isDark ? Colors.grey.shade600 : Colors.grey.shade400;
+    
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: baseColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade400),
+        border: Border.all(color: highlightColor),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -140,7 +144,7 @@ class PresentationLoadingShimmer extends StatelessWidget {
             width: double.infinity * 0.7,
             height: 16,
             decoration: BoxDecoration(
-              color: Colors.grey.shade400,
+              color: highlightColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -153,7 +157,7 @@ class PresentationLoadingShimmer extends StatelessWidget {
                 width: double.infinity * (0.9 - (index * 0.1)),
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
+                  color: highlightColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -170,7 +174,7 @@ class PresentationLoadingShimmer extends StatelessWidget {
                 width: 60,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
+                  color: highlightColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -179,7 +183,7 @@ class PresentationLoadingShimmer extends StatelessWidget {
                 width: 80,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade400,
+                  color: highlightColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
