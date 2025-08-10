@@ -384,9 +384,9 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   void _showToolsBottomSheet() {
     ChatWidgets.showToolsBottomSheet(
       context: context,
-      onImageGeneration: () => _generateImage(),
-      onPresentationGeneration: () => _generatePresentation(),
-      onDiagramGeneration: () => _generateDiagram(),
+      onImageGeneration: () => _chatState.setActiveFeature('image'),
+      onPresentationGeneration: () => _chatState.setActiveFeature('presentation'),
+      onDiagramGeneration: () => _chatState.setActiveFeature('diagram'),
       onPickCamera: () => _handleImageAttachment(ImageSource.camera),
       onPickGallery: () => _handleImageAttachment(ImageSource.gallery),
       onPickFile: () => _handleFileAttachment(),
