@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,6 +13,8 @@ import 'package:ahamai/diagram_service.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import 'api_service.dart';
+import 'presentation_themes.dart';
+import 'enhanced_slide_types.dart';
 
 class PresentationService {
   static Future<Map<String, dynamic>?> generatePresentationData(String topic, String selectedModel) async {
@@ -248,7 +251,49 @@ SLIDE TYPES AVAILABLE:
 - "scientific": Research results with hypothesis and methodology
 - "data_table": Tabular data with headers and rows
 - "flowchart": Process flowcharts with decision points
+- "code": Code examples with syntax highlighting
+- "image": Image slides with captions and descriptions
+- "video": Video content placeholders with descriptions
+- "split": Two-column layout with separate content sections
+- "interactive": Interactive elements with clickable buttons
+- "mind_map": Mind mapping with central topic and branches
 - "conclusion": Final takeaways and next steps
+
+NEW SLIDE TYPE EXAMPLES:
+{
+  "type": "code",
+  "title": "Example Implementation",
+  "code": "function calculateArea(radius) {\n  return Math.PI * radius * radius;\n}",
+  "language": "javascript",
+  "explanation": "This function calculates the area of a circle using the mathematical formula.",
+  "background": "dark"
+},
+{
+  "type": "split",
+  "title": "Feature Comparison",
+  "left_section": {
+    "title": "Current System",
+    "content": ["Manual processes", "Limited scalability", "High maintenance"]
+  },
+  "right_section": {
+    "title": "Proposed Solution", 
+    "content": ["Automated workflow", "Cloud-based scaling", "Self-maintaining"]
+  },
+  "background": "white"
+},
+{
+  "type": "mind_map",
+  "title": "Project Overview",
+  "central_topic": "AI Platform",
+  "branches": [
+    {"title": "Machine Learning"},
+    {"title": "Data Processing"},
+    {"title": "User Interface"},
+    {"title": "API Integration"},
+    {"title": "Analytics"}
+  ],
+  "background": "light"
+}
 
 Generate AS MANY SLIDES AS NEEDED to thoroughly cover the topic. For complex topics, create 10-15+ slides. For simple topics, 5-8 slides are fine. Make content detailed and professional.
 Topic: $topic''',
@@ -294,6 +339,13 @@ Topic: $topic''',
     final String title = presentationData['title'] ?? 'Presentation';
     final List<dynamic> slides = presentationData['slides'] ?? [];
     final GlobalKey presentationKey = GlobalKey();
+    
+    // Detect intelligent theme based on content
+    final String detectedTheme = PresentationThemes.detectTheme(
+      title, 
+      slides.cast<Map<String, dynamic>>()
+    );
+    final PresentationThemeData theme = PresentationThemes.getThemeData(detectedTheme, context);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -344,7 +396,7 @@ Topic: $topic''',
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 4),
-                    child: _buildSlidePreview(slides[index], context, true),
+                    child: _buildSlidePreview(slides[index], context, true, theme),
                   );
                 },
               ),
@@ -366,13 +418,13 @@ Topic: $topic''',
     );
   }
 
-  static Widget _buildSlidePreview(Map<String, dynamic> slide, BuildContext context, bool isPreview) {
+  static Widget _buildSlidePreview(Map<String, dynamic> slide, BuildContext context, bool isPreview, PresentationThemeData theme) {
     final String type = slide['type'] ?? 'content';
     final String slideTitle = slide['title'] ?? '';
     final String background = slide['background'] ?? 'white';
     
-    Color backgroundColor = _getBackgroundColor(background, context);
-    Color textColor = _getTextColor(background, context);
+    Color backgroundColor = _getThemedBackgroundColor(background, theme);
+    Color textColor = _getThemedTextColor(background, theme);
     
     double fontSize = isPreview ? 10 : 24;
     double titleSize = isPreview ? 12 : 32;
@@ -1381,6 +1433,30 @@ Topic: $topic''',
         );
         break;
         
+      case 'code':
+        content = EnhancedSlideTypes.buildCodeSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'image':
+        content = EnhancedSlideTypes.buildImageSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'video':
+        content = EnhancedSlideTypes.buildVideoSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'split':
+        content = EnhancedSlideTypes.buildSplitSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'interactive':
+        content = EnhancedSlideTypes.buildInteractiveSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'mind_map':
+        content = EnhancedSlideTypes.buildMindMapSlide(slide, context, isPreview, theme);
+        break;
+        
       default: // content and conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
         content = Column(
@@ -1469,6 +1545,30 @@ Topic: $topic''',
         return Colors.black87;
       default:
         return Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
+    }
+  }
+  
+  static Color _getThemedBackgroundColor(String background, PresentationThemeData theme) {
+    switch (background) {
+      case 'blue': return theme.primaryColor;
+      case 'dark': return theme.primaryColor.withOpacity(0.8);
+      case 'light': return theme.backgroundColor;
+      case 'gradient': return theme.secondaryColor;
+      default: return theme.backgroundColor;
+    }
+  }
+
+  static Color _getThemedTextColor(String background, PresentationThemeData theme) {
+    switch (background) {
+      case 'blue':
+      case 'dark':
+      case 'gradient':
+        return Colors.white;
+      case 'light':
+      case 'white':
+        return theme.textColor;
+      default:
+        return theme.textColor;
     }
   }
 

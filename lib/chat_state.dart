@@ -28,6 +28,7 @@ class ChatState extends ChangeNotifier {
   String _pendingStreamingContent = '';
   Timer? _streamingUpdateTimer;
   StreamSubscription<String>? _streamSubscription;
+  Timer? _scrollDebounceTimer;
   
   // Message queue
   final List<String> _messageQueue = [];
@@ -169,12 +170,25 @@ class ChatState extends ChangeNotifier {
   void addMessage(ChatMessage message) {
     _messages.add(message);
     notifyListeners();
+    
+    // Auto-scroll when new messages are added
+    if (_isStreaming || message.role == 'model') {
+      // Delay scroll slightly to allow the widget to build
+      Future.delayed(const Duration(milliseconds: 50), () {
+        _autoScrollToBottom();
+      });
+    }
   }
   
   void updateMessage(int index, ChatMessage message) {
     if (index >= 0 && index < _messages.length) {
       _messages[index] = message;
       notifyListeners();
+      
+      // Auto-scroll during streaming to keep up with the growing message
+      if (_isStreaming) {
+        _debouncedAutoScroll();
+      }
     }
   }
   
@@ -217,6 +231,32 @@ class ChatState extends ChangeNotifier {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+  
+  // Auto-scroll optimized for streaming - smoother and faster
+  void _autoScrollToBottom() {
+    if (!_scrollController.hasClients) return;
+    
+    // Only scroll if user is near the bottom to avoid interrupting manual scrolling
+    final isNearBottom = _scrollController.offset >= 
+                        (_scrollController.position.maxScrollExtent - 200);
+    
+    if (isNearBottom) {
+      // Use a shorter duration for smoother real-time scrolling
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+  
+  // Debounced auto-scroll for rapid streaming updates
+  void _debouncedAutoScroll() {
+    _scrollDebounceTimer?.cancel();
+    _scrollDebounceTimer = Timer(const Duration(milliseconds: 50), () {
+      _autoScrollToBottom();
+    });
   }
   
   void updateScrollToBottomVisibility() {
@@ -344,6 +384,7 @@ class ChatState extends ChangeNotifier {
     _focusNode.dispose();
     _streamingUpdateTimer?.cancel();
     _streamSubscription?.cancel();
+    _scrollDebounceTimer?.cancel();
     super.dispose();
   }
   
