@@ -272,6 +272,8 @@ Based on the context above, answer the following prompt: $input""";
     }
   }
 
+
+
   /// Build conversation history for API
   static List<Map<String, dynamic>>? buildConversationHistory(List<ChatMessage> messages) {
     final conversationHistory = messages
