@@ -44,16 +44,19 @@ class DottedAppBar extends StatelessWidget implements PreferredSizeWidget {
       titleTextStyle: titleTextStyle,
       foregroundColor: foregroundColor,
       flexibleSpace: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           color: backgroundColor ?? theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface,
         ),
         child: CustomPaint(
+          size: Size.infinite,
           painter: DottedPatternPainter(
-            dotSize: 1.5,
-            spacing: 18.0,
+            dotSize: 2.0,
+            spacing: 16.0,
             dotColor: theme.brightness == Brightness.dark 
-                ? Colors.white.withOpacity(0.08) 
-                : Colors.black.withOpacity(0.05),
+                ? Colors.white.withOpacity(0.12) 
+                : Colors.black.withOpacity(0.08),
           ),
         ),
       ),
