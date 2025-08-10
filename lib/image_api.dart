@@ -1,19 +1,25 @@
+import 'api.dart' as RealApi;
+
+/// Image API wrapper that uses the real API implementation
 class ImageApi {
+  /// Generate image using the real API
   static Future<String?> generateImage(String prompt, {String? model}) async {
-    // Stub implementation - return null for now
-    await Future.delayed(const Duration(seconds: 2));
-    return null;
+    try {
+      return await RealApi.ImageApi.generateImage(prompt, model: model);
+    } catch (e) {
+      print('ImageApi.generateImage error: $e');
+      return null;
+    }
   }
 
+  /// Fetch available image models from the real API
   static Future<List<String>> fetchModels() async {
     try {
-      // Try to fetch from API - if fails, return default models
-      // This would call the actual API endpoint for image models
-      // For now, return the known image generation models
-      return ['dall-e-3', 'dall-e-2'];
+      final models = await RealApi.ImageApi.fetchModels();
+      return models.isNotEmpty ? models : ['flux-1-turbo']; // Fallback to known working model
     } catch (e) {
-      // Fallback to default models if API fails
-      return ['dall-e-3', 'dall-e-2'];
+      print('ImageApi.fetchModels error: $e');
+      return ['flux-1-turbo']; // Fallback model
     }
   }
 }

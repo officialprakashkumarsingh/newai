@@ -50,7 +50,7 @@ class ChatState extends ChangeNotifier {
   
   // Feature generation modes
   String? _activeFeature; // null, 'image', 'presentation', 'diagram'
-  String _featureImageModel = 'dall-e-3';
+  String _featureImageModel = 'flux';
   
   // Settings
   String _chatId = '';
