@@ -22,6 +22,8 @@ import 'file_processing.dart';
 import 'theme.dart';
 import 'chat_ui_helpers.dart';
 import 'api_service.dart';
+import 'app_animations.dart';
+import 'micro_interactions.dart';
 
 /// Compact Chat Screen - Uses all divided components for clean organization
 /// This is a much smaller, more manageable version of the chat screen

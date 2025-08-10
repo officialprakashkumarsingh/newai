@@ -18,6 +18,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'chat_screen_compact.dart';
 import 'theme.dart';
+import 'app_animations.dart';
+import 'micro_interactions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -801,10 +803,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               width: 1.5,
             ),
           ),
-          child: InkWell(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: DateTime.now().millisecondsSinceEpoch.toString(), chatInfoStream: _chatInfoStream))),
-            borderRadius: BorderRadius.circular(28),
-            child: Padding(
+                  child: AnimatedScaleButton(
+          onTap: () {
+            MicroInteractions.lightImpact();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: DateTime.now().millisecondsSinceEpoch.toString(), chatInfoStream: _chatInfoStream)));
+          },
+          child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
