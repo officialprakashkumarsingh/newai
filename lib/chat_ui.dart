@@ -16,6 +16,7 @@ import 'chat_widgets.dart';
 import 'queue_panel.dart';
 import 'fullscreen_diagram_screen.dart';
 import 'feature_shimmer.dart';
+import 'dotted_background.dart';
 
 // Import for SearchResultCard
 class SearchResultCard extends StatelessWidget {
@@ -385,12 +386,13 @@ class ChatUI {
         title: Text(chatTitle),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: messages.isEmpty 
-              ? _buildWelcomeMessage(context)
-              : ListView.builder(
+      body: DottedBackground(
+        child: Column(
+          children: [
+            Expanded(
+              child: messages.isEmpty 
+                ? _buildWelcomeMessage(context)
+                : ListView.builder(
                   controller: scrollController,
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   itemCount: messages.length,
@@ -497,7 +499,8 @@ class ChatUI {
             ),
           
           inputField,
-        ],
+          ],
+        ),
       ),
     );
   }
