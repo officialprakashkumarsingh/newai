@@ -11,7 +11,7 @@ import 'chat_ui.dart';
 import 'chat_widgets.dart';
 import 'chat_logic.dart';
 import 'chat_chart_builder.dart';
-import 'external_tools.dart';
+
 import 'dotted_background.dart';
 import 'feature_indicator.dart';
 

@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'api_service.dart';
 import 'api.dart';
-import 'external_tools.dart';
+
 import 'diagram_handler.dart';
 
 import 'web_search.dart';
@@ -262,7 +262,7 @@ Based on the context above, answer the following prompt: $input""";
     String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
       isThinkingMode: isThinkingMode,
       isResearchMode: isResearchMode,
-      includeTools: true,
+      includeTools: false, // No more function calling
     );
     
     print('📝 System prompt being used (length: ${systemPrompt.length}):');
@@ -270,9 +270,6 @@ Based on the context above, answer the following prompt: $input""";
     print('   Contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
     print('   Thinking mode: $isThinkingMode');
     print('   Research mode: $isResearchMode');
-    
-    final tools = ExternalToolsManager.getToolDefinitions();
-    print('🛠️ Tools included: ${tools.length} tools');
     
     String fullResponse = '';
     
@@ -282,7 +279,6 @@ Based on the context above, answer the following prompt: $input""";
       conversationHistory: conversationHistory,
       isThinkingMode: isThinkingMode,
       systemPrompt: systemPrompt,
-      tools: tools,
     )) {
       final lastIndex = messages.length - 1;
       fullResponse += chunk;
@@ -601,7 +597,6 @@ Based on the context above, answer the following prompt: $input""";
     }
     
     print('🏁 Image generation function completed.');
-  }
   }
 
   /// Copy text to clipboard
