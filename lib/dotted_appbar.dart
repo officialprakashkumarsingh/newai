@@ -31,36 +31,31 @@ class DottedAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     
-    return Container(
-      height: preferredSize.height,
-      child: Stack(
-        children: [
-          // Dotted background
-          Positioned.fill(
-            child: DottedBackground(
-              dotSize: 1.5,
-              spacing: 18.0,
-              child: Container(
-                color: backgroundColor ?? theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface,
-              ),
-            ),
+    return AppBar(
+      title: title,
+      actions: actions,
+      leading: leading,
+      automaticallyImplyLeading: automaticallyImplyLeading,
+      centerTitle: centerTitle,
+      backgroundColor: backgroundColor ?? Colors.transparent,
+      elevation: elevation,
+      iconTheme: iconTheme,
+      titleTextStyle: titleTextStyle,
+      foregroundColor: foregroundColor,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor ?? theme.appBarTheme.backgroundColor ?? theme.colorScheme.surface,
+        ),
+        child: CustomPaint(
+          painter: DottedPatternPainter(
+            dotSize: 1.5,
+            spacing: 18.0,
+            dotColor: theme.brightness == Brightness.dark 
+                ? Colors.white.withOpacity(0.05) 
+                : Colors.black.withOpacity(0.03),
           ),
-          // AppBar content
-          AppBar(
-            title: title,
-            actions: actions,
-            leading: leading,
-            automaticallyImplyLeading: automaticallyImplyLeading,
-            centerTitle: centerTitle,
-            backgroundColor: Colors.transparent,
-            elevation: elevation,
-            iconTheme: iconTheme,
-            titleTextStyle: titleTextStyle,
-            foregroundColor: foregroundColor,
-          ),
-        ],
+        ),
       ),
     );
   }
