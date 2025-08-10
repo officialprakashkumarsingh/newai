@@ -167,7 +167,7 @@ class ImageGenerationSettings extends StatefulWidget {
 }
 
 class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
-  List<String> _availableModels = ['flux']; // Default fallback
+  List<String> _availableModels = []; // Will be loaded from API
   bool _isLoading = true;
 
   @override
@@ -182,14 +182,14 @@ class _ImageGenerationSettingsState extends State<ImageGenerationSettings> {
       final models = await ImageApi.fetchModels();
       if (mounted) {
         setState(() {
-          _availableModels = models.isNotEmpty ? models : ['flux'];
+          _availableModels = models;
           _isLoading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _availableModels = ['flux', 'turbo', 'uncen', 'gemini2.0'];
+          _availableModels = [];
           _isLoading = false;
         });
       }

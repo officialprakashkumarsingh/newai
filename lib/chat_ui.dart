@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -202,46 +203,81 @@ class ChatUI {
             )
           : ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                message.imageUrl!,
-            width: 300,
-            height: 300,
-            fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error, size: 48, color: Colors.red),
-                      SizedBox(height: 8),
-                      Text('Failed to load image'),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+              child: _buildImageWidget(message.imageUrl!, context),
         ),
       ],
+    );
+  }
+
+  /// Build image widget that handles both data URLs and regular URLs
+  static Widget _buildImageWidget(String imageUrl, BuildContext context) {
+    // Check if it's a data URL (base64 image)
+    if (imageUrl.startsWith('data:')) {
+      try {
+        // Extract base64 data from data URL
+        final base64Data = imageUrl.split(',')[1];
+        final bytes = base64.decode(base64Data);
+        
+        return Image.memory(
+          bytes,
+          width: 300,
+          height: 300,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            print('Error loading base64 image: $error');
+            return _buildImageError(context);
+          },
+        );
+      } catch (e) {
+        print('Error decoding base64 image: $e');
+        return _buildImageError(context);
+      }
+    } else {
+      // Regular URL - use Image.network
+      return Image.network(
+        imageUrl,
+        width: 300,
+        height: 300,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          print('Error loading network image: $error');
+          return _buildImageError(context);
+        },
+      );
+    }
+  }
+
+  /// Build error widget for failed images
+  static Widget _buildImageError(BuildContext context) {
+    return Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error, size: 48, color: Colors.red),
+            SizedBox(height: 8),
+            Text('Failed to load image'),
+          ],
+        ),
+      ),
     );
   }
 
