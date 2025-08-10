@@ -4,10 +4,22 @@ import 'api.dart' as RealApi;
 class ImageApi {
   /// Generate image using the real API
   static Future<String?> generateImage(String prompt, {String? model}) async {
+    print('🔧 ImageApi.generateImage called:');
+    print('   Prompt: $prompt');
+    print('   Model: $model');
+    
     try {
-      return await RealApi.ImageApi.generateImage(prompt, model: model);
-    } catch (e) {
-      print('ImageApi.generateImage error: $e');
+      print('📡 Calling RealApi.ImageApi.generateImage...');
+      final result = await RealApi.ImageApi.generateImage(prompt, model: model);
+      print('📸 RealApi response:');
+      print('   Result: $result');
+      print('   Type: ${result?.runtimeType}');
+      print('   Is null: ${result == null}');
+      print('   Length: ${result?.length}');
+      return result;
+    } catch (e, stackTrace) {
+      print('❌ ImageApi.generateImage error: $e');
+      print('❌ Stack trace: $stackTrace');
       return null;
     }
   }

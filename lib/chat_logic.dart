@@ -265,7 +265,14 @@ Based on the context above, answer the following prompt: $input""";
       includeTools: true,
     );
     
+    print('📝 System prompt being used (length: ${systemPrompt.length}):');
+    print('   Contains "screenshot": ${systemPrompt.toLowerCase().contains('screenshot')}');
+    print('   Contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
+    print('   Thinking mode: $isThinkingMode');
+    print('   Research mode: $isResearchMode');
+    
     final tools = ExternalToolsManager.getToolDefinitions();
+    print('🛠️ Tools included: ${tools.length} tools');
     
     String fullResponse = '';
     
@@ -539,40 +546,62 @@ Based on the context above, answer the following prompt: $input""";
     required Function(int, ChatMessage) updateMessage,
     required List<ChatMessage> messages,
   }) async {
+    print('🎨 Starting image generation...');
+    print('   Prompt: $prompt');
+    print('   Model: $selectedModel');
+    print('   Messages count before: ${messages.length}');
+    
     // Add user message for image generation
     addMessage(ChatMessage(role: 'user', text: 'Generate image: $prompt'));
+    print('   Messages count after user message: ${messages.length}');
     
     // Add placeholder for AI response with image type
     addMessage(ChatMessage(role: 'model', text: '', type: MessageType.image));
+    print('   Messages count after placeholder: ${messages.length}');
     
     // Get the index of the placeholder message (last message in the list)
     final placeholderIndex = messages.length - 1;
+    print('   Placeholder index: $placeholderIndex');
 
     try {
+      print('📡 Calling ImageApi.generateImage...');
       // Use ImageApi to generate the actual image
       final imageUrl = await ImageApi.generateImage(prompt, model: selectedModel);
       
+      print('📸 Image generation completed:');
+      print('   URL: $imageUrl');
+      print('   Type: ${imageUrl?.runtimeType}');
+      print('   Is null: ${imageUrl == null}');
+      print('   Is empty: ${imageUrl?.isEmpty}');
+      print('   Length: ${imageUrl?.length}');
+      
       if (imageUrl != null && imageUrl.isNotEmpty) {
+        print('✅ Updating message with successful image...');
         updateMessage(placeholderIndex, ChatMessage(
           role: 'model',
           text: '',
           type: MessageType.image,
           imageUrl: imageUrl,
         ));
-        print('✅ Image generated successfully: ${imageUrl.substring(0, 50)}...');
+        print('✅ Image generated successfully: ${imageUrl.substring(0, math.min(50, imageUrl.length))}...');
       } else {
+        print('❌ Image generation returned null/empty, showing error...');
         updateMessage(placeholderIndex, ChatMessage(
           role: 'model', 
           text: '❌ Error: Image generation returned empty result'
         ));
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ Image generation error: $e');
+      print('❌ Stack trace: $stackTrace');
       updateMessage(placeholderIndex, ChatMessage(
         role: 'model', 
         text: '❌ Error generating image: $e'
       ));
     }
+    
+    print('🏁 Image generation function completed.');
+  }
   }
 
   /// Copy text to clipboard
