@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,11 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'api_service.dart';
 import 'api.dart';
+
 import 'diagram_handler.dart';
-import 'research_mode.dart';
+
 import 'web_search.dart';
 import 'presentation_service.dart';
 import 'thinking_panel.dart';
+import 'global_system_prompt.dart';
 
 /// Chat Logic - Contains all business logic methods from chat_screen.dart
 /// This handles message processing, API calls, and data management
@@ -85,6 +88,7 @@ class ChatLogic {
     required Function() stopStreaming,
     Function()? onStreamingComplete,
     dynamic attachment,
+    BuildContext? context,
   }) async {
     if (input.trim().isEmpty && attachment == null) return;
 
@@ -126,6 +130,7 @@ class ChatLogic {
         webSearchResults: webSearchResults,
         updateMessage: updateMessage,
         isThinkingMode: isThinkingModeEnabled,
+        isResearchMode: isResearchModeEnabled,
       );
       
       // Stop streaming state
@@ -243,6 +248,7 @@ Based on the context above, answer the following prompt: $input""";
     required Function(int, ChatMessage) updateMessage,
     String? webSearchResults,
     bool isThinkingMode = false,
+    bool isResearchMode = false,
   }) async {
     String finalInputForAI = input;
     
@@ -252,17 +258,55 @@ Based on the context above, answer the following prompt: $input""";
 
     final conversationHistory = buildConversationHistory(messages);
 
+    // Use the new global system prompt with comprehensive capabilities
+    String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
+      isThinkingMode: isThinkingMode,
+      isResearchMode: isResearchMode,
+      includeTools: false, // No more function calling
+    );
+    
+    print('📝 System prompt being used (length: ${systemPrompt.length}):');
+    print('   Contains "screenshot": ${systemPrompt.toLowerCase().contains('screenshot')}');
+    print('   Contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
+    print('   Thinking mode: $isThinkingMode');
+    print('   Research mode: $isResearchMode');
+    
+    String fullResponse = '';
+    
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
       model: selectedModel,
       conversationHistory: conversationHistory,
       isThinkingMode: isThinkingMode,
+      systemPrompt: systemPrompt,
     )) {
       final lastIndex = messages.length - 1;
-      final currentText = messages[lastIndex].text + chunk;
-      updateMessage(lastIndex, ChatMessage(role: 'model', text: currentText));
+      fullResponse += chunk;
+      
+      // Parse thinking content from the full response so far
+      final parsedContent = ThinkingContentParser.parseContent(fullResponse);
+      final finalContent = parsedContent['final'] as String? ?? fullResponse;
+      final thinkingContent = parsedContent['thinking'] as String?;
+      
+      // Debug: Log when thinking mode is enabled and content is being parsed
+      if (isThinkingMode && fullResponse.length > 50) {
+        print('🧠 THINKING MODE DEBUG: Response length: ${fullResponse.length}');
+        print('🧠 THINKING MODE DEBUG: Has thinking tags: ${ThinkingContentParser.hasThinkingContent(fullResponse)}');
+        if (thinkingContent != null && thinkingContent.isNotEmpty) {
+          print('🧠 THINKING MODE DEBUG: Thinking content found: ${thinkingContent.substring(0, math.min(100, thinkingContent.length))}...');
+        }
+      }
+      
+      // Update message with both final content and thinking content
+      updateMessage(lastIndex, ChatMessage(
+        role: 'model', 
+        text: finalContent,
+        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+      ));
     }
   }
+
+
 
   /// Build conversation history for API
   static List<Map<String, dynamic>>? buildConversationHistory(List<ChatMessage> messages) {
@@ -464,6 +508,8 @@ Based on the context above, answer the following prompt: $input""";
         selectedModel: selectedModel,
         updateMessage: updateMessage,
         webSearchResults: webSearchResults,
+        isThinkingMode: false,
+        isResearchMode: false,
       );
     } catch (e) {
       final lastIndex = messages.length - 1;
@@ -494,30 +540,63 @@ Based on the context above, answer the following prompt: $input""";
     required String selectedModel,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
+    required List<ChatMessage> messages,
   }) async {
+    print('🎨 Starting image generation...');
+    print('   Prompt: $prompt');
+    print('   Model: $selectedModel');
+    print('   Messages count before: ${messages.length}');
+    
     // Add user message for image generation
     addMessage(ChatMessage(role: 'user', text: 'Generate image: $prompt'));
+    print('   Messages count after user message: ${messages.length}');
     
-    // Add placeholder for AI response
-    final placeholderIndex = 1; // Will be the second message (index 1)
-    addMessage(ChatMessage(role: 'model', text: 'Generating image...'));
+    // Add placeholder for AI response with image type
+    addMessage(ChatMessage(role: 'model', text: '', type: MessageType.image));
+    print('   Messages count after placeholder: ${messages.length}');
+    
+    // Get the index of the placeholder message (last message in the list)
+    final placeholderIndex = messages.length - 1;
+    print('   Placeholder index: $placeholderIndex');
 
     try {
+      print('📡 Calling ImageApi.generateImage...');
       // Use ImageApi to generate the actual image
       final imageUrl = await ImageApi.generateImage(prompt, model: selectedModel);
       
-      updateMessage(placeholderIndex, ChatMessage(
-        role: 'model',
-        text: 'Image generated successfully!',
-        type: MessageType.image,
-        imageUrl: imageUrl,
-      ));
-    } catch (e) {
+      print('📸 Image generation completed:');
+      print('   URL: $imageUrl');
+      print('   Type: ${imageUrl?.runtimeType}');
+      print('   Is null: ${imageUrl == null}');
+      print('   Is empty: ${imageUrl?.isEmpty}');
+      print('   Length: ${imageUrl?.length}');
+      
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        print('✅ Updating message with successful image...');
+        updateMessage(placeholderIndex, ChatMessage(
+          role: 'model',
+          text: '',
+          type: MessageType.image,
+          imageUrl: imageUrl,
+        ));
+        print('✅ Image generated successfully: ${imageUrl.substring(0, math.min(50, imageUrl.length))}...');
+      } else {
+        print('❌ Image generation returned null/empty, showing error...');
+        updateMessage(placeholderIndex, ChatMessage(
+          role: 'model', 
+          text: '❌ Error: Image generation returned empty result'
+        ));
+      }
+    } catch (e, stackTrace) {
+      print('❌ Image generation error: $e');
+      print('❌ Stack trace: $stackTrace');
       updateMessage(placeholderIndex, ChatMessage(
         role: 'model', 
         text: '❌ Error generating image: $e'
       ));
     }
+    
+    print('🏁 Image generation function completed.');
   }
 
   /// Copy text to clipboard
@@ -532,28 +611,29 @@ Based on the context above, answer the following prompt: $input""";
   static Future<void> generatePresentation({
     required String topic,
     required String selectedModel,
+    required List<ChatMessage> messages,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
   }) async {
     // Add user message for presentation generation
     addMessage(ChatMessage(role: 'user', text: 'Generate presentation: $topic'));
     
-    // Add placeholder for AI response
-    addMessage(ChatMessage(role: 'model', text: 'Generating presentation...'));
+    // Add placeholder for AI response with null presentation data (will show shimmer)
+    addMessage(ChatMessage(role: 'model', text: '', type: MessageType.presentation));
 
     try {
       // Use PresentationService to generate actual presentation
       final presentationData = await PresentationService.generatePresentationData(topic, selectedModel);
       
-      final lastIndex = 1; // Assuming we just added 2 messages
+      final lastIndex = messages.length - 1; // Get the actual last message index
       updateMessage(lastIndex, ChatMessage(
         role: 'model',
-        text: 'Presentation generated successfully!',
+        text: '',
         type: MessageType.presentation,
         presentationData: presentationData ?? <String, dynamic>{},
       ));
     } catch (e) {
-      final lastIndex = 1;
+      final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error generating presentation: $e'));
     }
   }

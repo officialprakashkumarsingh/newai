@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'micro_interactions.dart';
 
 class GeneratingIndicator extends StatefulWidget {
   final double? size;
@@ -30,15 +31,9 @@ class _GeneratingIndicatorState extends State<GeneratingIndicator>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.size ?? 20.0,
-      height: widget.size ?? 20.0,
-      child: CircularProgressIndicator(
-        strokeWidth: 2,
-        valueColor: AlwaysStoppedAnimation<Color>(
-          Theme.of(context).colorScheme.primary,
-        ),
-      ),
+    return LoadingDots(
+      size: (widget.size ?? 20.0) / 3,
+      color: Theme.of(context).colorScheme.primary,
     );
   }
 }

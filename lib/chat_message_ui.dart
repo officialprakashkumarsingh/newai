@@ -1,15 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
 import 'ai_message_actions.dart';
+import 'improved_ai_actions.dart';
+import 'app_animations.dart';
 import 'thinking_panel.dart';
 import 'presentation_service.dart';
 import 'diagram_service.dart';
 import 'chat_chart_builder.dart';
 import 'web_search.dart';
 import 'theme.dart';
+import 'feature_shimmer.dart';
 
 /// Message UI Builder for Chat Screen - Contains all message building logic
 /// This class contains ALL the message building methods moved from chat_screen.dart
@@ -23,7 +27,9 @@ class ChatMessageUI {
   }) {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
-    final showActionButtons = index > 0 && isModelMessage;
+    final showActionButtons = index > 0 && isModelMessage && 
+                              message.type == MessageType.text &&
+                              message.presentationData == null && message.diagramData == null && message.imageUrl == null;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -58,11 +64,14 @@ class ChatMessageUI {
           
           // Action buttons for AI messages
           if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
-            AiMessageActions(
-              key: ValueKey('actions_${chatId}_$index'),
-              messageText: message.text,
-              onCopy: () => onCopy(message.text),
-              onRegenerate: onRegenerate,
+            AnimatedSlideIn(
+              delay: Duration(milliseconds: 200),
+              child: ImprovedAiMessageActions(
+                key: ValueKey('actions_${chatId}_$index'),
+                messageText: message.text,
+                onCopy: () => onCopy(message.text),
+                onRegenerate: onRegenerate,
+              ),
             ),
         ],
       ),
@@ -94,44 +103,7 @@ class ChatMessageUI {
         const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            message.imageUrl!,
-            width: 300,
-            height: 300,
-            fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error, size: 48, color: Colors.red),
-                      SizedBox(height: 8),
-                      Text('Failed to load image'),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+          child: _buildImageWidget(message.imageUrl!, context),
         ),
       ],
     );
@@ -145,10 +117,82 @@ class ChatMessageUI {
         if (message.text.isNotEmpty && !message.text.contains('Generating presentation'))
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
-        message.presentationData!.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+        (message.presentationData == null || message.presentationData!.isEmpty)
+          ? PresentationService.buildPresentationWidget({}, context, isGenerating: true)
           : PresentationService.buildPresentationWidget(message.presentationData!, context),
       ],
+    );
+  }
+
+  /// Build image widget that handles both data URLs and regular URLs
+  static Widget _buildImageWidget(String imageUrl, BuildContext context) {
+    // Check if it's a data URL (base64 image)
+    if (imageUrl.startsWith('data:')) {
+      try {
+        // Extract base64 data from data URL
+        final base64Data = imageUrl.split(',')[1];
+        final bytes = base64.decode(base64Data);
+        
+        return Image.memory(
+          bytes,
+          width: 300,
+          height: 300,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            print('Error loading base64 image: $error');
+            return _buildImageError(context);
+          },
+        );
+      } catch (e) {
+        print('Error decoding base64 image: $e');
+        return _buildImageError(context);
+      }
+    } else {
+      // Regular URL - use Image.network
+      return Image.network(
+        imageUrl,
+        width: 300,
+        height: 300,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          print('Error loading network image: $error');
+          return _buildImageError(context);
+        },
+      );
+    }
+  }
+
+  /// Build error widget for failed images
+  static Widget _buildImageError(BuildContext context) {
+    return Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error, size: 48, color: Colors.red),
+            SizedBox(height: 8),
+            Text('Failed to load image'),
+          ],
+        ),
+      ),
     );
   }
 
@@ -160,8 +204,13 @@ class ChatMessageUI {
         if (message.text.isNotEmpty && !message.text.contains('Generating diagram'))
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
-        message.diagramData!.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+        (message.diagramData == null || message.diagramData!.isEmpty)
+          ? Column(
+              children: [
+                FeatureShimmer.buildDiagramGenerationShimmer(context),
+                const FeatureStatusShimmer(feature: 'diagram'),
+              ],
+            )
           : ChatChartBuilder.buildDiagramWidget(message.diagramData!, context),
       ],
     );
@@ -174,6 +223,7 @@ class ChatMessageUI {
       child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
         ? ThinkingPanel(
             thinkingContent: message.thinkingContent!,
+            isStreaming: false, // Simple message UI doesn't track streaming
             finalContent: message.text,
           )
         : buildMessageContent(message.text, context),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+// import 'package:speech_to_text/speech_to_text.dart'; // Temporarily disabled
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -11,7 +11,7 @@ class VoiceController {
   factory VoiceController() => _instance;
   VoiceController._internal();
 
-  final SpeechToText _speechToText = SpeechToText();
+  // final SpeechToText _speechToText = SpeechToText(); // Temporarily disabled
   final FlutterTts _flutterTts = FlutterTts();
   bool _isListening = false;
   bool _isInitialized = false;
@@ -26,13 +26,13 @@ class VoiceController {
     // Request permissions
     await _requestPermissions();
 
-    // Initialize speech to text
-    bool available = await _speechToText.initialize(
-      onError: (error) => debugPrint('Speech error: $error'),
-      onStatus: (status) => debugPrint('Speech status: $status'),
-    );
+    // Initialize speech to text - TEMPORARILY DISABLED
+    // bool available = await _speechToText.initialize(
+    //   onError: (error) => debugPrint('Speech error: $error'),
+    //   onStatus: (status) => debugPrint('Speech status: $status'),
+    // );
 
-    if (available) {
+    // if (available) {
       // Initialize TTS
       await _flutterTts.setLanguage("en-US");
       await _flutterTts.setSpeechRate(0.5);
@@ -41,7 +41,7 @@ class VoiceController {
 
       _isInitialized = true;
       debugPrint('🎙️ Voice Controller initialized successfully!');
-    }
+    // }
   }
 
   Future<void> _requestPermissions() async {
@@ -57,30 +57,37 @@ class VoiceController {
   Future<void> startListening() async {
     if (!_isInitialized) await initialize();
     
-    if (_speechToText.isAvailable && !_isListening) {
+    // TEMPORARILY DISABLED - Speech to text functionality
+    // if (_speechToText.isAvailable && !_isListening) {
       _isListening = true;
       onListeningChanged?.call(true);
       
-      await _flutterTts.speak("Listening...");
+      await _flutterTts.speak("Speech recognition temporarily disabled...");
       
-      await _speechToText.listen(
-        onResult: (result) {
-          if (result.finalResult) {
-            _processVoiceCommand(result.recognizedWords);
-            stopListening();
-          }
-        },
-        listenFor: const Duration(seconds: 10),
-        pauseFor: const Duration(seconds: 2), // Reduced pause time
-        cancelOnError: true,
-        partialResults: false,
-      );
-    }
+      // Simulate voice input for demonstration
+      Future.delayed(const Duration(seconds: 2), () {
+        _processVoiceCommand("Voice input simulated");
+        stopListening();
+      });
+      
+      // await _speechToText.listen(
+      //   onResult: (result) {
+      //     if (result.finalResult) {
+      //       _processVoiceCommand(result.recognizedWords);
+      //       stopListening();
+      //     }
+      //   },
+      //   listenFor: const Duration(seconds: 10),
+      //   pauseFor: const Duration(seconds: 2), // Reduced pause time
+      //   cancelOnError: true,
+      //   partialResults: false,
+      // );
+    // }
   }
 
   Future<void> stopListening() async {
     if (_isListening) {
-      await _speechToText.stop();
+      // await _speechToText.stop(); // Temporarily disabled
       _isListening = false;
       onListeningChanged?.call(false);
     }

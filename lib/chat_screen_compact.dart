@@ -12,16 +12,21 @@ import 'chat_widgets.dart';
 import 'chat_logic.dart';
 import 'chat_chart_builder.dart';
 
+import 'dotted_background.dart';
+import 'feature_indicator.dart';
+
 // Existing imports
 import 'main.dart';
 import 'diagram_handler.dart';
 import 'diagram_service.dart';
 import 'presentation_service.dart';
-// import 'image_service.dart'; // Not needed
+import 'image_api.dart';
 import 'file_processing.dart';
 import 'theme.dart';
 import 'chat_ui_helpers.dart';
 import 'api_service.dart';
+import 'app_animations.dart';
+import 'micro_interactions.dart';
 
 /// Compact Chat Screen - Uses all divided components for clean organization
 /// This is a much smaller, more manageable version of the chat screen
@@ -138,6 +143,12 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _sendMessage(String input) async {
     if (!ChatLogic.isValidInput(input, _chatState.attachment)) return;
 
+    // Handle feature generation
+    if (_chatState.activeFeature != null) {
+      await _handleFeatureGeneration(input, _chatState.activeFeature!);
+      return;
+    }
+
     // Clear input immediately when send is pressed
     _chatState.clearInput();
     
@@ -153,6 +164,147 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       await _sendVisionMessage(input);
     } else {
       await _sendTextMessage(input); // This handles both text and file attachments
+    }
+  }
+
+  /// Handle feature generation (image, presentation, diagram)
+  Future<void> _handleFeatureGeneration(String input, String featureType) async {
+    // Clear input and active feature
+    _chatState.clearInput();
+    _chatState.setActiveFeature(null);
+    
+    switch (featureType) {
+      case 'image':
+        await _generateImageWithPrompt(input);
+        break;
+      case 'presentation':
+        await _generatePresentationWithPrompt(input);
+        break;
+      case 'diagram':
+        await _generateDiagramWithPrompt(input);
+        break;
+    }
+  }
+
+  /// Generate image with prompt from input
+  Future<void> _generateImageWithPrompt(String prompt) async {
+    final tempId = DateTime.now().millisecondsSinceEpoch.toString();
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'user',
+      text: 'Generate image: $prompt',
+    ));
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'model',
+      text: '',
+      type: MessageType.image,
+      imageUrl: null, // Loading state
+    ));
+
+    try {
+      final imageUrl = await ImageApi.generateImage(
+        prompt, 
+        model: _chatState.featureImageModel
+      );
+      
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: prompt,
+          type: MessageType.image,
+          imageUrl: imageUrl,
+        ),
+      );
+    } catch (e) {
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: 'Failed to generate image: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  /// Generate presentation with prompt from input
+  Future<void> _generatePresentationWithPrompt(String prompt) async {
+    _chatState.addMessage(ChatMessage(
+      role: 'user',
+      text: 'Create presentation: $prompt',
+    ));
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'model',
+      text: '',
+      type: MessageType.presentation,
+      presentationData: null, // Loading state
+    ));
+
+    try {
+      final slides = await PresentationService.generatePresentationData(
+        prompt,
+        _chatState.selectedModel,
+      );
+      
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: prompt,
+          type: MessageType.presentation,
+          presentationData: slides,
+        ),
+      );
+    } catch (e) {
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: 'Failed to generate presentation: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  /// Generate diagram with prompt from input
+  Future<void> _generateDiagramWithPrompt(String prompt) async {
+    _chatState.addMessage(ChatMessage(
+      role: 'user',
+      text: 'Create diagram: $prompt',
+    ));
+    
+    _chatState.addMessage(ChatMessage(
+      role: 'model',
+      text: '',
+      type: MessageType.diagram,
+      diagramData: null, // Loading state
+    ));
+
+    try {
+      final diagramData = await DiagramService.generateDiagramData(
+        prompt,
+        _chatState.selectedModel,
+      );
+      
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: prompt,
+          type: MessageType.diagram,
+          diagramData: diagramData,
+        ),
+      );
+    } catch (e) {
+      _chatState.updateMessage(
+        _chatState.messages.length - 1,
+        ChatMessage(
+          role: 'model',
+          text: 'Failed to generate diagram: ${e.toString()}',
+        ),
+      );
     }
   }
 
@@ -172,6 +324,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       stopStreaming: () => _chatState.stopStreaming(),
       onStreamingComplete: _onStreamingDone,
       attachment: _chatState.attachment,
+      context: context,
     );
   }
 
@@ -333,8 +486,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.setAttachment(result);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error attaching file: $e')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Error attaching file: $e',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }
@@ -353,8 +508,10 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.setAttachedImage(image);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error attaching image: $e')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Error attaching image: $e',
+        backgroundColor: Colors.red.shade600,
       );
     }
   }
@@ -362,18 +519,22 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   /// Handle voice input
   Future<void> _handleVoiceInput() async {
     // Voice input implementation would go here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Voice input not implemented yet')),
+    DiagramService.showStyledSnackBar(
+      context, 
+      'Voice input not implemented yet',
+      backgroundColor: Colors.orange.shade600,
     );
   }
+
+
 
   /// Show tools bottom sheet
   void _showToolsBottomSheet() {
     ChatWidgets.showToolsBottomSheet(
       context: context,
-      onImageGeneration: () => _generateImage(),
-      onPresentationGeneration: () => _generatePresentation(),
-      onDiagramGeneration: () => _generateDiagram(),
+      onImageGeneration: () => _chatState.setActiveFeature('image'),
+      onPresentationGeneration: () => _chatState.setActiveFeature('presentation'),
+      onDiagramGeneration: () => _chatState.setActiveFeature('diagram'),
       onPickCamera: () => _handleImageAttachment(ImageSource.camera),
       onPickGallery: () => _handleImageAttachment(ImageSource.gallery),
       onPickFile: () => _handleFileAttachment(),
@@ -399,6 +560,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
             selectedModel: model,
             addMessage: _addMessage,
             updateMessage: _updateMessage,
+            messages: _chatState.messages,
           );
         }
       )
@@ -416,6 +578,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       await ChatLogic.generatePresentation(
         topic: result,
         selectedModel: _chatState.selectedModel,
+        messages: _chatState.messages,
         addMessage: _addMessage,
         updateMessage: _updateMessage,
       );
@@ -436,9 +599,9 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       // Add placeholder AI message for diagram generation
       _addMessage(ChatMessage(
         role: 'model', 
-        text: 'Generating diagram...',
+        text: '',
         type: MessageType.diagram,
-        diagramData: <String, dynamic>{}, // Empty placeholder
+        diagramData: null, // Null for loading state
       ));
       
       // Generate diagram data
@@ -450,7 +613,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
           final lastIndex = _chatState.messages.length - 1;
           _updateMessage(lastIndex, ChatMessage(
             role: 'model',
-            text: 'Diagram generated successfully!',
+            text: '',
             type: MessageType.diagram,
             diagramData: diagramData,
           ));
@@ -504,18 +667,62 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Build input field using ChatWidgets
   Widget _buildInputField(ChatState chatState) {
-    return ChatWidgets.buildInputField(
-      context: context,
-      controller: chatState.controller,
-      isStreaming: chatState.isStreaming,
-      onSendMessage: _sendMessage,
-      onAttachFile: _handleFileAttachment,
-      onVoiceInput: _handleVoiceInput,
-      onStopStreaming: () => chatState.stopStreaming(),
-      onShowTools: _showToolsBottomSheet,
-      messageQueue: chatState.messageQueue,
-      hintText: chatState.inputHintText,
+    return Column(
+      children: [
+        // Feature indicator
+        if (chatState.activeFeature != null)
+          FeatureIndicator(
+            featureType: chatState.activeFeature!,
+            onClose: () => chatState.setActiveFeature(null),
+            settingsWidget: _buildFeatureSettings(chatState.activeFeature!),
+          ),
+        
+        // Input field
+        ChatWidgets.buildInputField(
+          context: context,
+          controller: chatState.controller,
+          isStreaming: chatState.isStreaming,
+          onSendMessage: _sendMessage,
+          onAttachFile: _handleFileAttachment,
+          onVoiceInput: _handleVoiceInput,
+          onStopStreaming: () => chatState.stopStreaming(),
+          onShowTools: _showToolsBottomSheet,
+          messageQueue: chatState.messageQueue,
+          hintText: chatState.activeFeature != null 
+              ? _getFeatureHintText(chatState.activeFeature!)
+              : chatState.inputHintText,
+        ),
+      ],
     );
+  }
+
+  Widget? _buildFeatureSettings(String featureType) {
+    switch (featureType) {
+      case 'image':
+        return ImageGenerationSettings(
+          selectedModel: _chatState.featureImageModel,
+          onModelChanged: (model) => _chatState.setFeatureImageModel(model),
+        );
+      case 'presentation':
+      case 'diagram':
+        // No settings needed - will use user's selected AI model
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  String _getFeatureHintText(String featureType) {
+    switch (featureType) {
+      case 'image':
+        return 'Describe the image you want to generate...';
+      case 'presentation':
+        return 'Enter presentation topic or content...';
+      case 'diagram':
+        return 'Describe the diagram or process...';
+      default:
+        return 'Enter your message...';
+    }
   }
 }
 
@@ -532,24 +739,51 @@ class _ImageGenerationDialogState extends State<_ImageGenerationDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Generate Image'),
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.image_outlined,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Generate Image'),
+        ],
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _controller,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Describe the image you want...',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
             ),
             maxLines: 3,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
             value: _selectedModel,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Model',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
             ),
             items: const [
               DropdownMenuItem(value: 'dall-e-3', child: Text('DALL-E 3')),
@@ -604,7 +838,24 @@ class _DiagramDialogState extends State<_DiagramDialog> {
     return AlertDialog(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Generate Diagram'),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.bar_chart_outlined,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Generate Diagram'),
+        ],
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -615,10 +866,13 @@ class _DiagramDialogState extends State<_DiagramDialog> {
             controller: _controller,
             autofocus: true,
             maxLines: 3,
-            cursorColor: Theme.of(context).colorScheme.primary,
-            decoration: const InputDecoration(
+            cursorColor: Colors.grey.shade600,
+            decoration: InputDecoration(
               hintText: 'e.g., Bar chart showing sales data for 2024\nFlowchart for user registration process\nPie chart of market share distribution',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey.shade400),
+              ),
             ),
             onSubmitted: (prompt) {
               if (prompt.trim().isNotEmpty) {
@@ -670,14 +924,34 @@ class _PresentationDialogState extends State<_PresentationDialog> {
     return AlertDialog(
       backgroundColor: Theme.of(context).dialogBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Presentation Topic'),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              Icons.slideshow_outlined,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Text('Presentation Topic'),
+        ],
+      ),
       content: TextField(
         controller: _controller,
         autofocus: true,
-        cursorColor: Theme.of(context).colorScheme.primary,
-        decoration: const InputDecoration(
+        cursorColor: Colors.grey.shade600,
+        decoration: InputDecoration(
           hintText: 'e.g., The History of Space Exploration',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade400),
+          ),
         ),
         maxLines: 2,
         onSubmitted: (topic) {
@@ -741,13 +1015,17 @@ class FullscreenDiagramScreen extends StatelessWidget {
   Future<void> _downloadDiagram(BuildContext context, GlobalKey chartKey, String title, String type) async {
     try {
       // This would implement the download functionality
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Chart saved successfully!')),
+      DiagramService.showStyledSnackBar(
+        context, 
+        'Chart saved successfully!',
+        backgroundColor: Colors.green.shade600,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving chart: $e')),
-      );
+              DiagramService.showStyledSnackBar(
+          context, 
+          'Error saving chart: $e',
+          backgroundColor: Colors.red.shade600,
+        );
     }
   }
 }

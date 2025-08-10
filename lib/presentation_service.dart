@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,6 +13,9 @@ import 'package:ahamai/diagram_service.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import 'api_service.dart';
+import 'presentation_themes.dart';
+import 'enhanced_slide_types.dart';
+import 'presentation_shimmer.dart';
 
 class PresentationService {
   static Future<Map<String, dynamic>?> generatePresentationData(String topic, String selectedModel) async {
@@ -248,7 +252,49 @@ SLIDE TYPES AVAILABLE:
 - "scientific": Research results with hypothesis and methodology
 - "data_table": Tabular data with headers and rows
 - "flowchart": Process flowcharts with decision points
+- "code": Code examples with syntax highlighting
+- "image": Image slides with captions and descriptions
+- "video": Video content placeholders with descriptions
+- "split": Two-column layout with separate content sections
+- "interactive": Interactive elements with clickable buttons
+- "mind_map": Mind mapping with central topic and branches
 - "conclusion": Final takeaways and next steps
+
+NEW SLIDE TYPE EXAMPLES:
+{
+  "type": "code",
+  "title": "Example Implementation",
+  "code": "function calculateArea(radius) {\n  return Math.PI * radius * radius;\n}",
+  "language": "javascript",
+  "explanation": "This function calculates the area of a circle using the mathematical formula.",
+  "background": "dark"
+},
+{
+  "type": "split",
+  "title": "Feature Comparison",
+  "left_section": {
+    "title": "Current System",
+    "content": ["Manual processes", "Limited scalability", "High maintenance"]
+  },
+  "right_section": {
+    "title": "Proposed Solution", 
+    "content": ["Automated workflow", "Cloud-based scaling", "Self-maintaining"]
+  },
+  "background": "white"
+},
+{
+  "type": "mind_map",
+  "title": "Project Overview",
+  "central_topic": "AI Platform",
+  "branches": [
+    {"title": "Machine Learning"},
+    {"title": "Data Processing"},
+    {"title": "User Interface"},
+    {"title": "API Integration"},
+    {"title": "Analytics"}
+  ],
+  "background": "light"
+}
 
 Generate AS MANY SLIDES AS NEEDED to thoroughly cover the topic. For complex topics, create 10-15+ slides. For simple topics, 5-8 slides are fine. Make content detailed and professional.
 Topic: $topic''',
@@ -290,89 +336,122 @@ Topic: $topic''',
     }
   }
 
-  static Widget buildPresentationWidget(Map<String, dynamic> presentationData, BuildContext context) {
+  static Widget buildPresentationWidget(Map<String, dynamic> presentationData, BuildContext context, {bool isGenerating = false}) {
     final String title = presentationData['title'] ?? 'Presentation';
     final List<dynamic> slides = presentationData['slides'] ?? [];
     final GlobalKey presentationKey = GlobalKey();
+    
+    // Detect intelligent theme based on content
+    final String detectedTheme = PresentationThemes.detectTheme(
+      title, 
+      slides.cast<Map<String, dynamic>>()
+    );
+    final PresentationThemeData theme = PresentationThemes.getThemeData(detectedTheme, context);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Simple title row with fixed save button
+          // Title row with save button (no action buttons for presentations)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
+
                 Expanded(
                   child: Text(
                     title,
                     style: TextStyle(
                       fontWeight: FontWeight.w600, 
                       fontSize: 15,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      color: theme.textColor,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(
-                    Icons.picture_as_pdf_rounded,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.primary,
+                if (!isGenerating)
+                  IconButton(
+                    icon: Icon(
+                      Icons.picture_as_pdf_rounded,
+                      size: 20,
+                      color: theme.primaryColor,
+                    ),
+                    onPressed: () => savePresentationAsPDF(presentationData, context, theme),
+                    tooltip: 'Save PDF',
+                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                    padding: const EdgeInsets.all(4),
                   ),
-                  onPressed: () => savePresentationAsPDF(presentationData, context),
-                  tooltip: 'Save PDF',
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                  padding: const EdgeInsets.all(4),
-                ),
               ],
             ),
           ),
-          // Direct presentation preview
+          
+          // Presentation preview or shimmer
           Container(
             height: 180,
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: RepaintBoundary(
-              key: presentationKey,
-              child: PageView.builder(
-                itemCount: slides.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    child: _buildSlidePreview(slides[index], context, true),
-                  );
-                },
-              ),
-            ),
+            child: isGenerating
+                ? PresentationLoadingShimmer(
+                    height: 180,
+                    slideCount: 3,
+                  )
+                : RepaintBoundary(
+                    key: presentationKey,
+                    child: PageView.builder(
+                      itemCount: slides.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          child: _buildSlidePreview(slides[index], context, true, theme),
+                        );
+                      },
+                    ),
+                  ),
           ),
-          // Slide count info
+          
+          // Slide count info or generating status
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            child: Text(
-              '${slides.length} slides • Swipe to preview',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade600,
-              ),
-            ),
+            child: isGenerating
+                ? Text(
+                    'Generating slides with AI...',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : theme.primaryColor,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )
+                                 : Text(
+                     '${slides.length} slides • Swipe to preview',
+                     style: TextStyle(
+                       fontSize: 11,
+                       color: Colors.grey.shade600,
+                     ),
+                   ),
           ),
         ],
       ),
     );
   }
+  
+  /// Build a generating presentation message
+  static Widget buildGeneratingMessage(String topic, BuildContext context) {
+    return PresentationGeneratingMessage(
+      message: "Generating presentation for: \"$topic\"",
+      showProgress: true,
+    );
+  }
 
-  static Widget _buildSlidePreview(Map<String, dynamic> slide, BuildContext context, bool isPreview) {
+  static Widget _buildSlidePreview(Map<String, dynamic> slide, BuildContext context, bool isPreview, PresentationThemeData theme) {
     final String type = slide['type'] ?? 'content';
     final String slideTitle = slide['title'] ?? '';
     final String background = slide['background'] ?? 'white';
     
-    Color backgroundColor = _getBackgroundColor(background, context);
-    Color textColor = _getTextColor(background, context);
+    Color backgroundColor = _getThemedBackgroundColor(background, theme);
+    Color textColor = _getThemedTextColor(background, theme);
     
     double fontSize = isPreview ? 10 : 24;
     double titleSize = isPreview ? 12 : 32;
@@ -1381,6 +1460,30 @@ Topic: $topic''',
         );
         break;
         
+      case 'code':
+        content = EnhancedSlideTypes.buildCodeSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'image':
+        content = EnhancedSlideTypes.buildImageSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'video':
+        content = EnhancedSlideTypes.buildVideoSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'split':
+        content = EnhancedSlideTypes.buildSplitSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'interactive':
+        content = EnhancedSlideTypes.buildInteractiveSlide(slide, context, isPreview, theme);
+        break;
+        
+      case 'mind_map':
+        content = EnhancedSlideTypes.buildMindMapSlide(slide, context, isPreview, theme);
+        break;
+        
       default: // content and conclusion
         final List<dynamic> contentList = slide['content'] ?? [];
         content = Column(
@@ -1471,8 +1574,32 @@ Topic: $topic''',
         return Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
     }
   }
+  
+  static Color _getThemedBackgroundColor(String background, PresentationThemeData theme) {
+    switch (background) {
+      case 'blue': return theme.primaryColor;
+      case 'dark': return theme.primaryColor.withOpacity(0.8);
+      case 'light': return theme.backgroundColor;
+      case 'gradient': return theme.secondaryColor;
+      default: return theme.backgroundColor;
+    }
+  }
 
-  static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context) async {
+  static Color _getThemedTextColor(String background, PresentationThemeData theme) {
+    switch (background) {
+      case 'blue':
+      case 'dark':
+      case 'gradient':
+        return Colors.white;
+      case 'light':
+      case 'white':
+        return theme.textColor;
+      default:
+        return theme.textColor;
+    }
+  }
+
+  static Future<void> savePresentationAsPDF(Map<String, dynamic> presentationData, BuildContext context, PresentationThemeData theme) async {
     PdfDocument? document;
     
     try {
@@ -1504,7 +1631,7 @@ Topic: $topic''',
           final Size pageSize = page.getClientSize();
           
           // Draw slide content with font error protection
-          await _drawSlideOnPDFRobust(graphics, slide, pageSize, context, i + 1);
+          await _drawSlideOnPDFRobust(graphics, slide, pageSize, context, i + 1, theme);
           successfulSlides++;
           
         } catch (slideError) {
@@ -1564,7 +1691,17 @@ Topic: $topic''',
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
               label: 'Retry',
-              onPressed: () => savePresentationAsPDF(presentationData, context),
+              onPressed: () {
+                // Detect theme for retry
+                final String title = presentationData['title'] ?? 'Presentation';
+                final List<dynamic> slides = presentationData['slides'] ?? [];
+                final String detectedTheme = PresentationThemes.detectTheme(
+                  title, 
+                  slides.cast<Map<String, dynamic>>()
+                );
+                final PresentationThemeData retryTheme = PresentationThemes.getThemeData(detectedTheme, context);
+                savePresentationAsPDF(presentationData, context, retryTheme);
+              },
             ),
           ),
         );
@@ -1576,9 +1713,9 @@ Topic: $topic''',
   }
 
   // Robust version of _drawSlideOnPDF with font error handling
-  static Future<void> _drawSlideOnPDFRobust(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, int slideNumber) async {
+  static Future<void> _drawSlideOnPDFRobust(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, int slideNumber, PresentationThemeData theme) async {
     try {
-      await _drawSlideOnPDF(graphics, slide, pageSize, context);
+              await _drawSlideOnPDF(graphics, slide, pageSize, context, theme);
     } catch (fontError) {
       print('Font error on slide $slideNumber: $fontError');
       // Fall back to basic text-only rendering
@@ -1586,13 +1723,13 @@ Topic: $topic''',
     }
   }
 
-  static Future<void> _drawSlideOnPDF(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context) async {
+  static Future<void> _drawSlideOnPDF(PdfGraphics graphics, Map<String, dynamic> slide, Size pageSize, BuildContext context, PresentationThemeData theme) async {
     final String type = slide['type'] ?? 'content';
     final String slideTitle = slide['title'] ?? '';
     final String background = slide['background'] ?? 'white';
     
-    // Background
-    Color backgroundColor = _getBackgroundColor(background, context);
+    // Background using theme colors
+    Color backgroundColor = _getThemedBackgroundColor(background, theme);
     graphics.drawRectangle(
       pen: PdfPen(PdfColor.fromCMYK(0, 0, 0, 0)),
       brush: PdfSolidBrush(PdfColor(
@@ -1603,9 +1740,16 @@ Topic: $topic''',
       bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
     );
 
-    // Text color
-    Color textColor = _getTextColor(background, context);
+    // Text color using theme
+    Color textColor = _getThemedTextColor(background, theme);
     PdfColor pdfTextColor = PdfColor(textColor.red, textColor.green, textColor.blue);
+    
+    // Theme accent color for highlights
+    PdfColor pdfAccentColor = PdfColor(
+      theme.primaryColor.red,
+      theme.primaryColor.green,
+      theme.primaryColor.blue,
+    );
 
     double yPosition = 60;
     

@@ -5,11 +5,13 @@ import 'theme.dart';
 class ThinkingPanel extends StatefulWidget {
   final String thinkingContent;
   final String finalContent;
+  final bool isStreaming;
 
   const ThinkingPanel({
     super.key,
     required this.thinkingContent,
     required this.finalContent,
+    this.isStreaming = false,
   });
 
   @override
@@ -17,9 +19,10 @@ class ThinkingPanel extends StatefulWidget {
 }
 
 class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProviderStateMixin {
-  bool _isExpanded = false;
+  bool _isExpanded = true; // Default open
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
+  bool _wasStreaming = false;
 
   @override
   void initState() {
@@ -32,6 +35,25 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
       parent: _animationController,
       curve: Curves.easeInOut,
     );
+    // Start in expanded state since default is open
+    _animationController.value = 1.0;
+    _wasStreaming = widget.isStreaming;
+  }
+
+  @override
+  void didUpdateWidget(ThinkingPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Auto-collapse when streaming stops
+    if (_wasStreaming && !widget.isStreaming) {
+      // Streaming just finished, auto-collapse after a short delay
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (mounted && _isExpanded) {
+          _toggleExpanded();
+        }
+      });
+    }
+    _wasStreaming = widget.isStreaming;
   }
 
   @override
@@ -70,13 +92,13 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
                 color: isDark 
-                    ? Theme.of(context).cardColor.withOpacity(0.5) // Subtle card background
-                    : Theme.of(context).dividerColor.withOpacity(0.3), // Light gray-blue
+                    ? Colors.white.withOpacity(0.95) // Pure white panel in dark mode
+                    : Colors.grey.shade900.withOpacity(0.95), // Dark panel in light mode
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isDark
-                      ? Theme.of(context).dividerColor.withOpacity(0.2)
-                      : Theme.of(context).dividerColor.withOpacity(0.5),
+                      ? Colors.grey.shade300
+                      : Colors.grey.shade600,
                   width: 1,
                 ),
               ),
@@ -87,7 +109,9 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                      color: isDark 
+                          ? Colors.grey.shade800 // Dark text in white panel
+                          : Colors.grey.shade100, // Light text in dark panel
                     ),
                   ),
                   const Spacer(),
@@ -97,7 +121,9 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                     child: Icon(
                       Icons.expand_more,
                       size: 18,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: isDark 
+                          ? Colors.grey.shade700 // Dark icon in white panel
+                          : Colors.grey.shade200, // Light icon in dark panel
                     ),
                   ),
                 ],

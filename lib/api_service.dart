@@ -66,6 +66,7 @@ class ApiService {
     bool isThinkingMode = false,
     List<Map<String, dynamic>>? conversationHistory,
     String? systemPrompt,
+    List<Map<String, dynamic>>? tools,
   }) async* {
     try {
       // Use thinking mode model if enabled, otherwise use user-selected model
@@ -99,6 +100,12 @@ class ApiService {
         'stream': true,
         'temperature': 0.7,
       };
+      
+      // Add tools if provided
+      if (tools != null && tools.isNotEmpty) {
+        requestBody['tools'] = tools;
+        requestBody['tool_choice'] = 'auto';
+      }
       
       final request = http.Request('POST', Uri.parse('$_baseUrl/v1/chat/completions'))
         ..headers.addAll({
