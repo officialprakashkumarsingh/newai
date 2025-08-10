@@ -623,20 +623,26 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
             )
           ),
           // Thinking mode toggle
-          buildToggleItem(
-            icon: Icons.auto_awesome_outlined,
-            title: 'Thinking Mode',
-            subtitle: localThinking 
-              ? 'Showing AI reasoning process' 
-              : 'Show AI thought process',
-            value: localThinking,
-            activeColor: Theme.of(context).colorScheme.primary,
-            onChanged: (value) {
-              setState(() {
-                localThinking = value;
-              }); 
-              widget.onThinkingModeToggle(value);
-            }
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.auto_awesome_outlined),
+            title: const Text('Thinking Mode'),
+            subtitle: Text(
+              localThinking 
+                ? 'Showing AI reasoning process' 
+                : 'Show AI thought process',
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+            trailing: Switch(
+              value: localThinking,
+              activeColor: Theme.of(context).colorScheme.primary,
+              onChanged: (value) {
+                setState(() {
+                  localThinking = value;
+                }); 
+                widget.onThinkingModeToggle(value);
+              }
+            ),
           ),
           ListTile(
             contentPadding: EdgeInsets.zero, 
