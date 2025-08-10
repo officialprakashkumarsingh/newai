@@ -622,19 +622,31 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
               }
             )
           ),
-          ListTile(
-            contentPadding: EdgeInsets.zero, 
-            leading: const Icon(Icons.auto_awesome_outlined), 
-            title: const Text('Think for longer'), 
-            trailing: Switch(
-              value: localThinking, 
-              onChanged: (bool value) { 
-                setState(() {
-                  localThinking = value;
-                }); 
-                widget.onThinkingModeToggle(value);
+          // Thinking mode toggle
+          buildToggleItem(
+            icon: Icons.psychology,
+            title: 'Thinking Mode',
+            subtitle: localThinking 
+              ? 'AI will show reasoning process (DeepSeek R1)' 
+              : 'Enable to see AI\'s thought process',
+            value: localThinking,
+            activeColor: Colors.purple,
+            onChanged: (value) {
+              setState(() {
+                localThinking = value;
+              }); 
+              widget.onThinkingModeToggle(value);
+              // Show feedback when enabled
+              if (value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('🧠 Thinking mode enabled - AI will show its reasoning'),
+                    duration: Duration(seconds: 2),
+                    backgroundColor: Colors.purple,
+                  ),
+                );
               }
-            )
+            }
           ),
           ListTile(
             contentPadding: EdgeInsets.zero, 

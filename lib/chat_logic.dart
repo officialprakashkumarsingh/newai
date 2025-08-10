@@ -405,6 +405,16 @@ Based on the context above, answer the following prompt: $input""";
       final parsedContent = ThinkingContentParser.parseContent(newResponse);
       final finalContent = parsedContent['final'] as String?;
       final thinkingContent = parsedContent['thinking'] as String?;
+      
+      // Debug logging for thinking content
+      if (thinkingContent != null && thinkingContent.isNotEmpty) {
+        print('🧠 Thinking content detected: ${thinkingContent.substring(0, thinkingContent.length > 100 ? 100 : thinkingContent.length)}...');
+      }
+      
+      // Check if response contains thinking tags
+      if (ThinkingContentParser.hasThinkingContent(newResponse)) {
+        print('🏷️ Thinking tags detected in response');
+      }
 
       updateMessage(
         messages.length - 1,
