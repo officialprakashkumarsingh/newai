@@ -15,6 +15,7 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'api_service.dart';
 import 'presentation_themes.dart';
 import 'enhanced_slide_types.dart';
+import 'presentation_shimmer.dart';
 
 class PresentationService {
   static Future<Map<String, dynamic>?> generatePresentationData(String topic, String selectedModel) async {
@@ -335,7 +336,7 @@ Topic: $topic''',
     }
   }
 
-  static Widget buildPresentationWidget(Map<String, dynamic> presentationData, BuildContext context) {
+  static Widget buildPresentationWidget(Map<String, dynamic> presentationData, BuildContext context, {bool isGenerating = false}) {
     final String title = presentationData['title'] ?? 'Presentation';
     final List<dynamic> slides = presentationData['slides'] ?? [];
     final GlobalKey presentationKey = GlobalKey();
@@ -352,69 +353,116 @@ Topic: $topic''',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Simple title row with fixed save button
+          // Title row with save button (no action buttons for presentations)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
+                Icon(
+                  PresentationThemes.getThemeIcon(detectedTheme),
+                  size: 16,
+                  color: theme.primaryColor,
+                ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     title,
                     style: TextStyle(
                       fontWeight: FontWeight.w600, 
                       fontSize: 15,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      color: theme.textColor,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(
-                    Icons.picture_as_pdf_rounded,
-                    size: 20,
-                    color: Theme.of(context).colorScheme.primary,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () => savePresentationAsPDF(presentationData, context),
-                  tooltip: 'Save PDF',
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                  padding: const EdgeInsets.all(4),
+                  child: Text(
+                    theme.name,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      color: theme.primaryColor,
+                    ),
+                  ),
                 ),
+                const SizedBox(width: 8),
+                if (!isGenerating)
+                  IconButton(
+                    icon: Icon(
+                      Icons.picture_as_pdf_rounded,
+                      size: 20,
+                      color: theme.primaryColor,
+                    ),
+                    onPressed: () => savePresentationAsPDF(presentationData, context),
+                    tooltip: 'Save PDF',
+                    constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                    padding: const EdgeInsets.all(4),
+                  ),
               ],
             ),
           ),
-          // Direct presentation preview
+          
+          // Presentation preview or shimmer
           Container(
             height: 180,
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 8),
-            child: RepaintBoundary(
-              key: presentationKey,
-              child: PageView.builder(
-                itemCount: slides.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    child: _buildSlidePreview(slides[index], context, true, theme),
-                  );
-                },
-              ),
-            ),
+            child: isGenerating
+                ? PresentationLoadingShimmer(
+                    height: 180,
+                    slideCount: 3,
+                  )
+                : RepaintBoundary(
+                    key: presentationKey,
+                    child: PageView.builder(
+                      itemCount: slides.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          child: _buildSlidePreview(slides[index], context, true, theme),
+                        );
+                      },
+                    ),
+                  ),
           ),
-          // Slide count info
+          
+          // Slide count info or generating status
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            child: Text(
-              '${slides.length} slides • Swipe to preview',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade600,
-              ),
-            ),
+            child: isGenerating
+                ? Text(
+                    'Generating slides with AI...',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: theme.primaryColor,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )
+                : Text(
+                    '${slides.length} slides • Swipe to preview • ${theme.name} theme',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
           ),
         ],
       ),
+    );
+  }
+  
+  /// Build a generating presentation message
+  static Widget buildGeneratingMessage(String topic, BuildContext context) {
+    return PresentationGeneratingMessage(
+      message: "Generating presentation for: \"$topic\"",
+      showProgress: true,
     );
   }
 

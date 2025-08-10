@@ -25,7 +25,8 @@ class ChatMessageUI {
   }) {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
-    final showActionButtons = index > 0 && isModelMessage;
+    final showActionButtons = index > 0 && isModelMessage && 
+                              message.presentationData == null && message.diagramData == null;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
