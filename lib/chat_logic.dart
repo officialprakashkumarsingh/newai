@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -254,9 +255,27 @@ Based on the context above, answer the following prompt: $input""";
 
     final conversationHistory = buildConversationHistory(messages);
 
-    // Always include system prompt with tool definitions for better AI capabilities
-    final systemPrompt = ExternalToolsManager.getSystemPromptWithTools();
+    // Include system prompt with tool definitions and thinking instructions
+    String systemPrompt = ExternalToolsManager.getSystemPromptWithTools();
+    
+    // Add thinking mode instructions if enabled
+    if (isThinkingMode) {
+      systemPrompt += '''\n\n## THINKING MODE ENABLED:
+
+You should show your reasoning process using thinking tags. When you need to think through a problem, use these tags:
+
+<thinking>
+Your internal reasoning, analysis, and thought process goes here.
+Break down complex problems step by step.
+Consider different approaches and alternatives.
+</thinking>
+
+After your thinking, provide your final response. This helps users understand your reasoning process.''';
+    }
+    
     final tools = ExternalToolsManager.getToolDefinitions();
+    
+    String fullResponse = '';
     
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
@@ -267,8 +286,28 @@ Based on the context above, answer the following prompt: $input""";
       tools: tools,
     )) {
       final lastIndex = messages.length - 1;
-      final currentText = messages[lastIndex].text + chunk;
-      updateMessage(lastIndex, ChatMessage(role: 'model', text: currentText));
+      fullResponse += chunk;
+      
+      // Parse thinking content from the full response so far
+      final parsedContent = ThinkingContentParser.parseContent(fullResponse);
+      final finalContent = parsedContent['final'] as String? ?? fullResponse;
+      final thinkingContent = parsedContent['thinking'] as String?;
+      
+      // Debug: Log when thinking mode is enabled and content is being parsed
+      if (isThinkingMode && fullResponse.length > 50) {
+        print('🧠 THINKING MODE DEBUG: Response length: ${fullResponse.length}');
+        print('🧠 THINKING MODE DEBUG: Has thinking tags: ${ThinkingContentParser.hasThinkingContent(fullResponse)}');
+        if (thinkingContent != null && thinkingContent.isNotEmpty) {
+          print('🧠 THINKING MODE DEBUG: Thinking content found: ${thinkingContent.substring(0, math.min(100, thinkingContent.length))}...');
+        }
+      }
+      
+      // Update message with both final content and thinking content
+      updateMessage(lastIndex, ChatMessage(
+        role: 'model', 
+        text: finalContent,
+        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+      ));
     }
   }
 
