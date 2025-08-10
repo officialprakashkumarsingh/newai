@@ -149,11 +149,11 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                 Center(
                   child: Text(
                     'AhamAI',
-                    style: GoogleFonts.sourceCodePro(
-                      fontSize: 52,
-                      fontWeight: FontWeight.w700,
+                    style: GoogleFonts.jetBrainsMono(
+                      fontSize: 48,
+                      fontWeight: FontWeight.w500,
                       color: logoColor,
-                      letterSpacing: 3.0,
+                      letterSpacing: 2.0,
                     ),
                   ),
                 ),
