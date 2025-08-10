@@ -372,12 +372,19 @@ class ToolAwareApiService extends ApiService {
         tools: tools,
       );
     } else {
-      // Regular chat message without tools
+      // Regular chat message with global system prompt (includes screenshot capability)
+      final systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
+        isThinkingMode: isThinkingMode,
+        isResearchMode: false,
+        includeTools: false,
+      );
+      
       yield* ApiService.sendChatMessage(
         message: message,
         model: model,
         isThinkingMode: isThinkingMode,
         conversationHistory: conversationHistory,
+        systemPrompt: systemPrompt,
       );
     }
   }

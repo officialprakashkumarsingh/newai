@@ -537,25 +537,37 @@ Based on the context above, answer the following prompt: $input""";
     required String selectedModel,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
+    required List<ChatMessage> messages,
   }) async {
     // Add user message for image generation
     addMessage(ChatMessage(role: 'user', text: 'Generate image: $prompt'));
     
     // Add placeholder for AI response with image type
-    final placeholderIndex = 1; // Will be the second message (index 1)
     addMessage(ChatMessage(role: 'model', text: '', type: MessageType.image));
+    
+    // Get the index of the placeholder message (last message in the list)
+    final placeholderIndex = messages.length - 1;
 
     try {
       // Use ImageApi to generate the actual image
       final imageUrl = await ImageApi.generateImage(prompt, model: selectedModel);
       
-      updateMessage(placeholderIndex, ChatMessage(
-        role: 'model',
-        text: '',
-        type: MessageType.image,
-        imageUrl: imageUrl,
-      ));
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        updateMessage(placeholderIndex, ChatMessage(
+          role: 'model',
+          text: '',
+          type: MessageType.image,
+          imageUrl: imageUrl,
+        ));
+        print('✅ Image generated successfully: ${imageUrl.substring(0, 50)}...');
+      } else {
+        updateMessage(placeholderIndex, ChatMessage(
+          role: 'model', 
+          text: '❌ Error: Image generation returned empty result'
+        ));
+      }
     } catch (e) {
+      print('❌ Image generation error: $e');
       updateMessage(placeholderIndex, ChatMessage(
         role: 'model', 
         text: '❌ Error generating image: $e'
