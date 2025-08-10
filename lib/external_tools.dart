@@ -58,9 +58,7 @@ class ExternalToolsManager {
             arguments, context, selectedModel, addMessage, updateMessage, messages
           );
         
-        case 'take_screenshot':
-          return await _handleScreenshotGeneration(arguments, addMessage);
-        
+
         default:
           return {
             'success': false,
@@ -384,48 +382,5 @@ class ToolAwareApiService extends ApiService {
     }
   }
 
-  /// Handle screenshot generation tool call
-  static Future<Map<String, dynamic>> _handleScreenshotGeneration(
-    Map<String, dynamic> arguments,
-    Function(ChatMessage) addMessage,
-  ) async {
-    try {
-      final url = arguments['url'] as String;
-      final width = arguments['width'] as int? ?? 1920;
-      final height = arguments['height'] as int? ?? 1080;
-      final viewportWidth = arguments['viewport_width'] as int?;
-      final viewportHeight = arguments['viewport_height'] as int?;
-      
-      // Generate screenshot URL using the global system prompt helper
-      final screenshotUrl = GlobalSystemPrompt.generateScreenshotUrl(
-        url: url,
-        width: width,
-        height: height,
-        viewportWidth: viewportWidth,
-        viewportHeight: viewportHeight,
-      );
-      
-      // Add user message
-      addMessage(ChatMessage(role: 'user', text: 'Take screenshot of: $url'));
-      
-      // Add AI response with screenshot
-      final screenshotMarkdown = '![Screenshot of $url]($screenshotUrl)';
-      addMessage(ChatMessage(
-        role: 'model', 
-        text: 'Here\'s a screenshot of $url:\n\n$screenshotMarkdown\n\n📸 Screenshot captured at ${width}x${height} resolution.'
-      ));
-      
-      return {
-        'success': true,
-        'url': url,
-        'screenshot_url': screenshotUrl,
-        'message': 'Screenshot generated successfully for: $url'
-      };
-    } catch (e) {
-      return {
-        'success': false,
-        'error': 'Failed to generate screenshot: $e'
-      };
-    }
-  }
+
 }

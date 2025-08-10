@@ -11,7 +11,7 @@ import 'api_service.dart';
 import 'api.dart';
 import 'external_tools.dart';
 import 'diagram_handler.dart';
-import 'research_mode.dart';
+
 import 'web_search.dart';
 import 'presentation_service.dart';
 import 'thinking_panel.dart';
@@ -130,6 +130,7 @@ class ChatLogic {
         webSearchResults: webSearchResults,
         updateMessage: updateMessage,
         isThinkingMode: isThinkingModeEnabled,
+        isResearchMode: isResearchModeEnabled,
       );
       
       // Stop streaming state
@@ -247,6 +248,7 @@ Based on the context above, answer the following prompt: $input""";
     required Function(int, ChatMessage) updateMessage,
     String? webSearchResults,
     bool isThinkingMode = false,
+    bool isResearchMode = false,
   }) async {
     String finalInputForAI = input;
     
@@ -259,7 +261,7 @@ Based on the context above, answer the following prompt: $input""";
     // Use the new global system prompt with comprehensive capabilities
     String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
       isThinkingMode: isThinkingMode,
-      isResearchMode: isResearchModeEnabled,
+      isResearchMode: isResearchMode,
       includeTools: true,
     );
     
@@ -503,6 +505,8 @@ Based on the context above, answer the following prompt: $input""";
         selectedModel: selectedModel,
         updateMessage: updateMessage,
         webSearchResults: webSearchResults,
+        isThinkingMode: false,
+        isResearchMode: false,
       );
     } catch (e) {
       final lastIndex = messages.length - 1;
