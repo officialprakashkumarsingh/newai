@@ -903,20 +903,50 @@ Generate realistic data relevant to: $prompt''',
 
   // Custom snackbar with theme-appropriate styling
   static void showStyledSnackBar(BuildContext context, String message, {Color? backgroundColor, Duration? duration}) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        content: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Icon(
+                Icons.info_outline,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: Colors.white, 
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
         ),
-        backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-        duration: duration ?? const Duration(seconds: 2),
+        backgroundColor: backgroundColor ?? (isDark ? Colors.grey.shade800 : Theme.of(context).primaryColor),
+        duration: duration ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
         ),
-        margin: const EdgeInsets.all(16),
-        elevation: 8,
+        margin: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 80, // Position above input
+        ),
+        elevation: 6,
+        dismissDirection: DismissDirection.horizontal,
       ),
     );
   }

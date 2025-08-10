@@ -15,6 +15,7 @@ import 'theme.dart';
 import 'chat_widgets.dart';
 import 'queue_panel.dart';
 import 'fullscreen_diagram_screen.dart';
+import 'feature_shimmer.dart';
 
 // Import for SearchResultCard
 class SearchResultCard extends StatelessWidget {
@@ -63,8 +64,8 @@ class ChatUI {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
     final showActionButtons = index > 0 && isModelMessage && !isStreaming && 
-                              message.type != MessageType.presentation && message.type != MessageType.diagram &&
-                              message.presentationData == null && message.diagramData == null;
+                              message.type == MessageType.text &&
+                              message.presentationData == null && message.diagramData == null && message.imageUrl == null;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -188,10 +189,19 @@ class ChatUI {
         if (message.text.isNotEmpty)
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            message.imageUrl!,
+        
+        // Show shimmer if imageUrl is null (loading), otherwise show image
+        message.imageUrl == null
+          ? Column(
+              children: [
+                FeatureShimmer.buildImageGenerationShimmer(context),
+                const FeatureStatusShimmer(feature: 'image'),
+              ],
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                message.imageUrl!,
             width: 300,
             height: 300,
             fit: BoxFit.cover,
@@ -256,8 +266,13 @@ class ChatUI {
         if (message.text.isNotEmpty && !message.text.contains('Generating diagram'))
           buildMessageContent(message.text, context),
         const SizedBox(height: 8),
-        message.diagramData!.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+        (message.diagramData == null || message.diagramData!.isEmpty)
+          ? Column(
+              children: [
+                FeatureShimmer.buildDiagramGenerationShimmer(context),
+                const FeatureStatusShimmer(feature: 'diagram'),
+              ],
+            )
           : DiagramService.buildDiagramWidget(message.diagramData!, context, (data) {
               // Navigate to fullscreen diagram on tap
               Navigator.push(
