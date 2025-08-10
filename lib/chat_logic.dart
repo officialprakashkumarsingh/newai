@@ -532,28 +532,29 @@ Based on the context above, answer the following prompt: $input""";
   static Future<void> generatePresentation({
     required String topic,
     required String selectedModel,
+    required List<ChatMessage> messages,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
   }) async {
     // Add user message for presentation generation
     addMessage(ChatMessage(role: 'user', text: 'Generate presentation: $topic'));
     
-    // Add placeholder for AI response
-    addMessage(ChatMessage(role: 'model', text: 'Generating presentation...'));
+    // Add placeholder for AI response with null presentation data (will show shimmer)
+    addMessage(ChatMessage(role: 'model', text: '', type: MessageType.presentation));
 
     try {
       // Use PresentationService to generate actual presentation
       final presentationData = await PresentationService.generatePresentationData(topic, selectedModel);
       
-      final lastIndex = 1; // Assuming we just added 2 messages
+      final lastIndex = messages.length - 1; // Get the actual last message index
       updateMessage(lastIndex, ChatMessage(
         role: 'model',
-        text: 'Presentation generated successfully!',
+        text: '',
         type: MessageType.presentation,
         presentationData: presentationData ?? <String, dynamic>{},
       ));
     } catch (e) {
-      final lastIndex = 1;
+      final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error generating presentation: $e'));
     }
   }

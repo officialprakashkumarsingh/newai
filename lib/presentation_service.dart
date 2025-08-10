@@ -1696,7 +1696,17 @@ Topic: $topic''',
             duration: const Duration(seconds: 4),
             action: SnackBarAction(
               label: 'Retry',
-              onPressed: () => savePresentationAsPDF(presentationData, context),
+              onPressed: () {
+                // Detect theme for retry
+                final String title = presentationData['title'] ?? 'Presentation';
+                final List<dynamic> slides = presentationData['slides'] ?? [];
+                final String detectedTheme = PresentationThemes.detectTheme(
+                  title, 
+                  slides.cast<Map<String, dynamic>>()
+                );
+                final PresentationThemeData retryTheme = PresentationThemes.getThemeData(detectedTheme, context);
+                savePresentationAsPDF(presentationData, context, retryTheme);
+              },
             ),
           ),
         );

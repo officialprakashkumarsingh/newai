@@ -237,18 +237,13 @@ class ChatState extends ChangeNotifier {
   void _autoScrollToBottom() {
     if (!_scrollController.hasClients) return;
     
-    // Only scroll if user is near the bottom to avoid interrupting manual scrolling
-    final isNearBottom = _scrollController.offset >= 
-                        (_scrollController.position.maxScrollExtent - 200);
-    
-    if (isNearBottom) {
-      // Use a shorter duration for smoother real-time scrolling
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-      );
-    }
+    // During streaming, always scroll to keep up with new content
+    // Use a shorter duration for smoother real-time scrolling
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
+    );
   }
   
   // Debounced auto-scroll for rapid streaming updates

@@ -418,6 +418,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       await ChatLogic.generatePresentation(
         topic: result,
         selectedModel: _chatState.selectedModel,
+        messages: _chatState.messages,
         addMessage: _addMessage,
         updateMessage: _updateMessage,
       );
