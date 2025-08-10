@@ -124,9 +124,15 @@ class ApiService {
         ..body = jsonEncode(requestBody);
       
       final client = http.Client();
+      print('🌐 API SERVICE: Sending request to ${request.url}');
+      print('🌐 API SERVICE: Request body: ${request.body}');
+      
       final response = await client.send(request);
+      print('🌐 API SERVICE: Response status: ${response.statusCode}');
+      print('🌐 API SERVICE: Response headers: ${response.headers}');
       
       if (response.statusCode != 200) {
+        print('❌ API SERVICE: Error status ${response.statusCode}: ${response.reasonPhrase}');
         yield* Stream.error('API Error: ${response.statusCode} ${response.reasonPhrase}');
         return;
       }
@@ -134,9 +140,20 @@ class ApiService {
       // Handle SSE streaming response
       String buffer = '';
       bool isFirstChunk = true;
+      int chunkCount = 0;
       
-      await for (final chunk in response.stream.transform(utf8.decoder)) {
+      print('🌐 API SERVICE: Starting to read response stream...');
+      
+      await for (final chunk in response.stream.transform(utf8.decoder).timeout(
+        Duration(seconds: 30),
+        onTimeout: (sink) {
+          print('⏰ API SERVICE: Stream timeout after 30 seconds');
+          sink.close();
+        },
+      )) {
+        chunkCount++;
         buffer += chunk;
+        print('📦 API SERVICE: Received chunk #$chunkCount (${chunk.length} chars): ${chunk.substring(0, math.min(100, chunk.length))}${chunk.length > 100 ? '...' : ''}');
         
         // Process complete lines
         while (buffer.contains('\n')) {
@@ -163,12 +180,16 @@ class ApiService {
               if (choices != null && choices.isNotEmpty) {
                 final choice = choices[0];
                 final delta = choice['delta'];
+                print('🔍 API SERVICE: Choice: $choice');
                 
                 if (delta != null && delta['content'] != null) {
                   final content = delta['content'] as String;
+                  print('✅ API SERVICE: Yielding content: "$content"');
                   if (content.isNotEmpty) {
                     yield content;
                   }
+                } else {
+                  print('⚠️ API SERVICE: Delta is null or no content: $delta');
                 }
                 
                 // Check if finished
@@ -180,14 +201,18 @@ class ApiService {
               }
             } catch (e) {
               // Skip invalid JSON chunks - common in streaming
+              print('⚠️ API SERVICE: JSON parse error: $e, data: $data');
               continue;
             }
           }
         }
       }
       
+      print('🌐 API SERVICE: Stream ended normally');
       client.close();
     } catch (e) {
+      print('❌ API SERVICE: Streaming error: $e');
+      print('❌ API SERVICE: Stack trace: ${StackTrace.current}');
       yield* Stream.error('Streaming error: $e');
     }
   }
