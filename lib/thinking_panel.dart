@@ -72,8 +72,8 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               margin: const EdgeInsets.only(bottom: 8),
               decoration: BoxDecoration(
                 color: isDark 
-                    ? Colors.grey.shade100.withOpacity(0.95) // Light panel in dark mode
-                    : Colors.grey.shade800.withOpacity(0.95), // Dark panel in light mode
+                    ? Colors.white.withOpacity(0.95) // Pure white panel in dark mode
+                    : Colors.grey.shade900.withOpacity(0.95), // Dark panel in light mode
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isDark
@@ -90,8 +90,8 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                       color: isDark 
-                          ? Colors.grey.shade700 // Dark text in light panel
-                          : Colors.grey.shade200, // Light text in dark panel
+                          ? Colors.grey.shade800 // Dark text in white panel
+                          : Colors.grey.shade100, // Light text in dark panel
                     ),
                   ),
                   const Spacer(),
@@ -102,8 +102,8 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                       Icons.expand_more,
                       size: 18,
                       color: isDark 
-                          ? Colors.grey.shade600 // Dark icon in light panel
-                          : Colors.grey.shade300, // Light icon in dark panel
+                          ? Colors.grey.shade700 // Dark icon in white panel
+                          : Colors.grey.shade200, // Light icon in dark panel
                     ),
                   ),
                 ],
@@ -120,13 +120,11 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: isDark 
-                    ? Colors.grey.shade50.withOpacity(0.98) // Very light content area in dark mode
-                    : Colors.grey.shade900.withOpacity(0.95), // Very dark content area in light mode
+                    ? Theme.of(context).cardColor.withOpacity(0.3)
+                    : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: isDark
-                      ? Colors.grey.shade200
-                      : Colors.grey.shade700,
+                  color: Theme.of(context).dividerColor.withOpacity(0.3),
                   width: 1,
                 ),
               ),
@@ -136,19 +134,15 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                 styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
                   p: TextStyle(
                     fontSize: 13,
-                    color: isDark 
-                        ? Colors.grey.shade800 // Dark text in light panel
-                        : Colors.grey.shade100, // Light text in dark panel
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
                     height: 1.5,
                   ),
                   code: TextStyle(
                     fontSize: 12,
                     backgroundColor: isDark
-                        ? Colors.grey.shade200 // Light code background in light panel
-                        : Colors.grey.shade800, // Dark code background in dark panel
-                    color: isDark 
-                        ? Colors.grey.shade900 // Dark code text in light panel
-                        : Colors.grey.shade50, // Light code text in dark panel
+                        ? Colors.black.withOpacity(0.3)
+                        : Theme.of(context).dividerColor.withOpacity(0.2),
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
               ),

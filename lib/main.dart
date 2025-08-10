@@ -11,6 +11,7 @@ import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
 import 'background_pattern.dart';
 import 'universe_logo.dart';
+import 'dotted_background.dart';
 // import 'background_service.dart'; // Temporarily disabled
 import 'package:google_fonts/google_fonts.dart';
 
@@ -686,8 +687,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Scaffold(
       appBar: _buildAppBar(context),
       extendBody: true, // Extend body behind system navigation bar
-      body: BackgroundPattern(
-        isDarkMode: Theme.of(context).brightness == Brightness.dark,
+      body: DottedBackground(
         child: _chats.isEmpty
             ? Center(
                 child: SingleChildScrollView(
