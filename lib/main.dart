@@ -12,6 +12,8 @@ import 'voice_animation_widget.dart';
 import 'background_pattern.dart';
 import 'universe_logo.dart';
 import 'dotted_background.dart';
+import 'dotted_appbar.dart';
+import 'animated_splash_screen.dart';
 // import 'background_service.dart'; // Temporarily disabled
 import 'package:google_fonts/google_fonts.dart';
 
@@ -210,9 +212,12 @@ class _AhamAppState extends State<AhamApp> {
           theme: ThemeNotifier.lightTheme,
           darkTheme: ThemeNotifier.darkTheme,
           themeMode: theme.themeMode,
-          home: HomeScreen(
-            key: ValueKey(_sharedText), // Force rebuild when shared text changes
-            sharedText: _sharedText,
+          home: AnimatedSplashScreen(
+            duration: const Duration(seconds: 3),
+            child: HomeScreen(
+              key: ValueKey(_sharedText), // Force rebuild when shared text changes
+              sharedText: _sharedText,
+            ),
           ),
         );
       },
@@ -649,6 +654,37 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
+  DottedAppBar _buildDottedAppBar(BuildContext context) {
+    if (_isSearching) {
+      return DottedAppBar(
+        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => setState(() {_isSearching = false; _searchController.clear();})),
+        title: TextField(controller: _searchController, autofocus: true, decoration: const InputDecoration(hintText: 'Search chats...', border: InputBorder.none), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18)),
+        actions: [if (_searchController.text.isNotEmpty) IconButton(icon: const Icon(Icons.close), onPressed: () => _searchController.clear())],
+      );
+    } else {
+      return DottedAppBar(
+        leading: IconButton(icon: const Icon(Icons.account_circle), onPressed: () => _showProfileSheet(context), tooltip: 'Profile & Settings'),
+        title: GestureDetector(
+          onTap: _showModelSelectionModal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('AhamAI'),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 18,
+                color: Theme.of(context).textTheme.titleLarge?.color,
+              ),
+            ],
+          ),
+        ),
+        centerTitle: true,
+        actions: [if (_chats.isNotEmpty) IconButton(icon: const Icon(Icons.search), onPressed: () => setState(() => _isSearching = true)), const SizedBox(width: 4)],
+      );
+    }
+  }
+
   AppBar _buildAppBar(BuildContext context) {
     if (_isSearching) {
       return AppBar(
@@ -685,7 +721,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final currentChatList = _isSearching ? _chats.where((chat) => chat.title.toLowerCase().contains(_searchController.text.toLowerCase()) || chat.messages.any((message) => message.text.toLowerCase().contains(_searchController.text.toLowerCase()))).toList() : _chats;
 
     return Scaffold(
-      appBar: _buildAppBar(context),
+      appBar: _buildDottedAppBar(context),
       extendBody: true, // Extend body behind system navigation bar
       body: DottedBackground(
         child: _chats.isEmpty
