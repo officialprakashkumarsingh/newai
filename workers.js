@@ -157,20 +157,13 @@ async function makeModelRequest(modelId, requestBody, stream, corsHeaders) {
     throw new Error(`Model '${modelId}' is not supported or not configured.`);
   }
 
-  // Special handling for different models
+  // Keep system prompts for ALL models to enable full AI capabilities
   let modifiedBody = { ...requestBody };
+  modifiedBody.messages = requestBody.messages; // Keep all messages including system prompts
   
-  if (internalModel === "NiansuhAI/DeepSeek-R1" || modelId === "deepseek-r1") {
-    // DeepSeek R1 - force uncensored mode by removing system prompts
-    modifiedBody.messages = requestBody.messages.filter(msg => msg.role !== "system");
-    console.log(`🔥 DeepSeek R1 Uncensored Mode: Removed ${requestBody.messages.length - modifiedBody.messages.length} system prompt(s)`);
-  } else {
-    // For other models - KEEP system prompts to enable full AI capabilities
-    modifiedBody.messages = requestBody.messages; // Keep all messages including system prompts
-    const systemPromptCount = requestBody.messages.filter(msg => msg.role === "system").length;
-    if (systemPromptCount > 0) {
-      console.log(`✅ Keeping ${systemPromptCount} system prompt(s) for ${modelId} (${internalModel})`);
-    }
+  const systemPromptCount = requestBody.messages.filter(msg => msg.role === "system").length;
+  if (systemPromptCount > 0) {
+    console.log(`✅ Keeping ${systemPromptCount} system prompt(s) for ${modelId} (${internalModel})`);
   }
 
   let headers = { 
