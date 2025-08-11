@@ -165,10 +165,11 @@ async function makeModelRequest(modelId, requestBody, stream, corsHeaders) {
     modifiedBody.messages = requestBody.messages.filter(msg => msg.role !== "system");
     console.log(`🔥 DeepSeek R1 Uncensored Mode: Removed ${requestBody.messages.length - modifiedBody.messages.length} system prompt(s)`);
   } else {
-    // For other models - remove all system prompts (no system prompt injection)
-    modifiedBody.messages = requestBody.messages.filter(msg => msg.role !== "system");
-    if (requestBody.messages.length !== modifiedBody.messages.length) {
-      console.log(`🚫 Removed ${requestBody.messages.length - modifiedBody.messages.length} system prompt(s) from ${modelId} (${internalModel})`);
+    // For other models - KEEP system prompts to enable full AI capabilities
+    modifiedBody.messages = requestBody.messages; // Keep all messages including system prompts
+    const systemPromptCount = requestBody.messages.filter(msg => msg.role === "system").length;
+    if (systemPromptCount > 0) {
+      console.log(`✅ Keeping ${systemPromptCount} system prompt(s) for ${modelId} (${internalModel})`);
     }
   }
 
