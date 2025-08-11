@@ -961,8 +961,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         return 'GPT-4o Mini';
       case 'gpt-3.5-turbo':
         return 'GPT-3.5 Turbo';
-      case 'deepseek-r1':
-        return 'DeepSeek R1';
       case 'claude-3-5-sonnet-20241022':
         return 'Claude 3.5 Sonnet';
       case 'o1-preview':
@@ -983,8 +981,6 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
         return 'Fast and efficient model';
       case 'gpt-3.5-turbo':
         return 'Balanced performance model';
-      case 'deepseek-r1':
-        return 'Advanced reasoning model';
       case 'claude-3-5-sonnet-20241022':
         return 'Best for coding tasks';
       case 'o1-preview':

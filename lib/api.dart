@@ -1,20 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-// --- CHAT MODELS ---
-// Only keep thinking mode model hardcoded
-class ChatModels {
-  static const String deepseek_r1 = 'deepseek-r1';
-}
-
 // --- API CONFIGURATION ---
 class ApiConfig {
   // Main API Configuration
   static const String apiBaseUrl = 'https://ahamai-api.officialprakashkrsingh.workers.dev';
   static const String apiKey = 'ahamaibyprakash25';
-  
-  // Thinking mode model (only hardcoded model allowed)
-  static const String thinkingModeModel = ChatModels.deepseek_r1;
   
   // Brave Search (keeping for web search functionality)
   static const String braveSearchApiKey = 'BSAGvn27KGywhzSPWjem5a_r41ZYaB2';
