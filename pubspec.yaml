@@ -16,8 +16,8 @@ dependencies:
   uuid: ^4.5.1
   path: ^1.9.0
   path_provider: ^2.1.1
-  flutter_markdown: ^0.6.23
-  
+  flutter_html: ^3.0.0-beta.2
+  markdown: ^7.1.1
   google_fonts: ^6.1.0
   google_generative_ai: ^0.2.2
   url_launcher: ^6.3.1
@@ -35,7 +35,7 @@ dependencies:
 
 
 
-  
+
   
 
 dev_dependencies:
