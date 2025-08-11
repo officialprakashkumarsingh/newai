@@ -90,14 +90,7 @@ class ApiService {
       
       // Add conversation history
       if (conversationHistory != null) {
-        print('🔗 API SERVICE: Adding ${conversationHistory.length} conversation history messages');
-        for (int i = 0; i < conversationHistory.length; i++) {
-          final msg = conversationHistory[i];
-          print('🔗 API SERVICE:   [$i] ${msg['role']}: ${msg['content'].toString().substring(0, math.min(80, msg['content'].toString().length))}...');
-        }
         messages.addAll(conversationHistory);
-      } else {
-        print('❌ API SERVICE: No conversation history provided!');
       }
       
       // Add current message
@@ -112,14 +105,6 @@ class ApiService {
         'stream': true,
         'temperature': 0.7,
       };
-      
-      print('📤 API SERVICE: Final request body:');
-      print('📤 API SERVICE:   Model: $selectedModel');
-      print('📤 API SERVICE:   Total messages: ${messages.length}');
-      for (int i = 0; i < messages.length; i++) {
-        final msg = messages[i];
-        print('📤 API SERVICE:     [$i] ${msg['role']}: ${msg['content'].toString().substring(0, math.min(60, msg['content'].toString().length))}...');
-      }
       
       // Add tools if provided
       if (tools != null && tools.isNotEmpty) {

@@ -61,14 +61,68 @@ class ChatLogic {
     return [];
   }
 
-  /// Save messages to storage
+  /// Save messages to storage and sync with HomeScreen chat data
   static Future<void> saveMessages(String chatId, List<ChatMessage> messages) async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      
+      // Save individual chat messages (existing system)
       final messagesJson = messages.map((message) => jsonEncode(message.toJson())).toList();
       await prefs.setStringList('chat_$chatId', messagesJson);
+      
+      // SYNC WITH HOMESCREEN: Update the main chats data
+      await _syncWithHomeScreenChats(chatId, messages, prefs);
+      
+      print('💾 CHAT LOGIC: Saved ${messages.length} messages for chat $chatId');
     } catch (e) {
       print('Error saving messages: $e');
+    }
+  }
+  
+  /// Sync individual chat messages with HomeScreen's main chat data
+  static Future<void> _syncWithHomeScreenChats(String chatId, List<ChatMessage> messages, SharedPreferences prefs) async {
+    try {
+      // Load existing chats from HomeScreen storage
+      final chatData = prefs.getString('chats');
+      List<Map<String, dynamic>> chats = [];
+      
+      if (chatData != null) {
+        final List<dynamic> decoded = jsonDecode(chatData);
+        chats = decoded.cast<Map<String, dynamic>>();
+      }
+      
+      // Find and update the specific chat
+      bool chatFound = false;
+      for (int i = 0; i < chats.length; i++) {
+        if (chats[i]['id'] == chatId) {
+          chats[i]['messages'] = messages.map((m) => m.toJson()).toList();
+          chatFound = true;
+          print('🔄 SYNC: Updated existing chat $chatId with ${messages.length} messages');
+          break;
+        }
+      }
+      
+      // If chat not found and has messages, create new chat entry
+      if (!chatFound && messages.isNotEmpty) {
+        final newChat = {
+          'id': chatId,
+          'title': generateChatTitle(messages),
+          'messages': messages.map((m) => m.toJson()).toList(),
+          'isPinned': false,
+          'isGenerating': false,
+          'isStopped': false,
+          'category': 'General'
+        };
+        chats.add(newChat);
+        print('➕ SYNC: Created new chat entry $chatId with ${messages.length} messages');
+      }
+      
+      // Save back to HomeScreen storage
+      final updatedChatData = jsonEncode(chats);
+      await prefs.setString('chats', updatedChatData);
+      
+    } catch (e) {
+      print('Error syncing with HomeScreen chats: $e');
     }
   }
 
@@ -255,34 +309,12 @@ class ChatLogic {
 
     final conversationHistory = buildConversationHistory(messages);
 
-    print('🧠 CHAT LOGIC: Conversation history details:');
-    if (conversationHistory != null && conversationHistory.isNotEmpty) {
-      print('🧠 CHAT LOGIC: Found ${conversationHistory.length} messages in history:');
-      for (int i = 0; i < conversationHistory.length; i++) {
-        final msg = conversationHistory[i];
-        print('🧠 CHAT LOGIC:   [$i] ${msg['role']}: ${msg['content'].toString().substring(0, math.min(100, msg['content'].toString().length))}...');
-      }
-    } else {
-      print('🧠 CHAT LOGIC: No conversation history found!');
-    }
-
     // Use the new global system prompt with comprehensive capabilities
     String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
       includeTools: false, // No more function calling
     );
     
-    print('📝 System prompt being used (length: ${systemPrompt.length}):');
-    print('   Contains "screenshot": ${systemPrompt.toLowerCase().contains('screenshot')}');
-    print('   Contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
-    print('   Research mode: false');
-    
     String fullResponse = '';
-    
-    print('📡 CHAT LOGIC: About to call ApiService.sendChatMessage');
-    print('📡 CHAT LOGIC: Model: $selectedModel');
-    print('📡 CHAT LOGIC: Message: $finalInputForAI');
-    print('📡 CHAT LOGIC: System prompt length: ${systemPrompt.length}');
-    print('📡 CHAT LOGIC: Research mode: false');
     
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
@@ -323,13 +355,6 @@ class ChatLogic {
           'content': m.text.trim()
         })
         .toList();
-    
-    print('💭 AI Memory: Including ${conversationHistory.length} messages for context');
-    if (conversationHistory.length >= 10) {
-      print('📚 AI Memory: Full context window (10 messages) - AI has memory of recent conversation');
-    } else if (conversationHistory.length > 0) {
-      print('📝 AI Memory: Partial context (${conversationHistory.length} messages)');
-    }
     
     return conversationHistory.isNotEmpty ? conversationHistory : null;
   }
