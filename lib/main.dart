@@ -21,6 +21,7 @@ import 'chat_screen_compact.dart';
 import 'theme.dart';
 import 'app_animations.dart';
 import 'micro_interactions.dart';
+import 'animated_splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -212,9 +213,12 @@ class _AhamAppState extends State<AhamApp> {
           theme: ThemeNotifier.lightTheme,
           darkTheme: ThemeNotifier.darkTheme,
           themeMode: theme.themeMode,
-          home: HomeScreen(
-            key: ValueKey(_sharedText), // Force rebuild when shared text changes
-            sharedText: _sharedText,
+          home: AnimatedSplashScreen(
+            duration: const Duration(seconds: 3),
+            child: HomeScreen(
+              key: ValueKey(_sharedText), // Force rebuild when shared text changes
+              sharedText: _sharedText,
+            ),
           ),
         );
       },
