@@ -255,6 +255,17 @@ class ChatLogic {
 
     final conversationHistory = buildConversationHistory(messages);
 
+    print('🧠 CHAT LOGIC: Conversation history details:');
+    if (conversationHistory != null && conversationHistory.isNotEmpty) {
+      print('🧠 CHAT LOGIC: Found ${conversationHistory.length} messages in history:');
+      for (int i = 0; i < conversationHistory.length; i++) {
+        final msg = conversationHistory[i];
+        print('🧠 CHAT LOGIC:   [$i] ${msg['role']}: ${msg['content'].toString().substring(0, math.min(100, msg['content'].toString().length))}...');
+      }
+    } else {
+      print('🧠 CHAT LOGIC: No conversation history found!');
+    }
+
     // Use the new global system prompt with comprehensive capabilities
     String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
       includeTools: false, // No more function calling
