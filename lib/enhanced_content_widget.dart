@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,6 +31,9 @@ class EnhancedContentWidget extends StatelessWidget {
 
     return Html(
       data: htmlContent,
+      extensions: [
+        TableHtmlExtension(),
+      ],
       style: {
         "body": Style(
           fontSize: FontSize(16.0),
