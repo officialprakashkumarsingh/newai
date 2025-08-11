@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:flutter_tex/flutter_tex.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 import 'chemjax_widget.dart';
@@ -76,11 +76,14 @@ class EnhancedContentWidget extends StatelessWidget {
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Center(
-            child: Math.tex(
-              displayMathMatch.group(1)!,
-              textStyle: TextStyle(
-                fontSize: 18,
-                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+            child: TeXView(
+              child: TeXViewDocument(r'$$' + displayMathMatch.group(1)! + r'$$'),
+              style: TeXViewStyle(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                contentColor: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+                margin: const TeXViewMargin.all(0),
+                padding: const TeXViewPadding.all(0),
               ),
             ),
           ),
@@ -94,11 +97,14 @@ class EnhancedContentWidget extends StatelessWidget {
       if (inlineMathMatch != null && 
           inlineMathMatch.start == 0 && 
           !inlineMathMatch.group(1)!.startsWith(r'\ce{')) {
-        widgets.add(Math.tex(
-          inlineMathMatch.group(1)!,
-          textStyle: TextStyle(
-            fontSize: 16,
-            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+        widgets.add(TeXView(
+          child: TeXViewDocument(r'$' + inlineMathMatch.group(1)! + r'$'),
+          style: TeXViewStyle(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            contentColor: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+            margin: const TeXViewMargin.all(0),
+            padding: const TeXViewPadding.all(0),
           ),
         ));
         remaining = remaining.substring(inlineMathMatch.end);
@@ -168,7 +174,6 @@ class EnhancedContentWidget extends StatelessWidget {
           backgroundColor: Theme.of(context).cardColor,
           padding: HtmlPaddings.all(12),
           margin: Margins.symmetric(vertical: 8),
-          borderRadius: BorderRadius.circular(8),
         ),
         "blockquote": Style(
           border: Border(left: BorderSide(color: Colors.grey, width: 4)),

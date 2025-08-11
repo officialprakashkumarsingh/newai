@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'enhanced_content_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
@@ -230,45 +230,12 @@ class ChatMessageUI {
     );
   }
 
-  /// Build message content with markdown parsing
+  /// Build message content with enhanced support for HTML, LaTeX, and ChemJAX
   static Widget buildMessageContent(String text, BuildContext context) {
-    if (text.contains('```') || text.contains('**') || text.contains('*')) {
-      // Use MarkdownBody for formatted text
-      return MarkdownBody(
-        data: text,
-        styleSheet: MarkdownStyleSheet(
-          p: TextStyle(
-            fontSize: 16,
-            height: 1.4,
-            color: Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-          code: TextStyle(
-            backgroundColor: Theme.of(context).cardColor,
-            fontSize: 14,
-            fontFamily: 'Courier',
-          ),
-          codeblockDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onTapLink: (text, href, title) {
-          if (href != null) {
-            launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
-          }
-        },
-      );
-    } else {
-      // Use SelectableText for plain text
-      return SelectableText(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          height: 1.4,
-          color: Theme.of(context).textTheme.bodyLarge?.color,
-        ),
-      );
-    }
+    return EnhancedContentWidget(
+      content: text,
+      isUserMessage: false,
+    );
   }
 
   /// Build search results widget

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'enhanced_content_widget.dart';
 import 'theme.dart';
 
 class ThinkingPanel extends StatefulWidget {
@@ -148,23 +148,9 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
                   width: 1,
                 ),
               ),
-              child: MarkdownBody(
-                data: widget.thinkingContent,
-                selectable: true,
-                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                  p: TextStyle(
-                    fontSize: 13,
-                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
-                    height: 1.5,
-                  ),
-                  code: TextStyle(
-                    fontSize: 12,
-                    backgroundColor: isDark
-                        ? Colors.black.withOpacity(0.3)
-                        : Theme.of(context).dividerColor.withOpacity(0.2),
-                    color: Theme.of(context).textTheme.bodyMedium?.color,
-                  ),
-                ),
+              child: EnhancedContentWidget(
+                content: widget.thinkingContent,
+                isUserMessage: false,
               ),
             ),
           ),
@@ -172,10 +158,9 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
         
         // Final content (if any)
         if (hasFinalContent)
-          MarkdownBody(
-            data: widget.finalContent,
-            selectable: true,
-            styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+          EnhancedContentWidget(
+            content: widget.finalContent,
+            isUserMessage: false,
           ),
       ],
     );

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'enhanced_content_widget.dart';
 
 import 'api_service.dart';
 import 'thinking_panel.dart';
@@ -172,10 +172,9 @@ class _ChatScreenSimpleState extends State<ChatScreenSimple> {
                   isStreaming: false, // Simple screen doesn't track streaming
                   finalContent: message.text,
                 )
-              : MarkdownBody(
-                  data: message.text,
-                  selectable: true,
-                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+              : EnhancedContentWidget(
+                  content: message.text,
+                  isUserMessage: false,
                 ),
         ),
       );

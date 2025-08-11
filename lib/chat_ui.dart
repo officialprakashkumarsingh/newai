@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'enhanced_content_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'chat_ui_components.dart';
 
