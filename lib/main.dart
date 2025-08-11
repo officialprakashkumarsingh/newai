@@ -733,35 +733,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       extendBody: true, // Extend body behind system navigation bar
       body: DottedBackground(
         child: _chats.isEmpty
-            ? Center(
-                child: Container(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.chat_bubble_outline,
-                        size: 80,
-                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Welcome to AhamAI',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Start a conversation to begin',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
+            ? _AutoNavigateToChat(chatInfoStream: _chatInfoStream)
             : ListView.builder(
                 padding: const EdgeInsets.only(bottom: 80),
                 itemCount: currentChatList.length,
@@ -891,6 +863,43 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 }
 
 // --- HELPER WIDGETS AND FUNCTIONS ---
+
+class _AutoNavigateToChat extends StatefulWidget {
+  final StreamController<ChatInfo> chatInfoStream;
+  
+  const _AutoNavigateToChat({required this.chatInfoStream});
+
+  @override
+  State<_AutoNavigateToChat> createState() => _AutoNavigateToChatState();
+}
+
+class _AutoNavigateToChatState extends State<_AutoNavigateToChat> {
+  @override
+  void initState() {
+    super.initState();
+    // Navigate to new chat after the current build completes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreenCompact(
+            chatId: DateTime.now().millisecondsSinceEpoch.toString(),
+            initialMessage: '',
+            chatInfoStream: widget.chatInfoStream,
+          ),
+        ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Show a simple loading indicator while navigating
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
 
 class ProfileSettingsScreen extends StatefulWidget {
   final VoidCallback onClearAllChats;
