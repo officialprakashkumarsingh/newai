@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
-import 'native_formula_widget.dart';
+import 'flutter_tex_widget.dart';
 
 class EnhancedContentWidget extends StatelessWidget {
   final String content;
@@ -26,8 +26,8 @@ class EnhancedContentWidget extends StatelessWidget {
   }
 
   bool _containsFormulas(String text) {
-    // Use native formula detection
-    return NativeFormulaUtils.containsFormula(text);
+    // Use flutter_tex formula detection
+    return FlutterTexUtils.containsFormula(text);
   }
 
   Widget _buildEnhancedContent(BuildContext context) {
@@ -45,14 +45,12 @@ class EnhancedContentWidget extends StatelessWidget {
       // Look for display math ($$...$$) first
       final displayMathMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
       if (displayMathMatch != null && displayMathMatch.start == 0) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: NativeFormulaWidget(
-            formula: displayMathMatch.group(0)!,
-            textStyle: TextStyle(
-              fontSize: 18,
-              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-            ),
+        widgets.add(FlutterTexWidget(
+          content: displayMathMatch.group(0)!,
+          isUserMessage: isUserMessage,
+          textStyle: TextStyle(
+            fontSize: 18,
+            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ));
         remaining = remaining.substring(displayMathMatch.end);
@@ -62,14 +60,12 @@ class EnhancedContentWidget extends StatelessWidget {
       // Look for inline math/chemistry ($...$)
       final inlineMathMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
       if (inlineMathMatch != null && inlineMathMatch.start == 0) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: NativeFormulaWidget(
-            formula: inlineMathMatch.group(0)!,
-            textStyle: TextStyle(
-              fontSize: 16,
-              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-            ),
+        widgets.add(FlutterTexWidget(
+          content: inlineMathMatch.group(0)!,
+          isUserMessage: isUserMessage,
+          textStyle: TextStyle(
+            fontSize: 16,
+            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ));
         remaining = remaining.substring(inlineMathMatch.end);
@@ -79,14 +75,12 @@ class EnhancedContentWidget extends StatelessWidget {
       // Look for chemical formulas without $ symbols
       final chemMatch = RegExp(r'\\ce\{([^}]+)\}').firstMatch(remaining);
       if (chemMatch != null && chemMatch.start == 0) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: NativeFormulaWidget(
-            formula: chemMatch.group(0)!,
-            textStyle: TextStyle(
-              fontSize: 16,
-              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-            ),
+        widgets.add(FlutterTexWidget(
+          content: chemMatch.group(0)!,
+          isUserMessage: isUserMessage,
+          textStyle: TextStyle(
+            fontSize: 16,
+            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ));
         remaining = remaining.substring(chemMatch.end);

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_tex/flutter_tex.dart';
 import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
 import 'background_pattern.dart';
@@ -28,6 +29,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Enable edge-to-edge mode (system UI will be configured per-theme)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  // Initialize TeXRenderingServer for flutter_tex
+  await TeXRenderingServer.start();
 
   // Background service temporarily disabled
   // await BackgroundService.initialize();
