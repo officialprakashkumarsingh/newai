@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:markdown/markdown.dart' as md;
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'flutter_tex_widget.dart';
 
@@ -23,8 +22,8 @@ class EnhancedContentWidget extends StatelessWidget {
       return _buildEnhancedContent(context);
     }
     
-    // For simple content without formulas, use HTML widget with markdown conversion
-    return _buildHtmlContent(context);
+    // For simple content without formulas, use MarkdownBody widget
+    return _buildMarkdownContent(context);
   }
 
   bool _containsFormulas(String text) {
@@ -115,13 +114,13 @@ class EnhancedContentWidget extends StatelessWidget {
       if (nextFormulaIndex > 0) {
         String textContent = remaining.substring(0, nextFormulaIndex);
         if (textContent.trim().isNotEmpty) {
-          widgets.add(_buildHtmlFromText(context, textContent));
+          widgets.add(_buildMarkdownFromText(context, textContent));
         }
         remaining = remaining.substring(nextFormulaIndex);
       } else {
         // No more formulas, add remaining text
         if (remaining.trim().isNotEmpty) {
-          widgets.add(_buildHtmlFromText(context, remaining));
+          widgets.add(_buildMarkdownFromText(context, remaining));
         }
         break;
       }
@@ -130,66 +129,90 @@ class EnhancedContentWidget extends StatelessWidget {
     return widgets;
   }
 
-  Widget _buildHtmlContent(BuildContext context) {
-    final htmlContent = md.markdownToHtml(content);
-    
-    return Html(
-      data: htmlContent,
-      style: {
-        "body": Style(
-          margin: Margins.zero,
-          padding: HtmlPaddings.zero,
-          fontSize: FontSize(16),
+  Widget _buildMarkdownContent(BuildContext context) {
+    return MarkdownBody(
+      data: content,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: TextStyle(
+          fontSize: 16.0,
+          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+          height: 1.4,
+        ),
+        h1: TextStyle(
+          fontSize: 24.0,
+          fontWeight: FontWeight.bold,
+          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.headlineLarge?.color,
+        ),
+        h2: TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.headlineMedium?.color,
+        ),
+        h3: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.headlineSmall?.color,
+        ),
+        code: TextStyle(
+          backgroundColor: Theme.of(context).cardColor,
+          fontFamily: 'monospace',
+          fontSize: 14.0,
+        ),
+        codeblockDecoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        codeblockPadding: const EdgeInsets.all(12.0),
+        blockquote: TextStyle(
+          color: Colors.grey.shade600,
+          fontStyle: FontStyle.italic,
+        ),
+        blockquoteDecoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(
+              color: Colors.grey.shade400,
+              width: 4.0,
+            ),
+          ),
+        ),
+        blockquotePadding: const EdgeInsets.only(left: 16.0),
+        listBullet: TextStyle(
           color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
         ),
-        "p": Style(
-          margin: Margins.only(bottom: 8),
-        ),
-        "code": Style(
-          backgroundColor: Theme.of(context).cardColor,
-          padding: HtmlPaddings.symmetric(horizontal: 4, vertical: 2),
-          fontFamily: 'Courier',
-        ),
-        "pre": Style(
-          backgroundColor: Theme.of(context).cardColor,
-          padding: HtmlPaddings.all(12),
-          margin: Margins.symmetric(vertical: 8),
-        ),
-        "blockquote": Style(
-          border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-          padding: HtmlPaddings.only(left: 16),
-          margin: Margins.symmetric(vertical: 8),
-        ),
-      },
-      onLinkTap: (url, attributes, element) {
-        if (url != null) {
-          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      ),
+      onTapLink: (text, href, title) {
+        if (href != null) {
+          launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
         }
       },
     );
   }
 
-  Widget _buildHtmlFromText(BuildContext context, String text) {
+  Widget _buildMarkdownFromText(BuildContext context, String text) {
     if (text.trim().isEmpty) return const SizedBox.shrink();
     
-    final htmlContent = md.markdownToHtml(text);
-    
-    return Html(
-      data: htmlContent,
-      style: {
-        "body": Style(
-          margin: Margins.zero,
-          padding: HtmlPaddings.zero,
-          fontSize: FontSize(16),
+    return MarkdownBody(
+      data: text,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: TextStyle(
+          fontSize: 16.0,
+          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+          height: 1.4,
+        ),
+        code: TextStyle(
+          backgroundColor: Theme.of(context).cardColor,
+          fontFamily: 'monospace',
+          fontSize: 14.0,
+        ),
+        listBullet: TextStyle(
           color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
         ),
-        "p": Style(
-          margin: Margins.zero,
-        ),
-      },
-      onLinkTap: (url, attributes, element) {
-        if (url != null) {
-          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      ),
+      onTapLink: (text, href, title) {
+        if (href != null) {
+          launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
         }
       },
     );
