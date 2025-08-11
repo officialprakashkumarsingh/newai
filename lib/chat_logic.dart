@@ -137,10 +137,6 @@ class ChatLogic {
     required Function() scrollToBottom,
     required Function() startStreaming,
     required Function() stopStreaming,
-    required Function() updateUI,
-    String? webSearchResults,
-    List<SearchResult>? lastSearchResults,
-    DiagramHandler? diagramHandler,
   }) async {
     print('🚀 CHAT LOGIC: Starting sendChatMessage');
     print('🚀 CHAT LOGIC: Input: ${input.substring(0, math.min(100, input.length))}...');
@@ -153,8 +149,11 @@ class ChatLogic {
       addMessage(ChatMessage(role: 'model', text: '❌ Error: No AI model selected. Please select a model from settings.'));
       return;
     }
-
-    if (input.trim().isEmpty && attachment == null) return;
+    
+    if (input.trim().isEmpty) {
+      print('❌ CHAT LOGIC: Empty input!');
+      return;
+    }
 
     // Add user message
     final userMessage = ChatMessage(
@@ -182,31 +181,25 @@ class ChatLogic {
       startStreaming();
 
       // Stream AI response
+      print('📤 CHAT LOGIC: About to call _streamAIResponse');
       await _streamAIResponse(
-        input: finalInputForAI,
+        input: input,
         messages: messages,
         selectedModel: selectedModel,
-        webSearchResults: webSearchResults,
+        webSearchResults: null, // We'll handle web search later
         updateMessage: updateMessage,
       );
       
       // Stop streaming state
+      print('🛑 CHAT LOGIC: Stopping streaming');
       stopStreaming();
       
-      // Notify completion
-      if (onStreamingComplete != null) {
-        onStreamingComplete();
-      }
     } catch (e) {
       // Stop streaming on error
+      print('❌ CHAT LOGIC: Error in sendChatMessage: $e');
       stopStreaming();
       final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error: $e'));
-      
-      // Notify completion even on error
-      if (onStreamingComplete != null) {
-        onStreamingComplete();
-      }
     }
   }
 
@@ -329,22 +322,39 @@ class ChatLogic {
     
     String fullResponse = '';
     
-    await for (final chunk in ApiService.sendChatMessage(
-      message: finalInputForAI,
-      model: selectedModel,
-      conversationHistory: conversationHistory,
-      systemPrompt: systemPrompt,
-    )) {
+    print('📡 CHAT LOGIC: About to call ApiService.sendChatMessage');
+    print('📡 CHAT LOGIC: Model: $selectedModel');
+    print('📡 CHAT LOGIC: Has conversation history: ${conversationHistory != null && conversationHistory.isNotEmpty}');
+    print('📡 CHAT LOGIC: System prompt length: ${systemPrompt.length}');
+    
+    try {
+      await for (final chunk in ApiService.sendChatMessage(
+        message: finalInputForAI,
+        model: selectedModel,
+        conversationHistory: conversationHistory,
+        systemPrompt: systemPrompt,
+      )) {
+        print('📨 CHAT LOGIC: Received chunk: ${chunk.substring(0, math.min(50, chunk.length))}...');
+        final lastIndex = messages.length - 1;
+        fullResponse += chunk;
+        
+        // Update the streaming message directly with accumulated response
+        final updatedMessage = ChatMessage(
+          role: 'model',
+          text: fullResponse,
+        );
+        
+        updateMessage(lastIndex, updatedMessage);
+      }
+      print('✅ CHAT LOGIC: Streaming completed successfully');
+    } catch (e) {
+      print('❌ CHAT LOGIC: Error in streaming: $e');
       final lastIndex = messages.length - 1;
-      fullResponse += chunk;
-      
-      // Update the streaming message directly with accumulated response
-      final updatedMessage = ChatMessage(
+      final errorMessage = ChatMessage(
         role: 'model',
-        text: fullResponse,
+        text: '❌ Error: Failed to get AI response. $e',
       );
-      
-      updateMessage(lastIndex, updatedMessage);
+      updateMessage(lastIndex, errorMessage);
     }
   }
 
