@@ -245,23 +245,23 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
   String _getVariationPrompt(String type) {
     switch (type) {
       case 'expand':
-        return 'Please expand on this response with more details and examples:\n\n${widget.messageText}';
+        return 'Please provide a more detailed and expanded response to my previous question.';
       case 'shorten':
-        return 'Please provide a shorter, more concise version of this response:\n\n${widget.messageText}';
+        return 'Please provide a shorter, more concise response to my previous question.';
       case 'simplify':
-        return 'Please simplify this response using easier language:\n\n${widget.messageText}';
+        return 'Please provide a simpler response using easier language to my previous question.';
       case 'technical':
-        return 'Please provide a more technical and detailed version of this response:\n\n${widget.messageText}';
+        return 'Please provide a more technical and detailed response to my previous question.';
       case 'creative':
-        return 'Please rewrite this response in a more creative and engaging way:\n\n${widget.messageText}';
+        return 'Please provide a more creative and engaging response to my previous question.';
       case 'formal':
-        return 'Please rewrite this response in a more formal tone:\n\n${widget.messageText}';
+        return 'Please provide a more formal response to my previous question.';
       case 'casual':
-        return 'Please rewrite this response in a more casual, conversational tone:\n\n${widget.messageText}';
+        return 'Please provide a more casual, conversational response to my previous question.';
       case 'bullet':
-        return 'Please convert this response into a bullet-point format:\n\n${widget.messageText}';
+        return 'Please provide a response in bullet-point format to my previous question.';
       default:
-        return 'Please provide an alternative version of this response:\n\n${widget.messageText}';
+        return 'Please provide an alternative response to my previous question.';
     }
   }
 
