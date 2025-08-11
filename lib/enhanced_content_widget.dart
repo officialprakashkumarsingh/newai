@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_tex/flutter_tex.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 import 'chemjax_widget.dart';
@@ -76,14 +75,16 @@ class EnhancedContentWidget extends StatelessWidget {
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Center(
-            child: TeXView(
-              child: TeXViewDocument(r'$$' + displayMathMatch.group(1)! + r'$$'),
-              style: TeXViewStyle(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                contentColor: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-                margin: const TeXViewMargin.all(0),
-                padding: const TeXViewPadding.all(0),
+            child: ChemJAXWidget(
+              formula: r'$$' + displayMathMatch.group(1)! + r'$$',
+              width: double.infinity,
+              height: 80,
+              backgroundColor: isUserMessage 
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.05)
+                : Theme.of(context).colorScheme.surface,
+              textStyle: TextStyle(
+                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+                fontSize: 18,
               ),
             ),
           ),
@@ -97,14 +98,19 @@ class EnhancedContentWidget extends StatelessWidget {
       if (inlineMathMatch != null && 
           inlineMathMatch.start == 0 && 
           !inlineMathMatch.group(1)!.startsWith(r'\ce{')) {
-        widgets.add(TeXView(
-          child: TeXViewDocument(r'$' + inlineMathMatch.group(1)! + r'$'),
-          style: TeXViewStyle(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            contentColor: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-            margin: const TeXViewMargin.all(0),
-            padding: const TeXViewPadding.all(0),
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0),
+          child: ChemJAXWidget(
+            formula: r'$' + inlineMathMatch.group(1)! + r'$',
+            width: double.infinity,
+            height: 40,
+            backgroundColor: isUserMessage 
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.05)
+              : Theme.of(context).colorScheme.surface,
+            textStyle: TextStyle(
+              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+              fontSize: 16,
+            ),
           ),
         ));
         remaining = remaining.substring(inlineMathMatch.end);
