@@ -33,7 +33,6 @@ dependencies:
   provider: ^6.1.1
   fl_chart: ^0.69.0
   device_info_plus: ^10.1.0
-  webview_flutter: ^4.4.2
 
 
 

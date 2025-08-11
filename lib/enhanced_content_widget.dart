@@ -42,56 +42,16 @@ class EnhancedContentWidget extends StatelessWidget {
     String remaining = content;
     
     while (remaining.isNotEmpty) {
-      // Look for ChemJAX formulas first (highest priority) - try multiple patterns
-      RegExpMatch? chemjaxMatch;
-      String? matchedFormula;
-      
-      // Pattern 1: $\ce{...}$
-      chemjaxMatch = RegExp(r'\$\\ce\{([^}]+)\}\$').firstMatch(remaining);
-      if (chemjaxMatch != null && chemjaxMatch.start == 0) {
-        matchedFormula = chemjaxMatch.group(0)!;
-      }
-      
-      // Pattern 2: $ \ce{...} $ (with spaces)
-      if (chemjaxMatch == null) {
-        chemjaxMatch = RegExp(r'\$ *\\ce\{([^}]+)\} *\$').firstMatch(remaining);
-        if (chemjaxMatch != null && chemjaxMatch.start == 0) {
-          matchedFormula = chemjaxMatch.group(0)!;
-        }
-      }
-      
-      if (chemjaxMatch != null && chemjaxMatch.start == 0 && matchedFormula != null) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: ChemJAXWidget(
-            formula: matchedFormula,
-            textStyle: TextStyle(
-              fontSize: 16,
-              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-            ),
-          ),
-        ));
-        remaining = remaining.substring(chemjaxMatch.end);
-        continue;
-      }
-      
-      // Look for display math ($$...$$)
+      // Look for display math ($$...$$) first
       final displayMathMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
       if (displayMathMatch != null && displayMathMatch.start == 0) {
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Center(
-            child: ChemJAXWidget(
-              formula: r'$$' + displayMathMatch.group(1)! + r'$$',
-              width: double.infinity,
-              height: 80,
-              backgroundColor: isUserMessage 
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.05)
-                : Theme.of(context).colorScheme.surface,
-              textStyle: TextStyle(
-                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-                fontSize: 18,
-              ),
+          child: NativeFormulaWidget(
+            formula: displayMathMatch.group(0)!,
+            textStyle: TextStyle(
+              fontSize: 18,
+              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
         ));
@@ -99,24 +59,16 @@ class EnhancedContentWidget extends StatelessWidget {
         continue;
       }
       
-      // Look for inline math ($...$) but exclude ChemJAX
+      // Look for inline math/chemistry ($...$)
       final inlineMathMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
-      if (inlineMathMatch != null && 
-          inlineMathMatch.start == 0 && 
-          !inlineMathMatch.group(1)!.trim().startsWith(r'\ce{') &&
-          !inlineMathMatch.group(0)!.contains(r'\ce{')) {
+      if (inlineMathMatch != null && inlineMathMatch.start == 0) {
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: ChemJAXWidget(
-            formula: r'$' + inlineMathMatch.group(1)! + r'$',
-            width: double.infinity,
-            height: 40,
-            backgroundColor: isUserMessage 
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.05)
-              : Theme.of(context).colorScheme.surface,
+          child: NativeFormulaWidget(
+            formula: inlineMathMatch.group(0)!,
             textStyle: TextStyle(
-              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: 16,
+              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
         ));
@@ -124,45 +76,58 @@ class EnhancedContentWidget extends StatelessWidget {
         continue;
       }
       
-      // Find the next special content
-      int nextSpecialIndex = remaining.length;
-      
-      // Look for ChemJAX patterns
-      final nextChemjax1 = RegExp(r'\$\\ce\{[^}]+\}\$').firstMatch(remaining);
-      final nextChemjax2 = RegExp(r'\$ *\\ce\{[^}]+\} *\$').firstMatch(remaining);
-      
-      if (nextChemjax1 != null && nextChemjax1.start < nextSpecialIndex) {
-        nextSpecialIndex = nextChemjax1.start;
+      // Look for chemical formulas without $ symbols
+      final chemMatch = RegExp(r'\\ce\{([^}]+)\}').firstMatch(remaining);
+      if (chemMatch != null && chemMatch.start == 0) {
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0),
+          child: NativeFormulaWidget(
+            formula: chemMatch.group(0)!,
+            textStyle: TextStyle(
+              fontSize: 16,
+              color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+            ),
+          ),
+        ));
+        remaining = remaining.substring(chemMatch.end);
+        continue;
       }
-      if (nextChemjax2 != null && nextChemjax2.start < nextSpecialIndex) {
-        nextSpecialIndex = nextChemjax2.start;
-      }
+      
+
+      
+
+      
+      // Find the next formula
+      int nextFormulaIndex = remaining.length;
       
       final nextDisplayMath = RegExp(r'\$\$[^$]+\$\$').firstMatch(remaining);
-      if (nextDisplayMath != null && nextDisplayMath.start < nextSpecialIndex) {
-        nextSpecialIndex = nextDisplayMath.start;
+      if (nextDisplayMath != null && nextDisplayMath.start < nextFormulaIndex) {
+        nextFormulaIndex = nextDisplayMath.start;
       }
       
       final nextInlineMath = RegExp(r'\$[^$\n]+\$').firstMatch(remaining);
-      if (nextInlineMath != null && 
-          nextInlineMath.start < nextSpecialIndex &&
-          !nextInlineMath.group(0)!.contains(r'\ce{')) {
-        nextSpecialIndex = nextInlineMath.start;
+      if (nextInlineMath != null && nextInlineMath.start < nextFormulaIndex) {
+        nextFormulaIndex = nextInlineMath.start;
       }
       
-      // Extract text before next special content
-      String textPart = remaining.substring(0, nextSpecialIndex);
-      if (textPart.isNotEmpty) {
-        widgets.add(_buildHtmlFromText(context, textPart));
+      final nextChem = RegExp(r'\\ce\{[^}]+\}').firstMatch(remaining);
+      if (nextChem != null && nextChem.start < nextFormulaIndex) {
+        nextFormulaIndex = nextChem.start;
       }
       
-      remaining = remaining.substring(nextSpecialIndex);
-      
-      // Safety break to prevent infinite loops
-      if (nextSpecialIndex == 0 && remaining.isNotEmpty) {
-        // If we can't parse something, add it as text and move on
-        widgets.add(_buildHtmlFromText(context, remaining.substring(0, 1)));
-        remaining = remaining.substring(1);
+      // Add text before the next formula
+      if (nextFormulaIndex > 0) {
+        String textContent = remaining.substring(0, nextFormulaIndex);
+        if (textContent.trim().isNotEmpty) {
+          widgets.add(_buildHtmlFromText(context, textContent));
+        }
+        remaining = remaining.substring(nextFormulaIndex);
+      } else {
+        // No more formulas, add remaining text
+        if (remaining.trim().isNotEmpty) {
+          widgets.add(_buildHtmlFromText(context, remaining));
+        }
+        break;
       }
     }
     
@@ -240,7 +205,7 @@ class ContentUtils {
   static bool containsChemicalFormulas(String text) {
     return RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text) ||
            RegExp(r'\\ce\{[^}]+\}').hasMatch(text) ||
-           ChemJAXUtils.containsChemicalFormula(text);
+           RegExp(r'\b[A-Z][a-z]?\d*\b').hasMatch(text);
   }
   
   static bool containsLatex(String text) {
