@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  chewie_audio:
+    dependency: transitive
+    description:
+      name: chewie_audio
+      sha256: "73948a8b9841d050433af3498a1f8b11320bd5a2cd70b449bdbe16d4405e97c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.0"
   clock:
     dependency: transitive
     description:
@@ -227,6 +235,14 @@ packages:
     description:
       name: flutter_html
       sha256: "02ad69e813ecfc0728a455e4bf892b9379983e050722b1dce00192ee2e41d1ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0-beta.2"
+  flutter_html_audio:
+    dependency: "direct main"
+    description:
+      name: flutter_html_audio
+      sha256: "94ae28ab56a8d556b7c5409e3eb59ca5215812bda87c67ddfa768812b76f8511"
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0-beta.2"

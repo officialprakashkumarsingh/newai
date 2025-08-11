@@ -22,6 +22,10 @@ chewie
 3.5
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/chewie-1.10.0/
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/chewie-1.10.0/lib/
+chewie_audio
+2.13
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/chewie_audio-1.5.0/
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/chewie_audio-1.5.0/lib/
 clock
 2.12
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/clock-1.1.1/
@@ -110,6 +114,10 @@ flutter_html
 2.17
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html-3.0.0-beta.2/
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html-3.0.0-beta.2/lib/
+flutter_html_audio
+2.12
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_audio-3.0.0-beta.2/
+file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_audio-3.0.0-beta.2/lib/
 flutter_html_iframe
 2.12
 file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_iframe-3.0.0-beta.2/

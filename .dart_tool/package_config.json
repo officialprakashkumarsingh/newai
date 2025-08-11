@@ -38,6 +38,12 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "chewie_audio",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/chewie_audio-1.5.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.13"
+    },
+    {
       "name": "clock",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/clock-1.1.1",
       "packageUri": "lib/",
@@ -174,6 +180,12 @@
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html-3.0.0-beta.2",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "flutter_html_audio",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_audio-3.0.0-beta.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "flutter_html_iframe",
@@ -812,7 +824,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-11T13:37:51.567178Z",
+  "generated": "2025-08-11T13:38:39.377384Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///workspace/flutter",
