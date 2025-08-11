@@ -319,7 +319,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       messages: _chatState.messages,
       selectedModel: _chatState.selectedModel,
       isWebSearchEnabled: _chatState.isWebSearchEnabled,
-      isResearchModeEnabled: _chatState.isResearchModeEnabled,
       addMessage: _addMessage,
       updateMessage: _updateMessage,
       scrollToBottom: _chatState.scrollToBottom,
@@ -559,8 +558,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       onPickFile: () => _handleFileAttachment(),
       isWebSearchEnabled: _chatState.isWebSearchEnabled,
       onWebSearchToggle: (value) => _chatState.setIsWebSearchEnabled(value),
-      isResearchModeEnabled: _chatState.isResearchModeEnabled,
-      onResearchModeToggle: (value) => _chatState.setIsResearchModeEnabled(value),
     );
   }
 

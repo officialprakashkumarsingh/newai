@@ -72,13 +72,12 @@ class ChatLogic {
     }
   }
 
-  /// Send text message to AI
-  static Future<void> sendTextMessage({
+  /// Process a chat message and handle streaming response
+  static Future<void> sendChatMessage({
     required String input,
     required List<ChatMessage> messages,
     required String selectedModel,
     required bool isWebSearchEnabled,
-    required bool isResearchModeEnabled,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
     required Function() scrollToBottom,
@@ -106,11 +105,6 @@ class ChatLogic {
     try {
       String finalInputForAI = input;
 
-      // Handle research mode
-      if (isResearchModeEnabled && input.trim().isNotEmpty) {
-        finalInputForAI = formatResearchModeInput(input);
-      }
-
       // Handle web search if enabled
       String? webSearchResults;
       if (isWebSearchEnabled) {
@@ -120,14 +114,13 @@ class ChatLogic {
       // Start streaming state
       startStreaming();
 
-      // Send to AI with streaming
-      await sendOpenAICompatibleStream(
+      // Stream AI response
+      await _streamAIResponse(
         input: finalInputForAI,
         messages: messages,
         selectedModel: selectedModel,
         webSearchResults: webSearchResults,
         updateMessage: updateMessage,
-        isResearchMode: isResearchModeEnabled,
       );
       
       // Stop streaming state
@@ -223,28 +216,36 @@ class ChatLogic {
     return null;
   }
 
-  /// Format input for research mode
-  static String formatResearchModeInput(String input) {
-    return """Please analyze this query in detail and provide a comprehensive research-based response: $input
-
-Please structure your response with:
-1. **Overview**: Brief summary of the topic
-2. **Key Points**: Main information and findings  
-3. **Analysis**: Deep dive into important aspects
-4. **Applications**: Real-world uses or implications
-5. **Conclusion**: Summary and key takeaways
-
-Based on the context above, answer the following prompt: $input""";
+  /// Format search results for AI context
+  static String formatSearchResultsForAI(List<SearchResult> results) {
+    if (results.isEmpty) return "";
+    
+    final buffer = StringBuffer();
+    buffer.writeln("🔍 **SEARCH RESULTS CONTEXT**:");
+    buffer.writeln("Based on recent web search, here's current information:");
+    buffer.writeln();
+    
+    for (int i = 0; i < results.length && i < 5; i++) {
+      final result = results[i];
+      buffer.writeln("**${i + 1}. ${result.title}**");
+      buffer.writeln("Source: ${result.url}");
+      buffer.writeln("${result.snippet}");
+      buffer.writeln();
+    }
+    
+    buffer.writeln("---");
+    return buffer.toString();
   }
 
-  /// Send OpenAI compatible stream
-  static Future<void> sendOpenAICompatibleStream({
+  /// Handle web search functionality
+
+  /// Stream AI response with enhanced thinking content parsing
+  static Future<void> _streamAIResponse({
     required String input,
     required List<ChatMessage> messages,
     required String selectedModel,
     required Function(int, ChatMessage) updateMessage,
     String? webSearchResults,
-    bool isResearchMode = false,
   }) async {
     String finalInputForAI = input;
     
@@ -256,14 +257,13 @@ Based on the context above, answer the following prompt: $input""";
 
     // Use the new global system prompt with comprehensive capabilities
     String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
-      isResearchMode: isResearchMode,
       includeTools: false, // No more function calling
     );
     
     print('📝 System prompt being used (length: ${systemPrompt.length}):');
     print('   Contains "screenshot": ${systemPrompt.toLowerCase().contains('screenshot')}');
     print('   Contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
-    print('   Research mode: $isResearchMode');
+    print('   Research mode: false');
     
     String fullResponse = '';
     
@@ -271,7 +271,7 @@ Based on the context above, answer the following prompt: $input""";
     print('📡 CHAT LOGIC: Model: $selectedModel');
     print('📡 CHAT LOGIC: Message: $finalInputForAI');
     print('📡 CHAT LOGIC: System prompt length: ${systemPrompt.length}');
-    print('📡 CHAT LOGIC: Research mode: $isResearchMode');
+    print('📡 CHAT LOGIC: Research mode: false');
     
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
@@ -474,13 +474,12 @@ Based on the context above, answer the following prompt: $input""";
         webSearchResults = await handleWebSearch(userMessage.text);
       }
 
-      await sendOpenAICompatibleStream(
+      await _streamAIResponse(
         input: userMessage.text,
         messages: messages.take(userMessageIndex + 1).toList(),
         selectedModel: selectedModel,
         updateMessage: updateMessage,
         webSearchResults: webSearchResults,
-        isResearchMode: false,
       );
     } catch (e) {
       final lastIndex = messages.length - 1;

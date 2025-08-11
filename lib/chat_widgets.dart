@@ -318,8 +318,6 @@ class ChatWidgets {
     required Function() onPickFile,
     required bool isWebSearchEnabled,
     required Function(bool) onWebSearchToggle,
-    required bool isResearchModeEnabled,
-    required Function(bool) onResearchModeToggle,
   }) {
     showModalBottomSheet(
       context: context,
@@ -327,7 +325,6 @@ class ChatWidgets {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => _ToolsBottomSheetContent(
         isWebSearchEnabled: isWebSearchEnabled,
-        isResearchModeEnabled: isResearchModeEnabled,
         onImageGeneration: onImageGeneration,
         onPresentationGeneration: onPresentationGeneration,
         onDiagramGeneration: onDiagramGeneration,
@@ -335,7 +332,6 @@ class ChatWidgets {
         onPickGallery: onPickGallery,
         onPickFile: onPickFile,
         onWebSearchToggle: onWebSearchToggle,
-        onResearchModeToggle: onResearchModeToggle,
       ),
     );
   }
@@ -532,7 +528,6 @@ class AttachmentPreview extends StatelessWidget {
 /// Stateful Tools Bottom Sheet Content for instant toggle updates
 class _ToolsBottomSheetContent extends StatefulWidget {
   final bool isWebSearchEnabled;
-  final bool isResearchModeEnabled;
   final Function() onImageGeneration;
   final Function() onPresentationGeneration;
   final Function() onDiagramGeneration;
@@ -540,11 +535,9 @@ class _ToolsBottomSheetContent extends StatefulWidget {
   final Function() onPickGallery;
   final Function() onPickFile;
   final Function(bool) onWebSearchToggle;
-  final Function(bool) onResearchModeToggle;
 
   const _ToolsBottomSheetContent({
     required this.isWebSearchEnabled,
-    required this.isResearchModeEnabled,
     required this.onImageGeneration,
     required this.onPresentationGeneration,
     required this.onDiagramGeneration,
@@ -552,7 +545,6 @@ class _ToolsBottomSheetContent extends StatefulWidget {
     required this.onPickGallery,
     required this.onPickFile,
     required this.onWebSearchToggle,
-    required this.onResearchModeToggle,
   });
 
   @override
@@ -561,13 +553,11 @@ class _ToolsBottomSheetContent extends StatefulWidget {
 
 class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
   late bool localWebSearch;
-  late bool localResearch;
 
   @override
   void initState() {
     super.initState();
     localWebSearch = widget.isWebSearchEnabled;
-    localResearch = widget.isResearchModeEnabled;
   }
 
   @override
@@ -622,21 +612,6 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
                   localWebSearch = value;
                 }); 
                 widget.onWebSearchToggle(value);
-              }
-            )
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero, 
-            leading: const Icon(Icons.search), 
-            title: const Text('Research mode'), 
-            subtitle: const Text('Deep research with multiple sources'), 
-            trailing: Switch(
-              value: localResearch, 
-              onChanged: (bool value) { 
-                setState(() {
-                  localResearch = value;
-                }); 
-                widget.onResearchModeToggle(value);
               }
             )
           ),
