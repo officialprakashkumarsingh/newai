@@ -35,7 +35,7 @@ HSPLandroidx/lifecycle/l;->l(Landroidx/lifecycle/g$b;)V
 HSPLandroidx/lifecycle/l;->b(Landroidx/lifecycle/j;)V
 HSPLandroidx/lifecycle/l;->m()V
 Landroidx/lifecycle/ProcessLifecycleInitializer;
-LL/a;
+LZ0/a;
 HSPLandroidx/lifecycle/ProcessLifecycleInitializer;-><init>()V
 HSPLandroidx/lifecycle/ProcessLifecycleInitializer;->c(Landroid/content/Context;)Landroidx/lifecycle/k;
 HSPLandroidx/lifecycle/ProcessLifecycleInitializer;->b(Landroid/content/Context;)Ljava/lang/Object;
@@ -82,7 +82,7 @@ HSPLandroidx/startup/a;->c(Ljava/lang/Class;Ljava/util/Set;)Ljava/lang/Object;
 HSPLandroidx/startup/a;->d(Landroid/content/Context;)Landroidx/startup/a;
 HSPLandroidx/startup/a;->e(Ljava/lang/Class;)Z
 Lp/a;
-Lp/g;
+Lp/h;
 SLp/a;->compute(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
 SLp/a;->computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;
 SLp/a;->computeIfPresent(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
@@ -91,6 +91,17 @@ SLp/a;->merge(Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction
 SLp/a;->replaceAll(Ljava/util/function/BiFunction;)V
 Landroidx/lifecycle/p;
 HSPLandroidx/lifecycle/p;-><init>(Landroidx/lifecycle/q;)V
+Lr1/x;
+SLr1/x;->compute(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+SLr1/x;->computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;
+SLr1/x;->computeIfPresent(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+SLr1/x;->forEach(Ljava/util/function/BiConsumer;)V
+SLr1/x;->merge(Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;
+SLr1/x;->putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+SLr1/x;->remove(Ljava/lang/Object;Ljava/lang/Object;)Z
+SLr1/x;->replace(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+SLr1/x;->replace(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+SLr1/x;->replaceAll(Ljava/util/function/BiFunction;)V
 Lio/flutter/embedding/android/B;
 SLio/flutter/embedding/android/B;->and(Ljava/util/function/Predicate;)Ljava/util/function/Predicate;
 SLio/flutter/embedding/android/B;->negate()Ljava/util/function/Predicate;

@@ -36,6 +36,15 @@
     <string msgid="59049573811482460" name="call_notification_screening_text">"Een inkomend gesprek screenen"</string>
     <string msgid="6083905920877235314" name="copy">"Kopiëren"</string>
     <string msgid="3260749812566568062" name="copy_toast_msg">"Link naar klembord gekopieerd"</string>
+    <string name="exo_download_completed">Downloaden voltooid</string>
+    <string name="exo_download_description">Downloaden</string>
+    <string name="exo_download_downloading">Downloaden</string>
+    <string name="exo_download_failed">Downloaden mislukt</string>
+    <string name="exo_download_notification_channel_name">Downloads</string>
+    <string name="exo_download_paused">Downloads gepauzeerd</string>
+    <string name="exo_download_paused_for_network">Downloads wachten op netwerk</string>
+    <string name="exo_download_paused_for_wifi">Downloads wachten op wifi</string>
+    <string name="exo_download_removing">Downloads verwijderen</string>
     <string msgid="2427401033573778270" name="expand_button_title">"Geavanceerd"</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Link kopiëren"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Openen in browser"</string>
