@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:share_plus/share_plus.dart';
 import 'app_animations.dart';
 
 /// Enhanced AI Message Actions - Click to show with feedback system
@@ -209,6 +210,26 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
       _feedbackController.forward().then((_) {
         _feedbackController.reverse();
       });
+    }
+  }
+
+  Future<void> _handleShare() async {
+    HapticFeedback.lightImpact();
+    try {
+      await Share.share(
+        widget.messageText,
+        subject: 'AhamAI Response',
+      );
+    } catch (e) {
+      // Handle share error gracefully
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not share message: $e'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
