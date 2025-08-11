@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
-import 'chemjax_widget.dart';
+import 'native_formula_widget.dart';
 
 class EnhancedContentWidget extends StatelessWidget {
   final String content;
@@ -16,8 +16,8 @@ class EnhancedContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if content contains chemical formulas or LaTeX
-    if (_containsChemicalFormulas(content) || _containsLatex(content)) {
+    // Check if content contains formulas
+    if (_containsFormulas(content)) {
       return _buildEnhancedContent(context);
     }
     
@@ -25,21 +25,9 @@ class EnhancedContentWidget extends StatelessWidget {
     return _buildHtmlContent(context);
   }
 
-  bool _containsChemicalFormulas(String text) {
-    // Check for ChemJAX patterns - be more flexible
-    return RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text) ||      // $\ce{...}$
-           RegExp(r'\$ *\\ce\{[^}]+\} *\$').hasMatch(text) ||  // $ \ce{...} $ (with spaces)
-           RegExp(r'\\ce\{[^}]+\}').hasMatch(text) ||          // \ce{...}
-           ChemJAXUtils.containsChemicalFormula(text);
-  }
-
-  bool _containsLatex(String text) {
-    // Check for LaTeX math patterns - be more aggressive
-    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||          // Display math $$...$$
-           RegExp(r'\$[^$\n]+\$').hasMatch(text) ||             // Inline math $...$ (not spanning lines)
-           RegExp(r'\\begin\{[^}]+\}').hasMatch(text) ||        // LaTeX environments
-           RegExp(r'\\[a-zA-Z]+\{').hasMatch(text) ||           // LaTeX commands
-           RegExp(r'\$[^$]*\\[a-zA-Z]+[^$]*\$').hasMatch(text); // $...with LaTeX commands...$
+  bool _containsFormulas(String text) {
+    // Use native formula detection
+    return NativeFormulaUtils.containsFormula(text);
   }
 
   Widget _buildEnhancedContent(BuildContext context) {
