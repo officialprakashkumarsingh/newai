@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
@@ -11,7 +10,7 @@ import 'diagram_service.dart';
 import 'web_search.dart';
 import 'file_processing.dart';
 import 'theme.dart';
-import 'chemjax_widget.dart';
+import 'enhanced_content_widget.dart';
 
 /// UI Components for Chat Screen - Helper methods for building UI
 /// This class provides clean UI building methods without replacing core functionality
@@ -263,113 +262,15 @@ class ChatUIComponents {
     );
   }
 
-  /// Build message content with ChemJAX support for chemical formulas
+  /// Build message content with enhanced support for ChemJAX, LaTeX, and HTML
   static Widget buildMessageWithChemJAX({
     required BuildContext context,
     required String content,
     required bool isUserMessage,
   }) {
-    // Check if content contains chemical formulas
-    if (ChemJAXUtils.containsChemicalFormula(content)) {
-      return _buildContentWithChemicalFormulas(context, content, isUserMessage);
-    }
-    
-    // Regular markdown rendering for non-chemical content
-    return _buildMarkdownContent(context, content, isUserMessage);
-  }
-
-  /// Build content with chemical formulas rendered using ChemJAX
-  static Widget _buildContentWithChemicalFormulas(
-    BuildContext context, 
-    String content, 
-    bool isUserMessage
-  ) {
-    final formulas = ChemJAXUtils.extractFormulas(content);
-    
-    if (formulas.isEmpty) {
-      return _buildMarkdownContent(context, content, isUserMessage);
-    }
-
-    // Split content and render formulas separately
-    final widgets = <Widget>[];
-    String remainingContent = content;
-    
-    for (final formula in formulas) {
-      final parts = remainingContent.split(formula);
-      
-      if (parts.isNotEmpty && parts[0].isNotEmpty) {
-        // Add text content before formula
-        widgets.add(_buildMarkdownContent(context, parts[0], isUserMessage));
-      }
-      
-      // Add chemical formula widget
-      widgets.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: ChemJAXWidget(
-            formula: formula,
-            width: double.infinity,
-            height: 60,
-            backgroundColor: isUserMessage 
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.05)
-              : Theme.of(context).colorScheme.surface,
-            textStyle: TextStyle(
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      );
-      
-      // Update remaining content
-      if (parts.length > 1) {
-        remainingContent = parts.sublist(1).join(formula);
-      } else {
-        remainingContent = '';
-      }
-    }
-    
-    // Add remaining content after last formula
-    if (remainingContent.isNotEmpty) {
-      widgets.add(_buildMarkdownContent(context, remainingContent, isUserMessage));
-    }
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
-    );
-  }
-
-  /// Build regular markdown content
-  static Widget _buildMarkdownContent(
-    BuildContext context, 
-    String content, 
-    bool isUserMessage
-  ) {
-    return MarkdownBody(
-      data: content,
-      styleSheet: MarkdownStyleSheet(
-        p: TextStyle(
-          color: Theme.of(context).textTheme.bodyLarge?.color,
-          fontSize: 16,
-          height: 1.4,
-        ),
-        code: TextStyle(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          color: Theme.of(context).colorScheme.onSurface,
-          fontFamily: 'monospace',
-        ),
-        codeblockDecoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Theme.of(context).dividerColor),
-        ),
-      ),
-      onTapLink: (text, href, title) {
-        if (href != null) {
-          launchUrl(Uri.parse(href));
-        }
-      },
+    return EnhancedContentWidget(
+      content: content,
+      isUserMessage: isUserMessage,
     );
   }
 }
