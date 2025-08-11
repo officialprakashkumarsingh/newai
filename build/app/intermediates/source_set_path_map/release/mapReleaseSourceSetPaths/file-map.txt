@@ -52,8 +52,9 @@ com.aham.app-release-50 /workspace/build/image_picker_android/intermediates/pack
 com.aham.app-release-51 /workspace/build/package_info_plus/intermediates/packaged_res/release/packageReleaseResources
 com.aham.app-release-52 /workspace/build/path_provider_android/intermediates/packaged_res/release/packageReleaseResources
 com.aham.app-release-53 /workspace/build/permission_handler_android/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-54 /workspace/build/shared_preferences_android/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-55 /workspace/build/url_launcher_android/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-56 /workspace/build/video_player_android/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-57 /workspace/build/wakelock_plus/intermediates/packaged_res/release/packageReleaseResources
-com.aham.app-release-58 /workspace/build/webview_flutter_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-54 /workspace/build/share_plus/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-55 /workspace/build/shared_preferences_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-56 /workspace/build/url_launcher_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-57 /workspace/build/video_player_android/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-58 /workspace/build/wakelock_plus/intermediates/packaged_res/release/packageReleaseResources
+com.aham.app-release-59 /workspace/build/webview_flutter_android/intermediates/packaged_res/release/packageReleaseResources

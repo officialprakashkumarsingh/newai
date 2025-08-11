@@ -294,12 +294,31 @@ class ChatLogic {
 
 
 
-  /// Build conversation history for API
+  /// Build conversation history for API (last 10 messages for AI memory)
   static List<Map<String, dynamic>>? buildConversationHistory(List<ChatMessage> messages) {
-    final conversationHistory = messages
-        .where((m) => m.text.isNotEmpty)
-        .map((m) => {'role': m.role == 'user' ? 'user' : 'assistant', 'content': m.text})
+    // Filter out empty messages and take only the last 10 for memory efficiency
+    final filteredMessages = messages
+        .where((m) => m.text.isNotEmpty && m.text.trim().isNotEmpty)
         .toList();
+    
+    // Take the last 10 messages to give AI memory of recent conversation
+    final recentMessages = filteredMessages.length > 10 
+        ? filteredMessages.sublist(filteredMessages.length - 10)
+        : filteredMessages;
+    
+    final conversationHistory = recentMessages
+        .map((m) => {
+          'role': m.role == 'user' ? 'user' : 'assistant', 
+          'content': m.text.trim()
+        })
+        .toList();
+    
+    print('💭 AI Memory: Including ${conversationHistory.length} messages for context');
+    if (conversationHistory.length >= 10) {
+      print('📚 AI Memory: Full context window (10 messages) - AI has memory of recent conversation');
+    } else if (conversationHistory.length > 0) {
+      print('📝 AI Memory: Partial context (${conversationHistory.length} messages)');
+    }
     
     return conversationHistory.isNotEmpty ? conversationHistory : null;
   }

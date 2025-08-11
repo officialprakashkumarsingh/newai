@@ -530,6 +530,18 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "share_plus",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/share_plus-10.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "share_plus_platform_interface",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/share_plus_platform_interface-5.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "shared_preferences",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/shared_preferences-2.5.3",
       "packageUri": "lib/",
@@ -824,7 +836,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-11T16:18:20.807772Z",
+  "generated": "2025-08-11T16:36:02.642132Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///workspace/flutter",

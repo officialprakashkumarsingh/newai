@@ -2223,4 +2223,5 @@ int styleable ViewStubCompat_android_layout 1
 int styleable ViewStubCompat_android_inflatedId 2
 int xml ahamai_widget_info 0x7f100000
 int xml flutter_image_picker_file_paths 0x7f100001
-int xml image_share_filepaths 0x7f100002
+int xml flutter_share_file_paths 0x7f100002
+int xml image_share_filepaths 0x7f100003
