@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
 import 'background_pattern.dart';
-import 'universe_logo.dart';
 import 'dotted_background.dart';
 import 'dotted_appbar.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -735,34 +734,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: DottedBackground(
         child: _chats.isEmpty
             ? Center(
-                child: SingleChildScrollView(
+                child: Container(
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Universe Logo
-                      UniverseLogo(
-                        size: 140.0,
-                        isDarkMode: Theme.of(context).brightness == Brightness.dark,
+                      Icon(
+                        Icons.chat_bubble_outline,
+                        size: 80,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
-                      const SizedBox(height: 60),
-                      
-                      // Center input area
-                      WelcomeInputArea(
-                        onSubmitted: (text) {
-                          if (text.trim().isNotEmpty) {
-                            Navigator.push(
-                              context, 
-                              MaterialPageRoute(
-                                            builder: (context) => ChatScreenCompact(
-              chatId: DateTime.now().millisecondsSinceEpoch.toString(),
-              initialMessage: text.trim(),
-              chatInfoStream: _chatInfoStream,
-            )
-                              )
-                            );
-                          }
-                        },
+                      const SizedBox(height: 24),
+                      Text(
+                        'Welcome to AhamAI',
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Start a conversation to begin',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7),
+                        ),
                       ),
                     ],
                   ),
@@ -897,104 +891,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 }
 
 // --- HELPER WIDGETS AND FUNCTIONS ---
-
-class WelcomeInputArea extends StatefulWidget {
-  final Function(String) onSubmitted;
-  const WelcomeInputArea({super.key, required this.onSubmitted});
-
-  @override
-  State<WelcomeInputArea> createState() => _WelcomeInputAreaState();
-}
-
-class _WelcomeInputAreaState extends State<WelcomeInputArea> {
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 600), // Limit width on larger screens
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              onSubmitted: (text) {
-                widget.onSubmitted(text);
-                _controller.clear();
-              },
-              textInputAction: TextInputAction.send,
-              maxLines: 3,
-              minLines: 1,
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontSize: 16,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Ask AhamAI anything...',
-                hintStyle: TextStyle(
-                  color: isLightTheme(context) 
-                      ? const Color(0xFF5F6368) // Google secondary text
-                      : const Color(0xFFB0B0B0),
-                  fontSize: 16,
-                ),
-                filled: true,
-                fillColor: isLightTheme(context) 
-                    ? const Color(0xFFE8EAED) // Google search bar background
-                    : const Color(0xFF2C2C2E),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(28),
-                  borderSide: BorderSide(
-                    color: isLightTheme(context) 
-                        ? const Color(0xFFE8EAED) // Google search bar background (subtle border)
-                        : const Color(0xFF333438),
-                    width: 1,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(28),
-                  borderSide: BorderSide(
-                    color: isLightTheme(context) 
-                        ? const Color(0xFFE8EAED) // Google search bar background (subtle border)
-                        : const Color(0xFF333438),
-                    width: 1,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(28),
-                  borderSide: BorderSide.none, // No border when active
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          CircleAvatar(
-            backgroundColor: Theme.of(context).cardColor,
-            radius: 24,
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_upward,
-                color: Theme.of(context).primaryColor,
-              ),
-              onPressed: () {
-                if (_controller.text.trim().isNotEmpty) {
-                  widget.onSubmitted(_controller.text.trim());
-                  _controller.clear();
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class ProfileSettingsScreen extends StatefulWidget {
   final VoidCallback onClearAllChats;
