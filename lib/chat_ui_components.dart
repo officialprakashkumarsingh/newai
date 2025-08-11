@@ -17,7 +17,7 @@ import 'enhanced_content_widget.dart';
 /// This class provides clean UI building methods without replacing core functionality
 class ChatUIComponents {
   
-  /// Build enhanced message bubble with better styling
+  /// Build enhanced message bubble with better styling - Material 3 design
   static Widget buildMessageBubble({
     required BuildContext context,
     required ChatMessage message,
@@ -26,16 +26,19 @@ class ChatUIComponents {
     required Widget child,
   }) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: isUserMessage 
-          ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-          : Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: isUserMessage 
-          ? null 
-          : Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3)),
+          ? Theme.of(context).colorScheme.primaryContainer
+          : Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isUserMessage 
+            ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+            : Theme.of(context).colorScheme.outline.withOpacity(0.2),
+          width: 1,
+        ),
       ),
       child: GestureDetector(
         onLongPress: onLongPress,
@@ -44,7 +47,7 @@ class ChatUIComponents {
     );
   }
 
-  /// Build enhanced input field with better styling
+  /// Build enhanced input field with better styling - Material 3 design
   static Widget buildInputField({
     required BuildContext context,
     required TextEditingController controller,
@@ -58,12 +61,15 @@ class ChatUIComponents {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3)),
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -74,31 +80,38 @@ class ChatUIComponents {
           // Attachment preview if present
           if (attachment != null)
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(25),
+                  topLeft: Radius.circular(28),
+                  topRight: Radius.circular(28),
                 ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.attach_file, size: 16, color: Theme.of(context).primaryColor),
+                  Icon(
+                    Icons.attach_file_rounded, 
+                    size: 18, 
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       attachment.fileName,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).primaryColor,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, size: 16),
+                    icon: Icon(
+                      Icons.close_rounded, 
+                      size: 18,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
                     onPressed: onClearAttachment,
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -112,8 +125,14 @@ class ChatUIComponents {
             children: [
               // Attachment button
               IconButton(
-                icon: Icon(Icons.attach_file, color: Theme.of(context).primaryColor),
+                icon: Icon(
+                  Icons.attach_file_rounded, 
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 onPressed: isStreaming ? null : onAttach,
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(12),
+                ),
               ),
               
               // Text input
@@ -121,10 +140,16 @@ class ChatUIComponents {
                 child: TextField(
                   controller: controller,
                   enabled: !isStreaming,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Type your message...',
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    hintStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   maxLines: null,
                   textInputAction: TextInputAction.send,
@@ -134,17 +159,31 @@ class ChatUIComponents {
               
               // Voice input button
               IconButton(
-                icon: Icon(Icons.mic, color: Theme.of(context).primaryColor),
+                icon: Icon(
+                  Icons.mic_rounded, 
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 onPressed: isStreaming ? null : onVoiceInput,
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(12),
+                ),
               ),
               
-              // Send button
-              IconButton(
-                icon: Icon(
-                  isStreaming ? Icons.stop : Icons.send,
-                  color: Theme.of(context).primaryColor,
+              // Send button - Use FilledButton.icon for Material 3
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilledButton(
+                  onPressed: onSend,
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.all(12),
+                    minimumSize: const Size(48, 48),
+                    shape: const CircleBorder(),
+                  ),
+                  child: Icon(
+                    isStreaming ? Icons.stop_rounded : Icons.send_rounded,
+                    size: 20,
+                  ),
                 ),
-                onPressed: onSend,
               ),
             ],
           ),

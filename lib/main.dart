@@ -426,13 +426,23 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
         title: const Text('Clear All Chats?'),
         content: const Text('This will permanently delete all your chat conversations. This action cannot be undone.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
           TextButton(
+            onPressed: () => Navigator.pop(context, false), 
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Clear All', style: TextStyle(color: Colors.red)),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: const Text('Clear All'),
           ),
         ],
       ),
@@ -471,13 +481,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).dialogBackgroundColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: const Text('Rename Chat'),
           content: TextField(
             controller: renameController,
             autofocus: true,
-            decoration: const InputDecoration(hintText: 'Enter new chat title'),
+            decoration: InputDecoration(
+              hintText: 'Enter new chat title',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              filled: true,
+              fillColor: Theme.of(context).colorScheme.surfaceContainer,
+            ),
             onSubmitted: (newTitle) {
               if (newTitle.trim().isNotEmpty) {
                 Navigator.of(context).pop();
@@ -493,7 +511,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 final newTitle = renameController.text.trim();
                 if (newTitle.isNotEmpty) {
@@ -739,62 +757,130 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 itemCount: currentChatList.length,
                 itemBuilder: (context, index) {
                   final chat = currentChatList[index];
-                  return ListTile(
-                    leading: chat.isPinned ? Icon(Icons.push_pin, color: Theme.of(context).primaryColor, size: 20) : null,
-                    title: Text(chat.title, style: TextStyle(fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.normal), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    subtitle: Text(
-                      _getChatSubtitle(chat),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: chat.id, isPinned: chat.isPinned, chatInfoStream: _chatInfoStream))),
-                    onLongPress: () => showModalBottomSheet(
-                      context: context,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      builder: (context) => Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Icon(Icons.push_pin_outlined),
-                              title: Text(chat.isPinned ? 'Unpin Chat' : 'Pin Chat'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                setState(() {
-                                  final updatedChat = chat.copyWith(isPinned: !chat.isPinned);
-                                  final chatIndex = _chats.indexWhere((c) => c.id == chat.id);
-                                  if (chatIndex != -1) _chats[chatIndex] = updatedChat;
-                                  _chats.sort((a, b) {
-                                    if (a.isPinned && !b.isPinned) return -1;
-                                    if (!a.isPinned && b.isPinned) return 1;
-                                    return 0;
+                  return Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      leading: chat.isPinned 
+                        ? Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.push_pin_rounded, 
+                              color: Theme.of(context).colorScheme.onPrimaryContainer, 
+                              size: 18,
+                            ),
+                          )
+                        : null,
+                      title: Text(
+                        chat.title, 
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: chat.isPinned ? FontWeight.w600 : FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ), 
+                        maxLines: 1, 
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        _getChatSubtitle(chat),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onTap: () => Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => ChatScreenCompact(
+                            chatId: chat.id, 
+                            isPinned: chat.isPinned, 
+                            chatInfoStream: _chatInfoStream,
+                          ),
+                        ),
+                      ),
+                      onLongPress: () => showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                        ),
+                        builder: (context) => Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ListTile(
+                                leading: Icon(
+                                  chat.isPinned ? Icons.push_pin_outlined : Icons.push_pin,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                                title: Text(
+                                  chat.isPinned ? 'Unpin Chat' : 'Pin Chat',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    final updatedChat = chat.copyWith(isPinned: !chat.isPinned);
+                                    final chatIndex = _chats.indexWhere((c) => c.id == chat.id);
+                                    if (chatIndex != -1) _chats[chatIndex] = updatedChat;
+                                    _chats.sort((a, b) {
+                                      if (a.isPinned && !b.isPinned) return -1;
+                                      if (!a.isPinned && b.isPinned) return 1;
+                                      return 0;
+                                    });
+                                    _saveChats();
                                   });
-                                  _saveChats();
-                                });
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.edit_outlined),
-                              title: const Text('Rename Chat'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _showRenameDialog(chat, _chats.indexWhere((c) => c.id == chat.id));
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.delete_outline, color: Colors.red),
-                              title: const Text('Delete Chat', style: TextStyle(color: Colors.red)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                setState(() {
-                                  _chats.removeWhere((c) => c.id == chat.id);
-                                  _saveChats();
-                                });
-                              },
-                            ),
-                          ],
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.edit_outlined,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                                title: Text(
+                                  'Rename Chat',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  _showRenameDialog(chat, _chats.indexWhere((c) => c.id == chat.id));
+                                },
+                              ),
+                              ListTile(
+                                leading: Icon(
+                                  Icons.delete_outline, 
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                                title: Text(
+                                  'Delete Chat', 
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _chats.removeWhere((c) => c.id == chat.id);
+                                    _saveChats();
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -803,55 +889,39 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
       ),
 
-      floatingActionButton: _chats.isEmpty ? null : Container(
-        margin: const EdgeInsets.only(bottom: 20, right: 4),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: Theme.of(context).dividerColor,
-              width: 1.5,
+      floatingActionButton: _chats.isEmpty ? null : Padding(
+        padding: const EdgeInsets.only(bottom: 20, right: 4),
+        child: FilledButton.icon(
+          onPressed: () {
+            MicroInteractions.lightImpact();
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) => ChatScreenCompact(
+                  chatId: DateTime.now().millisecondsSinceEpoch.toString(), 
+                  chatInfoStream: _chatInfoStream,
+                ),
+              ),
+            );
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
             ),
           ),
-                  child: AnimatedScaleButton(
-          onTap: () {
-            MicroInteractions.lightImpact();
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreenCompact(chatId: DateTime.now().millisecondsSinceEpoch.toString(), chatInfoStream: _chatInfoStream)));
-          },
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.add_rounded, 
-                      size: 16, 
-                      color: isLightTheme(context)
-                          ? const Color(0xFF374151) // Dark for light mode
-                          : Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'New Chat', 
-                    style: TextStyle(
-                      fontSize: 14, 
-                      fontWeight: FontWeight.w600,
-                      color: isLightTheme(context)
-                          ? const Color(0xFF374151) // Dark for light mode
-                          : Colors.white,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                ],
-              ),
+          icon: Icon(
+            Icons.add_rounded, 
+            size: 20,
+          ),
+          label: Text(
+            'New Chat', 
+            style: TextStyle(
+              fontSize: 14, 
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ),
