@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'chat_ui_components.dart';
 
 import 'main.dart';
 import 'ai_message_actions.dart';
@@ -341,41 +342,14 @@ class ChatUI {
 
   /// Build message content with markdown support
   static Widget buildMessageContent(String text, BuildContext context, {bool isUserMessage = false}) {
-    if (text.contains('```') || text.contains('**') || text.contains('*')) {
-      return MarkdownBody(
-        data: text,
-        styleSheet: MarkdownStyleSheet(
-          p: TextStyle(
-            fontSize: 16,
-            height: 1.4,
-            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-          code: TextStyle(
-            backgroundColor: Theme.of(context).cardColor,
-            fontSize: 14,
-            fontFamily: 'Courier',
-          ),
-          codeblockDecoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onTapLink: (text, href, title) {
-          if (href != null) {
-            launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
-          }
-        },
-      );
-    } else {
-      return SelectableText(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          height: 1.4,
-          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-        ),
-      );
-    }
+    // Use ChemJAX-enabled rendering for all messages
+    return ChatUIComponents.buildMessageWithChemJAX(
+      context: context,
+      content: text,
+      isUserMessage: isUserMessage,
+    );
+    
+    /* Original markdown-only code replaced with ChemJAX-enabled rendering above */
   }
 
   /// Build search results widget
