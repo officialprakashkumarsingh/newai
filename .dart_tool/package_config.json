@@ -164,6 +164,12 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "flutter_markdown_latex",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_markdown_latex-0.3.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "flutter_math_fork",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_math_fork-0.7.4",
       "packageUri": "lib/",
@@ -680,7 +686,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-11T12:56:21.874696Z",
+  "generated": "2025-08-11T12:57:45.297976Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///workspace/flutter",

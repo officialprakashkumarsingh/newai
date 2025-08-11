@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EnhancedContentWidget extends StatelessWidget {
@@ -17,25 +16,26 @@ class EnhancedContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if content contains LaTeX formulas
-    if (_containsLatexFormulas(content)) {
-      return _buildMixedContent(context);
-    }
-    
-    // For simple markdown without formulas
-    return _buildMarkdownContent(context);
+    // Use MarkdownBody with LaTeX extension for all content
+    return _buildMarkdownWithLatex(context);
   }
 
-  bool _containsLatexFormulas(String text) {
-    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||  // Display math
-           RegExp(r'\$[^$\n]+\$').hasMatch(text) ||     // Inline math
-           RegExp(r'\\ce\{[^}]+\}').hasMatch(text);     // Chemistry
-  }
-
-  Widget _buildMarkdownContent(BuildContext context) {
+  Widget _buildMarkdownWithLatex(BuildContext context) {
     return MarkdownBody(
       data: content,
       selectable: true,
+      builders: {
+        'latex': LatexElementBuilder(
+          textStyle: TextStyle(
+            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+          textScaleFactor: 1.0,
+        ),
+      },
+      extensionSet: md.ExtensionSet(
+        [LatexBlockSyntax()],
+        [LatexInlineSyntax()],
+      ),
       styleSheet: MarkdownStyleSheet(
         p: TextStyle(
           fontSize: 16.0,
@@ -89,123 +89,6 @@ class EnhancedContentWidget extends StatelessWidget {
           launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
         }
       },
-    );
-  }
-
-  Widget _buildMixedContent(BuildContext context) {
-    List<Widget> widgets = [];
-    String remaining = content;
-    
-    while (remaining.isNotEmpty) {
-      // Look for display math first ($$...$$)
-      final displayMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
-      if (displayMatch != null && displayMatch.start == 0) {
-        widgets.add(_buildDisplayMath(displayMatch.group(1)!, context));
-        remaining = remaining.substring(displayMatch.end);
-        continue;
-      }
-      
-      // Look for inline math ($...$)
-      final inlineMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
-      if (inlineMatch != null && inlineMatch.start == 0) {
-        widgets.add(_buildInlineMath(inlineMatch.group(1)!, context));
-        remaining = remaining.substring(inlineMatch.end);
-        continue;
-      }
-      
-      // Find next formula
-      int nextFormulaIndex = remaining.length;
-      
-      final nextDisplay = RegExp(r'\$\$[^$]+\$\$').firstMatch(remaining);
-      if (nextDisplay != null && nextDisplay.start < nextFormulaIndex) {
-        nextFormulaIndex = nextDisplay.start;
-      }
-      
-      final nextInline = RegExp(r'\$[^$\n]+\$').firstMatch(remaining);
-      if (nextInline != null && nextInline.start < nextFormulaIndex) {
-        nextFormulaIndex = nextInline.start;
-      }
-      
-      // Add text before next formula
-      if (nextFormulaIndex > 0) {
-        String textPart = remaining.substring(0, nextFormulaIndex);
-        if (textPart.trim().isNotEmpty) {
-          widgets.add(MarkdownBody(
-            data: textPart,
-            selectable: true,
-            styleSheet: MarkdownStyleSheet(
-              p: TextStyle(
-                fontSize: 16.0,
-                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-              ),
-            ),
-          ));
-        }
-        remaining = remaining.substring(nextFormulaIndex);
-      } else {
-        // No more formulas, add remaining text
-        if (remaining.trim().isNotEmpty) {
-          widgets.add(MarkdownBody(
-            data: remaining,
-            selectable: true,
-            styleSheet: MarkdownStyleSheet(
-              p: TextStyle(
-                fontSize: 16.0,
-                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-              ),
-            ),
-          ));
-        }
-        break;
-      }
-    }
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
-    );
-  }
-
-  Widget _buildDisplayMath(String latex, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(
-          color: Theme.of(context).dividerColor,
-          width: 1.0,
-        ),
-      ),
-      child: Center(
-        child: Math.tex(
-          latex,
-          textStyle: TextStyle(
-            fontSize: 20.0,
-            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInlineMath(String latex, BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-      margin: const EdgeInsets.symmetric(horizontal: 2.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Math.tex(
-        latex,
-        textStyle: TextStyle(
-          fontSize: 16.0,
-          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-        ),
-      ),
     );
   }
 }
