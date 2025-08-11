@@ -13,8 +13,6 @@ import 'background_pattern.dart';
 import 'universe_logo.dart';
 import 'dotted_background.dart';
 import 'dotted_appbar.dart';
-import 'animated_splash_screen.dart';
-// import 'background_service.dart'; // Temporarily disabled
 import 'package:google_fonts/google_fonts.dart';
 
 
@@ -214,12 +212,9 @@ class _AhamAppState extends State<AhamApp> {
           theme: ThemeNotifier.lightTheme,
           darkTheme: ThemeNotifier.darkTheme,
           themeMode: theme.themeMode,
-          home: AnimatedSplashScreen(
-            duration: const Duration(seconds: 3),
-            child: HomeScreen(
-              key: ValueKey(_sharedText), // Force rebuild when shared text changes
-              sharedText: _sharedText,
-            ),
+          home: HomeScreen(
+            key: ValueKey(_sharedText), // Force rebuild when shared text changes
+            sharedText: _sharedText,
           ),
         );
       },
