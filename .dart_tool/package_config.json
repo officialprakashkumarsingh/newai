@@ -164,6 +164,18 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_html_iframe",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_iframe-3.0.0-beta.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_html_svg",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_svg-3.0.0-beta.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "flutter_html_table",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_html_table-3.0.0-beta.2",
       "packageUri": "lib/",
@@ -186,6 +198,12 @@
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.26",
       "packageUri": "lib/",
       "languageVersion": "3.5"
+    },
+    {
+      "name": "flutter_svg",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/flutter_svg-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
     },
     {
       "name": "flutter_test",
@@ -360,6 +378,12 @@
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path-1.9.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "path_parsing",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/path_parsing-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "path_provider",
@@ -626,6 +650,24 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "vector_graphics",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_graphics-1.1.18",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "vector_graphics_codec",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "vector_graphics_compiler",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_graphics_compiler-1.1.16",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -642,6 +684,30 @@
       "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/web-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "webview_flutter",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter-4.10.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "webview_flutter_android",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter_android-4.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "webview_flutter_platform_interface",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter_platform_interface-2.13.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "webview_flutter_wkwebview",
+      "rootUri": "file:///home/ubuntu/.pub-cache/hosted/pub.dev/webview_flutter_wkwebview-3.22.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
     },
     {
       "name": "win32",
@@ -674,7 +740,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-08-11T13:35:00.157198Z",
+  "generated": "2025-08-11T13:36:13.977675Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///workspace/flutter",
