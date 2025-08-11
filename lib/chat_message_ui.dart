@@ -25,31 +25,54 @@ class ChatMessageUI {
     required Function(String) onCopy,
     required Function() onRegenerate,
     required Function() onUserMessageOptions,
+    Function(String)? onVariation,
+    int? activeActionsIndex,
+    required Function(int?) onToggleActions,
   }) {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
     final showActionButtons = index > 0 && isModelMessage && 
                               message.type == MessageType.text &&
                               message.presentationData == null && message.diagramData == null && message.imageUrl == null;
+    final actionsVisible = activeActionsIndex == index;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
         crossAxisAlignment: isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: isUserMessage 
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                : Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: isUserMessage 
-                ? null 
-                : Border.all(color: Theme.of(context).dividerColor.withOpacity(0.3)),
+          GestureDetector(
+            onLongPress: isUserMessage ? onUserMessageOptions : null,
+            onTap: !isUserMessage && showActionButtons ? () {
+              onToggleActions(actionsVisible ? null : index);
+            } : null,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.8,
+              ),
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: isUserMessage
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(18),
+                border: !isUserMessage && showActionButtons && actionsVisible ? Border.all(
+                  color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  width: 1.5,
+                ) : null,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
             ),
-            child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context),
           ),
           
           // Research widget if present
@@ -63,16 +86,15 @@ class ChatMessageUI {
           if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty)
             buildSearchResultsWidget(message.searchResults!, context),
           
-          // Action buttons for AI messages
+          // Action buttons for AI messages - shown only when message is clicked
           if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
-            AnimatedSlideIn(
-              delay: Duration(milliseconds: 200),
-              child: ImprovedAiMessageActions(
-                key: ValueKey('actions_${chatId}_$index'),
-                messageText: message.text,
-                onCopy: () => onCopy(message.text),
-                onRegenerate: onRegenerate,
-              ),
+            ImprovedAiMessageActions(
+              key: ValueKey('actions_${chatId}_$index'),
+              messageText: message.text,
+              onCopy: () => onCopy(message.text),
+              onRegenerate: onRegenerate,
+              onVariation: onVariation,
+              showActions: actionsVisible,
             ),
         ],
       ),

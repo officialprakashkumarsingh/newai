@@ -63,13 +63,17 @@ class ChatUI {
     required Function(String) onCopy,
     required Function() onRegenerate,
     required Function() onUserMessageOptions,
+    Function(String)? onVariation,
     bool isStreaming = false,
+    int? activeActionsIndex,
+    required Function(int?) onToggleActions,
   }) {
     final isUserMessage = message.role == 'user';
     final isModelMessage = message.role == 'model';
     final showActionButtons = index > 0 && isModelMessage && !isStreaming && 
                               message.type == MessageType.text &&
                               message.presentationData == null && message.diagramData == null && message.imageUrl == null;
+    final actionsVisible = activeActionsIndex == index;
     
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
@@ -96,10 +100,24 @@ class ChatUI {
               ),
             )
           else
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context, isStreaming: isStreaming),
+            GestureDetector(
+              onTap: showActionButtons ? () {
+                onToggleActions(actionsVisible ? null : index);
+              } : null,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: showActionButtons && actionsVisible ? Border.all(
+                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    width: 1.5,
+                  ) : null,
+                ),
+                child: _buildMessageContent(message, isUserMessage, onUserMessageOptions, context, isStreaming: isStreaming),
+              ),
             ),
           
           // Research widget if present
@@ -113,16 +131,15 @@ class ChatUI {
           if (isModelMessage && message.searchResults != null && message.searchResults!.isNotEmpty)
             buildSearchResultsWidget(message.searchResults!, context),
           
-          // Action buttons for AI messages - hidden during streaming
+          // Action buttons for AI messages - shown only when message is clicked
           if (showActionButtons && message.text.isNotEmpty && !message.text.startsWith('❌ Error:'))
-            AnimatedSlideIn(
-              delay: Duration(milliseconds: 200),
-              child: ImprovedAiMessageActions(
-                key: ValueKey('actions_${chatId}_$index'),
-                messageText: message.text,
-                onCopy: () => onCopy(message.text),
-                onRegenerate: onRegenerate,
-              ),
+            ImprovedAiMessageActions(
+              key: ValueKey('actions_${chatId}_$index'),
+              messageText: message.text,
+              onCopy: () => onCopy(message.text),
+              onRegenerate: onRegenerate,
+              onVariation: onVariation,
+              showActions: actionsVisible,
             ),
         ],
       ),
@@ -371,16 +388,17 @@ class ChatUI {
     );
   }
 
-  /// Build the main chat screen layout
-  static Widget buildChatLayout({
+  /// Build main chat interface with enhanced animation and interaction
+  static Widget buildChatInterface({
     required BuildContext context,
-    required String chatTitle,
-    required ScrollController scrollController,
     required List<ChatMessage> messages,
+    required String chatTitle,
     required String chatId,
+    required ScrollController scrollController,
     required Function(String) onCopy,
     required Function(int) onRegenerate,
     required Function(int) onUserMessageOptions,
+    Function(String)? onVariation,
     required List<String> messageQueue,
     required bool isProcessingQueue,
     required dynamic attachment,
@@ -389,6 +407,8 @@ class ChatUI {
     required bool isStreaming,
     required Function() onScrollToBottom,
     required Widget inputField,
+    int? activeActionsIndex,
+    required Function(int?) onToggleActions,
   }) {
     return Scaffold(
       appBar: DottedAppBar(
@@ -413,7 +433,10 @@ class ChatUI {
                     onCopy: onCopy,
                     onRegenerate: () => onRegenerate(index - 1),
                     onUserMessageOptions: () => onUserMessageOptions(index),
+                    onVariation: onVariation,
                     isStreaming: isStreaming,
+                    activeActionsIndex: activeActionsIndex,
+                    onToggleActions: onToggleActions,
                   ),
                   cacheExtent: 1000.0,
                   addAutomaticKeepAlives: false,

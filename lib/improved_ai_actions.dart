@@ -8,6 +8,7 @@ class ImprovedAiMessageActions extends StatefulWidget {
   final String messageText;
   final VoidCallback onCopy;
   final VoidCallback onRegenerate;
+  final Function(String)? onVariation; // New callback for variations
   final bool showActions;
   final VoidCallback? onToggleActions;
 
@@ -16,6 +17,7 @@ class ImprovedAiMessageActions extends StatefulWidget {
     required this.messageText,
     required this.onCopy,
     required this.onRegenerate,
+    this.onVariation,
     this.showActions = false,
     this.onToggleActions,
   });
@@ -210,6 +212,83 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
     }
   }
 
+  Future<void> _handleVariation(String type) async {
+    HapticFeedback.mediumImpact();
+    if (widget.onVariation != null) {
+      String prompt = _getVariationPrompt(type);
+      widget.onVariation!(prompt);
+    }
+  }
+
+  String _getVariationPrompt(String type) {
+    switch (type) {
+      case 'expand':
+        return 'Please expand on this response with more details and examples:\n\n${widget.messageText}';
+      case 'shorten':
+        return 'Please provide a shorter, more concise version of this response:\n\n${widget.messageText}';
+      case 'simplify':
+        return 'Please simplify this response using easier language:\n\n${widget.messageText}';
+      case 'technical':
+        return 'Please provide a more technical and detailed version of this response:\n\n${widget.messageText}';
+      case 'creative':
+        return 'Please rewrite this response in a more creative and engaging way:\n\n${widget.messageText}';
+      case 'formal':
+        return 'Please rewrite this response in a more formal tone:\n\n${widget.messageText}';
+      case 'casual':
+        return 'Please rewrite this response in a more casual, conversational tone:\n\n${widget.messageText}';
+      case 'bullet':
+        return 'Please convert this response into a bullet-point format:\n\n${widget.messageText}';
+      default:
+        return 'Please provide an alternative version of this response:\n\n${widget.messageText}';
+    }
+  }
+
+  void _showVariationMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<String>(
+      context: context,
+      position: position,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      items: [
+        _buildVariationMenuItem('expand', Icons.expand_more, 'Expand Response'),
+        _buildVariationMenuItem('shorten', Icons.compress, 'Shorten Response'),
+        _buildVariationMenuItem('simplify', Icons.lightbulb_outline, 'Simplify Language'),
+        _buildVariationMenuItem('technical', Icons.engineering, 'More Technical'),
+        _buildVariationMenuItem('creative', Icons.brush, 'More Creative'),
+        _buildVariationMenuItem('formal', Icons.business, 'More Formal'),
+        _buildVariationMenuItem('casual', Icons.chat_bubble_outline, 'More Casual'),
+        _buildVariationMenuItem('bullet', Icons.format_list_bulleted, 'Bullet Points'),
+      ],
+    ).then((value) {
+      if (value != null) {
+        _handleVariation(value);
+      }
+    });
+  }
+
+  PopupMenuItem<String> _buildVariationMenuItem(String value, IconData icon, String text) {
+    return PopupMenuItem<String>(
+      value: value,
+      child: Row(
+        children: [
+          Icon(icon, size: 20),
+          const SizedBox(width: 12),
+          Text(text),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -338,6 +417,19 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
                       },
                     ),
                   ),
+                  
+                  // Variation button with menu
+                  if (widget.onVariation != null)
+                    Builder(
+                      builder: (context) => _AnimatedActionButton(
+                        onTap: () => _showVariationMenu(context),
+                        tooltip: 'Modify response',
+                        child: const Icon(
+                          Icons.tune,
+                          size: 18,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

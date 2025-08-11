@@ -51,6 +51,7 @@ class ChatScreenCompact extends StatefulWidget {
 class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindingObserver {
   late ChatState _chatState;
   late DiagramHandler _diagramHandler;
+  int? _activeActionsIndex; // Track which message has visible actions
 
   @override
   void initState() {
@@ -60,6 +61,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     // Initialize state
     _chatState = ChatState();
     _diagramHandler = DiagramHandler(context);
+    _activeActionsIndex = null; // Initialize to null
     
     // Setup initial chat
     _setupChat();
@@ -314,7 +316,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Send text message
   Future<void> _sendTextMessage(String input) async {
-    await ChatLogic.sendTextMessage(
+    await ChatLogic.sendChatMessage(
       input: input,
       messages: _chatState.messages,
       selectedModel: _chatState.selectedModel,
@@ -324,9 +326,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       scrollToBottom: _chatState.scrollToBottom,
       startStreaming: () => _chatState.startStreaming(),
       stopStreaming: () => _chatState.stopStreaming(),
-      onStreamingComplete: _onStreamingDone,
-      attachment: _chatState.attachment,
-      context: context,
     );
   }
 
@@ -656,15 +655,16 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       value: _chatState,
       child: Consumer<ChatState>(
         builder: (context, chatState, child) {
-          return ChatUI.buildChatLayout(
+          return ChatUI.buildChatInterface(
             context: context,
-            chatTitle: chatState.displayTitle,
-            scrollController: chatState.scrollController,
             messages: chatState.messages,
+            chatTitle: chatState.displayTitle,
             chatId: widget.chatId,
+            scrollController: chatState.scrollController,
             onCopy: _copyToClipboard,
             onRegenerate: _regenerateResponse,
             onUserMessageOptions: _showUserMessageOptions,
+            onVariation: _handleVariation,
             messageQueue: chatState.messageQueue,
             isProcessingQueue: chatState.isProcessingQueue,
             attachment: chatState.attachment,
@@ -673,10 +673,30 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
             isStreaming: chatState.isStreaming,
             onScrollToBottom: chatState.scrollToBottom,
             inputField: _buildInputField(chatState),
+            activeActionsIndex: _activeActionsIndex,
+            onToggleActions: _toggleActions,
           );
         },
       ),
     );
+  }
+
+  /// Toggle action buttons visibility for a specific message
+  void _toggleActions(int? index) {
+    setState(() {
+      _activeActionsIndex = index;
+    });
+  }
+
+  /// Handle response variation requests
+  void _handleVariation(String prompt) {
+    // Clear current actions
+    setState(() {
+      _activeActionsIndex = null;
+    });
+    
+    // Send the variation prompt as a new message
+    _sendMessage(prompt);
   }
 
   /// Build input field using ChatWidgets
