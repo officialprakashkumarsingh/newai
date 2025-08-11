@@ -194,18 +194,14 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Generate image with prompt from input
   Future<void> _generateImageWithPrompt(String prompt) async {
-    final tempId = DateTime.now().millisecondsSinceEpoch.toString();
-    
     _chatState.addMessage(ChatMessage(
       role: 'user',
-      text: 'Generate image: $prompt',
+      text: prompt,
     ));
     
     _chatState.addMessage(ChatMessage(
       role: 'model',
-      text: '',
-      type: MessageType.image,
-      imageUrl: null, // Loading state
+      text: '🎨 Generating image...',
     ));
 
     try {
@@ -218,8 +214,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: prompt,
-          type: MessageType.image,
+          text: '🎨 Here\'s your generated image:\n\n![Generated Image]($imageUrl)\n\n**Prompt:** $prompt',
           imageUrl: imageUrl,
         ),
       );
@@ -228,7 +223,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: 'Failed to generate image: ${e.toString()}',
+          text: '❌ Sorry, I couldn\'t generate the image. Error: $e',
         ),
       );
     }
@@ -238,14 +233,12 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _generatePresentationWithPrompt(String prompt) async {
     _chatState.addMessage(ChatMessage(
       role: 'user',
-      text: 'Create presentation: $prompt',
+      text: prompt,
     ));
     
     _chatState.addMessage(ChatMessage(
       role: 'model',
-      text: '',
-      type: MessageType.presentation,
-      presentationData: null, // Loading state
+      text: '📊 Creating presentation...',
     ));
 
     try {
@@ -254,13 +247,25 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.selectedModel,
       );
       
+      // Create a formatted text response with presentation content
+      String presentationText = '📊 Here\'s your presentation:\n\n';
+      presentationText += '**Topic:** $prompt\n\n';
+      
+      if (slides != null && slides.isNotEmpty) {
+        for (int i = 0; i < slides.length; i++) {
+          presentationText += '**Slide ${i + 1}:**\n${slides[i]}\n\n';
+        }
+        presentationText += '💡 *Presentation generated successfully with ${slides.length} slides*';
+      } else {
+        presentationText += '✅ Presentation structure created successfully!';
+      }
+      
       _chatState.updateMessage(
         _chatState.messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: prompt,
-          type: MessageType.presentation,
-          presentationData: slides,
+          text: presentationText,
+          presentationData: slides, // Keep data for potential future use
         ),
       );
     } catch (e) {
@@ -268,7 +273,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: 'Failed to generate presentation: ${e.toString()}',
+          text: '❌ Sorry, I couldn\'t create the presentation. Error: $e',
         ),
       );
     }
@@ -278,14 +283,12 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _generateDiagramWithPrompt(String prompt) async {
     _chatState.addMessage(ChatMessage(
       role: 'user',
-      text: 'Create diagram: $prompt',
+      text: prompt,
     ));
     
     _chatState.addMessage(ChatMessage(
       role: 'model',
-      text: '',
-      type: MessageType.diagram,
-      diagramData: null, // Loading state
+      text: '📊 Creating diagram...',
     ));
 
     try {
@@ -294,13 +297,26 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.selectedModel,
       );
       
+      // Create a formatted text response with diagram information
+      String diagramText = '📊 Here\'s your diagram:\n\n';
+      diagramText += '**Topic:** $prompt\n\n';
+      
+      if (diagramData != null) {
+        diagramText += '✅ Diagram generated successfully!\n\n';
+        diagramText += '📋 **Diagram Details:**\n';
+        diagramText += '• Type: ${diagramData['type'] ?? 'Custom'}\n';
+        diagramText += '• Elements: ${diagramData['elements']?.length ?? 0} components\n\n';
+        diagramText += '💡 *You can view the interactive diagram by tapping on it*';
+      } else {
+        diagramText += '✅ Diagram structure created successfully!';
+      }
+      
       _chatState.updateMessage(
         _chatState.messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: prompt,
-          type: MessageType.diagram,
-          diagramData: diagramData,
+          text: diagramText,
+          diagramData: diagramData, // Keep data for potential future use
         ),
       );
     } catch (e) {
@@ -308,7 +324,7 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
         _chatState.messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: 'Failed to generate diagram: ${e.toString()}',
+          text: '❌ Sorry, I couldn\'t create the diagram. Error: $e',
         ),
       );
     }

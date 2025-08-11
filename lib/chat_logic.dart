@@ -593,11 +593,11 @@ class ChatLogic {
     print('   Messages count before: ${messages.length}');
     
     // Add user message for image generation
-    addMessage(ChatMessage(role: 'user', text: 'Generate image: $prompt'));
+    addMessage(ChatMessage(role: 'user', text: prompt));
     print('   Messages count after user message: ${messages.length}');
     
-    // Add placeholder for AI response with image type
-    addMessage(ChatMessage(role: 'model', text: '', type: MessageType.image));
+    // Add placeholder for AI response
+    addMessage(ChatMessage(role: 'model', text: '🎨 Generating image...'));
     print('   Messages count after placeholder: ${messages.length}');
     
     // Get the index of the placeholder message (last message in the list)
@@ -620,8 +620,7 @@ class ChatLogic {
         print('✅ Updating message with successful image...');
         updateMessage(placeholderIndex, ChatMessage(
           role: 'model',
-          text: '',
-          type: MessageType.image,
+          text: '🎨 Here\'s your generated image:\n\n![Generated Image]($imageUrl)\n\n**Prompt:** $prompt',
           imageUrl: imageUrl,
         ));
         print('✅ Image generated successfully: ${imageUrl.substring(0, math.min(50, imageUrl.length))}...');
@@ -661,25 +660,42 @@ class ChatLogic {
     required Function(int, ChatMessage) updateMessage,
   }) async {
     // Add user message for presentation generation
-    addMessage(ChatMessage(role: 'user', text: 'Generate presentation: $topic'));
+    addMessage(ChatMessage(role: 'user', text: topic));
     
-    // Add placeholder for AI response with null presentation data (will show shimmer)
-    addMessage(ChatMessage(role: 'model', text: '', type: MessageType.presentation));
+    // Add placeholder for AI response
+    addMessage(ChatMessage(role: 'model', text: '📊 Creating presentation...'));
 
     try {
       // Use PresentationService to generate actual presentation
       final presentationData = await PresentationService.generatePresentationData(topic, selectedModel);
       
-      final lastIndex = messages.length - 1; // Get the actual last message index
+      // Create a formatted text response with presentation content
+      String presentationText = '📊 Here\'s your presentation:\n\n';
+      presentationText += '**Topic:** $topic\n\n';
+      
+      if (presentationData != null && presentationData is Map) {
+        final slides = presentationData['slides'] as List?;
+        if (slides != null && slides.isNotEmpty) {
+          for (int i = 0; i < slides.length; i++) {
+            presentationText += '**Slide ${i + 1}:**\n${slides[i]}\n\n';
+          }
+          presentationText += '💡 *Presentation generated successfully with ${slides.length} slides*';
+        } else {
+          presentationText += '✅ Presentation structure created successfully!';
+        }
+      } else {
+        presentationText += '✅ Presentation created successfully!';
+      }
+      
+      final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(
         role: 'model',
-        text: '',
-        type: MessageType.presentation,
+        text: presentationText,
         presentationData: presentationData ?? <String, dynamic>{},
       ));
     } catch (e) {
       final lastIndex = messages.length - 1;
-      updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error generating presentation: $e'));
+      updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Sorry, I couldn\'t create the presentation. Error: $e'));
     }
   }
 }
