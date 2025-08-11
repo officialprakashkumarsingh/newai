@@ -316,6 +316,27 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
   /// Send text message
   Future<void> _sendTextMessage(String input) async {
+    // Ensure model is loaded before sending message
+    if (_chatState.selectedModel.isEmpty) {
+      print('🔧 CHAT: No model selected, loading default model...');
+      try {
+        final models = await ApiService.getAvailableModels();
+        if (models.isNotEmpty) {
+          _chatState.setSelectedModel(models.first);
+          print('🔧 CHAT: Loaded default model: ${models.first}');
+        } else {
+          print('❌ CHAT: No models available!');
+          _addMessage(ChatMessage(role: 'model', text: '❌ Error: No AI models available. Please check your connection.'));
+          return;
+        }
+      } catch (e) {
+        print('❌ CHAT: Error loading models: $e');
+        _addMessage(ChatMessage(role: 'model', text: '❌ Error: Failed to load AI models. Please try again.'));
+        return;
+      }
+    }
+    
+    print('🚀 CHAT: Sending message with model: ${_chatState.selectedModel}');
     await ChatLogic.sendChatMessage(
       input: input,
       messages: _chatState.messages,
@@ -333,6 +354,27 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
   Future<void> _sendVisionMessage(String input) async {
     if (_chatState.attachedImage == null) return;
     
+    // Ensure model is loaded before sending vision message
+    if (_chatState.selectedModel.isEmpty) {
+      print('🔧 VISION: No model selected, loading default model...');
+      try {
+        final models = await ApiService.getAvailableModels();
+        if (models.isNotEmpty) {
+          _chatState.setSelectedModel(models.first);
+          print('🔧 VISION: Loaded default model: ${models.first}');
+        } else {
+          print('❌ VISION: No models available!');
+          _addMessage(ChatMessage(role: 'model', text: '❌ Error: No AI models available for vision. Please check your connection.'));
+          return;
+        }
+      } catch (e) {
+        print('❌ VISION: Error loading models: $e');
+        _addMessage(ChatMessage(role: 'model', text: '❌ Error: Failed to load AI models for vision. Please try again.'));
+        return;
+      }
+    }
+    
+    print('🚀 VISION: Sending vision message with model: ${_chatState.selectedModel}');
     await ChatLogic.sendVisionMessage(
       input: input,
       imageFile: _chatState.attachedImage!,
