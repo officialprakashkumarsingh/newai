@@ -137,10 +137,23 @@ class ChatLogic {
     required Function() scrollToBottom,
     required Function() startStreaming,
     required Function() stopStreaming,
-    Function()? onStreamingComplete,
-    dynamic attachment,
-    BuildContext? context,
+    required Function() updateUI,
+    String? webSearchResults,
+    List<SearchResult>? lastSearchResults,
+    DiagramHandler? diagramHandler,
   }) async {
+    print('🚀 CHAT LOGIC: Starting sendChatMessage');
+    print('🚀 CHAT LOGIC: Input: ${input.substring(0, math.min(100, input.length))}...');
+    print('🚀 CHAT LOGIC: Selected Model: $selectedModel');
+    print('🚀 CHAT LOGIC: Messages count: ${messages.length}');
+    
+    if (selectedModel.isEmpty) {
+      print('❌ CHAT LOGIC: No model selected!');
+      stopStreaming();
+      addMessage(ChatMessage(role: 'model', text: '❌ Error: No AI model selected. Please select a model from settings.'));
+      return;
+    }
+
     if (input.trim().isEmpty && attachment == null) return;
 
     // Add user message
