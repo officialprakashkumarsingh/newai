@@ -159,8 +159,6 @@ class ChatLogic {
     final userMessage = ChatMessage(
       role: 'user',
       text: input,
-      attachedFileName: attachment?.fileName,
-      attachedContainedFiles: attachment?.containedFileNames,
     );
     addMessage(userMessage);
 
@@ -198,8 +196,7 @@ class ChatLogic {
       // Stop streaming on error
       print('❌ CHAT LOGIC: Error in sendChatMessage: $e');
       stopStreaming();
-      final lastIndex = messages.length - 1;
-      updateMessage(lastIndex, ChatMessage(role: 'model', text: '❌ Error: $e'));
+      addMessage(ChatMessage(role: 'model', text: '❌ Error: $e'));
     }
   }
 

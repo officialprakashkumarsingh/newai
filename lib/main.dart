@@ -877,18 +877,47 @@ class _AutoNavigateToChatState extends State<_AutoNavigateToChat> {
   @override
   void initState() {
     super.initState();
-    // Navigate to new chat after the current build completes
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChatScreenCompact(
-            chatId: DateTime.now().millisecondsSinceEpoch.toString(),
-            initialMessage: '',
-            chatInfoStream: widget.chatInfoStream,
+    print('🔄 AUTO-NAV: Starting auto-navigation to new chat');
+    // Navigate to new chat after the current build completes and ensure model is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      print('🔄 AUTO-NAV: Post-frame callback triggered');
+      
+      // Wait a moment for any ongoing initialization to complete
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Check if model is available
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        String selectedModel = prefs.getString('chat_model') ?? '';
+        
+        if (selectedModel.isEmpty) {
+          print('🔄 AUTO-NAV: No model selected, loading default model');
+          final models = await ApiService.getAvailableModels();
+          if (models.isNotEmpty) {
+            selectedModel = models.first;
+            await prefs.setString('chat_model', selectedModel);
+            print('🔄 AUTO-NAV: Set default model: $selectedModel');
+          }
+        } else {
+          print('🔄 AUTO-NAV: Using existing model: $selectedModel');
+        }
+      } catch (e) {
+        print('❌ AUTO-NAV: Error loading model: $e');
+      }
+      
+      if (mounted) {
+        print('🔄 AUTO-NAV: Navigating to ChatScreenCompact');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreenCompact(
+              chatId: DateTime.now().millisecondsSinceEpoch.toString(),
+              initialMessage: '',
+              chatInfoStream: widget.chatInfoStream,
+            ),
           ),
-        ),
-      );
+        );
+      }
     });
   }
 
