@@ -7,21 +7,23 @@ import 'flutter_tex_widget.dart';
 class EnhancedContentWidget extends StatelessWidget {
   final String content;
   final bool isUserMessage;
+  final bool isThinkingMode;
 
   const EnhancedContentWidget({
     super.key,
     required this.content,
     this.isUserMessage = false,
+    this.isThinkingMode = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Check if content contains formulas
-    if (_containsFormulas(content)) {
+    // Only process formulas in thinking mode
+    if (isThinkingMode && _containsFormulas(content)) {
       return _buildEnhancedContent(context);
     }
     
-    // For simple content, use HTML widget with markdown conversion
+    // For normal mode or simple content, use HTML widget with markdown conversion
     return _buildHtmlContent(context);
   }
 

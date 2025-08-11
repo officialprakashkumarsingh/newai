@@ -267,10 +267,12 @@ class ChatUIComponents {
     required BuildContext context,
     required String content,
     required bool isUserMessage,
+    bool isThinkingMode = false,
   }) {
     return EnhancedContentWidget(
       content: content,
       isUserMessage: isUserMessage,
+      isThinkingMode: isThinkingMode,
     );
   }
 }

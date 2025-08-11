@@ -175,6 +175,7 @@ class _ChatScreenSimpleState extends State<ChatScreenSimple> {
               : EnhancedContentWidget(
                   content: message.text,
                   isUserMessage: false,
+                  isThinkingMode: false,
                 ),
         ),
       );

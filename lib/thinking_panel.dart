@@ -151,6 +151,7 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
               child: EnhancedContentWidget(
                 content: widget.thinkingContent,
                 isUserMessage: false,
+                isThinkingMode: true,
               ),
             ),
           ),
@@ -161,6 +162,7 @@ class _ThinkingPanelState extends State<ThinkingPanel> with SingleTickerProvider
           EnhancedContentWidget(
             content: widget.finalContent,
             isUserMessage: false,
+            isThinkingMode: true,
           ),
       ],
     );

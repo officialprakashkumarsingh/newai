@@ -231,10 +231,11 @@ class ChatMessageUI {
   }
 
   /// Build message content with enhanced support for HTML, LaTeX, and ChemJAX
-  static Widget buildMessageContent(String text, BuildContext context) {
+  static Widget buildMessageContent(String text, BuildContext context, {bool isThinkingMode = false}) {
     return EnhancedContentWidget(
       content: text,
       isUserMessage: false,
+      isThinkingMode: isThinkingMode,
     );
   }
 
