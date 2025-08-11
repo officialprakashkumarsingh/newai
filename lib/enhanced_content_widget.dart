@@ -26,18 +26,20 @@ class EnhancedContentWidget extends StatelessWidget {
   }
 
   bool _containsChemicalFormulas(String text) {
-    // Check for ChemJAX patterns
-    return RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text) ||
-           RegExp(r'\\ce\{[^}]+\}').hasMatch(text) ||
+    // Check for ChemJAX patterns - be more flexible
+    return RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text) ||      // $\ce{...}$
+           RegExp(r'\$ *\\ce\{[^}]+\} *\$').hasMatch(text) ||  // $ \ce{...} $ (with spaces)
+           RegExp(r'\\ce\{[^}]+\}').hasMatch(text) ||          // \ce{...}
            ChemJAXUtils.containsChemicalFormula(text);
   }
 
   bool _containsLatex(String text) {
-    // Check for LaTeX math patterns
-    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||  // Display math
-           RegExp(r'\$[^$]+\$').hasMatch(text) ||       // Inline math (excluding ChemJAX)
-           RegExp(r'\\begin\{[^}]+\}').hasMatch(text) || // LaTeX environments
-           RegExp(r'\\[a-zA-Z]+\{').hasMatch(text);     // LaTeX commands
+    // Check for LaTeX math patterns - be more aggressive
+    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||          // Display math $$...$$
+           RegExp(r'\$[^$\n]+\$').hasMatch(text) ||             // Inline math $...$ (not spanning lines)
+           RegExp(r'\\begin\{[^}]+\}').hasMatch(text) ||        // LaTeX environments
+           RegExp(r'\\[a-zA-Z]+\{').hasMatch(text) ||           // LaTeX commands
+           RegExp(r'\$[^$]*\\[a-zA-Z]+[^$]*\$').hasMatch(text); // $...with LaTeX commands...$
   }
 
   Widget _buildEnhancedContent(BuildContext context) {
@@ -52,13 +54,29 @@ class EnhancedContentWidget extends StatelessWidget {
     String remaining = content;
     
     while (remaining.isNotEmpty) {
-      // Look for ChemJAX formulas first (highest priority)
-      final chemjaxMatch = RegExp(r'\$\\ce\{([^}]+)\}\$').firstMatch(remaining);
+      // Look for ChemJAX formulas first (highest priority) - try multiple patterns
+      RegExpMatch? chemjaxMatch;
+      String? matchedFormula;
+      
+      // Pattern 1: $\ce{...}$
+      chemjaxMatch = RegExp(r'\$\\ce\{([^}]+)\}\$').firstMatch(remaining);
       if (chemjaxMatch != null && chemjaxMatch.start == 0) {
+        matchedFormula = chemjaxMatch.group(0)!;
+      }
+      
+      // Pattern 2: $ \ce{...} $ (with spaces)
+      if (chemjaxMatch == null) {
+        chemjaxMatch = RegExp(r'\$ *\\ce\{([^}]+)\} *\$').firstMatch(remaining);
+        if (chemjaxMatch != null && chemjaxMatch.start == 0) {
+          matchedFormula = chemjaxMatch.group(0)!;
+        }
+      }
+      
+      if (chemjaxMatch != null && chemjaxMatch.start == 0 && matchedFormula != null) {
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: ChemJAXWidget(
-            formula: r'$\ce{' + chemjaxMatch.group(1)! + r'}$',
+            formula: matchedFormula,
             textStyle: TextStyle(
               fontSize: 16,
               color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
@@ -94,10 +112,11 @@ class EnhancedContentWidget extends StatelessWidget {
       }
       
       // Look for inline math ($...$) but exclude ChemJAX
-      final inlineMathMatch = RegExp(r'\$([^$]+)\$').firstMatch(remaining);
+      final inlineMathMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
       if (inlineMathMatch != null && 
           inlineMathMatch.start == 0 && 
-          !inlineMathMatch.group(1)!.startsWith(r'\ce{')) {
+          !inlineMathMatch.group(1)!.trim().startsWith(r'\ce{') &&
+          !inlineMathMatch.group(0)!.contains(r'\ce{')) {
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
           child: ChemJAXWidget(
@@ -120,9 +139,15 @@ class EnhancedContentWidget extends StatelessWidget {
       // Find the next special content
       int nextSpecialIndex = remaining.length;
       
-      final nextChemjax = RegExp(r'\$\\ce\{[^}]+\}\$').firstMatch(remaining);
-      if (nextChemjax != null) {
-        nextSpecialIndex = nextChemjax.start;
+      // Look for ChemJAX patterns
+      final nextChemjax1 = RegExp(r'\$\\ce\{[^}]+\}\$').firstMatch(remaining);
+      final nextChemjax2 = RegExp(r'\$ *\\ce\{[^}]+\} *\$').firstMatch(remaining);
+      
+      if (nextChemjax1 != null && nextChemjax1.start < nextSpecialIndex) {
+        nextSpecialIndex = nextChemjax1.start;
+      }
+      if (nextChemjax2 != null && nextChemjax2.start < nextSpecialIndex) {
+        nextSpecialIndex = nextChemjax2.start;
       }
       
       final nextDisplayMath = RegExp(r'\$\$[^$]+\$\$').firstMatch(remaining);
@@ -130,7 +155,7 @@ class EnhancedContentWidget extends StatelessWidget {
         nextSpecialIndex = nextDisplayMath.start;
       }
       
-      final nextInlineMath = RegExp(r'\$[^$]+\$').firstMatch(remaining);
+      final nextInlineMath = RegExp(r'\$[^$\n]+\$').firstMatch(remaining);
       if (nextInlineMath != null && 
           nextInlineMath.start < nextSpecialIndex &&
           !nextInlineMath.group(0)!.contains(r'\ce{')) {
