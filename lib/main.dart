@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // <-- FIXED: Correct import path
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_tex/flutter_tex.dart';
 import 'voice_controller.dart';
 import 'voice_animation_widget.dart';
 import 'background_pattern.dart';

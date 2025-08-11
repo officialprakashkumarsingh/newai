@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'flutter_tex_widget.dart';
 
 class EnhancedContentWidget extends StatelessWidget {
   final String content;
@@ -17,116 +17,19 @@ class EnhancedContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Process formulas in BOTH thinking mode AND normal mode
-    if (_containsFormulas(content)) {
-      return _buildEnhancedContent(context);
+    // Check if content contains LaTeX formulas
+    if (_containsLatexFormulas(content)) {
+      return _buildMixedContent(context);
     }
     
-    // For simple content without formulas, use MarkdownBody widget
+    // For simple markdown without formulas
     return _buildMarkdownContent(context);
   }
 
-  bool _containsFormulas(String text) {
-    // Use flutter_tex formula detection
-    return FlutterTexUtils.containsFormula(text);
-  }
-
-  Widget _buildEnhancedContent(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: _parseAndRenderContent(context),
-    );
-  }
-
-  List<Widget> _parseAndRenderContent(BuildContext context) {
-    List<Widget> widgets = [];
-    String remaining = content;
-    
-    while (remaining.isNotEmpty) {
-      // Look for display math ($$...$$) first
-      final displayMathMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
-      if (displayMathMatch != null && displayMathMatch.start == 0) {
-        widgets.add(FlutterTexWidget(
-          content: displayMathMatch.group(0)!,
-          isUserMessage: isUserMessage,
-          textStyle: TextStyle(
-            fontSize: 18,
-            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-        ));
-        remaining = remaining.substring(displayMathMatch.end);
-        continue;
-      }
-      
-      // Look for inline math/chemistry ($...$)
-      final inlineMathMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
-      if (inlineMathMatch != null && inlineMathMatch.start == 0) {
-        widgets.add(FlutterTexWidget(
-          content: inlineMathMatch.group(0)!,
-          isUserMessage: isUserMessage,
-          textStyle: TextStyle(
-            fontSize: 16,
-            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-        ));
-        remaining = remaining.substring(inlineMathMatch.end);
-        continue;
-      }
-      
-      // Look for chemical formulas without $ symbols
-      final chemMatch = RegExp(r'\\ce\{([^}]+)\}').firstMatch(remaining);
-      if (chemMatch != null && chemMatch.start == 0) {
-        widgets.add(FlutterTexWidget(
-          content: chemMatch.group(0)!,
-          isUserMessage: isUserMessage,
-          textStyle: TextStyle(
-            fontSize: 16,
-            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-          ),
-        ));
-        remaining = remaining.substring(chemMatch.end);
-        continue;
-      }
-      
-
-      
-
-      
-      // Find the next formula
-      int nextFormulaIndex = remaining.length;
-      
-      final nextDisplayMath = RegExp(r'\$\$[^$]+\$\$').firstMatch(remaining);
-      if (nextDisplayMath != null && nextDisplayMath.start < nextFormulaIndex) {
-        nextFormulaIndex = nextDisplayMath.start;
-      }
-      
-      final nextInlineMath = RegExp(r'\$[^$\n]+\$').firstMatch(remaining);
-      if (nextInlineMath != null && nextInlineMath.start < nextFormulaIndex) {
-        nextFormulaIndex = nextInlineMath.start;
-      }
-      
-      final nextChem = RegExp(r'\\ce\{[^}]+\}').firstMatch(remaining);
-      if (nextChem != null && nextChem.start < nextFormulaIndex) {
-        nextFormulaIndex = nextChem.start;
-      }
-      
-      // Add text before the next formula
-      if (nextFormulaIndex > 0) {
-        String textContent = remaining.substring(0, nextFormulaIndex);
-        if (textContent.trim().isNotEmpty) {
-          widgets.add(_buildMarkdownFromText(context, textContent));
-        }
-        remaining = remaining.substring(nextFormulaIndex);
-      } else {
-        // No more formulas, add remaining text
-        if (remaining.trim().isNotEmpty) {
-          widgets.add(_buildMarkdownFromText(context, remaining));
-        }
-        break;
-      }
-    }
-    
-    return widgets;
+  bool _containsLatexFormulas(String text) {
+    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||  // Display math
+           RegExp(r'\$[^$\n]+\$').hasMatch(text) ||     // Inline math
+           RegExp(r'\\ce\{[^}]+\}').hasMatch(text);     // Chemistry
   }
 
   Widget _buildMarkdownContent(BuildContext context) {
@@ -189,57 +92,120 @@ class EnhancedContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMarkdownFromText(BuildContext context, String text) {
-    if (text.trim().isEmpty) return const SizedBox.shrink();
+  Widget _buildMixedContent(BuildContext context) {
+    List<Widget> widgets = [];
+    String remaining = content;
     
-    return MarkdownBody(
-      data: text,
-      selectable: true,
-      styleSheet: MarkdownStyleSheet(
-        p: TextStyle(
+    while (remaining.isNotEmpty) {
+      // Look for display math first ($$...$$)
+      final displayMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
+      if (displayMatch != null && displayMatch.start == 0) {
+        widgets.add(_buildDisplayMath(displayMatch.group(1)!, context));
+        remaining = remaining.substring(displayMatch.end);
+        continue;
+      }
+      
+      // Look for inline math ($...$)
+      final inlineMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
+      if (inlineMatch != null && inlineMatch.start == 0) {
+        widgets.add(_buildInlineMath(inlineMatch.group(1)!, context));
+        remaining = remaining.substring(inlineMatch.end);
+        continue;
+      }
+      
+      // Find next formula
+      int nextFormulaIndex = remaining.length;
+      
+      final nextDisplay = RegExp(r'\$\$[^$]+\$\$').firstMatch(remaining);
+      if (nextDisplay != null && nextDisplay.start < nextFormulaIndex) {
+        nextFormulaIndex = nextDisplay.start;
+      }
+      
+      final nextInline = RegExp(r'\$[^$\n]+\$').firstMatch(remaining);
+      if (nextInline != null && nextInline.start < nextFormulaIndex) {
+        nextFormulaIndex = nextInline.start;
+      }
+      
+      // Add text before next formula
+      if (nextFormulaIndex > 0) {
+        String textPart = remaining.substring(0, nextFormulaIndex);
+        if (textPart.trim().isNotEmpty) {
+          widgets.add(MarkdownBody(
+            data: textPart,
+            selectable: true,
+            styleSheet: MarkdownStyleSheet(
+              p: TextStyle(
+                fontSize: 16.0,
+                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+            ),
+          ));
+        }
+        remaining = remaining.substring(nextFormulaIndex);
+      } else {
+        // No more formulas, add remaining text
+        if (remaining.trim().isNotEmpty) {
+          widgets.add(MarkdownBody(
+            data: remaining,
+            selectable: true,
+            styleSheet: MarkdownStyleSheet(
+              p: TextStyle(
+                fontSize: 16.0,
+                color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+            ),
+          ));
+        }
+        break;
+      }
+    }
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
+  }
+
+  Widget _buildDisplayMath(String latex, BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(
+          color: Theme.of(context).dividerColor,
+          width: 1.0,
+        ),
+      ),
+      child: Center(
+        child: Math.tex(
+          latex,
+          textStyle: TextStyle(
+            fontSize: 20.0,
+            color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInlineMath(String latex, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(4.0),
+      ),
+      child: Math.tex(
+        latex,
+        textStyle: TextStyle(
           fontSize: 16.0,
-          color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
-          height: 1.4,
-        ),
-        code: TextStyle(
-          backgroundColor: Theme.of(context).cardColor,
-          fontFamily: 'monospace',
-          fontSize: 14.0,
-        ),
-        listBullet: TextStyle(
           color: isUserMessage ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color,
         ),
       ),
-      onTapLink: (text, href, title) {
-        if (href != null) {
-          launchUrl(Uri.parse(href), mode: LaunchMode.externalApplication);
-        }
-      },
     );
-  }
-}
-
-// Enhanced utility class for detecting various content types
-class ContentUtils {
-  static bool containsChemicalFormulas(String text) {
-    return RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text) ||
-           RegExp(r'\\ce\{[^}]+\}').hasMatch(text) ||
-           RegExp(r'\b[A-Z][a-z]?\d*\b').hasMatch(text);
-  }
-  
-  static bool containsLatex(String text) {
-    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||
-           RegExp(r'\$[^$]+\$').hasMatch(text) ||
-           RegExp(r'\\begin\{[^}]+\}').hasMatch(text) ||
-           RegExp(r'\\[a-zA-Z]+\{').hasMatch(text);
-  }
-  
-  static bool containsMarkdown(String text) {
-    return text.contains('**') || 
-           text.contains('*') || 
-           text.contains('```') ||
-           text.contains('`') ||
-           text.contains('#') ||
-           text.contains('[') && text.contains('](');
   }
 }
