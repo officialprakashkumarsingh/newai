@@ -240,7 +240,6 @@ class ChatMessage {
   final Uint8List? imageBytes;
   final String? attachedFileName;
   final List<String>? attachedContainedFiles;
-  final String? thinkingContent; // Added for thinking/reasoning content
   final Map<String, dynamic>? diagramData; // Added for diagram data
   final Map<String, dynamic>? presentationData; // Added for presentation data
   final Widget? researchWidget; // Added for inline research terminal
@@ -255,7 +254,6 @@ class ChatMessage {
     this.imageBytes,
     this.attachedFileName,
     this.attachedContainedFiles,
-    this.thinkingContent, // Added thinking content parameter
     this.diagramData, // Added diagram data parameter
     this.presentationData, // Added presentation data parameter
     this.researchWidget, // Added research widget parameter
@@ -269,7 +267,6 @@ class ChatMessage {
         'slides': slides,
         'searchResults': searchResults?.map((r) => r.toJson()).toList(),
         'attachedFileName': attachedFileName,
-        'thinkingContent': thinkingContent,
         'attachedContainedFiles': attachedContainedFiles,
         'diagramData': diagramData, // Added diagram data serialization
         'presentationData': presentationData, // Added presentation data serialization
@@ -285,7 +282,6 @@ class ChatMessage {
         slides: json['slides'] != null ? List<String>.from(json['slides']) : null,
         searchResults: json['searchResults'] != null ? (json['searchResults'] as List).map((r) => SearchResult.fromJson(r)).toList() : null,
         attachedFileName: json['attachedFileName'],
-        thinkingContent: json['thinkingContent'], // Added thinking content deserialization
         attachedContainedFiles: json['attachedContainedFiles'] != null ? List<String>.from(json['attachedContainedFiles']) : null,
         diagramData: json['diagramData'] != null ? Map<String, dynamic>.from(json['diagramData']) : null, // Added diagram data deserialization
         presentationData: json['presentationData'] != null ? Map<String, dynamic>.from(json['presentationData']) : null, // Added presentation data deserialization

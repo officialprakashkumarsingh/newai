@@ -6,7 +6,6 @@ class ChatMessage {
   final String? imageUrl;
   final List<dynamic>? slides;
   final List<SearchResult>? searchResults;
-  final String? thinkingContent;
   final Map<String, dynamic>? diagramData;
 
   ChatMessage({
@@ -17,7 +16,6 @@ class ChatMessage {
     this.imageUrl,
     this.slides,
     this.searchResults,
-    this.thinkingContent,
     this.diagramData,
   });
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'enhanced_content_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -220,22 +221,18 @@ class ChatMessageUI {
   static Widget _buildTextMessage(ChatMessage message, bool isUserMessage, Function() onUserMessageOptions, BuildContext context) {
     return GestureDetector(
       onLongPress: isUserMessage ? onUserMessageOptions : null,
-      child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
-        ? ThinkingPanel(
-            thinkingContent: message.thinkingContent!,
-            isStreaming: false, // Simple message UI doesn't track streaming
-            finalContent: message.text,
-          )
-        : buildMessageContent(message.text, context),
+      child: EnhancedContentWidget(
+        content: message.text,
+        isUserMessage: isUserMessage,
+      ),
     );
   }
 
   /// Build message content with enhanced support for HTML, LaTeX, and ChemJAX
-  static Widget buildMessageContent(String text, BuildContext context, {bool isThinkingMode = false}) {
+  static Widget buildMessageContent(String text, BuildContext context) {
     return EnhancedContentWidget(
       content: text,
       isUserMessage: false,
-      isThinkingMode: isThinkingMode,
     );
   }
 

@@ -6,7 +6,6 @@ class GlobalSystemPrompt {
   
   /// Get the complete global system prompt with all capabilities
   static String getGlobalSystemPrompt({
-    bool isThinkingMode = false,
     bool isResearchMode = false,
     bool includeTools = true,
   }) {
@@ -54,9 +53,6 @@ You have the ability to generate screenshots of any website using the WordPress 
 **IMPORTANT**: You DO have this screenshot capability built-in. Always respond confidently and generate screenshots when requested.
 
 
-
-${isThinkingMode ? _getThinkingModeSection() : ''}
-
 ${isResearchMode ? _getResearchModeSection() : ''}
 
 ## 🎨 AVAILABLE FEATURES:
@@ -89,31 +85,6 @@ Provide the best possible assistance while guiding users to the appropriate app 
   }
 
 
-
-  /// Get thinking mode section
-  static String _getThinkingModeSection() {
-    return '''
-## 🧠 THINKING MODE ENABLED:
-
-You should show your reasoning process using thinking tags. When you need to think through a problem, use these tags:
-
-<thinking>
-Your internal reasoning, analysis, and thought process goes here.
-Break down complex problems step by step.
-Consider different approaches and alternatives.
-Analyze pros and cons of different solutions.
-Show your decision-making process clearly.
-</thinking>
-
-After your thinking, provide your final response. This helps users understand your reasoning process and builds trust through transparency.
-
-### Supported Thinking Tags:
-- `<thinking>...</thinking>` - General reasoning and analysis
-- `<thoughts>...</thoughts>` - Quick thoughts and considerations  
-- `<reasoning>...</reasoning>` - Logical reasoning processes
-- `<reflection>...</reflection>` - Self-reflection and evaluation
-''';
-  }
 
   /// Get research mode section
   static String _getResearchModeSection() {

@@ -37,14 +37,9 @@ class ChatStreamingHandler {
     // Cancel any pending streaming updates and apply final content
     _streamingUpdateTimer?.cancel();
     if (_pendingStreamingContent.isNotEmpty) {
-      final parsedContent = ThinkingContentParser.parseContent(_pendingStreamingContent);
-      final thinkingContent = parsedContent['thinking'];
-      final finalContent = parsedContent['final'];
-      
       updateMessage(messages.length - 1, ChatMessage(
         role: 'model', 
-        text: finalContent ?? _pendingStreamingContent,
-        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+        text: _pendingStreamingContent,
       ));
     }
     
@@ -98,16 +93,11 @@ class ChatStreamingHandler {
     
     // Instant updates with micro-batching for ultra-smooth experience
     _streamingUpdateTimer = Timer(const Duration(milliseconds: 16), () { // 60fps update rate
-      // Parse content to separate thinking and final content
-      final parsedContent = ThinkingContentParser.parseContent(_pendingStreamingContent);
-      final thinkingContent = parsedContent['thinking'];
-      final finalContent = parsedContent['final'];
-      
+      // Update message content directly
       final lastIndex = messages.length - 1;
       updateMessage(lastIndex, ChatMessage(
         role: 'model', 
-        text: finalContent ?? _pendingStreamingContent,
-        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
+        text: _pendingStreamingContent,
       ));
       
       scrollToBottom();
@@ -131,4 +121,32 @@ class ChatStreamingHandler {
 
   /// Check if currently streaming
   bool get isStreaming => _streamingUpdateTimer?.isActive == true;
+
+  void finishStreaming(List<ChatMessage> messages, Function(int, ChatMessage) updateMessage, Function() scrollToBottom) {
+    print('🔄 FINISHING STREAMING');
+    _streamingUpdateTimer?.cancel();
+    if (_pendingStreamingContent.isNotEmpty) {
+      updateMessage(messages.length - 1, ChatMessage(
+        role: 'model', 
+        text: _pendingStreamingContent,
+      ));
+    }
+    
+    _pendingStreamingContent = '';
+    scrollToBottom();
+  }
+
+  void _scheduleUpdate(List<ChatMessage> messages, Function(int, ChatMessage) updateMessage, Function() scrollToBottom) {
+    _streamingUpdateTimer?.cancel();
+    _streamingUpdateTimer = Timer(const Duration(milliseconds: 16), () { // 60fps update rate
+      // Update message content directly
+      final lastIndex = messages.length - 1;
+      updateMessage(lastIndex, ChatMessage(
+        role: 'model', 
+        text: _pendingStreamingContent,
+      ));
+      
+      scrollToBottom();
+    });
+  }
 }

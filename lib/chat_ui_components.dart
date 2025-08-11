@@ -1,10 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
 import 'ai_message_actions.dart';
-import 'thinking_panel.dart';
 import 'presentation_service.dart';
 import 'diagram_service.dart';
 import 'web_search.dart';
@@ -267,12 +268,10 @@ class ChatUIComponents {
     required BuildContext context,
     required String content,
     required bool isUserMessage,
-    bool isThinkingMode = false,
   }) {
     return EnhancedContentWidget(
       content: content,
       isUserMessage: isUserMessage,
-      isThinkingMode: isThinkingMode,
     );
   }
 }

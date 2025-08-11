@@ -179,7 +179,6 @@ class ChatUtilities {
     String? imageUrl,
     Map<String, dynamic>? presentationData,
     Map<String, dynamic>? diagramData,
-    String? thinkingContent,
     Widget? researchWidget,
     List<SearchResult>? searchResults,
   }) {
@@ -190,7 +189,6 @@ class ChatUtilities {
       imageUrl: imageUrl,
       presentationData: presentationData,
       diagramData: diagramData,
-      thinkingContent: thinkingContent,
       researchWidget: researchWidget,
       searchResults: searchResults,
     );

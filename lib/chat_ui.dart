@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'enhanced_content_widget.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'chat_ui_components.dart';
 
+import 'enhanced_content_widget.dart';
 import 'main.dart';
 import 'ai_message_actions.dart';
 import 'improved_ai_actions.dart';
 import 'app_animations.dart';
-import 'thinking_panel.dart';
 import 'presentation_service.dart';
 import 'diagram_service.dart';
 import 'web_search.dart';
@@ -330,13 +330,10 @@ class ChatUI {
     return GestureDetector(
       onLongPress: isUserMessage ? onUserMessageOptions : null,
       onTap: !isUserMessage ? onAIMessageOptions : null,
-      child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
-        ? ThinkingPanel(
-            thinkingContent: message.thinkingContent!,
-            isStreaming: isStreaming,
-            finalContent: message.text,
-          )
-        : buildMessageContent(message.text, context, isUserMessage: isUserMessage),
+      child: EnhancedContentWidget(
+        content: message.text,
+        isUserMessage: isUserMessage,
+      ),
     );
   }
 

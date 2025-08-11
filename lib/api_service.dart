@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static const String _baseUrl = 'https://ahamai-api.officialprakashkrsingh.workers.dev';
   static const String _apiKey = 'ahamaibyprakash25';
-  static const String _thinkingModeModel = 'deepseek-r1';
   
   // Cache for models
   static List<String> _cachedModels = [];
@@ -64,14 +63,13 @@ class ApiService {
   static Stream<String> sendChatMessage({
     required String message,
     required String model,
-    bool isThinkingMode = false,
     List<Map<String, dynamic>>? conversationHistory,
     String? systemPrompt,
     List<Map<String, dynamic>>? tools,
   }) async* {
     try {
-      // Use thinking mode model if enabled, otherwise use user-selected model
-      final selectedModel = isThinkingMode ? _thinkingModeModel : model;
+      // Use the user-selected model
+      final selectedModel = model;
       
       // Build messages array
       final messages = <Map<String, dynamic>>[];
@@ -337,11 +335,10 @@ class ApiService {
       final isConnected = await testConnection();
       
       return {
-        'connected': isConnected,
+        'success': true,
         'baseUrl': _baseUrl,
         'modelCount': models.length,
         'models': models,
-        'thinkingModel': _thinkingModeModel,
       };
     } catch (e) {
       return {

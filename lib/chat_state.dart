@@ -46,7 +46,6 @@ class ChatState extends ChangeNotifier {
   List<SearchResult>? _lastSearchResults;
   bool _isWebSearchEnabled = false;
   bool _isResearchModeEnabled = false;
-  bool _isThinkingModeEnabled = false;
   
   // Feature generation modes
   String? _activeFeature; // null, 'image', 'presentation', 'diagram'
@@ -74,7 +73,6 @@ class ChatState extends ChangeNotifier {
   List<SearchResult>? get lastSearchResults => _lastSearchResults;
   bool get isWebSearchEnabled => _isWebSearchEnabled;
   bool get isResearchModeEnabled => _isResearchModeEnabled;
-  bool get isThinkingModeEnabled => _isThinkingModeEnabled;
   String? get activeFeature => _activeFeature;
   String get featureImageModel => _featureImageModel;
   String get chatId => _chatId;
@@ -164,11 +162,6 @@ class ChatState extends ChangeNotifier {
   
   void setIsResearchModeEnabled(bool enabled) {
     _isResearchModeEnabled = enabled;
-    notifyListeners();
-  }
-  
-  void setIsThinkingModeEnabled(bool enabled) {
-    _isThinkingModeEnabled = enabled;
     notifyListeners();
   }
   

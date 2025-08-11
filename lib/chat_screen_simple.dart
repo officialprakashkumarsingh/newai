@@ -9,18 +9,15 @@ import 'package:uuid/uuid.dart';
 import 'enhanced_content_widget.dart';
 
 import 'api_service.dart';
-import 'thinking_panel.dart';
 import 'theme.dart';
 
 class ChatMessage {
   final String role;
   final String text;
-  final String? thinkingContent;
 
   ChatMessage({
     required this.role,
     required this.text,
-    this.thinkingContent,
   });
 }
 
@@ -166,17 +163,10 @@ class _ChatScreenSimpleState extends State<ChatScreenSimple> {
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: message.thinkingContent != null && message.thinkingContent!.isNotEmpty
-              ? ThinkingPanel(
-                  thinkingContent: message.thinkingContent!,
-                  isStreaming: false, // Simple screen doesn't track streaming
-                  finalContent: message.text,
-                )
-              : EnhancedContentWidget(
-                  content: message.text,
-                  isUserMessage: false,
-                  isThinkingMode: false,
-                ),
+          child: EnhancedContentWidget(
+            content: message.text,
+            isUserMessage: false,
+          ),
         ),
       );
     } else {

@@ -320,7 +320,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       selectedModel: _chatState.selectedModel,
       isWebSearchEnabled: _chatState.isWebSearchEnabled,
       isResearchModeEnabled: _chatState.isResearchModeEnabled,
-      isThinkingModeEnabled: _chatState.isThinkingModeEnabled,
       addMessage: _addMessage,
       updateMessage: _updateMessage,
       scrollToBottom: _chatState.scrollToBottom,
@@ -560,8 +559,6 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
       onPickFile: () => _handleFileAttachment(),
       isWebSearchEnabled: _chatState.isWebSearchEnabled,
       onWebSearchToggle: (value) => _chatState.setIsWebSearchEnabled(value),
-      isThinkingModeEnabled: _chatState.isThinkingModeEnabled,
-      onThinkingModeToggle: (value) => _chatState.setIsThinkingModeEnabled(value),
       isResearchModeEnabled: _chatState.isResearchModeEnabled,
       onResearchModeToggle: (value) => _chatState.setIsResearchModeEnabled(value),
     );

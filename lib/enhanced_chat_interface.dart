@@ -311,7 +311,6 @@ class _EnhancedChatInterfaceState extends State<EnhancedChatInterface>
                   EnhancedContentWidget(
                     content: message.content,
                     isUserMessage: isUser,
-                    isThinkingMode: false,
                   ),
                   if (message.timestamp != null)
                     Padding(

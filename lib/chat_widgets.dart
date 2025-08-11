@@ -307,9 +307,9 @@ class ChatWidgets {
     );
   }
 
-  /// Tools bottom sheet - Complete original implementation
+  /// Show tools bottom sheet with various options for user interaction
   static void showToolsBottomSheet({
-    required BuildContext context,
+    required BuildContext context, 
     required Function() onImageGeneration,
     required Function() onPresentationGeneration,
     required Function() onDiagramGeneration,
@@ -318,18 +318,15 @@ class ChatWidgets {
     required Function() onPickFile,
     required bool isWebSearchEnabled,
     required Function(bool) onWebSearchToggle,
-    required bool isThinkingModeEnabled,
-    required Function(bool) onThinkingModeToggle,
     required bool isResearchModeEnabled,
     required Function(bool) onResearchModeToggle,
   }) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (context) => _ToolsBottomSheetContent(
         isWebSearchEnabled: isWebSearchEnabled,
-        isThinkingModeEnabled: isThinkingModeEnabled,
         isResearchModeEnabled: isResearchModeEnabled,
         onImageGeneration: onImageGeneration,
         onPresentationGeneration: onPresentationGeneration,
@@ -338,7 +335,6 @@ class ChatWidgets {
         onPickGallery: onPickGallery,
         onPickFile: onPickFile,
         onWebSearchToggle: onWebSearchToggle,
-        onThinkingModeToggle: onThinkingModeToggle,
         onResearchModeToggle: onResearchModeToggle,
       ),
     );
@@ -536,7 +532,6 @@ class AttachmentPreview extends StatelessWidget {
 /// Stateful Tools Bottom Sheet Content for instant toggle updates
 class _ToolsBottomSheetContent extends StatefulWidget {
   final bool isWebSearchEnabled;
-  final bool isThinkingModeEnabled;
   final bool isResearchModeEnabled;
   final Function() onImageGeneration;
   final Function() onPresentationGeneration;
@@ -545,12 +540,10 @@ class _ToolsBottomSheetContent extends StatefulWidget {
   final Function() onPickGallery;
   final Function() onPickFile;
   final Function(bool) onWebSearchToggle;
-  final Function(bool) onThinkingModeToggle;
   final Function(bool) onResearchModeToggle;
 
   const _ToolsBottomSheetContent({
     required this.isWebSearchEnabled,
-    required this.isThinkingModeEnabled,
     required this.isResearchModeEnabled,
     required this.onImageGeneration,
     required this.onPresentationGeneration,
@@ -559,7 +552,6 @@ class _ToolsBottomSheetContent extends StatefulWidget {
     required this.onPickGallery,
     required this.onPickFile,
     required this.onWebSearchToggle,
-    required this.onThinkingModeToggle,
     required this.onResearchModeToggle,
   });
 
@@ -569,14 +561,12 @@ class _ToolsBottomSheetContent extends StatefulWidget {
 
 class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
   late bool localWebSearch;
-  late bool localThinking;
   late bool localResearch;
 
   @override
   void initState() {
     super.initState();
     localWebSearch = widget.isWebSearchEnabled;
-    localThinking = widget.isThinkingModeEnabled;
     localResearch = widget.isResearchModeEnabled;
   }
 
@@ -634,28 +624,6 @@ class _ToolsBottomSheetContentState extends State<_ToolsBottomSheetContent> {
                 widget.onWebSearchToggle(value);
               }
             )
-          ),
-          // Thinking mode toggle
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.auto_awesome_outlined),
-            title: const Text('Thinking Mode'),
-            subtitle: Text(
-              localThinking 
-                ? 'Showing AI reasoning process' 
-                : 'Show AI thought process',
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-            ),
-            trailing: Switch(
-              value: localThinking,
-              activeColor: Theme.of(context).colorScheme.primary,
-              onChanged: (value) {
-                setState(() {
-                  localThinking = value;
-                }); 
-                widget.onThinkingModeToggle(value);
-              }
-            ),
           ),
           ListTile(
             contentPadding: EdgeInsets.zero, 

@@ -11,13 +11,11 @@ import 'package:url_launcher/url_launcher.dart';
 class EnhancedContentWidget extends StatelessWidget {
   final String content;
   final bool isUserMessage;
-  final bool isThinkingMode;
 
   const EnhancedContentWidget({
     super.key,
     required this.content,
     this.isUserMessage = false,
-    this.isThinkingMode = false,
   });
 
   @override

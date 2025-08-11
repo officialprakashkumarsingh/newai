@@ -14,7 +14,6 @@ import 'diagram_handler.dart';
 
 import 'web_search.dart';
 import 'presentation_service.dart';
-import 'thinking_panel.dart';
 import 'global_system_prompt.dart';
 
 /// Chat Logic - Contains all business logic methods from chat_screen.dart
@@ -80,7 +79,6 @@ class ChatLogic {
     required String selectedModel,
     required bool isWebSearchEnabled,
     required bool isResearchModeEnabled,
-    required bool isThinkingModeEnabled,
     required Function(ChatMessage) addMessage,
     required Function(int, ChatMessage) updateMessage,
     required Function() scrollToBottom,
@@ -129,7 +127,6 @@ class ChatLogic {
         selectedModel: selectedModel,
         webSearchResults: webSearchResults,
         updateMessage: updateMessage,
-        isThinkingMode: isThinkingModeEnabled,
         isResearchMode: isResearchModeEnabled,
       );
       
@@ -247,7 +244,6 @@ Based on the context above, answer the following prompt: $input""";
     required String selectedModel,
     required Function(int, ChatMessage) updateMessage,
     String? webSearchResults,
-    bool isThinkingMode = false,
     bool isResearchMode = false,
   }) async {
     String finalInputForAI = input;
@@ -260,7 +256,6 @@ Based on the context above, answer the following prompt: $input""";
 
     // Use the new global system prompt with comprehensive capabilities
     String systemPrompt = GlobalSystemPrompt.getGlobalSystemPrompt(
-      isThinkingMode: isThinkingMode,
       isResearchMode: isResearchMode,
       includeTools: false, // No more function calling
     );
@@ -268,7 +263,6 @@ Based on the context above, answer the following prompt: $input""";
     print('📝 System prompt being used (length: ${systemPrompt.length}):');
     print('   Contains "screenshot": ${systemPrompt.toLowerCase().contains('screenshot')}');
     print('   Contains "mshots": ${systemPrompt.toLowerCase().contains('mshots')}');
-    print('   Thinking mode: $isThinkingMode');
     print('   Research mode: $isResearchMode');
     
     String fullResponse = '';
@@ -277,38 +271,24 @@ Based on the context above, answer the following prompt: $input""";
     print('📡 CHAT LOGIC: Model: $selectedModel');
     print('📡 CHAT LOGIC: Message: $finalInputForAI');
     print('📡 CHAT LOGIC: System prompt length: ${systemPrompt.length}');
-    print('📡 CHAT LOGIC: Thinking mode: $isThinkingMode');
+    print('📡 CHAT LOGIC: Research mode: $isResearchMode');
     
     await for (final chunk in ApiService.sendChatMessage(
       message: finalInputForAI,
       model: selectedModel,
       conversationHistory: conversationHistory,
-      isThinkingMode: isThinkingMode,
       systemPrompt: systemPrompt,
     )) {
       final lastIndex = messages.length - 1;
       fullResponse += chunk;
       
-      // Parse thinking content from the full response so far
-      final parsedContent = ThinkingContentParser.parseContent(fullResponse);
-      final finalContent = parsedContent['final'] as String? ?? fullResponse;
-      final thinkingContent = parsedContent['thinking'] as String?;
+      // Update the streaming message directly with accumulated response
+      final updatedMessage = ChatMessage(
+        role: 'model',
+        text: fullResponse,
+      );
       
-      // Debug: Log when thinking mode is enabled and content is being parsed
-      if (isThinkingMode && fullResponse.length > 50) {
-        print('🧠 THINKING MODE DEBUG: Response length: ${fullResponse.length}');
-        print('🧠 THINKING MODE DEBUG: Has thinking tags: ${ThinkingContentParser.hasThinkingContent(fullResponse)}');
-        if (thinkingContent != null && thinkingContent.isNotEmpty) {
-          print('🧠 THINKING MODE DEBUG: Thinking content found: ${thinkingContent.substring(0, math.min(100, thinkingContent.length))}...');
-        }
-      }
-      
-      // Update message with both final content and thinking content
-      updateMessage(lastIndex, ChatMessage(
-        role: 'model', 
-        text: finalContent,
-        thinkingContent: thinkingContent?.isNotEmpty == true ? thinkingContent : null,
-      ));
+      updateMessage(lastIndex, updatedMessage);
     }
   }
 
@@ -452,26 +432,12 @@ Based on the context above, answer the following prompt: $input""";
     setStreamingUpdateTimer(Timer(const Duration(milliseconds: 16), () { // 60fps update rate
       if (messages.isEmpty) return;
 
-      final parsedContent = ThinkingContentParser.parseContent(newResponse);
-      final finalContent = parsedContent['final'] as String?;
-      final thinkingContent = parsedContent['thinking'] as String?;
-      
-      // Debug logging for thinking content
-      if (thinkingContent != null && thinkingContent.isNotEmpty) {
-        print('🧠 Thinking content detected: ${thinkingContent.substring(0, thinkingContent.length > 100 ? 100 : thinkingContent.length)}...');
-      }
-      
-      // Check if response contains thinking tags
-      if (ThinkingContentParser.hasThinkingContent(newResponse)) {
-        print('🏷️ Thinking tags detected in response');
-      }
-
+      // Update message content
       updateMessage(
         messages.length - 1,
         ChatMessage(
           role: 'model',
-          text: finalContent ?? newResponse,
-          thinkingContent: thinkingContent,
+          text: newResponse,
         ),
       );
 
@@ -514,7 +480,6 @@ Based on the context above, answer the following prompt: $input""";
         selectedModel: selectedModel,
         updateMessage: updateMessage,
         webSearchResults: webSearchResults,
-        isThinkingMode: false,
         isResearchMode: false,
       );
     } catch (e) {
