@@ -151,17 +151,21 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
 
     // Clear input immediately when send is pressed
     _chatState.clearInput();
-    
-    // Clear attachments immediately when message is sent (not after streaming)
-    _chatState.clearAllAttachments();
 
     if (_chatState.isStreaming) {
       _chatState.addToMessageQueue(input);
       return;
     }
 
-    if (_chatState.attachedImage != null) {
-      await _sendVisionMessage(input);
+    // Check for attached image BEFORE clearing attachments
+    final hasAttachedImage = _chatState.attachedImage != null;
+    final attachedImageFile = _chatState.attachedImage;
+
+    // Clear attachments after saving reference to them
+    _chatState.clearAllAttachments();
+
+    if (hasAttachedImage && attachedImageFile != null) {
+      await _sendVisionMessageWithImage(input, attachedImageFile);
     } else {
       await _sendTextMessage(input); // This handles both text and file attachments
     }
@@ -335,6 +339,22 @@ class _ChatScreenCompactState extends State<ChatScreenCompact> with WidgetsBindi
     await ChatLogic.sendVisionMessage(
       input: input,
       imageFile: _chatState.attachedImage!,
+      messages: _chatState.messages,
+      selectedModel: _chatState.selectedModel,
+      addMessage: _addMessage,
+      updateMessage: _updateMessage,
+      scrollToBottom: _chatState.scrollToBottom,
+      startStreaming: () => _chatState.startStreaming(),
+      stopStreaming: () => _chatState.stopStreaming(),
+      onStreamingComplete: _onStreamingDone,
+    );
+  }
+
+  /// Send vision message with specific image file
+  Future<void> _sendVisionMessageWithImage(String input, XFile imageFile) async {    
+    await ChatLogic.sendVisionMessage(
+      input: input,
+      imageFile: imageFile,
       messages: _chatState.messages,
       selectedModel: _chatState.selectedModel,
       addMessage: _addMessage,
