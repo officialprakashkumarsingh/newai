@@ -105,14 +105,22 @@ class ImageApi {
 
   static Future<String> generateImage(String prompt, {String? model}) async {
     try {
-      // Use first available model from dynamic list, no fallback
-      final availableModels = await fetchModels();
-      if (availableModels.isEmpty) {
-        throw Exception('No image models available');
+      // Use specific model or fallback to working models
+      String selectedModel;
+      if (model != null && model.isNotEmpty) {
+        selectedModel = model;
+      } else {
+        final availableModels = await fetchModels();
+        if (availableModels.isEmpty) {
+          // Fallback to known working models
+          selectedModel = 'flux';
+          print("⚠️ No models available from API, falling back to flux");
+        } else {
+          selectedModel = availableModels.first;
+        }
       }
       
-      final selectedModel = model ?? availableModels.first;
-      print("Generating image with model: $selectedModel, prompt: $prompt");
+      print("🎨 Generating image with model: $selectedModel, prompt: $prompt");
       
       final response = await http.post(
         Uri.parse('$_baseUrl/v1/images/generations'),
@@ -128,8 +136,8 @@ class ImageApi {
         }),
       );
 
-      print("Image generation response status: ${response.statusCode}");
-      print("Image generation response headers: ${response.headers}");
+      print("📡 Image generation response status: ${response.statusCode}");
+      print("📡 Image generation response headers: ${response.headers}");
 
       if (response.statusCode == 200) {
         // Check if response is image data (binary) or JSON
@@ -144,7 +152,7 @@ class ImageApi {
             
             final base64Image = base64Encode(response.bodyBytes);
             final mimeType = contentType.split(';')[0].trim(); // Remove any additional parameters
-            print("Successfully generated image with $selectedModel, size: ${response.bodyBytes.length} bytes, type: $mimeType");
+            print("✅ Successfully generated image with $selectedModel, size: ${response.bodyBytes.length} bytes, type: $mimeType");
             
             // Return data URL for immediate display
             return 'data:$mimeType;base64,$base64Image';
@@ -159,7 +167,7 @@ class ImageApi {
             final List<dynamic> data = responseJson['data'] ?? [];
             if (data.isNotEmpty && data[0]['url'] != null) {
               final imageUrl = data[0]['url'] as String;
-              print("Successfully generated image with $selectedModel, URL: $imageUrl");
+              print("✅ Successfully generated image with $selectedModel, URL: $imageUrl");
               return imageUrl;
             } else {
               throw Exception('No valid image URL in JSON response');
@@ -181,10 +189,32 @@ class ImageApi {
         errorMessage = response.body.isEmpty ? 'Empty response' : response.body;
       }
       
-      print("Image generation error response body: ${response.body}");
+      print("❌ Image generation error response body: ${response.body}");
+      
+      // Retry with flux model if original model failed and it wasn't flux
+      if (selectedModel != 'flux' && (response.statusCode == 503 || response.statusCode == 500)) {
+        print("🔄 Retrying with flux model due to ${response.statusCode} error...");
+        try {
+          return await generateImage(prompt, model: 'flux');
+        } catch (retryError) {
+          print("❌ Retry with flux also failed: $retryError");
+        }
+      }
+      
       throw Exception('API returned ${response.statusCode}: $errorMessage');
     } catch (e) {
-      print("Error generating image: $e");
+      print("❌ Error generating image: $e");
+      
+      // If it's not a retry and not already using flux, try flux as fallback
+      if (model != 'flux' && selectedModel != 'flux') {
+        print("🔄 Attempting fallback to flux model...");
+        try {
+          return await generateImage(prompt, model: 'flux');
+        } catch (fallbackError) {
+          print("❌ Fallback to flux also failed: $fallbackError");
+        }
+      }
+      
       throw Exception('Image generation failed: $e');
     }
   }
