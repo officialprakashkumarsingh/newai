@@ -59,8 +59,8 @@ class _ChemJAXWidgetState extends State<ChemJAXWidget> {
   String _getHtmlContent() {
     final backgroundColor = widget.backgroundColor ?? 
         (Theme.of(context).brightness == Brightness.dark ? '#1A1A1A' : '#FFFFFF');
-    final textColor = widget.textStyle?.color ?? 
-        (Theme.of(context).brightness == Brightness.dark ? '#FFFFFF' : '#000000');
+    final textColor = widget.textStyle?.color?.value.toRadixString(16).padLeft(8, '0').substring(2) ?? 
+        (Theme.of(context).brightness == Brightness.dark ? 'FFFFFF' : '000000');
     final fontSize = widget.textStyle?.fontSize ?? 16.0;
     final fontFamily = widget.textStyle?.fontFamily ?? 'Arial, sans-serif';
 
@@ -76,8 +76,8 @@ class _ChemJAXWidgetState extends State<ChemJAXWidget> {
     <script>
         window.MathJax = {
             tex: {
-                inlineMath: [['\\$', '\\$'], ['\\\\(', '\\\\)']],
-                displayMath: [['\\$\\$', '\\$\\$'], ['\\\\[', '\\\\]']],
+                inlineMath: [['\\\$', '\\\$'], ['\\\\(', '\\\\)']],
+                displayMath: [['\\\$\\\$', '\\\$\\\$'], ['\\\\[', '\\\\]']],
                 packages: {'[+]': ['mhchem']}
             },
             loader: {
@@ -96,7 +96,7 @@ class _ChemJAXWidgetState extends State<ChemJAXWidget> {
             margin: 0;
             padding: 10px;
             background-color: $backgroundColor;
-            color: $textColor;
+            color: #$textColor;
             font-family: $fontFamily;
             font-size: ${fontSize}px;
             overflow: hidden;
@@ -114,7 +114,7 @@ class _ChemJAXWidgetState extends State<ChemJAXWidget> {
         }
         /* Dark mode specific styles */
         .mjx-math {
-            color: $textColor !important;
+            color: #$textColor !important;
         }
         /* Ensure chemical formulas are properly sized */
         mjx-container[display="true"] {

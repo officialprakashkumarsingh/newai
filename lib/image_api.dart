@@ -10,7 +10,7 @@ class ImageApi {
     
     try {
       print('📡 Calling RealApi.generateImage...');
-      final result = await RealApi.generateImage(prompt, model: model);
+      final result = await RealApi.ImageApi.generateImage(prompt, model: model);
       print('📸 RealApi response:');
       print('   Result: ${result != null ? '${result.substring(0, 50)}...' : 'null'}');
       print('   Type: ${result?.runtimeType}');
@@ -27,7 +27,7 @@ class ImageApi {
   /// Fetch available image models from the real API
   static Future<List<String>> fetchModels() async {
     try {
-      final models = await RealApi.fetchModels();
+      final models = await RealApi.ImageApi.fetchModels();
       return models;
     } catch (e) {
       print('ImageApi.fetchModels error: $e');
