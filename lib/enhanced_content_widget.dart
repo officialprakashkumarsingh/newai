@@ -17,54 +17,28 @@ class EnhancedContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Debug: Log the content being processed
-    print('🔍 ENHANCED WIDGET: Processing content: "${content.substring(0, content.length > 100 ? 100 : content.length)}..."');
-    
     // Check if content contains chemical formulas or LaTeX
-    final hasChemical = _containsChemicalFormulas(content);
-    final hasLatex = _containsLatex(content);
-    
-    print('🔍 ENHANCED WIDGET: Has chemical formulas: $hasChemical');
-    print('🔍 ENHANCED WIDGET: Has LaTeX: $hasLatex');
-    
-    if (hasChemical || hasLatex) {
-      print('🔍 ENHANCED WIDGET: Using enhanced content rendering');
+    if (_containsChemicalFormulas(content) || _containsLatex(content)) {
       return _buildEnhancedContent(context);
     }
     
     // For simple content, use HTML widget with markdown conversion
-    print('🔍 ENHANCED WIDGET: Using simple HTML rendering');
     return _buildHtmlContent(context);
   }
 
   bool _containsChemicalFormulas(String text) {
-    // Check for ChemJAX patterns (try both single and double backslash)
-    final pattern1 = RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text);  // Double backslash: $\\ce{...}$
-    final pattern2 = RegExp(r'\$\\\\ce\{[^}]+\}\$').hasMatch(text); // Escaped backslash: $\\ce{...}$  
-    final pattern3 = RegExp(r'\\ce\{[^}]+\}').hasMatch(text);       // Just \ce{...}
-    final pattern4 = ChemJAXUtils.containsChemicalFormula(text);
-    
-    print('🔍 CHEMICAL CHECK: Pattern \$\\ce{...}\$: $pattern1');
-    print('🔍 CHEMICAL CHECK: Pattern \$\\\\ce{...}\$: $pattern2');
-    print('🔍 CHEMICAL CHECK: Pattern \\ce{...}: $pattern3');
-    print('🔍 CHEMICAL CHECK: ChemJAXUtils check: $pattern4');
-    
-    return pattern1 || pattern2 || pattern3 || pattern4;
+    // Check for ChemJAX patterns
+    return RegExp(r'\$\\ce\{[^}]+\}\$').hasMatch(text) ||
+           RegExp(r'\\ce\{[^}]+\}').hasMatch(text) ||
+           ChemJAXUtils.containsChemicalFormula(text);
   }
 
   bool _containsLatex(String text) {
     // Check for LaTeX math patterns
-    final displayMath = RegExp(r'\$\$[^$]+\$\$').hasMatch(text);
-    final inlineMath = RegExp(r'\$[^$]+\$').hasMatch(text);
-    final latexEnv = RegExp(r'\\begin\{[^}]+\}').hasMatch(text);
-    final latexCmd = RegExp(r'\\[a-zA-Z]+\{').hasMatch(text);
-    
-    print('🔍 LATEX CHECK: Display math \$\$...\$\$: $displayMath');
-    print('🔍 LATEX CHECK: Inline math \$...\$: $inlineMath');
-    print('🔍 LATEX CHECK: LaTeX environments: $latexEnv');
-    print('🔍 LATEX CHECK: LaTeX commands: $latexCmd');
-    
-    return displayMath || inlineMath || latexEnv || latexCmd;
+    return RegExp(r'\$\$[^$]+\$\$').hasMatch(text) ||  // Display math
+           RegExp(r'\$[^$]+\$').hasMatch(text) ||       // Inline math (excluding ChemJAX)
+           RegExp(r'\\begin\{[^}]+\}').hasMatch(text) || // LaTeX environments
+           RegExp(r'\\[a-zA-Z]+\{').hasMatch(text);     // LaTeX commands
   }
 
   Widget _buildEnhancedContent(BuildContext context) {
@@ -78,29 +52,10 @@ class EnhancedContentWidget extends StatelessWidget {
     List<Widget> widgets = [];
     String remaining = content;
     
-    print('🔍 PARSING: Starting to parse content: "${remaining.substring(0, remaining.length > 100 ? 100 : remaining.length)}..."');
-    
     while (remaining.isNotEmpty) {
-      // Look for ChemJAX formulas first (highest priority) - try multiple patterns
-      RegExpMatch? chemjaxMatch;
-      String? matchedFormula;
-      
-      // Pattern 1: $\ce{...}$ (single backslash)
-      chemjaxMatch = RegExp(r'\$\\ce\{([^}]+)\}\$').firstMatch(remaining);
+      // Look for ChemJAX formulas first (highest priority)
+      final chemjaxMatch = RegExp(r'\$\\ce\{([^}]+)\}\$').firstMatch(remaining);
       if (chemjaxMatch != null && chemjaxMatch.start == 0) {
-        matchedFormula = chemjaxMatch.group(0)!;
-      }
-      
-      // Pattern 2: $\\ce{...}$ (double backslash) 
-      if (chemjaxMatch == null) {
-        chemjaxMatch = RegExp(r'\$\\\\ce\{([^}]+)\}\$').firstMatch(remaining);
-        if (chemjaxMatch != null && chemjaxMatch.start == 0) {
-          matchedFormula = chemjaxMatch.group(0)!;
-        }
-      }
-      
-      if (chemjaxMatch != null && chemjaxMatch.start == 0 && matchedFormula != null) {
-        print('🔍 PARSING: Found ChemJAX formula: $matchedFormula');
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: ChemJAXWidget(
@@ -118,7 +73,6 @@ class EnhancedContentWidget extends StatelessWidget {
       // Look for display math ($$...$$)
       final displayMathMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
       if (displayMathMatch != null && displayMathMatch.start == 0) {
-        print('🔍 PARSING: Found display math: ${displayMathMatch.group(0)}');
         widgets.add(Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Center(
@@ -143,7 +97,6 @@ class EnhancedContentWidget extends StatelessWidget {
       if (inlineMathMatch != null && 
           inlineMathMatch.start == 0 && 
           !inlineMathMatch.group(1)!.startsWith(r'\ce{')) {
-        print('🔍 PARSING: Found inline math: ${inlineMathMatch.group(0)}');
         widgets.add(TeXView(
           child: TeXViewDocument(r'$' + inlineMathMatch.group(1)! + r'$'),
           style: TeXViewStyle(

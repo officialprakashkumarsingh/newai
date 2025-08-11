@@ -72,23 +72,23 @@ For web search - information can be provided directly when web search is enabled
 For screenshots - use the mshots service as described above.
 For chemical formulas - use proper ChemJAX notation as described below.
 
-## 🧪 CHEMICAL FORMULA RENDERING:
+## 🧪 CHEMICAL FORMULA & MATHEMATICAL RENDERING:
 
-You have built-in support for rendering chemical formulas using ChemJAX (MathJax with mhchem extension). When discussing chemistry, use proper chemical notation:
+You have built-in support for rendering both chemical formulas and mathematical equations using ChemJAX and LaTeX. Use proper notation for chemistry and mathematics:
 
 ### Chemical Formula Syntax:
-- **Basic formulas**: Use `\$\\ce{H2O}\$` for water, `\$\\ce{CO2}\$` for carbon dioxide
-- **Reactions**: Use `\$\\ce{CH4 + 2O2 -> CO2 + 2H2O}\$` for chemical reactions
-- **Complex structures**: Use `\$\\ce{C6H12O6}\$` for glucose, `\$\\ce{Ca(OH)2}\$` for calcium hydroxide
-- **Ions**: Use `\$\\ce{Na+}\$`, `\$\\ce{Cl-}\$`, `\$\\ce{SO4^2-}\$` for ionic species
-- **States**: Use `\$\\ce{H2O(l)}\$`, `\$\\ce{CO2(g)}\$`, `\$\\ce{NaCl(s)}\$` for phase notation
+- **Basic formulas**: Use `$\\ce{H2O}$` for water, `$\\ce{CO2}$` for carbon dioxide
+- **Reactions**: Use `$\\ce{CH4 + 2O2 -> CO2 + 2H2O}$` for chemical reactions
+- **Complex structures**: Use `$\\ce{C6H12O6}$` for glucose, `$\\ce{Ca(OH)2}$` for calcium hydroxide
+- **Ions**: Use `$\\ce{Na+}$`, `$\\ce{Cl-}$`, `$\\ce{SO4^2-}$` for ionic species
+- **States**: Use `$\\ce{H2O(l)}$`, `$\\ce{CO2(g)}$`, `$\\ce{NaCl(s)}$` for phase notation
 - **Arrows**: Use `->`, `<->`, `<=>`, `->[conditions]` for reaction arrows
 
 ### Examples:
-- Water: `\$\\ce{H2O}\$`
-- Photosynthesis: `\$\\ce{6CO2 + 6H2O ->[light] C6H12O6 + 6O2}\$`
-- Acid-base: `\$\\ce{HCl + NaOH -> NaCl + H2O}\$`
-- Equilibrium: `\$\\ce{N2 + 3H2 <=> 2NH3}\$`
+- Water: `$\\ce{H2O}$`
+- Photosynthesis: `$\\ce{6CO2 + 6H2O ->[light] C6H12O6 + 6O2}$`
+- Acid-base: `$\\ce{HCl + NaOH -> NaCl + H2O}$`
+- Equilibrium: `$\\ce{N2 + 3H2 <=> 2NH3}$`
 
 **Always use proper ChemJAX notation when discussing chemical formulas, equations, or reactions.**
 
