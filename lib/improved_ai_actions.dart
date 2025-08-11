@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
-import 'dart:ui';
 import 'app_animations.dart';
 
 /// Enhanced AI Message Actions - Click to show with feedback system
@@ -266,17 +265,36 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
   }
 
   void _showVariationMenu(BuildContext context) {
-    HapticFeedback.mediumImpact();
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) => _BlurredVariationDialog(
-        onVariationSelected: (String type) {
-          Navigator.of(context).pop();
-          _handleVariation(type);
-        },
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
       ),
+      Offset.zero & overlay.size,
     );
+
+    showMenu<String>(
+      context: context,
+      position: position,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      items: [
+        _buildVariationMenuItem('expand', Icons.expand_more, 'Expand Response'),
+        _buildVariationMenuItem('shorten', Icons.compress, 'Shorten Response'),
+        _buildVariationMenuItem('simplify', Icons.lightbulb_outline, 'Simplify Language'),
+        _buildVariationMenuItem('technical', Icons.engineering, 'More Technical'),
+        _buildVariationMenuItem('creative', Icons.brush, 'More Creative'),
+        _buildVariationMenuItem('formal', Icons.business, 'More Formal'),
+        _buildVariationMenuItem('casual', Icons.chat_bubble_outline, 'More Casual'),
+        _buildVariationMenuItem('bullet', Icons.format_list_bulleted, 'Bullet Points'),
+      ],
+    ).then((value) {
+      if (value != null) {
+        _handleVariation(value);
+      }
+    });
   }
 
   PopupMenuItem<String> _buildVariationMenuItem(String value, IconData icon, String text) {
@@ -655,279 +673,6 @@ class _ImprovedFloatingActionButtonState extends State<ImprovedFloatingActionBut
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-/// Blurred Variation Dialog with iOS-like feel
-class _BlurredVariationDialog extends StatefulWidget {
-  final Function(String) onVariationSelected;
-
-  const _BlurredVariationDialog({
-    required this.onVariationSelected,
-  });
-
-  @override
-  State<_BlurredVariationDialog> createState() => _BlurredVariationDialogState();
-}
-
-class _BlurredVariationDialogState extends State<_BlurredVariationDialog>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack,
-    ));
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Stack(
-            children: [
-              // Blur background
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                  child: Container(
-                    color: Colors.black.withOpacity(0.3 * _fadeAnimation.value),
-                  ),
-                ),
-              ),
-              
-              // Tap to dismiss
-              Positioned.fill(
-                child: GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(color: Colors.transparent),
-                ),
-              ),
-              
-              // Dialog content
-              Center(
-                child: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Opacity(
-                    opacity: _fadeAnimation.value,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-                            child: Container(
-                              padding: const EdgeInsets.all(24),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Header
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.tune,
-                                        color: Theme.of(context).primaryColor,
-                                        size: 28,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          'Modify Response',
-                                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () => Navigator.of(context).pop(),
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: Theme.of(context).iconTheme.color?.withOpacity(0.7),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                  
-                                  // Variation options
-                                  ..._buildVariationOptions(),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  List<Widget> _buildVariationOptions() {
-    final variations = [
-      _VariationOption('expand', Icons.expand_more, 'Expand Response', 'Add more details and examples'),
-      _VariationOption('shorten', Icons.compress, 'Shorten Response', 'Make it more concise'),
-      _VariationOption('simplify', Icons.lightbulb_outline, 'Simplify Language', 'Use easier, clearer language'),
-      _VariationOption('technical', Icons.engineering, 'More Technical', 'Add technical depth and detail'),
-      _VariationOption('creative', Icons.brush, 'More Creative', 'Rewrite creatively and engagingly'),
-      _VariationOption('formal', Icons.business, 'More Formal', 'Professional, formal tone'),
-      _VariationOption('casual', Icons.chat_bubble_outline, 'More Casual', 'Conversational, friendly tone'),
-      _VariationOption('bullet', Icons.format_list_bulleted, 'Bullet Points', 'Convert to organized bullet format'),
-    ];
-
-    return variations.map((option) => 
-      _VariationTile(
-        option: option,
-        onTap: () => widget.onVariationSelected(option.type),
-      )
-    ).toList();
-  }
-}
-
-class _VariationOption {
-  final String type;
-  final IconData icon;
-  final String title;
-  final String description;
-
-  const _VariationOption(this.type, this.icon, this.title, this.description);
-}
-
-class _VariationTile extends StatefulWidget {
-  final _VariationOption option;
-  final VoidCallback onTap;
-
-  const _VariationTile({
-    required this.option,
-    required this.onTap,
-  });
-
-  @override
-  State<_VariationTile> createState() => _VariationTileState();
-}
-
-class _VariationTileState extends State<_VariationTile> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: GestureDetector(
-        onTap: () {
-          HapticFeedback.selectionClick();
-          widget.onTap();
-        },
-        onTapDown: (_) => setState(() => _isHovered = true),
-        onTapUp: (_) => setState(() => _isHovered = false),
-        onTapCancel: () => setState(() => _isHovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: _isHovered 
-                ? Theme.of(context).primaryColor.withOpacity(0.1)
-                : Theme.of(context).cardColor.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: _isHovered 
-                  ? Theme.of(context).primaryColor.withOpacity(0.3)
-                  : Colors.transparent,
-              width: 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  widget.option.icon,
-                  size: 20,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.option.title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      widget.option.description,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
