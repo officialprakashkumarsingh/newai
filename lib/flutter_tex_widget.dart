@@ -67,11 +67,14 @@ class FlutterTexWidget extends StatelessWidget {
           width: 1.0,
         ),
       ),
-      child: TeXWidget(
-        math: mathContent,
-        fontsize: 20.0,
-        color: color ?? Colors.black,
-        alignContent: AlignmentPivot.center,
+      child: TeXView(
+        child: TeXViewDocument(mathContent),
+        style: TeXViewStyle(
+          textAlign: TeXViewTextAlign.center,
+          fontStyle: TeXViewFontStyle(
+            fontSize: 20,
+          ),
+        ),
       ),
     );
   }
@@ -97,97 +100,30 @@ class FlutterTexWidget extends StatelessWidget {
         color: color?.withOpacity(0.05) ?? Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(4.0),
       ),
-      child: TeXWidget(
-        math: mathContent,
-        fontsize: 16.0,
-        color: color ?? Colors.black,
-        alignContent: AlignmentPivot.center,
+      child: TeXView(
+        child: TeXViewDocument(mathContent),
+        style: TeXViewStyle(
+          textAlign: TeXViewTextAlign.center,
+          fontStyle: TeXViewFontStyle(
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildMixedContent(String content, Color? color, BuildContext context) {
-    List<Widget> widgets = [];
-    String remaining = content;
-    
-    while (remaining.isNotEmpty) {
-      // Look for display math first ($$...$$)
-      final displayMatch = RegExp(r'\$\$([^$]+)\$\$').firstMatch(remaining);
-      if (displayMatch != null && displayMatch.start == 0) {
-        widgets.add(_buildDisplayMath(displayMatch.group(0)!, color, context));
-        remaining = remaining.substring(displayMatch.end);
-        continue;
-      }
-      
-      // Look for inline math ($...$)
-      final inlineMatch = RegExp(r'\$([^$\n]+)\$').firstMatch(remaining);
-      if (inlineMatch != null && inlineMatch.start == 0) {
-        widgets.add(_buildInlineMath(inlineMatch.group(0)!, color, context));
-        remaining = remaining.substring(inlineMatch.end);
-        continue;
-      }
-      
-      // Look for chemistry (\ce{...})
-      final chemMatch = RegExp(r'\\ce\{([^}]+)\}').firstMatch(remaining);
-      if (chemMatch != null && chemMatch.start == 0) {
-        widgets.add(_buildInlineMath(chemMatch.group(0)!, color, context));
-        remaining = remaining.substring(chemMatch.end);
-        continue;
-      }
-      
-      // Find next formula
-      int nextFormulaIndex = remaining.length;
-      
-      final nextDisplay = RegExp(r'\$\$[^$]+\$\$').firstMatch(remaining);
-      if (nextDisplay != null && nextDisplay.start < nextFormulaIndex) {
-        nextFormulaIndex = nextDisplay.start;
-      }
-      
-      final nextInline = RegExp(r'\$[^$\n]+\$').firstMatch(remaining);
-      if (nextInline != null && nextInline.start < nextFormulaIndex) {
-        nextFormulaIndex = nextInline.start;
-      }
-      
-      final nextChem = RegExp(r'\\ce\{[^}]+\}').firstMatch(remaining);
-      if (nextChem != null && nextChem.start < nextFormulaIndex) {
-        nextFormulaIndex = nextChem.start;
-      }
-      
-      // Add text before next formula
-      if (nextFormulaIndex > 0) {
-        String textPart = remaining.substring(0, nextFormulaIndex);
-        if (textPart.trim().isNotEmpty) {
-          widgets.add(Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: Text(
-              textPart,
-              style: textStyle ?? Theme.of(context).textTheme.bodyLarge!.copyWith(color: color),
-            ),
-          ));
-        }
-        remaining = remaining.substring(nextFormulaIndex);
-      } else {
-        // No more formulas, add remaining text
-        if (remaining.trim().isNotEmpty) {
-          widgets.add(Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: Text(
-              remaining,
-              style: textStyle ?? Theme.of(context).textTheme.bodyLarge!.copyWith(color: color),
-            ),
-          ));
-        }
-        break;
-      }
-    }
-    
-    if (widgets.isEmpty) {
-      return Text(content, style: textStyle);
-    }
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
+    // For mixed content, use TeXView which can handle both text and formulas
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+      child: TeXView(
+        child: TeXViewDocument(content),
+        style: TeXViewStyle(
+          fontStyle: TeXViewFontStyle(
+            fontSize: 16,
+          ),
+        ),
+      ),
     );
   }
 }

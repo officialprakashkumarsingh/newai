@@ -18,12 +18,12 @@ class EnhancedContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Only process formulas in thinking mode
-    if (isThinkingMode && _containsFormulas(content)) {
+    // Process formulas in BOTH thinking mode AND normal mode
+    if (_containsFormulas(content)) {
       return _buildEnhancedContent(context);
     }
     
-    // For normal mode or simple content, use HTML widget with markdown conversion
+    // For simple content without formulas, use HTML widget with markdown conversion
     return _buildHtmlContent(context);
   }
 

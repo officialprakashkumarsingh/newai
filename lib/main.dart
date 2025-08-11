@@ -30,8 +30,7 @@ void main() async {
   // Enable edge-to-edge mode (system UI will be configured per-theme)
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Initialize TeXRenderingServer for flutter_tex
-  await TeXRenderingServer.start();
+  // flutter_tex v4.0.9 doesn't require TeXRenderingServer
 
   // Background service temporarily disabled
   // await BackgroundService.initialize();
