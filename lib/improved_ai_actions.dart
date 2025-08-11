@@ -3,18 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'app_animations.dart';
 
-/// Improved AI Message Actions - Better icons and user experience
-/// Separated from main components to keep files smaller
+/// Enhanced AI Message Actions - Click to show with feedback system
 class ImprovedAiMessageActions extends StatefulWidget {
   final String messageText;
   final VoidCallback onCopy;
   final VoidCallback onRegenerate;
+  final bool showActions;
+  final VoidCallback? onToggleActions;
 
   const ImprovedAiMessageActions({
     super.key,
     required this.messageText,
     required this.onCopy,
     required this.onRegenerate,
+    this.showActions = false,
+    this.onToggleActions,
   });
 
   @override
@@ -26,9 +29,15 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
   final FlutterTts _flutterTts = FlutterTts();
   bool _isSpeaking = false;
   bool _copySuccess = false;
+  String? _feedback; // 'up', 'down', or null
+  
   late AnimationController _copyController;
   late AnimationController _regenerateController;
   late AnimationController _voiceController;
+  late AnimationController _actionsController;
+  late AnimationController _thumbsUpController;
+  late AnimationController _thumbsDownController;
+  late AnimationController _feedbackController;
 
   @override
   void initState() {
@@ -48,6 +57,22 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
     );
     _voiceController = AnimationController(
       duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _actionsController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _thumbsUpController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _thumbsDownController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _feedbackController = AnimationController(
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
   }
@@ -78,15 +103,32 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
   }
 
   @override
+  void didUpdateWidget(ImprovedAiMessageActions oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.showActions != oldWidget.showActions) {
+      if (widget.showActions) {
+        _actionsController.forward();
+      } else {
+        _actionsController.reverse();
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _flutterTts.stop();
     _copyController.dispose();
     _regenerateController.dispose();
     _voiceController.dispose();
+    _actionsController.dispose();
+    _thumbsUpController.dispose();
+    _thumbsDownController.dispose();
+    _feedbackController.dispose();
     super.dispose();
   }
 
   Future<void> _handleCopy() async {
+    HapticFeedback.lightImpact();
     await Clipboard.setData(ClipboardData(text: widget.messageText));
     setState(() => _copySuccess = true);
     _copyController.forward().then((_) {
@@ -101,6 +143,7 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
   }
 
   Future<void> _handleRegenerate() async {
+    HapticFeedback.mediumImpact();
     await _flutterTts.stop();
     _regenerateController.forward().then((_) {
       _regenerateController.reverse();
@@ -109,6 +152,7 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
   }
 
   Future<void> _toggleSpeak() async {
+    HapticFeedback.lightImpact();
     if (_isSpeaking) {
       await _flutterTts.stop();
       setState(() => _isSpeaking = false);
@@ -122,123 +166,236 @@ class _ImprovedAiMessageActionsState extends State<ImprovedAiMessageActions>
     }
   }
 
+  Future<void> _handleThumbsUp() async {
+    HapticFeedback.mediumImpact();
+    if (_feedback == 'up') {
+      // Remove feedback
+      setState(() => _feedback = null);
+      _thumbsUpController.reverse();
+    } else {
+      // Set thumbs up feedback
+      if (_feedback == 'down') {
+        _thumbsDownController.reverse();
+      }
+      setState(() => _feedback = 'up');
+      _thumbsUpController.forward();
+      
+      // Realistic thumb animation sequence
+      await Future.delayed(const Duration(milliseconds: 100));
+      _feedbackController.forward().then((_) {
+        _feedbackController.reverse();
+      });
+    }
+  }
+
+  Future<void> _handleThumbsDown() async {
+    HapticFeedback.mediumImpact();
+    if (_feedback == 'down') {
+      // Remove feedback
+      setState(() => _feedback = null);
+      _thumbsDownController.reverse();
+    } else {
+      // Set thumbs down feedback
+      if (_feedback == 'up') {
+        _thumbsUpController.reverse();
+      }
+      setState(() => _feedback = 'down');
+      _thumbsDownController.forward();
+      
+      // Realistic thumb animation sequence
+      await Future.delayed(const Duration(milliseconds: 100));
+      _feedbackController.forward().then((_) {
+        _feedbackController.reverse();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, top: 4.0),
-      child: Row(
-        children: [
-          // Copy button with success animation
-          AnimatedScaleButton(
-            onTap: _handleCopy,
-            child: _ImprovedActionButton(
-              child: AnimatedBuilder(
-                animation: _copyController,
-                builder: (context, child) {
-                  return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: _copySuccess
-                        ? Icon(
-                            Icons.check_circle_outline,
-                            key: const ValueKey('check'),
-                            size: 20,
-                            color: Colors.green[600],
-                          )
-                        : const Icon(
-                            Icons.content_copy_outlined,
-                            key: ValueKey('copy'),
-                            size: 20,
-                          ),
-                  );
-                },
-              ),
-            ),
-          ),
-          
-          // Regenerate button with rotation animation
-          AnimatedScaleButton(
-            onTap: _handleRegenerate,
-            child: _ImprovedActionButton(
-              child: AnimatedBuilder(
-                animation: _regenerateController,
-                builder: (context, child) {
-                  return Transform.rotate(
-                    angle: _regenerateController.value * 2 * 3.14159,
-                    child: const Icon(
-                      Icons.refresh_rounded,
-                      size: 20,
+    return AnimatedBuilder(
+      animation: _actionsController,
+      builder: (context, child) {
+        return SizeTransition(
+          sizeFactor: _actionsController,
+          child: FadeTransition(
+            opacity: _actionsController,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+              child: Wrap(
+                spacing: 4,
+                children: [
+                  // Copy button with success animation
+                  _AnimatedActionButton(
+                    onTap: _handleCopy,
+                    tooltip: 'Copy message',
+                    child: AnimatedBuilder(
+                      animation: _copyController,
+                      builder: (context, child) {
+                        return AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: _copySuccess
+                              ? Icon(
+                                  Icons.check_circle_outline,
+                                  key: const ValueKey('check'),
+                                  size: 18,
+                                  color: Colors.green[600],
+                                )
+                              : const Icon(
+                                  Icons.content_copy_outlined,
+                                  key: ValueKey('copy'),
+                                  size: 18,
+                                ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  
+                  // Regenerate button with rotation animation
+                  _AnimatedActionButton(
+                    onTap: _handleRegenerate,
+                    tooltip: 'Regenerate response',
+                    child: AnimatedBuilder(
+                      animation: _regenerateController,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _regenerateController.value * 2 * 3.14159,
+                          child: const Icon(
+                            Icons.refresh_rounded,
+                            size: 18,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  
+                  // Voice button with pulse animation when speaking
+                  _AnimatedActionButton(
+                    onTap: _toggleSpeak,
+                    tooltip: _isSpeaking ? 'Stop speaking' : 'Read aloud',
+                    child: AnimatedBuilder(
+                      animation: _voiceController,
+                      builder: (context, child) {
+                        if (_isSpeaking) {
+                          return Transform.scale(
+                            scale: 1.0 + (_voiceController.value * 0.1),
+                            child: Icon(
+                              Icons.stop_circle_outlined,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          );
+                        }
+                        return const Icon(
+                          Icons.volume_up_outlined,
+                          size: 18,
+                        );
+                      },
+                    ),
+                  ),
+                  
+                  // Thumbs up button with realistic animation
+                  _AnimatedActionButton(
+                    onTap: _handleThumbsUp,
+                    tooltip: 'Good response',
+                    child: AnimatedBuilder(
+                      animation: Listenable.merge([_thumbsUpController, _feedbackController]),
+                      builder: (context, child) {
+                        final isActive = _feedback == 'up';
+                        return Transform.scale(
+                          scale: 1.0 + (_feedbackController.value * 0.2),
+                          child: Transform.rotate(
+                            angle: isActive ? _thumbsUpController.value * 0.1 : 0,
+                            child: Icon(
+                              isActive ? Icons.thumb_up : Icons.thumb_up_outlined,
+                              size: 18,
+                              color: isActive ? Colors.green[600] : null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  
+                  // Thumbs down button with realistic animation
+                  _AnimatedActionButton(
+                    onTap: _handleThumbsDown,
+                    tooltip: 'Poor response',
+                    child: AnimatedBuilder(
+                      animation: Listenable.merge([_thumbsDownController, _feedbackController]),
+                      builder: (context, child) {
+                        final isActive = _feedback == 'down';
+                        return Transform.scale(
+                          scale: 1.0 + (_feedbackController.value * 0.2),
+                          child: Transform.rotate(
+                            angle: isActive ? _thumbsDownController.value * -0.1 : 0,
+                            child: Icon(
+                              isActive ? Icons.thumb_down : Icons.thumb_down_outlined,
+                              size: 18,
+                              color: isActive ? Colors.red[600] : null,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          
-          // Voice button with pulse animation when speaking
-          AnimatedScaleButton(
-            onTap: _toggleSpeak,
-            child: _ImprovedActionButton(
-              child: AnimatedBuilder(
-                animation: _voiceController,
-                builder: (context, child) {
-                  if (_isSpeaking) {
-                    return Transform.scale(
-                      scale: 1.0 + (_voiceController.value * 0.1),
-                      child: Icon(
-                        Icons.stop_circle_outlined,
-                        size: 20,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    );
-                  }
-                  return const Icon(
-                    Icons.volume_up_outlined,
-                    size: 20,
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
-/// Improved Action Button - Better styling and hover effects
-class _ImprovedActionButton extends StatefulWidget {
+/// Enhanced Action Button with better animations and tooltip
+class _AnimatedActionButton extends StatefulWidget {
   final Widget child;
+  final VoidCallback onTap;
+  final String tooltip;
 
-  const _ImprovedActionButton({required this.child});
+  const _AnimatedActionButton({
+    required this.child,
+    required this.onTap,
+    required this.tooltip,
+  });
 
   @override
-  State<_ImprovedActionButton> createState() => _ImprovedActionButtonState();
+  State<_AnimatedActionButton> createState() => _AnimatedActionButtonState();
 }
 
-class _ImprovedActionButtonState extends State<_ImprovedActionButton>
+class _AnimatedActionButtonState extends State<_AnimatedActionButton>
     with SingleTickerProviderStateMixin {
-  late AnimationController _hoverController;
-  late Animation<double> _hoverAnimation;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
 
   @override
   void initState() {
     super.initState();
-    _hoverController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _hoverAnimation = Tween<double>(
-      begin: 0.0,
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+    _opacityAnimation = Tween<double>(
+      begin: 0.7,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _hoverController,
+      parent: _controller,
       curve: Curves.easeInOut,
     ));
   }
 
   @override
   void dispose() {
-    _hoverController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -247,35 +404,47 @@ class _ImprovedActionButtonState extends State<_ImprovedActionButton>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     
-    return MouseRegion(
-      onEnter: (_) => _hoverController.forward(),
-      onExit: (_) => _hoverController.reverse(),
-      child: AnimatedBuilder(
-        animation: _hoverAnimation,
-        builder: (context, child) {
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 2),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Color.lerp(
-                Colors.transparent,
-                isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05),
-                _hoverAnimation.value,
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: IconTheme(
-              data: IconThemeData(
-                color: Color.lerp(
-                  theme.iconTheme.color,
-                  theme.primaryColor,
-                  _hoverAnimation.value * 0.3,
+    return Tooltip(
+      message: widget.tooltip,
+      child: GestureDetector(
+        onTapDown: (_) => _controller.forward(),
+        onTapUp: (_) {
+          _controller.reverse();
+          widget.onTap();
+        },
+        onTapCancel: () => _controller.reverse(),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Opacity(
+                opacity: _opacityAnimation.value,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isDark 
+                        ? Colors.white.withOpacity(0.1) 
+                        : Colors.black.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark 
+                          ? Colors.white.withOpacity(0.1) 
+                          : Colors.black.withOpacity(0.1),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: IconTheme(
+                    data: IconThemeData(
+                      color: theme.iconTheme.color?.withOpacity(0.8),
+                    ),
+                    child: widget.child,
+                  ),
                 ),
               ),
-              child: widget.child,
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
