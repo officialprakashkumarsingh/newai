@@ -31,7 +31,7 @@ class ImageApi {
       return models;
     } catch (e) {
       print('ImageApi.fetchModels error: $e');
-      return ['flux', 'turbo']; // Return working models as fallback
+      return []; // Return empty list if API fails, let UI handle fallback
     }
   }
 }

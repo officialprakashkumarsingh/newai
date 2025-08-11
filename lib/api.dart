@@ -105,19 +105,16 @@ class ImageApi {
 
   static Future<String> generateImage(String prompt, {String? model}) async {
     try {
-      // Use specific model or fallback to working models
+      // Use specified model or first available model
       String selectedModel;
       if (model != null && model.isNotEmpty) {
         selectedModel = model;
       } else {
         final availableModels = await fetchModels();
         if (availableModels.isEmpty) {
-          // Fallback to known working models
-          selectedModel = 'flux';
-          print("⚠️ No models available from API, falling back to flux");
-        } else {
-          selectedModel = availableModels.first;
+          throw Exception('No image models available');
         }
+        selectedModel = availableModels.first;
       }
       
       print("🎨 Generating image with model: $selectedModel, prompt: $prompt");
@@ -190,31 +187,9 @@ class ImageApi {
       }
       
       print("❌ Image generation error response body: ${response.body}");
-      
-      // Retry with flux model if original model failed and it wasn't flux
-      if (selectedModel != 'flux' && (response.statusCode == 503 || response.statusCode == 500)) {
-        print("🔄 Retrying with flux model due to ${response.statusCode} error...");
-        try {
-          return await generateImage(prompt, model: 'flux');
-        } catch (retryError) {
-          print("❌ Retry with flux also failed: $retryError");
-        }
-      }
-      
       throw Exception('API returned ${response.statusCode}: $errorMessage');
     } catch (e) {
       print("❌ Error generating image: $e");
-      
-      // If it's not a retry and not already using flux, try flux as fallback
-      if (model != 'flux' && selectedModel != 'flux') {
-        print("🔄 Attempting fallback to flux model...");
-        try {
-          return await generateImage(prompt, model: 'flux');
-        } catch (fallbackError) {
-          print("❌ Fallback to flux also failed: $fallbackError");
-        }
-      }
-      
       throw Exception('Image generation failed: $e');
     }
   }
